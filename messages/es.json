@@ -1,0 +1,209 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "export": "Exportar",
+    "back": "Volver",
+    "noResults": "Sin resultados",
+    "copied": "Copiado al portapapeles"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "invalidCredentials": "Credenciales inválidas",
+    "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo."
+  },
+  "dashboard": {
+    "welcome": "Bienvenido, {name}",
+    "totalEvents": "Eventos Totales",
+    "totalRaised": "Total Recaudado",
+    "activeFans": "Fans Activos",
+    "createEvent": "Crear Evento",
+    "inviteMember": "Invitar Miembro",
+    "noEvents": "No hay eventos. ¡Crea el primero!"
+  },
+  "events": {
+    "title": "Eventos",
+    "create": "Crear Evento",
+    "created": "Evento creado exitosamente",
+    "updated": "Evento actualizado",
+    "deleted": "Evento eliminado",
+    "name": "Nombre del evento",
+    "date": "Fecha",
+    "venue": "Lugar",
+    "city": "Ciudad",
+    "description": "Descripción",
+    "imageUrl": "URL de imagen",
+    "typeMatch": "Partido",
+    "typeConcert": "Concierto",
+    "empty": "No hay eventos. ¡Crea el primero!",
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicado",
+      "live": "En Vivo",
+      "ended": "Finalizado"
+    },
+    "publish": "Publicar Evento",
+    "goLive": "Ir en Vivo",
+    "endEvent": "Terminar Evento",
+    "confirmPublish": "¿Publicar este evento? Los fans podrán verlo.",
+    "confirmGoLive": "¿Ir en vivo? Las experiencias y subastas se activarán.",
+    "confirmEnd": "¿Terminar el evento? Esta acción no se puede deshacer.",
+    "preLiveChecklist": "Verificación pre-evento",
+    "checkExperiences": "Al menos 1 experiencia creada",
+    "checkPublished": "Evento publicado"
+  },
+  "experiences": {
+    "title": "Experiencias",
+    "add": "Agregar Experiencia",
+    "created": "Experiencia creada",
+    "winnersPerEscuadra": "Ganadores por Escuadra",
+    "redemptionInstructions": "Instrucciones de canje",
+    "surpriseReveal": "Texto sorpresa (se revela al abrir)",
+    "escuadra": {
+      "1": "Hinchada",
+      "2": "Barra",
+      "3": "Tribuna",
+      "4": "Palco VIP"
+    },
+    "customNames": "Personalizar nombres de escuadra",
+    "distribution": "Distribución: 50% / 30% / 15% / 5%"
+  },
+  "auctions": {
+    "title": "Subastas",
+    "create": "Crear Subasta",
+    "created": "Subasta creada",
+    "startingPrice": "Precio Inicial",
+    "duration": "Duración (minutos)",
+    "softClose": "Cierre suave",
+    "softCloseExplain": "Si alguien puja en los últimos {seconds}s, se extiende {extension}s",
+    "start": "Iniciar Ahora",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "end": "Terminar"
+  },
+  "team": {
+    "title": "Equipo",
+    "invite": "Invitar Miembro",
+    "invited": "Invitación enviada",
+    "removed": "Miembro eliminado",
+    "role": "Rol",
+    "roles": {
+      "owner": "Propietario",
+      "admin": "Administrador",
+      "viewer": "Observador",
+      "staff": "Staff"
+    },
+    "eventRestriction": "Restringir a eventos específicos",
+    "confirmRemove": "¿Eliminar a {name} del equipo?"
+  },
+  "live": {
+    "title": "Dashboard en Vivo",
+    "totalRaised": "Total Recaudado",
+    "participants": "Participantes",
+    "contributions": "Aportes",
+    "bids": "Pujas",
+    "bidsPerMinute": "Pujas/min",
+    "contributionsPerMinute": "Aportes/min",
+    "connected": "En vivo",
+    "reconnecting": "Reconectando...",
+    "disconnected": "Sin conexión en tiempo real",
+    "pollingActive": "Actualización cada 5s",
+    "notLive": "El evento no está en vivo"
+  },
+  "analytics": {
+    "title": "Analíticas",
+    "revenue": "Ingresos",
+    "revenueBreakdown": "Desglose de ingresos",
+    "contributionRevenue": "Ingresos por aportes",
+    "auctionRevenue": "Ingresos por subastas",
+    "experienceBreakdown": "Desglose por experiencia",
+    "redemptionRate": "Tasa de canje",
+    "uniqueParticipants": "Participantes únicos"
+  },
+  "winners": {
+    "title": "Ganadores",
+    "exportCsv": "Exportar CSV",
+    "total": "Total",
+    "status": {
+      "pending": "Pendiente",
+      "redeemed": "Canjeado",
+      "expired": "Expirado",
+      "cancelled": "Cancelado"
+    },
+    "filterByStatus": "Filtrar por estado",
+    "filterByType": "Filtrar por tipo"
+  },
+  "redemption": {
+    "title": "Canje de Premios",
+    "scanQr": "Escanear QR del Ganador",
+    "manualCode": "Ingresar código manualmente",
+    "validQr": "QR Válido",
+    "alreadyRedeemed": "Ya Canjeado",
+    "expired": "QR Expirado",
+    "notFound": "Código no reconocido",
+    "confirmDelivery": "Confirmar Entrega",
+    "confirmed": "¡Premio Entregado!",
+    "verifyIdentity": "Verificar identidad antes de entregar el premio",
+    "recentRedemptions": "Canjes recientes",
+    "stats": "{redeemed}/{total} canjeados",
+    "cameraPermission": "Se necesita acceso a la cámara para escanear",
+    "cameraDenied": "Cámara no disponible. Usa el ingreso manual."
+  },
+  "notifications": {
+    "walletReminder": "Recordar a fans que recarguen Fandies",
+    "eventReminder": "Recordar que el evento es pronto",
+    "send": "Enviar",
+    "sent": "Recordatorio enviado a {count} fans",
+    "cooldown": "Espera {seconds}s antes de enviar otro"
+  },
+  "landing": {
+    "hero": "Vive la experiencia como nunca antes",
+    "subtitle": "La plataforma que democratiza las experiencias VIP en eventos en vivo",
+    "ctaFan": "Descargar la App",
+    "ctaOrganizer": "Soy Artista / Organizador",
+    "howItWorks": "¿Cómo funciona?",
+    "forFans": "Para Fans",
+    "forArtists": "Para Artistas y Equipos",
+    "step1Title": "Recarga Fandies",
+    "step1Desc": "Compra Fandies, la moneda del evento",
+    "step2Title": "Compite en tu Escuadra",
+    "step2Desc": "Aporta y compite contra fans de tu mismo nivel",
+    "step3Title": "Gana experiencias únicas",
+    "step3Desc": "Meet & Greet, dedicatorias, artículos firmados y más",
+    "fanBenefit": "Compite contra fans e hinchas en tiempo real",
+    "minContribution": "Desde $10,000 COP puedes ganar un Meet & Greet",
+    "artistBenefit": "Monetiza el engagement de tus fans en vivo",
+    "statConcurrent": "20,000+",
+    "statConcurrentLabel": "FANS SIMULTÁNEOS",
+    "statRealTime": "EN VIVO",
+    "statRealTimeLabel": "TIEMPO REAL",
+    "statReports": "100%",
+    "statReportsLabel": "REPORTES COMPLETOS",
+    "partnerTitle": "Confían en nosotros",
+    "partnerComingSoon": "Próximamente"
+  },
+  "nav": {
+    "howItWorks": "Cómo funciona",
+    "forFans": "Para Fans",
+    "forArtists": "Para Artistas",
+    "login": "Iniciar Sesión"
+  },
+  "footer": {
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "contact": "Contacto",
+    "madeIn": "Hecho en Medellín, Colombia 🇨🇴",
+    "copyright": "© 2026 Fandi. Todos los derechos reservados."
+  }
+}

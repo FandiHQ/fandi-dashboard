@@ -1,0 +1,209 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "retry": "Retry",
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "search": "Search",
+        "export": "Export",
+        "back": "Back",
+        "noResults": "No results",
+        "copied": "Copied to clipboard"
+    },
+    "auth": {
+        "login": "Log In",
+        "logout": "Log Out",
+        "email": "Email",
+        "password": "Password",
+        "invalidCredentials": "Invalid credentials",
+        "sessionExpired": "Your session expired. Please log in again."
+    },
+    "dashboard": {
+        "welcome": "Welcome, {name}",
+        "totalEvents": "Total Events",
+        "totalRaised": "Total Raised",
+        "activeFans": "Active Fans",
+        "createEvent": "Create Event",
+        "inviteMember": "Invite Member",
+        "noEvents": "No events yet. Create your first one!"
+    },
+    "events": {
+        "title": "Events",
+        "create": "Create Event",
+        "created": "Event created successfully",
+        "updated": "Event updated",
+        "deleted": "Event deleted",
+        "name": "Event name",
+        "date": "Date",
+        "venue": "Venue",
+        "city": "City",
+        "description": "Description",
+        "imageUrl": "Image URL",
+        "typeMatch": "Match",
+        "typeConcert": "Concert",
+        "empty": "No events yet. Create your first one!",
+        "status": {
+            "draft": "Draft",
+            "published": "Published",
+            "live": "Live",
+            "ended": "Ended"
+        },
+        "publish": "Publish Event",
+        "goLive": "Go Live",
+        "endEvent": "End Event",
+        "confirmPublish": "Publish this event? Fans will be able to see it.",
+        "confirmGoLive": "Go live? Experiences and auctions will be activated.",
+        "confirmEnd": "End the event? This action cannot be undone.",
+        "preLiveChecklist": "Pre-event checklist",
+        "checkExperiences": "At least 1 experience created",
+        "checkPublished": "Event published"
+    },
+    "experiences": {
+        "title": "Experiences",
+        "add": "Add Experience",
+        "created": "Experience created",
+        "winnersPerEscuadra": "Winners per Escuadra",
+        "redemptionInstructions": "Redemption instructions",
+        "surpriseReveal": "Surprise text (revealed when opened)",
+        "escuadra": {
+            "1": "Fans",
+            "2": "Supporters",
+            "3": "Premium",
+            "4": "VIP Box"
+        },
+        "customNames": "Customize escuadra names",
+        "distribution": "Distribution: 50% / 30% / 15% / 5%"
+    },
+    "auctions": {
+        "title": "Auctions",
+        "create": "Create Auction",
+        "created": "Auction created",
+        "startingPrice": "Starting Price",
+        "duration": "Duration (minutes)",
+        "softClose": "Soft close",
+        "softCloseExplain": "If someone bids in the last {seconds}s, it extends by {extension}s",
+        "start": "Start Now",
+        "pause": "Pause",
+        "resume": "Resume",
+        "end": "End"
+    },
+    "team": {
+        "title": "Team",
+        "invite": "Invite Member",
+        "invited": "Invitation sent",
+        "removed": "Member removed",
+        "role": "Role",
+        "roles": {
+            "owner": "Owner",
+            "admin": "Admin",
+            "viewer": "Viewer",
+            "staff": "Staff"
+        },
+        "eventRestriction": "Restrict to specific events",
+        "confirmRemove": "Remove {name} from the team?"
+    },
+    "live": {
+        "title": "Live Dashboard",
+        "totalRaised": "Total Raised",
+        "participants": "Participants",
+        "contributions": "Contributions",
+        "bids": "Bids",
+        "bidsPerMinute": "Bids/min",
+        "contributionsPerMinute": "Contributions/min",
+        "connected": "Live",
+        "reconnecting": "Reconnecting...",
+        "disconnected": "No real-time connection",
+        "pollingActive": "Updating every 5s",
+        "notLive": "Event is not live"
+    },
+    "analytics": {
+        "title": "Analytics",
+        "revenue": "Revenue",
+        "revenueBreakdown": "Revenue breakdown",
+        "contributionRevenue": "Contribution revenue",
+        "auctionRevenue": "Auction revenue",
+        "experienceBreakdown": "Breakdown by experience",
+        "redemptionRate": "Redemption rate",
+        "uniqueParticipants": "Unique participants"
+    },
+    "winners": {
+        "title": "Winners",
+        "exportCsv": "Export CSV",
+        "total": "Total",
+        "status": {
+            "pending": "Pending",
+            "redeemed": "Redeemed",
+            "expired": "Expired",
+            "cancelled": "Cancelled"
+        },
+        "filterByStatus": "Filter by status",
+        "filterByType": "Filter by type"
+    },
+    "redemption": {
+        "title": "Prize Redemption",
+        "scanQr": "Scan Winner's QR",
+        "manualCode": "Enter code manually",
+        "validQr": "Valid QR",
+        "alreadyRedeemed": "Already Redeemed",
+        "expired": "QR Expired",
+        "notFound": "Code not recognized",
+        "confirmDelivery": "Confirm Delivery",
+        "confirmed": "Prize Delivered!",
+        "verifyIdentity": "Verify identity before delivering the prize",
+        "recentRedemptions": "Recent redemptions",
+        "stats": "{redeemed}/{total} redeemed",
+        "cameraPermission": "Camera access is needed to scan",
+        "cameraDenied": "Camera unavailable. Use manual entry."
+    },
+    "notifications": {
+        "walletReminder": "Remind fans to top up Fandies",
+        "eventReminder": "Remind that the event is coming soon",
+        "send": "Send",
+        "sent": "Reminder sent to {count} fans",
+        "cooldown": "Wait {seconds}s before sending another"
+    },
+    "landing": {
+        "hero": "Experience it like never before",
+        "subtitle": "The platform that democratizes VIP experiences at live events",
+        "ctaFan": "Download the App",
+        "ctaOrganizer": "I'm an Artist / Organizer",
+        "howItWorks": "How does it work?",
+        "forFans": "For Fans",
+        "forArtists": "For Artists and Teams",
+        "step1Title": "Top Up Fandies",
+        "step1Desc": "Buy Fandies, the event currency",
+        "step2Title": "Compete in your Escuadra",
+        "step2Desc": "Contribute and compete against fans at your same level",
+        "step3Title": "Win unique experiences",
+        "step3Desc": "Meet & Greet, dedications, signed items and more",
+        "fanBenefit": "Compete against fans like you, not against millionaires",
+        "minContribution": "From $10,000 COP you can win a Meet & Greet",
+        "artistBenefit": "Monetize your fans' live engagement",
+        "statConcurrent": "20,000+",
+        "statConcurrentLabel": "CONCURRENT FANS",
+        "statRealTime": "LIVE",
+        "statRealTimeLabel": "REAL TIME",
+        "statReports": "100%",
+        "statReportsLabel": "FULL REPORTS",
+        "partnerTitle": "Trusted by",
+        "partnerComingSoon": "Coming Soon"
+    },
+    "nav": {
+        "howItWorks": "How it works",
+        "forFans": "For Fans",
+        "forArtists": "For Artists",
+        "login": "Log In"
+    },
+    "footer": {
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy",
+        "contact": "Contact",
+        "madeIn": "Made in Medellín, Colombia 🇨🇴",
+        "copyright": "© 2026 Fandi. All rights reserved."
+    }
+}
