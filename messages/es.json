@@ -180,30 +180,6 @@
     "step2Title": "Compite en tu Escuadra",
     "step2Desc": "Aporta y compite contra fans de tu mismo nivel",
     "step3Title": "Gana experiencias únicas",
-    "step3Desc": "Meet & Greet, dedicatorias, artículos firmados y más",
-    "fanBenefit": "Compite contra fans e hinchas en tiempo real",
-    "minContribution": "Desde $10,000 COP puedes ganar un Meet & Greet",
-    "artistBenefit": "Monetiza el engagement de tus fans en vivo",
-    "statConcurrent": "20,000+",
-    "statConcurrentLabel": "FANS SIMULTÁNEOS",
-    "statRealTime": "EN VIVO",
-    "statRealTimeLabel": "TIEMPO REAL",
-    "statReports": "100%",
-    "statReportsLabel": "REPORTES COMPLETOS",
-    "partnerTitle": "Confían en nosotros",
-    "partnerComingSoon": "Próximamente"
-  },
-  "nav": {
-    "howItWorks": "Cómo funciona",
-    "forFans": "Para Fans",
-    "forArtists": "Para Artistas",
-    "login": "Iniciar Sesión"
-  },
-  "footer": {
-    "terms": "Términos y Condiciones",
-    "privacy": "Política de Privacidad",
-    "contact": "Contacto",
-    "madeIn": "Hecho en Medellín, Colombia 🇨🇴",
-    "copyright": "© 2026 Fandi. Todos los derechos reservados."
+    "step3Desc": "Meet & Greet, dedicatorias, artículos firmados y más"
   }
 }

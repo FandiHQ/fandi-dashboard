@@ -180,30 +180,6 @@
         "step2Title": "Compete in your Escuadra",
         "step2Desc": "Contribute and compete against fans at your same level",
         "step3Title": "Win unique experiences",
-        "step3Desc": "Meet & Greet, dedications, signed items and more",
-        "fanBenefit": "Compete against fans like you, not against millionaires",
-        "minContribution": "From $10,000 COP you can win a Meet & Greet",
-        "artistBenefit": "Monetize your fans' live engagement",
-        "statConcurrent": "20,000+",
-        "statConcurrentLabel": "CONCURRENT FANS",
-        "statRealTime": "LIVE",
-        "statRealTimeLabel": "REAL TIME",
-        "statReports": "100%",
-        "statReportsLabel": "FULL REPORTS",
-        "partnerTitle": "Trusted by",
-        "partnerComingSoon": "Coming Soon"
-    },
-    "nav": {
-        "howItWorks": "How it works",
-        "forFans": "For Fans",
-        "forArtists": "For Artists",
-        "login": "Log In"
-    },
-    "footer": {
-        "terms": "Terms & Conditions",
-        "privacy": "Privacy Policy",
-        "contact": "Contact",
-        "madeIn": "Made in Medellín, Colombia 🇨🇴",
-        "copyright": "© 2026 Fandi. All rights reserved."
+        "step3Desc": "Meet & Greet, dedications, signed items and more"
     }
 }

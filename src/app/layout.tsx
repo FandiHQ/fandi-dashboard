@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import { Sora, Space_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "@/providers";
 import "./globals.css";
 
-const sora = Sora({
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  variable: "--font-sora",
-  display: "swap",
 });
 
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  variable: "--font-space-mono",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -33,8 +30,10 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`dark ${sora.variable} ${spaceMono.variable}`}>
-      <body className="antialiased">
+    <html lang={locale} className="dark">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
