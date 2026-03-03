@@ -168,18 +168,36 @@
         "cooldown": "Wait {seconds}s before sending another"
     },
     "landing": {
-        "hero": "Experience it like never before",
-        "subtitle": "The platform that democratizes VIP experiences at live events",
+        "title": "Interacting with your idols is no longer impossible",
+        "subtitle": "VIP EXPERIENCES AT LIVE EVENTS",
+        "enVivo": "LIVE",
+        "fandiesTitle": "Fandies",
+        "fandiesRate": "1 Fandi = $5,000 COP",
+        "fandiesDesc": "Buy Fandies, the event currency. Top up from $10,000 and start competing for unique experiences.",
+        "contributionsTitle": "Escuadras",
+        "contributionsPrice": "Starting at 2 Fandies",
+        "contributionsBenefit1": "→ Contribute and climb Escuadras",
+        "contributionsBenefit2": "→ Compete against fans at your level",
+        "contributionsBenefit3": "→ Winners chosen randomly in each escuadra",
+        "auctionsTitle": "Live Auctions",
+        "auctionsDesc": "Bid in real time for exclusive experiences. Signed items, backstage passes, and more. Highest bidder wins.",
+        "artistsTitle": "FOR ARTISTS AND FOOTBALL TEAMS",
+        "artistsPitch1": "MONETIZE YOUR FANS' ENGAGEMENT",
+        "artistsPitch2": "LIVE, EVEN WITH LOW SIGNAL",
+        "artistsPitch3": "REAL-TIME DASHBOARD. INSTANT ANALYTICS.",
+        "participateTitle": "PARTICIPATE FROM ANYWHERE",
+        "participateDesc": "Download the app, top up Fandies and start competing at your next event.",
         "ctaFan": "Download the App",
-        "ctaOrganizer": "I'm an Artist / Organizer",
-        "howItWorks": "How does it work?",
-        "forFans": "For Fans",
-        "forArtists": "For Artists and Teams",
-        "step1Title": "Top Up Fandies",
-        "step1Desc": "Buy Fandies, the event currency",
-        "step2Title": "Compete in your Escuadra",
-        "step2Desc": "Contribute and compete against fans at your same level",
-        "step3Title": "Win unique experiences",
-        "step3Desc": "Meet & Greet, dedications, signed items and more"
+        "ctaOrganizer": "I'm an Artist / Organizer"
+    },
+    "nav": {
+        "login": "Log In"
+    },
+    "footer": {
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy",
+        "contact": "hola@fandi.app",
+        "madeIn": "Made with 💜 in Colombia",
+        "copyright": "© 2026 Fandi. All rights reserved."
     }
 }

@@ -168,18 +168,36 @@
     "cooldown": "Espera {seconds}s antes de enviar otro"
   },
   "landing": {
-    "hero": "Vive la experiencia como nunca antes",
-    "subtitle": "La plataforma que democratiza las experiencias VIP en eventos en vivo",
+    "title": "Interactuar con tus ídolos ahora no es imposible",
+    "subtitle": "EXPERIENCIAS VIP EN EVENTOS EN VIVO",
+    "enVivo": "EN VIVO",
+    "fandiesTitle": "Fandies",
+    "fandiesRate": "1 Fandi = $5,000 COP",
+    "fandiesDesc": "Compra Fandies, la moneda del evento. Recarga desde $10,000 y empieza a competir por experiencias únicas.",
+    "contributionsTitle": "Escuadras",
+    "contributionsPrice": "Desde 2 Fandies",
+    "contributionsBenefit1": "→ Aporta y sube de Escuadra",
+    "contributionsBenefit2": "→ Compite contra fans de tu nivel",
+    "contributionsBenefit3": "→ Ganadores elegidos al azar en cada escuadra",
+    "auctionsTitle": "Subastas en Vivo",
+    "auctionsDesc": "Puja en tiempo real por experiencias exclusivas. Artículos firmados, backstage passes, y más. El mejor postor gana.",
+    "artistsTitle": "PARA ARTISTAS Y EQUIPOS DE FÚTBOL",
+    "artistsPitch1": "MONETIZA EL ENGAGEMENT DE TUS FANS",
+    "artistsPitch2": "EN VIVO, CON BAJA SEÑAL",
+    "artistsPitch3": "DASHBOARD EN TIEMPO REAL. ANALÍTICAS AL INSTANTE.",
+    "participateTitle": "PARTICIPA DESDE CUALQUIER PARTE",
+    "participateDesc": "Descarga la app, recarga Fandies y empieza a competir en tu próximo evento.",
     "ctaFan": "Descargar la App",
-    "ctaOrganizer": "Soy Artista / Organizador",
-    "howItWorks": "¿Cómo funciona?",
-    "forFans": "Para Fans",
-    "forArtists": "Para Artistas y Equipos",
-    "step1Title": "Recarga Fandies",
-    "step1Desc": "Compra Fandies, la moneda del evento",
-    "step2Title": "Compite en tu Escuadra",
-    "step2Desc": "Aporta y compite contra fans de tu mismo nivel",
-    "step3Title": "Gana experiencias únicas",
-    "step3Desc": "Meet & Greet, dedicatorias, artículos firmados y más"
+    "ctaOrganizer": "Soy Artista / Organizador"
+  },
+  "nav": {
+    "login": "Ingresar"
+  },
+  "footer": {
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "contact": "hola@fandi.app",
+    "madeIn": "Hecho con 💜 en Colombia",
+    "copyright": "© 2026 Fandi. Todos los derechos reservados."
   }
 }
