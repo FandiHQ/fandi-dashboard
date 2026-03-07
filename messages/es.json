@@ -169,8 +169,8 @@
   },
   "landing": {
     "title": "Interactuar con tus ídolos ahora no es imposible",
-    "subtitle": "EXPERIENCIAS VIP EN EVENTOS EN VIVO",
-    "enVivo": "EN VIVO",
+    "subtitle": "GANARSE UNA FOTO, UN ARTÍCULO FIRMADO, UNA CENA! EN FIN... AHORA ES POSIBLE INTERACTUAR CON TUS ÍDOLOS.",
+    "enVivo": "EN VIVO DESDE LA SALA DE LA CASA O EN EL ESTADIO",
     "fandiesTitle": "Fandies",
     "fandiesRate": "1 Fandi = $5,000 COP",
     "fandiesDesc": "Compra Fandies, la moneda del evento. Recarga desde $10,000 y empieza a competir por experiencias únicas.",
@@ -191,7 +191,10 @@
     "ctaOrganizer": "Soy Artista / Organizador"
   },
   "nav": {
-    "login": "Ingresar"
+    "login": "Ingresar",
+    "howItWorks": "CÓMO FUNCIONA",
+    "forFans": "PARA FANS",
+    "forArtists": "PARA ARTISTAS"
   },
   "footer": {
     "terms": "Términos y Condiciones",

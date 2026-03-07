@@ -191,7 +191,10 @@
         "ctaOrganizer": "I'm an Artist / Organizer"
     },
     "nav": {
-        "login": "Log In"
+        "login": "Login",
+        "howItWorks": "HOW IT WORKS",
+        "forFans": "FOR FANS",
+        "forArtists": "FOR ARTISTS"
     },
     "footer": {
         "terms": "Terms & Conditions",
