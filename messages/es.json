@@ -188,7 +188,17 @@
     "participateTitle": "PARTICIPA DESDE CUALQUIER PARTE",
     "participateDesc": "Descarga la app, recarga Fandies y empieza a competir en tu próximo evento.",
     "ctaFan": "Descargar la App",
-    "ctaOrganizer": "Soy Artista / Organizador"
+    "ctaOrganizer": "Soy Artista / Organizador",
+    "heroStatement": "AHORA PUEDES INTERACTUAR DE VERDAD CON TUS ÍDOLOS",
+    "enVivoFull": "EN VIVO DESDE LA SALA DE TU CASA O EN EL ESTADIO",
+    "mockup": {
+      "subastasTitle": "SUBASTAS",
+      "subastasDesc": "Puja en tiempo real por experiencias VIP: artículos firmados, backstage passes, cenas, conciertos privados y más. El mejor postor gana.",
+      "oportunidadesTitle": "OPORTUNIDADES",
+      "oportunidadesDesc": "Fandea para ganar experiencias VIP: artículos firmados, backstage passes, cenas, conciertos privados y más. Varios ganadores por experiencia. Compite contra fans como tú de acuerdo a lo que des.",
+      "insigniasTitle": "INSIGNIAS",
+      "insigniasDesc": "Colecciona insignias por cada evento. Demuestra tu fidelidad hacia tus artistas favoritos y sorpréndete a futuro con lo que tenemos preparado para ti."
+    }
   },
   "nav": {
     "login": "Ingresar",

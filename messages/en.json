@@ -188,7 +188,17 @@
         "participateTitle": "PARTICIPATE FROM ANYWHERE",
         "participateDesc": "Download the app, top up Fandies and start competing at your next event.",
         "ctaFan": "Download the App",
-        "ctaOrganizer": "I'm an Artist / Organizer"
+        "ctaOrganizer": "I'm an Artist / Organizer",
+        "heroStatement": "NOW YOU CAN TRULY INTERACT WITH YOUR IDOLS",
+        "enVivoFull": "LIVE FROM YOUR LIVING ROOM OR AT THE STADIUM",
+        "mockup": {
+            "subastasTitle": "AUCTIONS",
+            "subastasDesc": "Bid in real time for VIP experiences: signed merch, backstage passes, dinners, private concerts and more. Highest bidder wins.",
+            "oportunidadesTitle": "OPPORTUNITIES",
+            "oportunidadesDesc": "Fan your way to VIP experiences: signed merch, backstage passes, dinners, private concerts and more. Multiple winners per experience. Compete against fans like you based on what you give.",
+            "insigniasTitle": "BADGES",
+            "insigniasDesc": "Collect badges from every event. Show your loyalty to your favorite artists and stay tuned for what we have in store for you."
+        }
     },
     "nav": {
         "login": "Login",

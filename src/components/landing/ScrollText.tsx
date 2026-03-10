@@ -6,9 +6,10 @@ interface Props {
     children: React.ReactNode;
     scrollRange: [number, number];
     className?: string;
+    interactive?: boolean;
 }
 
-export default function ScrollText({ children, scrollRange, className }: Props) {
+export default function ScrollText({ children, scrollRange, className, interactive = false }: Props) {
     const { scrollYProgress } = useScroll();
     const [start, end] = scrollRange;
     const span = end - start;
@@ -29,7 +30,9 @@ export default function ScrollText({ children, scrollRange, className }: Props) 
             style={{ opacity, y }}
             className={`fixed inset-0 flex items-center justify-center pointer-events-none z-10 ${className ?? ''}`}
         >
-            {children}
+            <div className={interactive ? 'pointer-events-auto' : 'pointer-events-none'}>
+                {children}
+            </div>
         </motion.div>
     );
 }

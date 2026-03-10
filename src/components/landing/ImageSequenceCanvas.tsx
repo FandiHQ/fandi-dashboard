@@ -11,7 +11,7 @@ interface Props {
 }
 
 const getFramePath = (folder: string, index: number): string =>
-    `/images/${folder}/ezgif-frame-${String(index).padStart(3, '0')}.jpg`;
+    `/images/${folder}/frame-${String(index).padStart(4, '0')}.jpg`;
 
 export default function ImageSequenceCanvas({
     folder,
