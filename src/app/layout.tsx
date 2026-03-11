@@ -18,9 +18,38 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fandi Dashboard",
+  title: "Fandi — Experiencias VIP en Eventos en Vivo",
   description:
-    "Artist dashboard for managing events, experiences, and auctions on Fandi.",
+    "Plataforma de engagement en tiempo real para eventos masivos. Subastas, oportunidades e insignias con tus artistas favoritos.",
+  metadataBase: new URL("https://fandi.app"),
+  openGraph: {
+    title: "Fandi — Experiencias VIP en Eventos en Vivo",
+    description:
+      "Interactúa de verdad con tus ídolos. Subastas en vivo, oportunidades VIP e insignias coleccionables.",
+    url: "https://fandi.app",
+    siteName: "Fandi",
+    images: [
+      {
+        url: "/fandi-logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Fandi — VIP Experiences at Live Events",
+      },
+    ],
+    locale: "es_CO",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fandi — Experiencias VIP en Eventos en Vivo",
+    description:
+      "Subastas en vivo, oportunidades VIP e insignias con tus artistas favoritos.",
+    images: ["/fandi-logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({

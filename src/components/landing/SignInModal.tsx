@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X } from 'lucide-react';
@@ -15,10 +15,26 @@ export default function SignInModal({ open, onClose }: Props) {
     const t = useTranslations('nav');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const emailRef = useRef<HTMLInputElement>(null);
+
+    // Focus trap: focus email on open
+    useEffect(() => {
+        if (open) {
+            setTimeout(() => emailRef.current?.focus(), 100);
+        }
+    }, [open]);
+
+    // Close on Escape
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && open) onClose();
+        };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [open, onClose]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Placeholder — no backend yet
         onClose();
     };
 
@@ -32,9 +48,12 @@ export default function SignInModal({ open, onClose }: Props) {
                     transition={{ duration: 0.2 }}
                     className="fixed inset-0 z-[100] flex items-center justify-center"
                     onClick={onClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Sign in to Fandi"
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
 
                     {/* Modal Card */}
                     <motion.div
@@ -52,6 +71,7 @@ export default function SignInModal({ open, onClose }: Props) {
                         <button
                             onClick={onClose}
                             className="absolute top-4 right-4 text-[#6B6B6B] hover:text-white transition-colors cursor-pointer"
+                            aria-label="Close sign-in modal"
                         >
                             <X size={20} />
                         </button>
@@ -70,31 +90,36 @@ export default function SignInModal({ open, onClose }: Props) {
                         {/* Form */}
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div>
-                                <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
+                                <label htmlFor="signin-email" className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
                                     Email
                                 </label>
                                 <input
+                                    id="signin-email"
+                                    ref={emailRef}
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white font-sora text-base
-                                        px-4 py-3 outline-none focus:border-[#2D00F7] transition-colors"
+                                        px-4 py-3 outline-none focus:border-[#2D00F7] focus:shadow-[0_0_10px_rgba(45,0,247,0.2)] transition-all"
                                     placeholder="tucorreo@ejemplo.com"
                                     required
+                                    autoComplete="email"
                                 />
                             </div>
                             <div>
-                                <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
+                                <label htmlFor="signin-password" className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
                                     Password
                                 </label>
                                 <input
+                                    id="signin-password"
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white font-sora text-base
-                                        px-4 py-3 outline-none focus:border-[#2D00F7] transition-colors"
+                                        px-4 py-3 outline-none focus:border-[#2D00F7] focus:shadow-[0_0_10px_rgba(45,0,247,0.2)] transition-all"
                                     placeholder="••••••••"
                                     required
+                                    autoComplete="current-password"
                                 />
                             </div>
                             <button

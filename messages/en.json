@@ -193,11 +193,25 @@
         "enVivoFull": "LIVE FROM YOUR LIVING ROOM OR AT THE STADIUM",
         "mockup": {
             "subastasTitle": "AUCTIONS",
-            "subastasDesc": "Bid in real time for VIP experiences: signed merch, backstage passes, dinners, private concerts and more. Highest bidder wins.",
+            "subastasPill": "IN REAL TIME",
+            "subastasSubheading": "To win VIP experiences and items like:",
+            "subastasBullet1": "Signed merch",
+            "subastasBullet2": "Backstage passes",
+            "subastasBullet3": "Dinners & private concerts",
+            "subastasTagline": "AND MORE! Highest bidder wins.",
             "oportunidadesTitle": "OPPORTUNITIES",
-            "oportunidadesDesc": "Fan your way to VIP experiences: signed merch, backstage passes, dinners, private concerts and more. Multiple winners per experience. Compete against fans like you based on what you give.",
+            "oportunidadesPill": "FOR EVERYONE",
+            "oportunidadesSubheading": "Imagine winning VIP experiences and items like:",
+            "oportunidadesBullet1": "Signed merch",
+            "oportunidadesBullet2": "Backstage passes",
+            "oportunidadesBullet3": "Dinners & private concerts",
+            "oportunidadesMore": "AND MORE!",
+            "oportunidadesBody": "Fan the event currency and compete against fans like you.",
+            "oportunidadesTagline": "HURRY, YOU'LL COMPETE AGAINST MORE OR FEWER PEOPLE.",
             "insigniasTitle": "BADGES",
-            "insigniasDesc": "Collect badges from every event. Show your loyalty to your favorite artists and stay tuned for what we have in store for you."
+            "insigniasPill": "COLLECT",
+            "insigniasBody": "Loyalty pays off — collect badges from every event...",
+            "insigniasTagline": "...and be surprised by what's coming."
         }
     },
     "nav": {

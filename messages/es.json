@@ -169,7 +169,7 @@
   },
   "landing": {
     "title": "Interactuar con tus ídolos ahora no es imposible",
-    "subtitle": "GANARSE UNA FOTO, UN ARTÍCULO FIRMADO, UNA CENA! EN FIN... AHORA ES POSIBLE INTERACTUAR CON TUS ÍDOLOS.",
+    "subtitle": "¿IMAGINAS GANARTE UNA FOTO, UN ARTÍCULO FIRMADO, INCLUSO UNA CENA CON TU ÍDOLO? EN FIN...",
     "enVivo": "EN VIVO DESDE LA SALA DE LA CASA O EN EL ESTADIO",
     "fandiesTitle": "Fandies",
     "fandiesRate": "1 Fandi = $5,000 COP",
@@ -193,11 +193,25 @@
     "enVivoFull": "EN VIVO DESDE LA SALA DE TU CASA O EN EL ESTADIO",
     "mockup": {
       "subastasTitle": "SUBASTAS",
-      "subastasDesc": "Puja en tiempo real por experiencias VIP: artículos firmados, backstage passes, cenas, conciertos privados y más. El mejor postor gana.",
+      "subastasPill": "EN TIEMPO REAL",
+      "subastasSubheading": "Para obtener experiencias y artículos VIP como:",
+      "subastasBullet1": "Artículos firmados",
+      "subastasBullet2": "Backstage passes",
+      "subastasBullet3": "Cenas y conciertos privados",
+      "subastasTagline": "¡Y MÁS! El mejor postor gana.",
       "oportunidadesTitle": "OPORTUNIDADES",
-      "oportunidadesDesc": "Fandea para ganar experiencias VIP: artículos firmados, backstage passes, cenas, conciertos privados y más. Varios ganadores por experiencia. Compite contra fans como tú de acuerdo a lo que des.",
+      "oportunidadesPill": "PARA TODOS",
+      "oportunidadesSubheading": "Imagínate ganar experiencias y artículos VIP como:",
+      "oportunidadesBullet1": "Artículos firmados",
+      "oportunidadesBullet2": "Backstage passes",
+      "oportunidadesBullet3": "Cenas y conciertos privados",
+      "oportunidadesMore": "¡Y MÁS!",
+      "oportunidadesBody": "Fandea la moneda del concierto y compite contra fans como tú.",
+      "oportunidadesTagline": "APÚRATE QUE PUEDES COMPETIR CONTRA MÁS O MENOS PERSONAS.",
       "insigniasTitle": "INSIGNIAS",
-      "insigniasDesc": "Colecciona insignias por cada evento. Demuestra tu fidelidad hacia tus artistas favoritos y sorpréndete a futuro con lo que tenemos preparado para ti."
+      "insigniasPill": "COLECCIONA",
+      "insigniasBody": "Ser leal premia, colecciona las insignias de cada evento...",
+      "insigniasTagline": "...y sorpréndete con lo que llega."
     }
   },
   "nav": {

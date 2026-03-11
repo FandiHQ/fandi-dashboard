@@ -8,6 +8,7 @@ interface Props {
     frameCount: number;
     heightVh?: number;
     children?: React.ReactNode;
+    onLoadProgress?: (progress: number) => void;
 }
 
 const getFramePath = (folder: string, index: number): string =>
@@ -18,6 +19,7 @@ export default function ImageSequenceCanvas({
     frameCount,
     heightVh = 300,
     children,
+    onLoadProgress,
 }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -80,7 +82,9 @@ export default function ImageSequenceCanvas({
                 img.src = getFramePath(folder, i + 1); // 1-indexed
                 img.onload = () => {
                     loaded++;
-                    setLoadProgress(loaded / frameCount);
+                    const p = loaded / frameCount;
+                    setLoadProgress(p);
+                    onLoadProgress?.(p);
                     // Draw first frame immediately
                     if (i === 0 && canvasRef.current) {
                         drawFrame(0);
@@ -92,7 +96,9 @@ export default function ImageSequenceCanvas({
                 };
                 img.onerror = () => {
                     loaded++;
-                    setLoadProgress(loaded / frameCount);
+                    const p = loaded / frameCount;
+                    setLoadProgress(p);
+                    onLoadProgress?.(p);
                     if (loaded >= end && end < frameCount) {
                         loadBatch(end);
                     }
@@ -126,6 +132,8 @@ export default function ImageSequenceCanvas({
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 w-full h-full"
+                    role="img"
+                    aria-label={`${folder} image sequence`}
                 />
                 {/* Loading progress bar */}
                 {loadProgress < 1 && (

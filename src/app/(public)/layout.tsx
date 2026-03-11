@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Fandi — Interactuar con tus ídolos ahora no es imposible',
+    title: 'Fandi: Convertimos a tu ídolo en tu amigo EN VIVO',
     description:
-        'Plataforma de engagement en tiempo real para eventos masivos. Fans compiten en escuadras para ganar experiencias VIP únicas.',
+        'Plataforma de engagement en tiempo real para eventos masivos. Fans compiten en escuadras y subastas para ganar experiencias VIP únicas.',
     openGraph: {
         title: 'Fandi',
         description: 'Democratiza las experiencias VIP en eventos en vivo',
