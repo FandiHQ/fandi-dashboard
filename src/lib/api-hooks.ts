@@ -1,0 +1,129 @@
+import api from './api';
+import type {
+    Event, CreateEventDto, UpdateEventDto, EventStatus,
+    PreLiveStatsResponse,
+    Experience, CreateExperienceDto,
+    Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
+    Organization, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
+    EventSummaryResponse, ExperienceBreakdownItem,
+    LivePulseResponse, WinnersListItem, WinnersListQuery,
+    PaginatedResponse, ScanResultResponse, RedemptionStats,
+    NotificationSendResult,
+} from '@/types/api';
+
+// ── Helper: extract .data from AxiosResponse ──
+const unwrap = <T>(promise: Promise<{ data: T }>): Promise<T> =>
+    promise.then(res => res.data);
+
+// ── Events ──
+export const eventsApi = {
+    list: () =>
+        unwrap(api.get<Event[]>('/dashboard/events')),
+    get: (id: string) =>
+        unwrap(api.get<Event>(`/dashboard/events/${id}`)),
+    create: (dto: CreateEventDto) =>
+        unwrap(api.post<Event>('/dashboard/events', dto)),
+    update: (id: string, dto: UpdateEventDto) =>
+        unwrap(api.put<Event>(`/dashboard/events/${id}`, dto)),
+    updateStatus: (id: string, status: EventStatus) =>
+        unwrap(api.put<Event>(`/dashboard/events/${id}/status`, { status })),
+    delete: (id: string) =>
+        unwrap(api.delete(`/dashboard/events/${id}`)),
+    getPreLiveStats: (id: string) =>
+        unwrap(api.get<PreLiveStatsResponse>(`/dashboard/events/${id}/pre-live-stats`)),
+};
+
+// ── Experiences ──
+export const experiencesApi = {
+    list: (eventId: string) =>
+        unwrap(api.get<Experience[]>(`/dashboard/events/${eventId}/experiences`)),
+    get: (id: string) =>
+        unwrap(api.get<Experience>(`/dashboard/experiences/${id}`)),
+    create: (eventId: string, dto: CreateExperienceDto) =>
+        unwrap(api.post<Experience>(`/dashboard/events/${eventId}/experiences`, dto)),
+    update: (id: string, dto: Partial<CreateExperienceDto>) =>
+        unwrap(api.put<Experience>(`/dashboard/experiences/${id}`, dto)),
+    delete: (id: string) =>
+        unwrap(api.delete(`/dashboard/experiences/${id}`)),
+    close: (id: string) =>
+        unwrap(api.post(`/dashboard/experiences/${id}/close`)),
+    getWinners: (id: string) =>
+        unwrap(api.get<WinnersListItem[]>(`/dashboard/experiences/${id}/winners`)),
+};
+
+// ── Auctions ──
+export const auctionsApi = {
+    list: (eventId: string) =>
+        unwrap(api.get<Auction[]>(`/dashboard/events/${eventId}/auctions`)),
+    get: (id: string) =>
+        unwrap(api.get<Auction>(`/dashboard/auctions/${id}`)),
+    create: (eventId: string, dto: CreateAuctionDto) =>
+        unwrap(api.post<Auction>(`/dashboard/events/${eventId}/auctions`, dto)),
+    update: (id: string, dto: UpdateAuctionDto) =>
+        unwrap(api.put<Auction>(`/dashboard/auctions/${id}`, dto)),
+    delete: (id: string) =>
+        unwrap(api.delete(`/dashboard/auctions/${id}`)),
+    activate: (id: string) =>
+        unwrap(api.post<Auction>(`/dashboard/auctions/${id}/activate`)),
+    pause: (id: string) =>
+        unwrap(api.post<Auction>(`/dashboard/auctions/${id}/pause`)),
+    resume: (id: string) =>
+        unwrap(api.post<Auction>(`/dashboard/auctions/${id}/resume`)),
+    end: (id: string) =>
+        unwrap(api.post<Auction>(`/dashboard/auctions/${id}/end`)),
+    getBids: (id: string) =>
+        unwrap(api.get<BidListItem[]>(`/dashboard/auctions/${id}/bids`)),
+};
+
+// ── Organization ──
+export const orgApi = {
+    get: () =>
+        unwrap(api.get<Organization>('/dashboard/organization')),
+    getMembers: () =>
+        unwrap(api.get<OrganizationMember[]>('/dashboard/organization/members')),
+    inviteMember: (dto: InviteMemberDto) =>
+        unwrap(api.post<OrganizationMember>('/dashboard/organization/members', dto)),
+    updateMember: (id: string, dto: UpdateMemberRoleDto) =>
+        unwrap(api.put(`/dashboard/organization/members/${id}`, dto)),
+    removeMember: (id: string) =>
+        unwrap(api.delete(`/dashboard/organization/members/${id}`)),
+};
+
+// ── Analytics ──
+// IMPORTANT: Verify these paths match the backend exactly.
+// experience breakdown = /experiences/analytics (NOT /analytics/experiences)
+// CSV export = /export/winners (NOT /winners/export)
+export const analyticsApi = {
+    getEventSummary: (eventId: string) =>
+        unwrap(api.get<EventSummaryResponse>(`/dashboard/events/${eventId}/analytics`)),
+    getExperienceBreakdown: (eventId: string) =>
+        unwrap(api.get<ExperienceBreakdownItem[]>(`/dashboard/events/${eventId}/experiences/analytics`)),
+    getLivePulse: (eventId: string) =>
+        unwrap(api.get<LivePulseResponse>(`/dashboard/events/${eventId}/live`)),
+    getWinnersList: (eventId: string, params?: WinnersListQuery) =>
+        unwrap(api.get<PaginatedResponse<WinnersListItem>>(`/dashboard/events/${eventId}/winners`, { params })),
+    exportCSV: (eventId: string) =>
+        api.get(`/dashboard/events/${eventId}/export/winners`, { responseType: 'blob' }).then(res => res.data as Blob),
+};
+
+// ── Redemptions (Staff) ──
+export const redemptionsApi = {
+    scan: (qrCode: string) =>
+        unwrap(api.post<ScanResultResponse>('/staff/redemptions/scan', { qrCode })),
+    confirm: (id: string, notes?: string) =>
+        unwrap(api.post(`/staff/redemptions/${id}/confirm`, { notes })),
+    getForEvent: (eventId: string, status?: string) =>
+        unwrap(api.get<ScanResultResponse[]>(`/staff/events/${eventId}/redemptions`, { params: { status } })),
+    getStats: (eventId: string) =>
+        unwrap(api.get<RedemptionStats>(`/staff/events/${eventId}/redemptions/stats`)),
+};
+
+// ── Notifications ──
+export const notificationsApi = {
+    sendWalletReminder: (eventId: string) =>
+        unwrap(api.post<NotificationSendResult>(`/dashboard/events/${eventId}/notify/wallet-reminder`)),
+    sendEventReminder: (eventId: string) =>
+        unwrap(api.post<NotificationSendResult>(`/dashboard/events/${eventId}/notify/event-reminder`)),
+    sendNextEvent: (eventId: string) =>
+        unwrap(api.post<NotificationSendResult>(`/dashboard/events/${eventId}/notify/next-event`)),
+};
