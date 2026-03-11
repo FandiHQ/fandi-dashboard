@@ -156,6 +156,13 @@ export default function PhoneMockupSection() {
     const labelScale2 = useTransform(rawIndex, (v) => featureVisibility(v, 2).opacity > 0.5 ? 1.15 : 1);
     const labelScales = [labelScale0, labelScale1, labelScale2];
 
+    // ─── Staged entrance ───
+    // Phase 1: Neon tabs fade in alone (0→4% of scroll)
+    const tabsEntrance = useTransform(scrollYProgress, [0, 0.04], [0, 1]);
+    // Phase 2: Phone + text slide up and fade in (4→8%)
+    const contentEntrance = useTransform(scrollYProgress, [0.04, 0.08], [0, 1]);
+    const contentY = useTransform(scrollYProgress, [0.04, 0.08], [30, 0]);
+
     return (
         <div ref={containerRef} style={{ height: '550vh' }} role="region" aria-label="Features showcase">
             {/* Sticky viewport */}
@@ -164,8 +171,11 @@ export default function PhoneMockupSection() {
                 {/* ─── Main content: phone + (neon tabs + text) ─── */}
                 <div className="flex flex-col md:flex-row items-center gap-8 md:gap-20 px-6 md:px-10 max-w-7xl mx-auto w-full">
 
-                    {/* Phone side */}
-                    <div className="relative flex-none w-[200px] md:w-[360px] lg:w-[400px] aspect-[9/19]">
+                    {/* Phone side — wrapped in entrance animation */}
+                    <motion.div
+                        style={{ opacity: contentEntrance, y: contentY }}
+                        className="relative flex-none w-[200px] md:w-[360px] lg:w-[400px] aspect-[9/19]"
+                    >
                         {/* Colored glow */}
                         {FEATURES.map((f, i) => (
                             <motion.div
@@ -198,13 +208,16 @@ export default function PhoneMockupSection() {
                                 />
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
 
                     {/* Text side: neon tabs on TOP of headings, then content */}
                     <div className="flex-1 min-w-0 flex flex-col gap-4 md:gap-6">
 
-                        {/* ─── Neon card tabs — right above the text ─── */}
-                        <div className="flex items-center gap-3 md:gap-6">
+                        {/* ─── Neon card tabs — Phase 1: appear first ─── */}
+                        <motion.div
+                            style={{ opacity: tabsEntrance }}
+                            className="flex items-center gap-3 md:gap-6"
+                        >
                             {FEATURES.map((f, i) => (
                                 <motion.div
                                     key={`tab-${f.key}`}
@@ -228,10 +241,13 @@ export default function PhoneMockupSection() {
                                     </span>
                                 </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
 
-                        {/* ─── Feature text — blur transition ─── */}
-                        <div className="relative h-[320px] md:h-[450px] lg:h-[500px]">
+                        {/* ─── Feature text — Phase 2: slides up after tabs ─── */}
+                        <motion.div
+                            style={{ opacity: contentEntrance, y: contentY }}
+                            className="relative h-[320px] md:h-[450px] lg:h-[500px]"
+                        >
                             {FEATURES.map((f, i) => {
                                 const TextRenderer = TEXT_RENDERERS[i];
                                 return (
@@ -244,7 +260,7 @@ export default function PhoneMockupSection() {
                                     </motion.div>
                                 );
                             })}
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </div>
