@@ -1,10 +1,12 @@
+// fandi-dashboard\src\components\landing\SignInModal.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import { X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { LoginForm } from '@/components/auth/login-form';
+import type { AuthMeResponse } from '@/types/api';
 
 interface Props {
     open: boolean;
@@ -12,17 +14,8 @@ interface Props {
 }
 
 export default function SignInModal({ open, onClose }: Props) {
-    const t = useTranslations('nav');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const emailRef = useRef<HTMLInputElement>(null);
-
-    // Focus trap: focus email on open
-    useEffect(() => {
-        if (open) {
-            setTimeout(() => emailRef.current?.focus(), 100);
-        }
-    }, [open]);
+    const router = useRouter();
+    const modalRef = useRef<HTMLDivElement>(null);
 
     // Close on Escape
     useEffect(() => {
@@ -32,11 +25,6 @@ export default function SignInModal({ open, onClose }: Props) {
         window.addEventListener('keydown', handleKey);
         return () => window.removeEventListener('keydown', handleKey);
     }, [open, onClose]);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onClose();
-    };
 
     return (
         <AnimatePresence>
@@ -57,6 +45,7 @@ export default function SignInModal({ open, onClose }: Props) {
 
                     {/* Modal Card */}
                     <motion.div
+                        ref={modalRef}
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
@@ -76,70 +65,17 @@ export default function SignInModal({ open, onClose }: Props) {
                             <X size={20} />
                         </button>
 
-                        {/* Logo */}
-                        <div className="flex justify-center mb-8">
-                            <Image
-                                src="/fandi-logo.png"
-                                alt="Fandi"
-                                width={160}
-                                height={52}
-                                className="h-12 w-auto"
-                            />
-                        </div>
-
-                        {/* Form */}
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div>
-                                <label htmlFor="signin-email" className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
-                                    Email
-                                </label>
-                                <input
-                                    id="signin-email"
-                                    ref={emailRef}
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white font-sora text-base
-                                        px-4 py-3 outline-none focus:border-[#2D00F7] focus:shadow-[0_0_10px_rgba(45,0,247,0.2)] transition-all"
-                                    placeholder="tucorreo@ejemplo.com"
-                                    required
-                                    autoComplete="email"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="signin-password" className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
-                                    Password
-                                </label>
-                                <input
-                                    id="signin-password"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white font-sora text-base
-                                        px-4 py-3 outline-none focus:border-[#2D00F7] focus:shadow-[0_0_10px_rgba(45,0,247,0.2)] transition-all"
-                                    placeholder="••••••••"
-                                    required
-                                    autoComplete="current-password"
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                className="w-full font-space-mono text-[13px] uppercase tracking-[2px]
-                                    bg-[#2D00F7] text-white py-4
-                                    hover:shadow-[0_0_25px_rgba(45,0,247,0.5)]
-                                    active:scale-95 transition-all cursor-pointer"
-                            >
-                                {t('login')}
-                            </button>
-                        </form>
-
-                        {/* Register link */}
-                        <p className="font-space-mono text-[13px] text-[#6B6B6B] text-center mt-6">
-                            ¿No tienes cuenta?{' '}
-                            <span className="text-[#2D00F7] hover:text-[#8B5CF6] cursor-pointer transition-colors">
-                                Regístrate
-                            </span>
-                        </p>
+                        {/* Login form with logo + role-based routing */}
+                        <LoginForm
+                            showLogo={true}
+                            onSuccess={(me: AuthMeResponse) => {
+                                onClose();
+                                const destination = me.organization.myRole === 'staff'
+                                    ? '/staff'
+                                    : '/dashboard';
+                                router.push(destination);
+                            }}
+                        />
                     </motion.div>
                 </motion.div>
             )}

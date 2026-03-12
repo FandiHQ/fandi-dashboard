@@ -21,7 +21,13 @@
     "email": "Correo electrónico",
     "password": "Contraseña",
     "invalidCredentials": "Credenciales inválidas",
-    "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo."
+    "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo.",
+    "noAccount": "¿No tienes cuenta? Contacta a tu organizador.",
+    "noDashboardAccess": "Esta cuenta no tiene acceso al dashboard.",
+    "invalidEmail": "Correo electrónico inválido",
+    "passwordRequired": "La contraseña es obligatoria",
+    "loggingIn": "Iniciando sesión...",
+    "networkError": "Error de conexión. Intenta de nuevo."
   },
   "dashboard": {
     "welcome": "Bienvenido, {name}",

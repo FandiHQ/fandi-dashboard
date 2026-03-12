@@ -1,5 +1,7 @@
+// fandi-dashboard\src\lib\api-hooks.ts
 import api from './api';
 import type {
+    AuthMeResponse,
     Event, CreateEventDto, UpdateEventDto, EventStatus,
     PreLiveStatsResponse,
     Experience, CreateExperienceDto,
@@ -14,6 +16,11 @@ import type {
 // ── Helper: extract .data from AxiosResponse ──
 const unwrap = <T>(promise: Promise<{ data: T }>): Promise<T> =>
     promise.then(res => res.data);
+
+// ── Auth ──
+export const authApi = {
+    me: () => unwrap(api.get<AuthMeResponse>('/dashboard/auth/me')),
+};
 
 // ── Events ──
 export const eventsApi = {
