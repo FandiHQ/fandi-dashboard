@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 
@@ -23,15 +24,26 @@ export default function StaffLayout({
     if (isLoading || !isAuthenticated || memberRole !== 'staff') {
         return (
             <div className="flex h-screen items-center justify-center bg-black">
-                <div className="w-8 h-8 border-2 border-[#2D00F7] border-t-transparent rounded-full animate-spin" />
+                <div className="h-8 w-8 animate-spin border-2 border-[#2D00F7] border-t-transparent rounded-full" />
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen flex-col">
-            <header className="flex h-14 items-center border-b border-border px-4">
-                <span className="text-lg font-bold">Fandi Staff</span>
+        <div className="flex min-h-screen flex-col bg-black">
+            <header className="flex h-14 items-center border-b border-[#1A1A1A] px-4">
+                <div className="flex items-center gap-3">
+                    <Image
+                        src="/fandi-logo.png"
+                        alt="Fandi"
+                        width={80}
+                        height={28}
+                        className="h-6 w-auto object-contain"
+                    />
+                    <span className="bg-[#22C55E20] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#22C55E]">
+                        Staff
+                    </span>
+                </div>
             </header>
             <main className="flex-1 p-4">{children}</main>
         </div>

@@ -28,7 +28,16 @@
     "passwordRequired": "La contraseña es obligatoria",
     "loggingIn": "Iniciando sesión...",
     "signingIn": "Iniciando sesión...",
-    "networkError": "Error de conexión. Intenta de nuevo."
+    "networkError": "Error de conexión. Intenta de nuevo.",
+    "logoutConfirm": "¿Cerrar sesión?",
+    "logoutWarning": "Perderás acceso al dashboard hasta que vuelvas a iniciar sesión.",
+    "cancel": "Cancelar"
+  },
+  "dashboardNav": {
+    "home": "Inicio",
+    "events": "Eventos",
+    "team": "Equipo",
+    "settings": "Configuración"
   },
   "dashboard": {
     "welcome": "Bienvenido, {name}",

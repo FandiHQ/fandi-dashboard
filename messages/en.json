@@ -28,7 +28,16 @@
         "passwordRequired": "Password is required",
         "loggingIn": "Logging in...",
         "signingIn": "Signing in...",
-        "networkError": "Connection error. Please try again."
+        "networkError": "Connection error. Please try again.",
+        "logoutConfirm": "Log out?",
+        "logoutWarning": "You'll lose access to the dashboard until you log in again.",
+        "cancel": "Cancel"
+    },
+    "dashboardNav": {
+        "home": "Home",
+        "events": "Events",
+        "team": "Team",
+        "settings": "Settings"
     },
     "dashboard": {
         "welcome": "Welcome, {name}",
