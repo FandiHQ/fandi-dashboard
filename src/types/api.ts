@@ -313,3 +313,75 @@ export interface NotificationSendResult {
     sent: number;
     skipped: number;
 }
+
+// ── WebSocket Messages ──
+
+export type WsConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected' | 'disabled';
+
+export interface WsMessage {
+    type: string;
+    [key: string]: unknown;
+}
+
+export interface WsEventPulse extends WsMessage {
+    type: 'event_pulse';
+    eventId: string;
+    totalRaised: number;
+    uniqueParticipants: number;
+    contributionsCount: number;
+    bidsCount: number;
+}
+
+export interface WsEscuadraUpdate extends WsMessage {
+    type: 'escuadra_update';
+    experienceId: string;
+    thresholds: {
+        escuadra1Min: number;
+        escuadra2Min: number;
+        escuadra3Min: number;
+        escuadra4Min: number;
+    };
+    userCount: number;
+}
+
+export interface WsAuctionUpdate extends WsMessage {
+    type: 'auction_update';
+    auctionId: string;
+    currentPrice: number;
+    currentBidderId: string | null;
+    bidCount: number;
+    endsAt: string;
+}
+
+export interface WsOutbid extends WsMessage {
+    type: 'outbid';
+    auctionId: string;
+    auctionName: string;
+    newPrice: number;
+    yourBid: number;
+}
+
+export interface WsExperienceClosed extends WsMessage {
+    type: 'experience_closed';
+    experienceId: string;
+    experienceName: string;
+}
+
+export interface WsWinnersAnnounced extends WsMessage {
+    type: 'winners_announced';
+    experienceId: string;
+    experienceName: string;
+    winnerCount: number;
+}
+
+export interface WsEventLive extends WsMessage {
+    type: 'event_live';
+    eventId: string;
+}
+
+export interface WsExperienceOpened extends WsMessage {
+    type: 'experience_opened';
+    experienceId: string;
+    experienceName: string;
+    eventId: string;
+}
