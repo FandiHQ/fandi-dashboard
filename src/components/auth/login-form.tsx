@@ -1,4 +1,3 @@
-// fandi-dashboard\src\components\auth\login-form.tsx
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -8,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import type { AuthMeResponse } from '@/types/api';
+import type { UserSyncResponse } from '@/types/api';
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -17,12 +16,13 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
-    onSuccess?: (user: AuthMeResponse) => void;
+    onSuccess?: (user: UserSyncResponse) => void;
     showLogo?: boolean;
 }
 
 export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
     const t = useTranslations('auth');
+    const tCommon = useTranslations('common');
     const { login } = useAuth();
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -34,14 +34,15 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
             const me = await login(data.email, data.password);
             onSuccess?.(me);
         } catch (err: unknown) {
+            // Security: show same message for wrong password AND fan accounts
             if (err instanceof Error && err.message === 'NO_DASHBOARD_ACCESS') {
-                toast.error(t('noDashboardAccess'));
+                toast.error(t('invalidCredentials'));
             } else if (
                 err instanceof Error &&
                 (err.message?.toLowerCase().includes('network') ||
                     err.message?.toLowerCase().includes('fetch'))
             ) {
-                toast.error(t('networkError'));
+                toast.error(tCommon('error'));
             } else {
                 toast.error(t('invalidCredentials'));
             }
@@ -115,7 +116,7 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
                         active:scale-95 transition-all cursor-pointer
                         disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {form.formState.isSubmitting ? t('loggingIn') : t('login')}
+                    {form.formState.isSubmitting ? t('signingIn') : t('login')}
                 </button>
             </div>
 

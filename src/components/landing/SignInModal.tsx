@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { LoginForm } from '@/components/auth/login-form';
-import type { AuthMeResponse } from '@/types/api';
+import type { UserSyncResponse } from '@/types/api';
 
 interface Props {
     open: boolean;
@@ -68,9 +68,9 @@ export default function SignInModal({ open, onClose }: Props) {
                         {/* Login form with logo + role-based routing */}
                         <LoginForm
                             showLogo={true}
-                            onSuccess={(me: AuthMeResponse) => {
+                            onSuccess={(me: UserSyncResponse) => {
                                 onClose();
-                                const destination = me.organization.myRole === 'staff'
+                                const destination = me.organization?.memberRole === 'staff'
                                     ? '/staff'
                                     : '/dashboard';
                                 router.push(destination);

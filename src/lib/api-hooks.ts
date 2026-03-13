@@ -1,7 +1,6 @@
-// fandi-dashboard\src\lib\api-hooks.ts
 import api from './api';
 import type {
-    AuthMeResponse,
+    UserSyncResponse,
     Event, CreateEventDto, UpdateEventDto, EventStatus,
     PreLiveStatsResponse,
     Experience, CreateExperienceDto,
@@ -19,7 +18,7 @@ const unwrap = <T>(promise: Promise<{ data: T }>): Promise<T> =>
 
 // ── Auth ──
 export const authApi = {
-    me: () => unwrap(api.get<AuthMeResponse>('/dashboard/auth/me')),
+    sync: () => unwrap(api.post<UserSyncResponse>('/users/sync', {})),
 };
 
 // ── Events ──

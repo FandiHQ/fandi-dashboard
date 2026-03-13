@@ -2,17 +2,22 @@
 export { ApiError } from '@/lib/api';
 
 // ── Auth ──
-export interface AuthMeResponse {
-    userId: string;
-    email: string;
-    displayName: string;
-    role: 'organizer' | 'staff';
+export interface UserSyncResponse {
+    id: string;
+    supabaseId: string;
+    role: 'fan' | 'organizer' | 'sponsor' | 'staff';
+    phone: string | null;
+    email: string | null;
+    displayName: string | null;
+    avatarUrl: string | null;
+    createdAt: string;
+    walletBalance: number;
     organization: {
         id: string;
         name: string;
         logoUrl: string | null;
-        myRole: 'owner' | 'admin' | 'viewer' | 'staff';
-    };
+        memberRole: string; // "owner" | "admin" | "viewer" | "staff"
+    } | null;
 }
 
 // ── Organization ──

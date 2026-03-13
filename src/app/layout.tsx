@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora, Space_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/providers";
 import "./globals.css";
 
@@ -66,7 +67,10 @@ export default async function RootLayout({
         className={`${sora.variable} ${spaceMono.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <Providers>{children}</Providers>
+          <Providers>
+              {children}
+              <Toaster richColors position="top-center" />
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

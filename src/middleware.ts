@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
 
     // Valid session → allow through with fresh cookies.
     // Role-based access (staff vs organizer) is handled by:
-    // - Client auth gate (checks myRole from /auth/me response)
+    // - Client auth gate (checks memberRole from /users/sync response)
     // - API JwtAuthGuard + RolesGuard (checks on every API call)
     // Middleware does NOT check roles — it only validates identity.
     return response;

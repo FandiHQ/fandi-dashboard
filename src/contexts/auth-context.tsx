@@ -1,25 +1,24 @@
-// fandi-dashboard\src\contexts\auth-context.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { authApi } from '@/lib/api-hooks';
-import type { AuthMeResponse } from '@/types/api';
+import type { UserSyncResponse } from '@/types/api';
 
 interface AuthContextType {
-    user: AuthMeResponse | null;
+    user: UserSyncResponse | null;
     isLoading: boolean;
     isAuthenticated: boolean;
-    organization: AuthMeResponse['organization'] | null;
-    myRole: 'owner' | 'admin' | 'viewer' | 'staff' | null;
-    login: (email: string, password: string) => Promise<AuthMeResponse>;
+    organization: UserSyncResponse['organization'];
+    memberRole: string | null;
+    login: (email: string, password: string) => Promise<UserSyncResponse>;
     logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<AuthMeResponse | null>(null);
+    const [user, setUser] = useState<UserSyncResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // On mount — check existing session
@@ -28,8 +27,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
-                    const me = await authApi.me();
-                    setUser(me);
+                    const syncResponse = await authApi.sync();
+                    // Only store if user has dashboard access
+                    if (syncResponse.role !== 'fan' && syncResponse.organization) {
+                        setUser(syncResponse);
+                    } else {
+                        // Fan or no org — sign out silently
+                        await supabase.auth.signOut();
+                    }
                 }
             } catch {
                 // Valid Supabase session but our API rejected it
@@ -56,24 +61,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return () => subscription.unsubscribe();
     }, []);
 
-    // login() returns Promise<AuthMeResponse> so callers can read role
+    // login() returns Promise<UserSyncResponse> so callers can read role
     // for routing decisions without stale closures.
-    const login = useCallback(async (email: string, password: string): Promise<AuthMeResponse> => {
+    const login = useCallback(async (email: string, password: string): Promise<UserSyncResponse> => {
         const { error } = await supabase.auth.signInWithPassword({
             email, password,
         });
         if (error) throw error;
 
-        try {
-            const me = await authApi.me();
-            setUser(me);
-            return me;
-        } catch {
-            // Supabase auth succeeded but our API rejected.
-            // Example: a fan trying to log in to the dashboard.
+        const syncResponse = await authApi.sync();
+
+        // Check dashboard access: fans and users without an org cannot access
+        if (syncResponse.role === 'fan' || !syncResponse.organization) {
             await supabase.auth.signOut();
             throw new Error('NO_DASHBOARD_ACCESS');
         }
+
+        setUser(syncResponse);
+        return syncResponse;
     }, []);
 
     const logout = useCallback(async () => {
@@ -87,12 +92,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const isAuthenticated = user !== null;
     const organization = user?.organization ?? null;
-    const myRole = user?.organization?.myRole ?? null;
+    const memberRole = user?.organization?.memberRole ?? null;
 
     return (
         <AuthContext.Provider value={{
             user, isLoading, isAuthenticated,
-            organization, myRole, login, logout
+            organization, memberRole, login, logout
         }}>
             {children}
         </AuthContext.Provider>

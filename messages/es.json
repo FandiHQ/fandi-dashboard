@@ -27,6 +27,7 @@
     "invalidEmail": "Correo electrónico inválido",
     "passwordRequired": "La contraseña es obligatoria",
     "loggingIn": "Iniciando sesión...",
+    "signingIn": "Iniciando sesión...",
     "networkError": "Error de conexión. Intenta de nuevo."
   },
   "dashboard": {

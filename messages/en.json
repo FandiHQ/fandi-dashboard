@@ -27,6 +27,7 @@
         "invalidEmail": "Invalid email address",
         "passwordRequired": "Password is required",
         "loggingIn": "Logging in...",
+        "signingIn": "Signing in...",
         "networkError": "Connection error. Please try again."
     },
     "dashboard": {

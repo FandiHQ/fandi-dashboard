@@ -1,4 +1,3 @@
-// fandi-dashboard\src\app\login\page.tsx
 'use client';
 
 import { Suspense, useEffect } from 'react';
@@ -7,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { LoginForm } from '@/components/auth/login-form';
 import { toast } from 'sonner';
-import type { AuthMeResponse } from '@/types/api';
+import type { UserSyncResponse } from '@/types/api';
 
 export default function LoginPage() {
     return (
@@ -22,7 +21,7 @@ export default function LoginPage() {
 }
 
 function LoginContent() {
-    const { isAuthenticated, isLoading, myRole } = useAuth();
+    const { isAuthenticated, isLoading, memberRole } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const t = useTranslations('auth');
@@ -30,22 +29,24 @@ function LoginContent() {
     const expired = searchParams.get('expired') === 'true';
     const next = searchParams.get('next');
 
+    // Show expired toast
     useEffect(() => {
         if (expired) {
             toast.error(t('sessionExpired'));
         }
     }, [expired, t]);
 
-    // Already authenticated → redirect by role
-    if (!isLoading && isAuthenticated) {
-        const destination = myRole === 'staff'
-            ? '/staff'
-            : (next || '/dashboard');
-        router.replace(destination);
-        return null;
-    }
+    // Already authenticated → redirect by role (in useEffect to avoid setState during render)
+    useEffect(() => {
+        if (!isLoading && isAuthenticated) {
+            const destination = memberRole === 'staff'
+                ? '/staff'
+                : (next || '/dashboard');
+            router.replace(destination);
+        }
+    }, [isLoading, isAuthenticated, memberRole, next, router]);
 
-    if (isLoading) {
+    if (isLoading || isAuthenticated) {
         return (
             <div className="flex h-screen items-center justify-center bg-black">
                 <div className="w-8 h-8 border-2 border-[#2D00F7] border-t-transparent rounded-full animate-spin" />
@@ -58,8 +59,8 @@ function LoginContent() {
             <div className="w-full max-w-sm px-4">
                 <LoginForm
                     showLogo={true}
-                    onSuccess={(me: AuthMeResponse) => {
-                        const destination = me.organization.myRole === 'staff'
+                    onSuccess={(me: UserSyncResponse) => {
+                        const destination = me.organization?.memberRole === 'staff'
                             ? '/staff'
                             : (next || '/dashboard');
                         router.push(destination);
