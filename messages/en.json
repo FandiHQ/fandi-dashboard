@@ -44,9 +44,15 @@
         "totalEvents": "Total Events",
         "totalRaised": "Total Raised",
         "activeFans": "Active Fans",
+        "activeEvents": "Active Events",
+        "publishedEvents": "Published Events",
+        "recentEvents": "Recent Events",
         "createEvent": "Create Event",
         "inviteMember": "Invite Member",
-        "noEvents": "No events yet. Create your first one!"
+        "noEvents": "No events yet. Create your first one!",
+        "viewEvent": "View event",
+        "errorLoading": "Could not load events",
+        "retry": "Retry"
     },
     "events": {
         "title": "Events",
