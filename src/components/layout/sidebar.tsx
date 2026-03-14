@@ -32,6 +32,7 @@ export function Sidebar() {
                         alt="Fandi"
                         width={48}
                         height={48}
+                        unoptimized
                         className="h-10 w-auto object-contain"
                     />
                 </Link>

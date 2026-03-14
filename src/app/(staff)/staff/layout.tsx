@@ -38,6 +38,7 @@ export default function StaffLayout({
                         alt="Fandi"
                         width={80}
                         height={28}
+                        unoptimized
                         className="h-6 w-auto object-contain"
                     />
                     <span className="bg-[#22C55E20] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#22C55E]">

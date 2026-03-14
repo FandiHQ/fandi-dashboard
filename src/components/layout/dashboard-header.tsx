@@ -72,6 +72,7 @@ export function DashboardHeader() {
                                     alt="Fandi"
                                     width={120}
                                     height={40}
+                                    unoptimized
                                     className="h-8 w-auto object-contain"
                                 />
 
