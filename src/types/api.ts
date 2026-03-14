@@ -37,13 +37,12 @@ export interface Event {
     id: string;
     organizationId: string;
     name: string;
-    eventType: EventType;
-    venue: string;
-    city: string;
+    eventType: EventType | null;
+    venue: string | null;
     description: string | null;
-    scheduledStart: string;
+    eventDate: string;
     status: EventStatus;
-    imageUrl: string | null;
+    coverImageUrl: string | null;
     publishedAt: string | null;
     liveAt: string | null;
     endedAt: string | null;
@@ -53,15 +52,22 @@ export interface Event {
 
 export interface CreateEventDto {
     name: string;
-    eventType: EventType;
-    venue: string;
-    city: string;
+    eventType?: EventType;
+    venue?: string;
     description?: string;
-    scheduledStart: string;
-    imageUrl?: string;
+    eventDate: string;
+    coverImageUrl?: string;
 }
 
 export interface UpdateEventDto extends Partial<CreateEventDto> {}
+
+export interface PaginatedEventsResponse {
+    items: Event[];
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+}
 
 export interface PreLiveStatsResponse {
     experienceCount: number;

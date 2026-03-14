@@ -86,7 +86,7 @@ export default function DashboardHomePage() {
         setError(null);
         try {
             const data = await eventsApi.list();
-            setEvents(data);
+            setEvents(data.items);
         } catch {
             setError(t('errorLoading'));
         } finally {
@@ -134,7 +134,7 @@ export default function DashboardHomePage() {
             {/* ── Welcome Header ── */}
             <div className="flex flex-col gap-2">
                 <h1 className="font-sora text-[32px] font-bold leading-tight text-white">
-                    {t('welcome', { name: organization?.name || user?.displayName || '' })}
+                    {t('welcome', { name: user?.displayName || organization?.name || '' })}
                 </h1>
                 <p className="font-space-mono text-xs uppercase tracking-[2px] text-[#737373]">
                     {todayStr}
@@ -258,10 +258,10 @@ export default function DashboardHomePage() {
                                                 {event.name}
                                             </TableCell>
                                             <TableCell className="hidden font-sora text-sm text-[#A0A0A0] md:table-cell">
-                                                {event.venue}{event.city ? `, ${event.city}` : ''}
+                                                {event.venue || '—'}
                                             </TableCell>
                                             <TableCell className="font-space-mono text-xs text-[#737373]">
-                                                {formatDate(event.scheduledStart)}
+                                                {formatDate(event.eventDate)}
                                             </TableCell>
                                             <TableCell>
                                                 <ChevronRight size={16} className="text-[#4A4A4A]" />

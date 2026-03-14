@@ -2,6 +2,7 @@ import api from './api';
 import type {
     UserSyncResponse,
     Event, CreateEventDto, UpdateEventDto, EventStatus,
+    PaginatedEventsResponse,
     PreLiveStatsResponse,
     Experience, CreateExperienceDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
@@ -23,8 +24,8 @@ export const authApi = {
 
 // ── Events ──
 export const eventsApi = {
-    list: () =>
-        unwrap(api.get<Event[]>('/dashboard/events')),
+    list: (params?: { status?: string; eventType?: string; search?: string; page?: number; limit?: number }) =>
+        unwrap(api.get<PaginatedEventsResponse>('/dashboard/events', { params })),
     get: (id: string) =>
         unwrap(api.get<Event>(`/dashboard/events/${id}`)),
     create: (dto: CreateEventDto) =>
