@@ -64,6 +64,7 @@
         "date": "Date",
         "venue": "Venue",
         "city": "City",
+        "statusLabel": "Status",
         "description": "Description",
         "imageUrl": "Image URL",
         "typeMatch": "Match",

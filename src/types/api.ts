@@ -39,6 +39,7 @@ export interface Event {
     name: string;
     eventType: EventType | null;
     venue: string | null;
+    city: string | null;
     description: string | null;
     eventDate: string;
     status: EventStatus;
@@ -54,6 +55,7 @@ export interface CreateEventDto {
     name: string;
     eventType?: EventType;
     venue?: string;
+    city?: string;
     description?: string;
     eventDate: string;
     coverImageUrl?: string;

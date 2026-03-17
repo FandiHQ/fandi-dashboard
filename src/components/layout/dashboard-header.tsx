@@ -76,12 +76,26 @@ export function DashboardHeader() {
                                     className="h-8 w-auto object-contain"
                                 />
 
-                                {/* Org + role */}
+                                {/* Org name */}
                                 <div>
                                     <p className="font-sora text-base font-semibold text-white">
                                         {organization?.name}
                                     </p>
-                                    {memberRole && <RoleBadge role={memberRole} />}
+                                </div>
+
+                                {/* User + role */}
+                                <div className="flex items-center gap-2">
+                                    <div className="flex h-8 w-8 items-center justify-center bg-[#121212]">
+                                        <span className="font-sora text-sm font-bold text-white">
+                                            {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="font-space-mono text-xs text-[#A0A0A0]">
+                                            {user?.displayName}
+                                        </span>
+                                        {memberRole && <RoleBadge role={memberRole} />}
+                                    </div>
                                 </div>
 
                                 {/* Nav items with text */}
@@ -145,20 +159,22 @@ export function DashboardHeader() {
                     </SheetContent>
                 </Sheet>
 
-                {/* Org name + role badge — always visible */}
+                {/* Org name — always visible */}
                 <div className="flex flex-col">
                     <span className="font-sora text-sm font-semibold text-white">
                         {organization?.name || 'Fandi'}
                     </span>
-                    {memberRole && <RoleBadge role={memberRole} />}
                 </div>
             </div>
 
-            {/* Right: user info (desktop only) */}
+            {/* Right: user info + role badge (desktop only) */}
             <div className="ml-auto hidden items-center gap-3 lg:flex">
-                <span className="font-space-mono text-xs text-[#A0A0A0]">
-                    {user?.displayName}
-                </span>
+                <div className="flex flex-col items-end">
+                    <span className="font-space-mono text-xs text-[#A0A0A0]">
+                        {user?.displayName}
+                    </span>
+                    {memberRole && <RoleBadge role={memberRole} />}
+                </div>
                 <div className="flex h-9 w-9 items-center justify-center bg-[#121212]">
                     <span className="font-sora text-sm font-bold text-white">
                         {user?.displayName?.charAt(0)?.toUpperCase() || '?'}

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Calendar, Radio, Eye, Plus, UserPlus, AlertCircle, ChevronRight } from 'lucide-react';
+import { Calendar, Radio, Eye, UserPlus, AlertCircle, ChevronRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
@@ -25,7 +25,8 @@ function StatCard({ icon, label, value, accent, pulse }: {
 }) {
     const Icon = icon;
     return (
-        <div className="flex flex-col gap-3 rounded-none border border-[#1E1E1E] bg-[#141414] p-6">
+        <div className="flex flex-col gap-3 rounded-none border border-[#1E1E1E] bg-[#141414] p-6
+            transition-all duration-200 hover:border-[#2D00F760] hover:shadow-[0_0_30px_rgba(45,0,247,0.25)]">
             <div className="flex items-center justify-between">
                 <Icon size={20} className={accent ? 'text-[#2D00F7]' : 'text-[#737373]'} />
                 {pulse && (
@@ -35,10 +36,10 @@ function StatCard({ icon, label, value, accent, pulse }: {
                     </span>
                 )}
             </div>
-            <span className="font-sora text-[32px] font-semibold leading-none text-[#F5F5F5]">
+            <span className="font-sora text-[48px] font-semibold leading-none text-[#F5F5F5]">
                 {value}
             </span>
-            <span className="font-space-mono text-xs uppercase tracking-[2px] text-[#737373]">
+            <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
                 {label}
             </span>
         </div>
@@ -133,10 +134,10 @@ export default function DashboardHomePage() {
         <div className="flex flex-col gap-12">
             {/* ── Welcome Header ── */}
             <div className="flex flex-col gap-2">
-                <h1 className="font-sora text-[32px] font-bold leading-tight text-white">
+                <h1 className="font-sora text-[40px] font-bold leading-tight text-white">
                     {t('welcome', { name: user?.displayName || organization?.name || '' })}
                 </h1>
-                <p className="font-space-mono text-xs uppercase tracking-[2px] text-[#737373]">
+                <p className="font-space-mono text-sm uppercase tracking-[2px] text-[#737373]">
                     {todayStr}
                 </p>
             </div>
@@ -182,16 +183,16 @@ export default function DashboardHomePage() {
 
             {/* ── Recent Events ── */}
             {!error && (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 overflow-visible">
                     {/* Section header */}
-                    <div className="flex items-center justify-between">
-                        <span className="font-space-mono text-xs uppercase tracking-[2px] text-[#737373]">
+                    <div className="flex items-center justify-between overflow-visible py-1">
+                        <span className="font-space-mono text-[16px] uppercase tracking-[2px] text-[#737373]">
                             {t('recentEvents')}
                         </span>
                         {isWriteRole && (
                             <button
                                 onClick={() => router.push('/dashboard/events/new')}
-                                className="cursor-pointer rounded-none bg-[#2D00F7] px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-colors duration-150 hover:bg-[#2400C5]"
+                                className="cursor-pointer rounded-none bg-[#2D00F7] px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)]"
                             >
                                 {t('createEvent')}
                             </button>
@@ -216,10 +217,10 @@ export default function DashboardHomePage() {
                         /* Empty state */
                         <div className="flex flex-col items-center gap-4 rounded-none border border-[#1E1E1E] bg-[#141414] px-8 py-16">
                             <Calendar size={48} className="text-[#2A2A2A]" />
-                            <p className="font-sora text-base text-[#737373]">{t('noEvents')}</p>
+                            <p className="font-sora text-[18px] text-[#737373]">{t('noEvents')}</p>
                             <button
                                 onClick={() => router.push('/dashboard/events/new')}
-                                className="cursor-pointer rounded-none bg-[#2D00F7] px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-colors duration-150 hover:bg-[#2400C5]"
+                                className="cursor-pointer rounded-none bg-[#2D00F7] px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)]"
                             >
                                 {t('createEvent')}
                             </button>
@@ -229,16 +230,16 @@ export default function DashboardHomePage() {
                             <Table>
                                 <TableHeader>
                                     <TableRow className="border-b border-[#1E1E1E] bg-[#141414] hover:bg-[#141414]">
-                                        <TableHead className="font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
-                                            {tEvents('status.draft').split(' ')[0] ? 'STATUS' : 'STATUS'}
+                                        <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                                            {tEvents('statusLabel')}
                                         </TableHead>
-                                        <TableHead className="font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
+                                        <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
                                             {tEvents('name').toUpperCase()}
                                         </TableHead>
-                                        <TableHead className="hidden font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373] md:table-cell">
+                                        <TableHead className="hidden font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373] md:table-cell">
                                             {tEvents('venue').toUpperCase()}
                                         </TableHead>
-                                        <TableHead className="font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
+                                        <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
                                             {tEvents('date').toUpperCase()}
                                         </TableHead>
                                         <TableHead className="w-10" />
@@ -249,18 +250,18 @@ export default function DashboardHomePage() {
                                         <TableRow
                                             key={event.id}
                                             onClick={() => router.push(`/dashboard/events/${event.id}`)}
-                                            className="cursor-pointer border-b border-[#1E1E1E] transition-colors duration-150 hover:bg-[#141414]"
+                                            className="cursor-pointer border-b border-l-2 border-b-[#1E1E1E] border-l-transparent transition-all duration-150 hover:border-l-[#2D00F7] hover:bg-[#141414]"
                                         >
                                             <TableCell>
                                                 <StatusBadge status={event.status} />
                                             </TableCell>
-                                            <TableCell className="font-sora text-sm font-semibold text-white">
+                                            <TableCell className="font-sora text-[15px] font-semibold text-white">
                                                 {event.name}
                                             </TableCell>
-                                            <TableCell className="hidden font-sora text-sm text-[#A0A0A0] md:table-cell">
+                                            <TableCell className="hidden font-sora text-[15px] text-[#A0A0A0] md:table-cell">
                                                 {event.venue || '—'}
                                             </TableCell>
-                                            <TableCell className="font-space-mono text-xs text-[#737373]">
+                                            <TableCell className="font-space-mono text-[13px] text-[#737373]">
                                                 {formatDate(event.eventDate)}
                                             </TableCell>
                                             <TableCell>
@@ -279,18 +280,11 @@ export default function DashboardHomePage() {
             {!loading && !error && isWriteRole && (
                 <div className="grid gap-4 sm:grid-cols-2">
                     <button
-                        onClick={() => router.push('/dashboard/events/new')}
-                        className="group flex cursor-pointer items-center gap-3 rounded-none border border-dashed border-[#1E1E1E] bg-[#0A0A0A] p-5 transition-colors duration-150 hover:border-[#2D00F7] hover:bg-[#141414]"
-                    >
-                        <Plus size={20} className="text-[#2D00F7]" />
-                        <span className="font-sora text-sm text-[#A0A0A0]">{t('createEvent')}</span>
-                    </button>
-                    <button
                         onClick={() => router.push('/dashboard/team')}
                         className="group flex cursor-pointer items-center gap-3 rounded-none border border-dashed border-[#1E1E1E] bg-[#0A0A0A] p-5 transition-colors duration-150 hover:border-[#2D00F7] hover:bg-[#141414]"
                     >
                         <UserPlus size={20} className="text-[#2D00F7]" />
-                        <span className="font-sora text-sm text-[#A0A0A0]">{t('inviteMember')}</span>
+                        <span className="font-sora text-[15px] text-[#A0A0A0]">{t('inviteMember')}</span>
                     </button>
                 </div>
             )}
