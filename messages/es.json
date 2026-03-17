@@ -67,14 +67,32 @@
     "statusLabel": "Estado",
     "description": "Descripción",
     "imageUrl": "URL de imagen",
-    "typeMatch": "Partido",
+    "eventType": "Tipo de evento",
+    "typeFootball": "Fútbol",
     "typeConcert": "Concierto",
+    "typeOther": "Otro",
+    "coverImage": "Imagen de portada",
+    "creating": "Creando...",
+    "backToEvents": "Eventos",
+    "allStatuses": "Todos",
     "empty": "No hay eventos. ¡Crea el primero!",
     "status": {
       "draft": "Borrador",
       "published": "Publicado",
       "live": "En Vivo",
       "ended": "Finalizado"
+    },
+    "tabs": {
+      "overview": "Resumen",
+      "experiences": "Oportunidades",
+      "auctions": "Subastas",
+      "badges": "Insignias",
+      "winners": "Ganadores"
+    },
+    "validation": {
+      "required": "Este campo es requerido",
+      "maxLength": "Máximo {max} caracteres",
+      "invalidUrl": "URL no válida"
     },
     "publish": "Publicar Evento",
     "goLive": "Ir en Vivo",

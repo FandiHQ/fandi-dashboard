@@ -31,7 +31,7 @@ export interface Organization {
 
 // ── Events ──
 export type EventStatus = 'draft' | 'published' | 'live' | 'ended';
-export type EventType = 'match' | 'concert';
+export type EventType = 'football' | 'concert' | 'other';
 
 export interface Event {
     id: string;

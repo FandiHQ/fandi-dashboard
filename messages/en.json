@@ -67,14 +67,32 @@
         "statusLabel": "Status",
         "description": "Description",
         "imageUrl": "Image URL",
-        "typeMatch": "Match",
+        "eventType": "Event type",
+        "typeFootball": "Football",
         "typeConcert": "Concert",
+        "typeOther": "Other",
+        "coverImage": "Cover image",
+        "creating": "Creating...",
+        "backToEvents": "Events",
+        "allStatuses": "All",
         "empty": "No events yet. Create your first one!",
         "status": {
             "draft": "Draft",
             "published": "Published",
             "live": "Live",
             "ended": "Ended"
+        },
+        "tabs": {
+            "overview": "Overview",
+            "experiences": "Experiences",
+            "auctions": "Auctions",
+            "badges": "Badges",
+            "winners": "Winners"
+        },
+        "validation": {
+            "required": "This field is required",
+            "maxLength": "Maximum {max} characters",
+            "invalidUrl": "Invalid URL"
         },
         "publish": "Publish Event",
         "goLive": "Go Live",
