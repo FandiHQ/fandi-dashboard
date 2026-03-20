@@ -12,9 +12,24 @@ interface ImageUploadProps {
     folder: string;
     disabled?: boolean;
     className?: string;
+    /** 'landscape' = 16:9, 'portrait' = 3:4, 'square' = 1:1.  Default: landscape */
+    aspect?: 'landscape' | 'portrait' | 'square';
 }
 
-export function ImageUpload({ value, onChange, folder, disabled, className }: ImageUploadProps) {
+const aspectClasses = {
+    landscape: 'aspect-[16/9]',
+    portrait: 'aspect-[3/4]',
+    square: 'aspect-square',
+};
+
+export function ImageUpload({
+    value,
+    onChange,
+    folder,
+    disabled,
+    className,
+    aspect = 'landscape',
+}: ImageUploadProps) {
     const [uploading, setUploading] = useState(false);
     const [dragOver, setDragOver] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -57,20 +72,19 @@ export function ImageUpload({ value, onChange, folder, disabled, className }: Im
 
     if (value) {
         return (
-            <div className={`relative overflow-hidden rounded-none border border-[#1E1E1E] ${className || ''}`}>
+            <div className={`relative overflow-hidden rounded-none border border-[#1E1E1E] ${aspectClasses[aspect]} ${className || ''}`}>
                 <Image
                     src={value}
                     alt="Preview"
-                    width={600}
-                    height={300}
+                    fill
                     unoptimized
-                    className="h-48 w-full object-cover"
+                    className="object-cover"
                 />
                 <button
                     type="button"
                     onClick={() => onChange(null)}
                     disabled={disabled}
-                    className="absolute right-2 top-2 cursor-pointer rounded-none bg-black/60 p-1 text-white transition-colors duration-150 hover:bg-black/80"
+                    className="absolute right-2 top-2 cursor-pointer rounded-none bg-black/60 p-1.5 text-white transition-colors duration-150 hover:bg-black/80"
                 >
                     <X size={16} />
                 </button>
@@ -84,19 +98,22 @@ export function ImageUpload({ value, onChange, folder, disabled, className }: Im
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => !disabled && !uploading && inputRef.current?.click()}
-            className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-none border border-dashed p-8 transition-colors duration-150 ${
+            className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-none border border-dashed transition-colors duration-150 ${aspectClasses[aspect]} ${
                 dragOver
                     ? 'border-[#2D00F7] bg-[#141414]'
                     : 'border-[#1E1E1E] bg-[#0A0A0A] hover:border-[#2D00F7] hover:bg-[#141414]'
             } ${disabled ? 'pointer-events-none opacity-50' : ''} ${className || ''}`}
         >
             {uploading ? (
-                <Loader2 size={32} className="animate-spin text-[#2D00F7]" />
+                <Loader2 size={40} className="animate-spin text-[#2D00F7]" />
             ) : (
-                <Upload size={32} className="text-[#4A4A4A]" />
+                <Upload size={40} className="text-[#4A4A4A]" />
             )}
             <span className="font-space-mono text-xs uppercase tracking-[1px] text-[#737373]">
                 {uploading ? 'Subiendo...' : 'Arrastra o haz clic'}
+            </span>
+            <span className="font-space-mono text-[10px] text-[#4A4A4A]">
+                JPG, PNG, WebP — máx. 5MB
             </span>
             <input
                 ref={inputRef}

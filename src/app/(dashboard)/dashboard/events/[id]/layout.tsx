@@ -99,7 +99,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 </button>
                 <div className="flex flex-col items-center justify-center gap-4 rounded-none border border-[#1E1E1E] bg-[#141414] p-8">
                     <AlertCircle size={32} className="text-[#FF3366]" />
-                    <p className="font-sora text-sm text-[#A0A0A0]">
+                    <p className="font-sora text-base text-[#A0A0A0]">
                         {(error as Error)?.message || 'Event not found'}
                     </p>
                 </div>
@@ -121,7 +121,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             {/* ── Header ── */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex flex-col gap-2">
-                    <h1 className="font-sora text-[40px] font-bold leading-none text-white">
+                    <h1 className="font-sora text-[48px] font-bold leading-none tracking-[-1px] text-white">
                         {event.name}
                     </h1>
                     <StatusBadge status={event.status} />
@@ -135,7 +135,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                 <AlertDialogTrigger asChild>
                                     <button
                                         disabled={isUpdatingStatus}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-6 py-3 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)] disabled:opacity-50"
+                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
                                     >
                                         {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                         {t('publish')}
@@ -143,18 +143,18 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                 </AlertDialogTrigger>
                                 <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle className="font-sora text-white">{t('publish')}</AlertDialogTitle>
-                                        <AlertDialogDescription className="font-space-mono text-[#A0A0A0]">
+                                        <AlertDialogTitle className="font-sora text-xl text-white">{t('publish')}</AlertDialogTitle>
+                                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
                                             {t('confirmPublish')}
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
                                             Cancelar
                                         </AlertDialogCancel>
                                         <AlertDialogAction
                                             onClick={() => updateStatus('published')}
-                                            className="rounded-none bg-[#2D00F7] font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#2400C5]"
+                                            className="rounded-none bg-[#2D00F7] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#2400C5]"
                                         >
                                             {t('publish')}
                                         </AlertDialogAction>
@@ -172,7 +172,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                 <AlertDialogTrigger asChild>
                                     <button
                                         disabled={isUpdatingStatus}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-6 py-3 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] disabled:opacity-50"
+                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] hover:shadow-[0_0_30px_rgba(255,51,102,0.4)] disabled:opacity-50"
                                     >
                                         {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                         {t('endEvent')}
@@ -180,18 +180,18 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                 </AlertDialogTrigger>
                                 <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle className="font-sora text-white">{t('endEvent')}</AlertDialogTitle>
-                                        <AlertDialogDescription className="font-space-mono text-[#A0A0A0]">
+                                        <AlertDialogTitle className="font-sora text-xl text-white">{t('endEvent')}</AlertDialogTitle>
+                                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
                                             {t('confirmEnd')}
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
                                             Cancelar
                                         </AlertDialogCancel>
                                         <AlertDialogAction
                                             onClick={() => updateStatus('ended')}
-                                            className="rounded-none bg-[#FF3366] font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
+                                            className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
                                         >
                                             {t('endEvent')}
                                         </AlertDialogAction>
@@ -210,7 +210,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                         <TabsTrigger
                             key={tab.key}
                             value={tab.key}
-                            className="cursor-pointer rounded-none border-b-2 border-transparent px-4 py-3 font-space-mono text-xs uppercase tracking-[1px] text-[#737373] hover:text-[#A0A0A0] data-[state=active]:border-[#2D00F7] data-[state=active]:bg-transparent data-[state=active]:text-white"
+                            className="cursor-pointer rounded-none border-b-2 border-transparent px-5 py-3 font-space-mono text-sm uppercase tracking-[1px] text-[#737373] hover:text-[#A0A0A0] data-[state=active]:border-[#2D00F7] data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(45,0,247,0.3)]"
                         >
                             {t(tab.label)}
                         </TabsTrigger>
@@ -260,7 +260,7 @@ function GoLiveButton({
                 <button
                     onClick={handleOpen}
                     disabled={isUpdatingStatus}
-                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-6 py-3 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)] disabled:opacity-50"
+                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
                 >
                     {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                     {t('goLive')}
@@ -268,7 +268,7 @@ function GoLiveButton({
             </DialogTrigger>
             <DialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
                 <DialogHeader>
-                    <DialogTitle className="font-sora text-white">
+                    <DialogTitle className="font-sora text-xl text-white">
                         {t('preLiveChecklist')}
                     </DialogTitle>
                 </DialogHeader>
@@ -291,7 +291,7 @@ function GoLiveButton({
                             <button
                                 onClick={() => updateStatus('live')}
                                 disabled={!allPassed || isUpdatingStatus}
-                                className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-6 py-3 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                 {t('goLive')}
@@ -312,7 +312,7 @@ function ChecklistItem({ label, passed }: { label: string; passed: boolean }) {
             ) : (
                 <XIcon size={16} className="text-[#FF3366]" />
             )}
-            <span className={`font-space-mono text-xs ${passed ? 'text-white' : 'text-[#737373]'}`}>
+            <span className={`font-space-mono text-sm ${passed ? 'text-white' : 'text-[#737373]'}`}>
                 {label}
             </span>
         </div>
