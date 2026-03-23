@@ -82,7 +82,7 @@ export default function EventOverviewPage() {
             <div className="flex flex-col gap-6">
                 {/* Status */}
                 <div className="flex flex-col gap-2">
-                    <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                    <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#737373]">
                         {t('statusLabel')}
                     </span>
                     <StatusBadge status={event.status} />
@@ -91,12 +91,12 @@ export default function EventOverviewPage() {
                 {/* Event Type */}
                 {event.eventType && (
                     <div className="flex flex-col gap-2">
-                        <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                        <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#737373]">
                             {t('eventType')}
                         </span>
                         <div className="flex items-center gap-2">
                             <Tag size={18} className="text-[#2D00F7]" />
-                            <span className="font-sora text-lg text-white">
+                            <span className="font-sora text-xl text-white">
                                 {eventTypeLabels[event.eventType] || event.eventType}
                             </span>
                         </div>
@@ -105,12 +105,12 @@ export default function EventOverviewPage() {
 
                 {/* Date */}
                 <div className="flex flex-col gap-2">
-                    <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                    <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#737373]">
                         {t('date')}
                     </span>
                     <div className="flex items-center gap-2">
                         <Clock size={18} className="text-[#2D00F7]" />
-                        <span className="font-sora text-lg capitalize text-white">
+                        <span className="font-sora text-xl capitalize text-white">
                             {formatDate(event.eventDate)}
                         </span>
                     </div>
@@ -119,12 +119,12 @@ export default function EventOverviewPage() {
                 {/* Venue */}
                 {event.venue && (
                     <div className="flex flex-col gap-2">
-                        <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                        <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#737373]">
                             {t('venue')}
                         </span>
                         <div className="flex items-center gap-2">
                             <MapPin size={18} className="text-[#2D00F7]" />
-                            <span className="font-sora text-lg text-white">
+                            <span className="font-sora text-xl text-white">
                                 {event.venue}
                             </span>
                         </div>
@@ -134,12 +134,12 @@ export default function EventOverviewPage() {
                 {/* Description */}
                 {event.description && (
                     <div className="flex flex-col gap-2">
-                        <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                        <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#737373]">
                             {t('description')}
                         </span>
                         <div className="flex items-start gap-2">
                             <FileText size={18} className="mt-0.5 shrink-0 text-[#2D00F7]" />
-                            <p className="font-sora text-base leading-relaxed text-[#A0A0A0]">
+                            <p className="font-sora text-lg leading-relaxed text-[#A0A0A0]">
                                 {event.description}
                             </p>
                         </div>
@@ -148,7 +148,7 @@ export default function EventOverviewPage() {
 
                 {/* Created at */}
                 <div className="mt-auto border-t border-[#1E1E1E] pt-4">
-                    <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#4A4A4A]">
+                    <span className="font-space-mono text-[14px] uppercase tracking-[2px] text-[#4A4A4A]">
                         Creado: {new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(event.createdAt))}
                     </span>
                 </div>

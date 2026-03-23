@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v3';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,33 +12,42 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
-import type { CreateEventDto } from '@/types/api';
+import type { UpdateEventDto } from '@/types/api';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
     Select, SelectContent, SelectItem,
     SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 
-export default function CreateEventPage() {
+export default function EditEventPage() {
+    const params = useParams();
     const router = useRouter();
     const t = useTranslations('events');
     const { memberRole } = useAuth();
     const queryClient = useQueryClient();
+    const eventId = params.id as string;
 
     const isWriteRole = memberRole === 'owner' || memberRole === 'admin';
     useEffect(() => {
         if (memberRole && !isWriteRole) {
-            router.replace('/dashboard/events');
+            router.replace(`/dashboard/events/${eventId}`);
         }
-    }, [memberRole, isWriteRole, router]);
+    }, [memberRole, isWriteRole, router, eventId]);
+
+    // Fetch current event data
+    const { data: event, isLoading: loadingEvent } = useQuery({
+        queryKey: ['events', eventId],
+        queryFn: () => eventsApi.get(eventId),
+    });
 
     const schema = useMemo(
         () =>
             z.object({
                 name: z.string().min(1, 'Este campo es requerido').max(255),
-                eventType: z.enum(['football', 'concert', 'other']).optional(),
+                eventType: z.string().optional(),
                 eventDate: z.string().min(1, 'Este campo es requerido'),
                 venue: z.string().min(1, 'Este campo es requerido'),
                 description: z.string().optional(),
@@ -58,7 +67,8 @@ export default function CreateEventPage() {
         handleSubmit,
         setValue,
         watch,
-        formState: { errors, isValid },
+        reset,
+        formState: { errors, isDirty },
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
         mode: 'onChange',
@@ -71,15 +81,32 @@ export default function CreateEventPage() {
         },
     });
 
+    // Populate form when event data loads
+    useEffect(() => {
+        if (event) {
+            const dateLocal = event.eventDate
+                ? new Date(event.eventDate).toISOString().slice(0, 16)
+                : '';
+            reset({
+                name: event.name,
+                eventType: event.eventType || undefined,
+                eventDate: dateLocal,
+                venue: event.venue || '',
+                description: event.description || '',
+                coverImageUrl: event.coverImageUrl || '',
+            });
+        }
+    }, [event, reset]);
+
     const watchAll = watch();
     const coverImageUrl = watchAll.coverImageUrl;
 
-    const { mutate: createEvent, isPending } = useMutation({
-        mutationFn: (dto: CreateEventDto) => eventsApi.create(dto),
-        onSuccess: (event) => {
+    const { mutate: updateEvent, isPending } = useMutation({
+        mutationFn: (dto: UpdateEventDto) => eventsApi.update(eventId, dto),
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['events'] });
-            router.push(`/dashboard/events/${event.id}`);
-            toast.success(t('created'));
+            router.push(`/dashboard/events/${eventId}`);
+            toast.success(t('updated'));
         },
         onError: (err: unknown) => {
             const message = err instanceof Error ? err.message : 'Error';
@@ -88,15 +115,15 @@ export default function CreateEventPage() {
     });
 
     const onSubmit = (data: FormValues) => {
-        const dto: CreateEventDto = {
+        const dto: UpdateEventDto = {
             name: data.name,
             eventDate: new Date(data.eventDate).toISOString(),
             venue: data.venue,
-            ...(data.eventType && { eventType: data.eventType }),
-            ...(data.description && { description: data.description }),
-            ...(data.coverImageUrl && { coverImageUrl: data.coverImageUrl }),
+            eventType: (data.eventType || undefined) as UpdateEventDto['eventType'],
+            description: data.description || undefined,
+            coverImageUrl: data.coverImageUrl || undefined,
         };
-        createEvent(dto);
+        updateEvent(dto);
     };
 
     const eventTypeLabels: Record<string, string> = {
@@ -123,19 +150,38 @@ export default function CreateEventPage() {
 
     if (memberRole && !isWriteRole) return null;
 
+    if (loadingEvent) {
+        return (
+            <div className="flex flex-col gap-8 p-14">
+                <Skeleton className="h-4 w-24 rounded-none bg-[#1E1E1E]" />
+                <Skeleton className="h-16 w-96 rounded-none bg-[#1E1E1E]" />
+                <div className="grid grid-cols-1 gap-12 xl:grid-cols-2">
+                    <div className="flex flex-col gap-7">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <Skeleton key={i} className="h-14 w-full rounded-none bg-[#1E1E1E]" />
+                        ))}
+                    </div>
+                    <Skeleton className="hidden aspect-square w-full rounded-none bg-[#1E1E1E] xl:block" />
+                </div>
+            </div>
+        );
+    }
+
+    if (!event) return null;
+
     return (
         <div className="flex flex-col gap-8 p-14">
             {/* ── Header ── */}
             <div className="flex flex-col gap-4">
                 <button
-                    onClick={() => router.push('/dashboard/events')}
-                    className="flex cursor-pointer items-center gap-2 self-start font-space-mono text-xs uppercase tracking-[1px] text-[#737373] transition-colors duration-150 hover:text-white"
+                    onClick={() => router.push(`/dashboard/events/${eventId}`)}
+                    className="flex cursor-pointer items-center gap-2 self-start font-space-mono text-sm uppercase tracking-[1px] text-[#737373] transition-colors duration-150 hover:text-white"
                 >
                     <ArrowLeft size={14} />
                     {t('backToEvents')}
                 </button>
                 <h1 className="font-sora text-[64px] font-extrabold leading-none tracking-[-2px] text-white">
-                    {t('create').toUpperCase()}
+                    {t('editEvent').toUpperCase()}
                 </h1>
             </div>
 
@@ -143,7 +189,10 @@ export default function CreateEventPage() {
             <div className="grid grid-cols-1 gap-12 xl:grid-cols-2">
                 {/* ── Left: Form ── */}
                 <form
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmit, (formErrors) => {
+                        console.error('Form validation errors:', formErrors);
+                        toast.error('Error de validación, revisa los campos');
+                    })}
                     className="flex flex-col gap-7"
                 >
                     {/* Name */}
@@ -168,7 +217,10 @@ export default function CreateEventPage() {
                         <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
                             {t('eventType')}
                         </label>
-                        <Select onValueChange={(val) => setValue('eventType', val as 'football' | 'concert' | 'other')}>
+                        <Select
+                            value={watchAll.eventType || ''}
+                            onValueChange={(val) => setValue('eventType', val as 'football' | 'concert' | 'other', { shouldDirty: true })}
+                        >
                             <SelectTrigger className="h-14 cursor-pointer rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white">
                                 <SelectValue placeholder={t('eventType')} />
                             </SelectTrigger>
@@ -240,34 +292,43 @@ export default function CreateEventPage() {
                         </label>
                         <ImageUpload
                             value={coverImageUrl || null}
-                            onChange={(url) => setValue('coverImageUrl', url || '')}
+                            onChange={(url) => setValue('coverImageUrl', url || '', { shouldDirty: true })}
                             folder="events"
                             disabled={isPending}
                             aspect="landscape"
                         />
                     </div>
 
-                    {/* Submit */}
-                    <button
-                        type="submit"
-                        disabled={!isValid || isPending}
-                        className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] px-8 font-space-mono text-[16px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        {isPending ? (
-                            <>
-                                <Loader2 size={16} className="animate-spin" />
-                                {t('creating')}
-                            </>
-                        ) : (
-                            t('create')
-                        )}
-                    </button>
+                    {/* Actions */}
+                    <div className="flex gap-4">
+                        <button
+                            type="submit"
+                            disabled={!isDirty || isPending}
+                            className="flex h-16 flex-1 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] px-8 font-space-mono text-[16px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            {isPending ? (
+                                <>
+                                    <Loader2 size={16} className="animate-spin" />
+                                    {t('saving')}
+                                </>
+                            ) : (
+                                'GUARDAR'
+                            )}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => router.push(`/dashboard/events/${eventId}`)}
+                            className="flex h-16 cursor-pointer items-center justify-center rounded-none border border-[#2A2A2A] bg-transparent px-8 font-space-mono text-[16px] uppercase tracking-[1px] text-[#A0A0A0] transition-colors duration-150 hover:border-[#4A4A4A] hover:text-white"
+                        >
+                            CANCELAR
+                        </button>
+                    </div>
                 </form>
 
                 {/* ── Right: Live Preview ── */}
                 <div className="hidden xl:block">
                     <div className="sticky top-8 flex flex-col gap-6">
-                        <h2 className="font-space-mono text-xs uppercase tracking-[2px] text-[#737373]">
+                        <h2 className="font-space-mono text-sm uppercase tracking-[2px] text-[#737373]">
                             Vista previa
                         </h2>
 
@@ -291,12 +352,10 @@ export default function CreateEventPage() {
 
                             {/* Preview content */}
                             <div className="flex flex-col gap-4 p-6">
-                                {/* Event name */}
                                 <h3 className="font-sora text-3xl font-bold text-white">
                                     {watchAll.name || t('name')}
                                 </h3>
 
-                                {/* Meta row */}
                                 <div className="flex flex-wrap items-center gap-4">
                                     {watchAll.eventType && (
                                         <div className="flex items-center gap-2">
@@ -324,19 +383,11 @@ export default function CreateEventPage() {
                                     )}
                                 </div>
 
-                                {/* Description */}
                                 {watchAll.description && (
                                     <p className="font-sora text-lg leading-relaxed text-[#737373]">
                                         {watchAll.description}
                                     </p>
                                 )}
-
-                                {/* Status badge */}
-                                <div className="mt-2 flex items-center gap-2">
-                                    <span className="inline-flex rounded-none bg-[#73737320] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#737373]">
-                                        Borrador
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     </div>

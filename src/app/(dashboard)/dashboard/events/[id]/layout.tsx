@@ -3,7 +3,7 @@
 import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2 } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
@@ -49,6 +49,19 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['events'] });
             toast.success(t('updated'));
+        },
+        onError: (err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Error';
+            toast.error(message);
+        },
+    });
+
+    const { mutate: deleteEvent, isPending: isDeleting } = useMutation({
+        mutationFn: () => eventsApi.delete(eventId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['events'] });
+            toast.success(t('deleted'));
+            router.push('/dashboard/events');
         },
         onError: (err: unknown) => {
             const message = err instanceof Error ? err.message : 'Error';
@@ -121,7 +134,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             {/* ── Header ── */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex flex-col gap-2">
-                    <h1 className="font-sora text-[48px] font-bold leading-none tracking-[-1px] text-white">
+                    <h1 className="font-sora text-[50px] font-bold leading-none tracking-[-1px] text-white">
                         {event.name}
                     </h1>
                     <StatusBadge status={event.status} />
@@ -130,12 +143,58 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 {/* ── Action Buttons ── */}
                 {isWriteRole && (
                     <div className="flex shrink-0 items-center gap-3">
+                        {/* Edit — only for draft or published */}
+                        {(event.status === 'draft' || event.status === 'published') && (
+                            <button
+                                onClick={() => router.push(`/dashboard/events/edit/${eventId}`)}
+                                className="flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-6 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-[#A0A0A0] transition-all duration-150 hover:border-[#2D00F7] hover:text-white hover:shadow-[0_0_20px_rgba(45,0,247,0.3)]"
+                            >
+                                <Pencil size={15} />
+                                {t('editEvent')}
+                            </button>
+                        )}
+
+                        {/* Delete — draft only */}
+                        {event.status === 'draft' && (
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <button
+                                        disabled={isDeleting}
+                                        className="flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-6 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-[#FF3366] transition-all duration-150 hover:border-[#FF3366] hover:shadow-[0_0_20px_rgba(255,51,102,0.3)] disabled:opacity-50"
+                                    >
+                                        <Trash2 size={15} />
+                                        {isDeleting ? <Loader2 size={14} className="animate-spin" /> : t('deleteEvent')}
+                                    </button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle className="font-sora text-xl text-white">{t('deleteEvent')}</AlertDialogTitle>
+                                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                                            {event.status === 'published' ? t('confirmDeletePublished') : t('confirmDelete')}
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                                            Cancelar
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => deleteEvent()}
+                                            className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
+                                        >
+                                            {t('deleteEvent')}
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        )}
+
+                        {/* Status transitions */}
                         {event.status === 'draft' && (
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <button
                                         disabled={isUpdatingStatus}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
+                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
                                     >
                                         {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                         {t('publish')}
@@ -172,7 +231,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                 <AlertDialogTrigger asChild>
                                     <button
                                         disabled={isUpdatingStatus}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] hover:shadow-[0_0_30px_rgba(255,51,102,0.4)] disabled:opacity-50"
+                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] hover:shadow-[0_0_30px_rgba(255,51,102,0.4)] disabled:opacity-50"
                                     >
                                         {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                         {t('endEvent')}
@@ -260,7 +319,7 @@ function GoLiveButton({
                 <button
                     onClick={handleOpen}
                     disabled={isUpdatingStatus}
-                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
+                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
                 >
                     {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                     {t('goLive')}
@@ -291,7 +350,7 @@ function GoLiveButton({
                             <button
                                 onClick={() => updateStatus('live')}
                                 disabled={!allPassed || isUpdatingStatus}
-                                className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                 {t('goLive')}
