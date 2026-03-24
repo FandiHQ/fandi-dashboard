@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface Props {
     onSignInClick?: () => void;
@@ -12,7 +14,23 @@ interface Props {
 export default function LandingNav({ onSignInClick }: Props) {
     const t = useTranslations('nav');
     const locale = useLocale();
+    const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setIsLoggedIn(!!session);
+        });
+    }, []);
+
+    const handleLoginClick = () => {
+        if (isLoggedIn) {
+            router.push('/dashboard');
+        } else {
+            onSignInClick?.();
+        }
+    };
 
     const switchLocale = (loc: string) => {
         document.cookie = `locale=${loc};path=/;max-age=31536000`;
@@ -76,7 +94,7 @@ export default function LandingNav({ onSignInClick }: Props) {
                     </button>
                 </div>
                 <button
-                    onClick={onSignInClick}
+                    onClick={handleLoginClick}
                     className="btn-tactical font-space-mono text-[13px] font-bold uppercase tracking-[2px]
                         px-6 py-2 transition-all cursor-pointer"
                 >
@@ -124,7 +142,7 @@ export default function LandingNav({ onSignInClick }: Props) {
                             </button>
                         </div>
                         <button
-                            onClick={() => { setMobileMenuOpen(false); onSignInClick?.(); }}
+                            onClick={() => { setMobileMenuOpen(false); handleLoginClick(); }}
                             className="btn-tactical font-space-mono text-sm font-bold uppercase tracking-[2px]
                                 px-6 py-2 transition-all cursor-pointer ml-auto"
                         >
