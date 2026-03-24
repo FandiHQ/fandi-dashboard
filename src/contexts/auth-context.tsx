@@ -83,10 +83,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const logout = useCallback(async () => {
         await supabase.auth.signOut();
-        // onAuthStateChange SIGNED_OUT handler clears user state.
-        // Hard redirect to landing to clear ALL client state:
+        setUser(null);
+        // Small delay to let Supabase clear cookies before hard navigation
+        // prevents Turbopack module-factory race condition on SSR
         if (typeof window !== 'undefined') {
-            window.location.href = '/';
+            setTimeout(() => { window.location.href = '/'; }, 100);
         }
     }, []);
 
