@@ -77,10 +77,8 @@ export default function LandingNav({ onSignInClick }: Props) {
                 </div>
                 <button
                     onClick={onSignInClick}
-                    className="font-space-mono text-[13px] uppercase tracking-[2px]
-                        text-white border border-[#2D00F7] px-4 py-2
-                        hover:bg-[#2D00F7] hover:shadow-[0_0_20px_rgba(45,0,247,0.3)]
-                        active:scale-95 transition-all cursor-pointer"
+                    className="btn-tactical font-space-mono text-[13px] font-bold uppercase tracking-[2px]
+                        px-6 py-2 transition-all cursor-pointer"
                 >
                     {t('login')}
                 </button>
@@ -127,9 +125,8 @@ export default function LandingNav({ onSignInClick }: Props) {
                         </div>
                         <button
                             onClick={() => { setMobileMenuOpen(false); onSignInClick?.(); }}
-                            className="font-space-mono text-sm uppercase tracking-[2px]
-                                text-white border border-[#2D00F7] px-4 py-2
-                                hover:bg-[#2D00F7] transition-all cursor-pointer ml-auto"
+                            className="btn-tactical font-space-mono text-sm font-bold uppercase tracking-[2px]
+                                px-6 py-2 transition-all cursor-pointer ml-auto"
                         >
                             {t('login')}
                         </button>

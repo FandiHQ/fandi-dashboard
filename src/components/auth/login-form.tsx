@@ -74,8 +74,8 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
                         data-testid="email"
                         placeholder="tucorreo@ejemplo.com"
                         autoComplete="email"
-                        className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white font-sora text-base
-                            px-4 py-3 outline-none focus:border-[#2D00F7] focus:shadow-[0_0_10px_rgba(45,0,247,0.2)] transition-all"
+                        className="w-full rounded-none bg-[rgba(18,18,18,0.4)] border border-[rgba(255,255,255,0.05)] text-white font-sora text-base
+                            px-4 py-3 outline-none focus:border-[var(--color-tactical-acid)] focus:bg-[rgba(204,255,0,0.05)] focus:shadow-[0_0_15px_rgba(204,255,0,0.2)] transition-all"
                         {...form.register('email')}
                     />
                     {form.formState.errors.email && (
@@ -95,8 +95,8 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
                         data-testid="password"
                         placeholder="••••••••"
                         autoComplete="current-password"
-                        className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white font-sora text-base
-                            px-4 py-3 outline-none focus:border-[#2D00F7] focus:shadow-[0_0_10px_rgba(45,0,247,0.2)] transition-all"
+                        className="w-full rounded-none bg-[rgba(18,18,18,0.4)] border border-[rgba(255,255,255,0.05)] text-white font-sora text-base
+                            px-4 py-3 outline-none focus:border-[var(--color-tactical-acid)] focus:bg-[rgba(204,255,0,0.05)] focus:shadow-[0_0_15px_rgba(204,255,0,0.2)] transition-all"
                         {...form.register('password')}
                     />
                     {form.formState.errors.password && (
@@ -110,10 +110,8 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
                     type="submit"
                     disabled={form.formState.isSubmitting}
                     data-testid="login-button"
-                    className="w-full font-space-mono text-[13px] uppercase tracking-[2px]
-                        bg-[#2D00F7] text-white py-4
-                        hover:shadow-[0_0_25px_rgba(45,0,247,0.5)]
-                        active:scale-95 transition-all cursor-pointer
+                    className="btn-tactical w-full font-space-mono text-[13px] font-bold uppercase tracking-[2px]
+                        py-4 transition-all cursor-pointer
                         disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {form.formState.isSubmitting ? t('signingIn') : t('login')}

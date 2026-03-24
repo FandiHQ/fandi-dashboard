@@ -55,7 +55,7 @@ export default function EnVivoReveal({ scrollRange }: Props) {
             {/* Main text — centered */}
             <motion.h2
                 style={{ color }}
-                className="font-sora font-extrabold text-4xl md:text-6xl lg:text-[80px] tracking-tighter text-center max-w-5xl leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]"
+                className="animate-glitch font-sora font-extrabold text-4xl md:text-6xl lg:text-[80px] tracking-tighter text-center max-w-5xl leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]"
             >
                 {t('enVivoFull')}
             </motion.h2>

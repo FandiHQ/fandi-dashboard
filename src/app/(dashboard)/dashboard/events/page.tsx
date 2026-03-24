@@ -114,7 +114,7 @@ export default function EventsListPage() {
             </div>
 
             {/* ── Data Table ── */}
-            <div className="overflow-hidden rounded-none border border-[#1E1E1E]">
+            <div className="hud-card hud-brackets hud-brackets-hover overflow-hidden rounded-none p-1">
                 <Table>
                     <TableHeader>
                         <TableRow className="border-b border-[#1E1E1E] bg-[#141414] hover:bg-[#141414]">
@@ -159,7 +159,7 @@ export default function EventsListPage() {
                                         {isWriteRole && (
                                             <button
                                                 onClick={() => router.push('/dashboard/events/new')}
-                                                className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-6 py-3 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)]"
+                                                className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-6 py-3 font-space-mono text-[11px] font-bold uppercase tracking-[2px]"
                                             >
                                                 <Plus size={16} />
                                                 {t('create')}
@@ -173,12 +173,12 @@ export default function EventsListPage() {
                                 <TableRow
                                     key={event.id}
                                     onClick={() => router.push(`/dashboard/events/${event.id}`)}
-                                    className="cursor-pointer border-b border-[#1E1E1E] border-l-2 border-l-transparent transition-all duration-150 hover:border-l-[#2D00F7] hover:bg-[#141414]"
+                                    className="group cursor-pointer border-b border-[#1A1A1A] border-l-4 border-l-transparent transition-all duration-200 hover:border-l-[var(--color-tactical-acid)] hover:bg-[rgba(204,255,0,0.05)]"
                                 >
                                     <TableCell>
                                         <StatusBadge status={event.status} />
                                     </TableCell>
-                                    <TableCell className="font-sora text-[15px] font-semibold text-white">
+                                    <TableCell className="font-sora text-[16px] font-extrabold uppercase tracking-[-0.5px] text-white">
                                         {event.name}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell">
@@ -218,14 +218,14 @@ function PageHeader({
     return (
         <div className="flex items-end justify-between">
             <div className="flex flex-col gap-1">
-                <h1 className="font-sora text-[64px] font-extrabold leading-none tracking-[-2px] text-white">
+                <h1 className="animate-glitch font-sora text-[80px] font-black leading-[0.85] tracking-[-4px] text-white">
                     {title.toUpperCase()}
                 </h1>
             </div>
             {isWriteRole && (
                 <button
                     onClick={() => router.push('/dashboard/events/new')}
-                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-6 py-3 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)]"
+                    className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-6 py-3 font-space-mono text-[11px] font-bold uppercase tracking-[2px]"
                 >
                     <Plus size={16} />
                     {t('create')}

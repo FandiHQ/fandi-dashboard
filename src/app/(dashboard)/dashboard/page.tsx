@@ -25,18 +25,17 @@ function StatCard({ icon, label, value, accent, pulse }: {
 }) {
     const Icon = icon;
     return (
-        <div className="flex flex-col gap-3 rounded-none border border-[#1E1E1E] bg-[#141414] p-6
-            transition-all duration-200 hover:border-[#2D00F760] hover:shadow-[0_0_30px_rgba(45,0,247,0.25)]">
+        <div className="hud-card hud-brackets hud-brackets-hover flex flex-col gap-3 rounded-none p-6
+            transition-all duration-200 hover:bg-[rgba(204,255,0,0.05)]">
             <div className="flex items-center justify-between">
-                <Icon size={20} className={accent ? 'text-[#2D00F7]' : 'text-[#737373]'} />
+                <Icon size={20} className={accent ? 'text-[var(--color-tactical-acid)]' : 'text-[#737373]'} />
                 {pulse && (
-                    <span className="relative flex h-2.5 w-2.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2D00F7] opacity-75" />
-                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#2D00F7]" />
-                    </span>
+                    <div className="live-pulse-container flex h-3 w-3 items-center justify-center rounded-none bg-[var(--color-tactical-magenta)]">
+                        <span className="h-1.5 w-1.5 animate-pulse bg-white" />
+                    </div>
                 )}
             </div>
-            <span className="font-sora text-[48px] font-semibold leading-none text-[#F5F5F5]">
+            <span className="font-sora text-[64px] font-black leading-none tracking-[-4px] text-white">
                 {value}
             </span>
             <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
@@ -114,7 +113,7 @@ export default function DashboardHomePage() {
         <div className="flex flex-col gap-12">
             {/* ── Welcome Header ── */}
             <div className="flex flex-col gap-2">
-                <h1 className="font-sora text-[40px] font-bold leading-tight text-white">
+                <h1 className="animate-glitch font-sora text-[64px] font-black leading-none tracking-[-3px] text-white">
                     {t('welcome', { name: user?.displayName || organization?.name || '' })}
                 </h1>
                 <p className="font-space-mono text-sm uppercase tracking-[2px] text-[#737373]">
@@ -172,7 +171,7 @@ export default function DashboardHomePage() {
                         {isWriteRole && (
                             <button
                                 onClick={() => router.push('/dashboard/events/new')}
-                                className="cursor-pointer rounded-none bg-[#2D00F7] px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)]"
+                                className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-6 py-2 font-space-mono text-xs font-bold uppercase tracking-[2px]"
                             >
                                 {t('createEvent')}
                             </button>
@@ -200,13 +199,13 @@ export default function DashboardHomePage() {
                             <p className="font-sora text-[18px] text-[#737373]">{t('noEvents')}</p>
                             <button
                                 onClick={() => router.push('/dashboard/events/new')}
-                                className="cursor-pointer rounded-none bg-[#2D00F7] px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_20px_rgba(45,0,247,0.5)]"
+                                className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-6 py-3 font-space-mono text-xs font-bold uppercase tracking-[2px]"
                             >
                                 {t('createEvent')}
                             </button>
                         </div>
                     ) : (
-                        <div className="overflow-hidden rounded-none border border-[#1E1E1E]">
+                        <div className="hud-card hud-brackets hud-brackets-hover overflow-hidden rounded-none p-1">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="border-b border-[#1E1E1E] bg-[#141414] hover:bg-[#141414]">
@@ -230,12 +229,12 @@ export default function DashboardHomePage() {
                                         <TableRow
                                             key={event.id}
                                             onClick={() => router.push(`/dashboard/events/${event.id}`)}
-                                            className="cursor-pointer border-b border-l-2 border-b-[#1E1E1E] border-l-transparent transition-all duration-150 hover:border-l-[#2D00F7] hover:bg-[#141414]"
+                                            className="group cursor-pointer border-b border-[#1A1A1A] border-l-4 border-l-transparent transition-all duration-200 hover:border-l-[var(--color-tactical-acid)] hover:bg-[rgba(204,255,0,0.05)]"
                                         >
                                             <TableCell>
                                                 <StatusBadge status={event.status} />
                                             </TableCell>
-                                            <TableCell className="font-sora text-[15px] font-semibold text-white">
+                                            <TableCell className="font-sora text-[16px] font-extrabold uppercase tracking-[-0.5px] text-white">
                                                 {event.name}
                                             </TableCell>
                                             <TableCell className="hidden font-sora text-[15px] text-[#A0A0A0] md:table-cell">

@@ -2,22 +2,37 @@
 
 import { useTranslations } from 'next-intl';
 
-const statusColors: Record<string, { text: string; bg: string }> = {
-    draft: { text: '#737373', bg: '#73737320' },
-    published: { text: '#2D00F7', bg: '#2D00F720' },
-    live: { text: '#22C55E', bg: '#22C55E20' },
-    ended: { text: '#A0A0A0', bg: '#A0A0A020' },
-};
-
 export function StatusBadge({ status }: { status: string }) {
     const t = useTranslations('events');
-    const c = statusColors[status] || statusColors.draft;
+    
+    if (status === 'live') {
+        return (
+            <div className="live-pulse-container inline-flex items-center gap-2 rounded-none bg-[var(--color-tactical-magenta)] px-3 py-1 font-space-mono text-[11px] font-bold uppercase tracking-[2px] text-white">
+                <span className="h-1.5 w-1.5 animate-pulse bg-white" />
+                <span className="animate-glitch-infinite">{t('status.live')}</span>
+            </div>
+        );
+    }
+    
+    if (status === 'published') {
+        return (
+            <div className="inline-flex items-center rounded-none bg-[var(--color-tactical-acid)] px-2 py-0.5 font-space-mono text-[10px] font-bold uppercase tracking-[1px] text-black shadow-[0_0_15px_rgba(204,255,0,0.3)]">
+                {t('status.published')}
+            </div>
+        );
+    }
+
+    if (status === 'draft') {
+        return (
+            <div className="inline-flex items-center rounded-none border border-dashed border-[#4A4A4A] bg-transparent px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#A0A0A0]">
+                {t('status.draft')}
+            </div>
+        );
+    }
+
     return (
-        <span
-            className="inline-flex items-center rounded-none px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px]"
-            style={{ color: c.text, backgroundColor: c.bg }}
-        >
+        <div className="inline-flex items-center rounded-none bg-[#1A1A1A] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#A0A0A0]">
             {t(`status.${status}`)}
-        </span>
+        </div>
     );
 }

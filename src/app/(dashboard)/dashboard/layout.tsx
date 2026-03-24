@@ -30,7 +30,7 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-black">
+        <div className="flex min-h-screen bg-black scanlines">
             {/* Desktop sidebar — hidden on mobile, fixed position */}
             <div className="hidden lg:flex lg:w-20 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
                 <Sidebar />

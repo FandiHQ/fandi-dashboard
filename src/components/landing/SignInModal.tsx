@@ -51,10 +51,8 @@ export default function SignInModal({ open, onClose }: Props) {
                         exit={{ scale: 0.95, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="relative w-[90vw] max-w-md p-8 md:p-10
-                            bg-[#121212]/95 backdrop-blur-xl
-                            border border-[#2A2A2A]
-                            shadow-[0_0_60px_rgba(45,0,247,0.15)]"
+                        className="hud-card hud-brackets hud-brackets-hover relative w-[90vw] max-w-md p-8 md:p-10
+                            shadow-[0_0_40px_rgba(204,255,0,0.1)]"
                     >
                         {/* Close button */}
                         <button

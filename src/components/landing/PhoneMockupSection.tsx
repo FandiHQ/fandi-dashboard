@@ -33,7 +33,7 @@ function SubastasText({ t, accent }: { t: (key: string) => string; accent: strin
     return (
         <div className="flex flex-col gap-3 md:gap-5">
             <h3
-                className="font-sora font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-none"
+                className="animate-glitch font-sora font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-none"
                 style={{ color: accent, textShadow: `0 0 40px ${accent}40` }}
             >
                 {t('subastasTitle')}
@@ -60,7 +60,7 @@ function OportunidadesText({ t, accent }: { t: (key: string) => string; accent: 
     return (
         <div className="flex flex-col gap-3 md:gap-5">
             <h3
-                className="font-sora font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-none"
+                className="animate-glitch font-sora font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-none"
                 style={{ color: accent, textShadow: `0 0 40px ${accent}40` }}
             >
                 {t('oportunidadesTitle')}
@@ -93,7 +93,7 @@ function InsigniasText({ t, accent }: { t: (key: string) => string; accent: stri
     return (
         <div className="flex flex-col gap-3 md:gap-5">
             <h3
-                className="font-sora font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-none"
+                className="animate-glitch font-sora font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight leading-none"
                 style={{ color: accent, textShadow: `0 0 40px ${accent}40` }}
             >
                 {t('insigniasTitle')}

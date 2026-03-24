@@ -66,6 +66,7 @@ export default async function RootLayout({
       <body
         className={`${sora.variable} ${spaceMono.variable} antialiased`}
       >
+        <div className="noise-overlay" aria-hidden="true" />
         <NextIntlClientProvider messages={messages}>
           <Providers>
               {children}

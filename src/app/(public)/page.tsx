@@ -146,19 +146,16 @@ export default function LandingPage() {
                                 <div className="flex flex-col sm:flex-row gap-4 mt-10">
                                     <a
                                         href="#"
-                                        className="font-space-mono text-[13px] uppercase tracking-[2px]
-                                            bg-[#2D00F7] text-white px-8 py-4
-                                            hover:shadow-[0_0_25px_rgba(45,0,247,0.5)]
-                                            active:scale-95 transition-all text-center"
+                                        className="btn-tactical font-space-mono text-[13px] font-bold uppercase tracking-[2px] px-8 py-4 transition-all text-center"
                                         aria-label="Download the Fandi app"
                                     >
                                         {t('ctaFan')}
                                     </a>
                                     <button
                                         onClick={() => setSignInOpen(true)}
-                                        className="font-space-mono text-[13px] uppercase tracking-[2px]
-                                            border border-[#2A2A2A] text-white px-8 py-4 backdrop-blur-md bg-black/30
-                                            hover:border-[#2D00F7] hover:shadow-[0_0_20px_rgba(45,0,247,0.3)]
+                                        className="font-space-mono text-[13px] font-bold uppercase tracking-[2px]
+                                            border border-[rgba(255,255,255,0.1)] text-white px-8 py-4 backdrop-blur-md bg-[rgba(18,18,18,0.4)]
+                                            hover:border-[var(--color-tactical-acid)] hover:bg-[rgba(204,255,0,0.05)] hover:shadow-[0_0_20px_rgba(204,255,0,0.2)]
                                             active:scale-95 transition-all text-center cursor-pointer"
                                     >
                                         {t('ctaOrganizer')}
@@ -177,7 +174,7 @@ export default function LandingPage() {
 
                         {/* Cinematic text during concert sequence (~40-70%) */}
                         <ScrollText scrollRange={statementRange} className="px-6">
-                            <h2 className="font-sora font-extrabold text-white text-center text-[28px] md:text-5xl lg:text-[72px] max-w-5xl leading-tight tracking-tighter [text-shadow:0_4px_20px_rgba(0,0,0,0.9)]">
+                            <h2 className="animate-glitch font-sora font-extrabold text-white text-center text-[28px] md:text-5xl lg:text-[72px] max-w-5xl leading-tight tracking-tighter [text-shadow:0_4px_20px_rgba(0,0,0,0.9)]">
                                 {t('heroStatement')}
                             </h2>
                         </ScrollText>
@@ -213,7 +210,7 @@ export default function LandingPage() {
                             ]}
                             className="px-4"
                         >
-                            <h2 className="font-sora font-extrabold text-white text-center text-[28px] md:text-5xl lg:text-[72px] leading-tight tracking-tighter max-w-4xl [text-shadow:0_4px_20px_rgba(0,0,0,0.9)]">
+                            <h2 className="animate-glitch font-sora font-extrabold text-white text-center text-[28px] md:text-5xl lg:text-[72px] leading-tight tracking-tighter max-w-4xl [text-shadow:0_4px_20px_rgba(0,0,0,0.9)]">
                                 {t('artistsTitle')}
                             </h2>
                         </ScrollText>
@@ -247,7 +244,7 @@ export default function LandingPage() {
                 <section style={{ height: `${SECTIONS.participate.vh}vh` }} aria-label="Call to action">
                     <ScrollText scrollRange={ranges.participate} interactive>
                         <div className="flex flex-col items-center text-center px-6">
-                            <h2 className="font-sora font-extrabold text-white text-[28px] md:text-5xl lg:text-[72px] leading-tight tracking-tighter [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
+                            <h2 className="animate-glitch font-sora font-extrabold text-white text-[28px] md:text-5xl lg:text-[72px] leading-tight tracking-tighter [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
                                 {t('participateTitle')}
                             </h2>
                             <p className="font-sora text-[#A0A0A0] text-base md:text-lg max-w-xl mt-6">
@@ -256,19 +253,16 @@ export default function LandingPage() {
                             <div className="flex flex-col sm:flex-row gap-4 mt-10">
                                 <a
                                     href="#"
-                                    className="font-space-mono text-[13px] uppercase tracking-[2px]
-                                        bg-[#2D00F7] text-white px-8 py-4
-                                        hover:shadow-[0_0_25px_rgba(45,0,247,0.5)]
-                                        active:scale-95 transition-all text-center"
+                                    className="btn-tactical font-space-mono text-[13px] font-bold uppercase tracking-[2px] px-8 py-4 transition-all text-center"
                                     aria-label="Download the Fandi app"
                                 >
                                     {t('ctaFan')}
                                 </a>
                                 <button
                                     onClick={() => setSignInOpen(true)}
-                                    className="font-space-mono text-[13px] uppercase tracking-[2px]
-                                        border border-[#2A2A2A] text-white px-8 py-4
-                                        hover:border-[#2D00F7] hover:shadow-[0_0_20px_rgba(45,0,247,0.3)]
+                                    className="font-space-mono text-[13px] font-bold uppercase tracking-[2px]
+                                        border border-[rgba(255,255,255,0.1)] text-white px-8 py-4 backdrop-blur-md bg-[rgba(18,18,18,0.4)]
+                                        hover:border-[var(--color-tactical-acid)] hover:bg-[rgba(204,255,0,0.05)] hover:shadow-[0_0_20px_rgba(204,255,0,0.2)]
                                         active:scale-95 transition-all text-center cursor-pointer"
                                 >
                                     {t('ctaOrganizer')}
