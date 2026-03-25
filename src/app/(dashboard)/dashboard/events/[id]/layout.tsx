@@ -46,9 +46,14 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
 
     const { mutate: updateStatus, isPending: isUpdatingStatus } = useMutation({
         mutationFn: (status: string) => eventsApi.updateStatus(eventId, status as 'published' | 'live' | 'ended'),
-        onSuccess: () => {
+        onSuccess: (_data, status) => {
             queryClient.invalidateQueries({ queryKey: ['events'] });
-            toast.success(t('updated'));
+            if (status === 'live') {
+                toast.success(t('eventLive'));
+                router.push(`/dashboard/events/${eventId}/live`);
+            } else {
+                toast.success(t('updated'));
+            }
         },
         onError: (err: unknown) => {
             const message = err instanceof Error ? err.message : 'Error';
@@ -166,11 +171,11 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                         {isDeleting ? <Loader2 size={14} className="animate-spin" /> : t('deleteEvent')}
                                     </button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
+                                <AlertDialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle className="font-sora text-xl text-white">{t('deleteEvent')}</AlertDialogTitle>
                                         <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
-                                            {event.status === 'published' ? t('confirmDeletePublished') : t('confirmDelete')}
+                                            {t('confirmDelete')}
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
@@ -200,7 +205,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                         {t('publish')}
                                     </button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
+                                <AlertDialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle className="font-sora text-xl text-white">{t('publish')}</AlertDialogTitle>
                                         <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
@@ -227,36 +232,12 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                         )}
 
                         {event.status === 'live' && (
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <button
-                                        disabled={isUpdatingStatus}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] hover:shadow-[0_0_30px_rgba(255,51,102,0.4)] disabled:opacity-50"
-                                    >
-                                        {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
-                                        {t('endEvent')}
-                                    </button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle className="font-sora text-xl text-white">{t('endEvent')}</AlertDialogTitle>
-                                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
-                                            {t('confirmEnd')}
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
-                                            Cancelar
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => updateStatus('ended')}
-                                            className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
-                                        >
-                                            {t('endEvent')}
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                            <EndEventDialog
+                                eventName={event.name}
+                                isUpdatingStatus={isUpdatingStatus}
+                                updateStatus={updateStatus}
+                                t={t}
+                            />
                         )}
                     </div>
                 )}
@@ -311,7 +292,7 @@ function GoLiveButton({
         }
     };
 
-    const allPassed = stats ? stats.experienceCount > 0 && stats.isPublished : false;
+    const allPassed = stats ? stats.experienceCount > 0 && stats.experiencesReady && stats.isPublished : false;
 
     return (
         <Dialog>
@@ -319,13 +300,13 @@ function GoLiveButton({
                 <button
                     onClick={handleOpen}
                     disabled={isUpdatingStatus}
-                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
+                    className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none bg-[var(--color-tactical-magenta)] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(255,0,85,0.8)] disabled:opacity-50"
                 >
                     {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                     {t('goLive')}
                 </button>
             </DialogTrigger>
-            <DialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
+            <DialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
                 <DialogHeader>
                     <DialogTitle className="font-sora text-xl text-white">
                         {t('preLiveChecklist')}
@@ -334,23 +315,32 @@ function GoLiveButton({
 
                 {loadingStats ? (
                     <div className="flex items-center justify-center py-8">
-                        <Loader2 size={24} className="animate-spin text-[#2D00F7]" />
+                        <Loader2 size={24} className="animate-spin text-[var(--color-tactical-magenta)]" />
                     </div>
                 ) : stats ? (
-                    <div className="flex flex-col gap-4">
+                    <div className="scanlines relative flex flex-col gap-4">
                         <ChecklistItem
                             label={t('checkExperiences')}
                             passed={stats.experienceCount > 0}
                         />
                         <ChecklistItem
+                            label={t('checkExperiencesReady')}
+                            passed={stats.experiencesReady}
+                        />
+                        <ChecklistItem
                             label={t('checkPublished')}
                             passed={stats.isPublished}
+                        />
+                        <ChecklistItem
+                            label={t('checkAuctions')}
+                            passed={stats.auctionCount > 0}
+                            optional
                         />
                         <div className="mt-4 flex justify-end gap-3">
                             <button
                                 onClick={() => updateStatus('live')}
                                 disabled={!allPassed || isUpdatingStatus}
-                                className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
+                                className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none bg-[var(--color-tactical-magenta)] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(255,0,85,0.8)] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                 {t('goLive')}
@@ -363,17 +353,91 @@ function GoLiveButton({
     );
 }
 
-function ChecklistItem({ label, passed }: { label: string; passed: boolean }) {
+// ── End Event Dialog with type-to-confirm ──
+
+function EndEventDialog({
+    eventName,
+    isUpdatingStatus,
+    updateStatus,
+    t,
+}: {
+    eventName: string;
+    isUpdatingStatus: boolean;
+    updateStatus: (status: string) => void;
+    t: ReturnType<typeof useTranslations>;
+}) {
+    const [confirmName, setConfirmName] = useState('');
+    const [open, setOpen] = useState(false);
+
+    const handleOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen);
+        if (!isOpen) setConfirmName('');
+    };
+
+    return (
+        <AlertDialog open={open} onOpenChange={handleOpenChange}>
+            <AlertDialogTrigger asChild>
+                <button
+                    disabled={isUpdatingStatus}
+                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] hover:shadow-[0_0_30px_rgba(255,51,102,0.4)] disabled:opacity-50"
+                >
+                    {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
+                    {t('endEvent')}
+                </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="rounded-none border border-[var(--color-tactical-magenta)] bg-[#121212] shadow-[0_0_20px_rgba(255,0,85,0.2)]">
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="font-sora text-xl text-white">{t('endEvent')}</AlertDialogTitle>
+                    <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                        {t('confirmEnd')}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="flex flex-col gap-2">
+                    <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                        {t('typeToConfirm')}
+                    </label>
+                    <input
+                        type="text"
+                        value={confirmName}
+                        onChange={(e) => setConfirmName(e.target.value)}
+                        placeholder={`Escribe "${eventName}" para confirmar`}
+                        className="h-12 w-full rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-magenta)] focus:outline-none focus:ring-0"
+                    />
+                </div>
+                <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                        Cancelar
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                        onClick={() => updateStatus('ended')}
+                        disabled={confirmName !== eventName}
+                        className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        {t('endEvent')}
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
+}
+
+function ChecklistItem({ label, passed, optional }: { label: string; passed: boolean; optional?: boolean }) {
     return (
         <div className="flex items-center gap-3 rounded-none border border-[#1E1E1E] bg-[#141414] px-4 py-3">
             {passed ? (
                 <Check size={16} className="text-[#22C55E]" />
+            ) : optional ? (
+                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-[#4A4A4A]" />
             ) : (
                 <XIcon size={16} className="text-[#FF3366]" />
             )}
-            <span className={`font-space-mono text-sm ${passed ? 'text-white' : 'text-[#737373]'}`}>
+            <span className={`font-space-mono text-sm ${passed ? 'text-white' : optional ? 'text-[#4A4A4A]' : 'text-[#737373]'}`}>
                 {label}
+                {optional && !passed && (
+                    <span className="ml-2 text-[11px] text-[#4A4A4A]">(opcional)</span>
+                )}
             </span>
         </div>
     );
 }
+

@@ -107,7 +107,14 @@
     "confirmEnd": "¿Terminar el evento? Esta acción no se puede deshacer.",
     "preLiveChecklist": "Verificación pre-evento",
     "checkExperiences": "Al menos 1 experiencia creada",
-    "checkPublished": "Evento publicado"
+    "checkExperiencesReady": "Oportunidades configuradas correctamente",
+    "checkPublished": "Evento publicado",
+    "checkAuctions": "Subastas creadas (opcional)",
+    "eventLive": "🔴 ¡Evento en vivo!",
+    "typeToConfirm": "Escribe el nombre del evento para confirmar",
+    "viewLiveDashboard": "Ver Dashboard en Vivo →",
+    "totalRaised": "Total Recaudado",
+    "participants": "Participantes"
   },
   "experiences": {
     "title": "Experiencias",

@@ -107,7 +107,14 @@
         "confirmEnd": "End the event? This action cannot be undone.",
         "preLiveChecklist": "Pre-event checklist",
         "checkExperiences": "At least 1 experience created",
-        "checkPublished": "Event published"
+        "checkExperiencesReady": "Experiences configured correctly",
+        "checkPublished": "Event published",
+        "checkAuctions": "Auctions created (optional)",
+        "eventLive": "🔴 Event is live!",
+        "typeToConfirm": "Type the event name to confirm",
+        "viewLiveDashboard": "View Live Dashboard →",
+        "totalRaised": "Total Raised",
+        "participants": "Participants"
     },
     "experiences": {
         "title": "Experiences",
