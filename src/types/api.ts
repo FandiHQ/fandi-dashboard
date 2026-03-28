@@ -192,23 +192,28 @@ export interface BidStatusResponse {
 export type OrgRole = 'owner' | 'admin' | 'viewer' | 'staff';
 
 export interface OrganizationMember {
-    id: string;
     organizationId: string;
     userId: string;
     role: OrgRole;
+    status: 'pending' | 'active';
+    email: string | null;
+    displayName: string | null;
+    avatarUrl: string | null;
     eventIds: string[] | null;
-    user: { displayName: string; email: string };
-    joinedAt: string;
+    invitedAt: string;
+    invitedBy: string | null;
 }
 
 export interface InviteMemberDto {
     email: string;
     role: OrgRole;
+    displayName?: string;
     eventIds?: string[];
 }
 
 export interface UpdateMemberRoleDto {
     role: OrgRole;
+    eventIds?: string[];
 }
 
 // ── Analytics ──

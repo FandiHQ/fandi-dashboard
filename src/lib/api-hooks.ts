@@ -94,6 +94,8 @@ export const orgApi = {
         unwrap(api.put(`/dashboard/organization/members/${id}`, dto)),
     removeMember: (id: string) =>
         unwrap(api.delete(`/dashboard/organization/members/${id}`)),
+    resendInvite: (id: string) =>
+        unwrap(api.post(`/dashboard/organization/members/${id}/resend-invite`, {})),
 };
 
 // ── Analytics ──
