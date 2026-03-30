@@ -39,6 +39,28 @@
         "team": "Team",
         "settings": "Settings"
     },
+    "settings": {
+        "title": "Settings",
+        "subtitle": "Manage your profile and preferences",
+        "profile": "Profile",
+        "displayName": "Full Name",
+        "displayNamePlaceholder": "Your full name",
+        "email": "Email",
+        "phone": "Phone",
+        "phonePlaceholder": "+57 300 123 4567",
+        "avatar": "Profile Picture",
+        "changeAvatar": "Change Photo",
+        "removeAvatar": "Remove",
+        "uploadHint": "JPG, PNG or WEBP. Max 5MB.",
+        "saveChanges": "Save Changes",
+        "saving": "Saving...",
+        "profileUpdated": "Profile updated successfully",
+        "errorUpdating": "Error updating profile",
+        "errorUploading": "Error uploading image",
+        "role": "Role",
+        "organization": "Organization",
+        "memberSince": "Member since"
+    },
     "dashboard": {
         "welcome": "Welcome, {name}",
         "totalEvents": "Total Events",

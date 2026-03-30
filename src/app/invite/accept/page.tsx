@@ -1,10 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { authApi } from '@/lib/api-hooks';
+import { createBrowserClient } from '@supabase/ssr';
 import { Loader2, Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
+
+/**
+ * IMPORTANT: This page uses its OWN Supabase client instance, isolated from
+ * the global AuthProvider. The AuthProvider's init() detects sessions on mount
+ * and can call signOut() for users without org access — which would kill the
+ * invite session before we can use it to set the password.
+ */
+function createIsolatedSupabaseClient() {
+    return createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            // Use a separate storage key so it doesn't collide with the main client
+            cookieOptions: { name: 'sb-invite' },
+        },
+    );
+}
 
 export default function InviteAcceptPage() {
     const router = useRouter();
@@ -16,14 +32,21 @@ export default function InviteAcceptPage() {
     const [isSessionReady, setIsSessionReady] = useState(false);
     const [isExpired, setIsExpired] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const clientRef = useRef<ReturnType<typeof createBrowserClient> | null>(null);
 
-    // On mount: sign out any existing session, then exchange the invite token
+    // On mount: extract tokens from hash, establish session on isolated client
     useEffect(() => {
         async function exchangeToken() {
             try {
-                // CRITICAL: Sign out any existing session FIRST to avoid
-                // collisions (e.g., owner is logged in when invitee clicks link)
-                await supabase.auth.signOut();
+                // Create an isolated Supabase client for this page only
+                const isolatedClient = createIsolatedSupabaseClient();
+                clientRef.current = isolatedClient;
+
+                // Sign out any pre-existing session on the MAIN client
+                // so the owner's dashboard doesn't persist after this flow
+                const { createBrowserClient: _ } = await import('@supabase/ssr');
+                const mainClient = (await import('@/lib/supabase')).supabase;
+                await mainClient.auth.signOut();
 
                 // Supabase invite links redirect with hash params:
                 // /invite/accept#access_token=...&type=invite
@@ -33,8 +56,8 @@ export default function InviteAcceptPage() {
                 const type = hashParams.get('type');
 
                 if (accessToken && refreshToken && (type === 'invite' || type === 'magiclink' || type === 'recovery')) {
-                    // Set the session using the tokens from the URL
-                    const { error } = await supabase.auth.setSession({
+                    // Set the session on the ISOLATED client using the tokens from the URL
+                    const { error } = await isolatedClient.auth.setSession({
                         access_token: accessToken,
                         refresh_token: refreshToken,
                     });
@@ -52,7 +75,8 @@ export default function InviteAcceptPage() {
                     // No tokens in URL — this page needs a valid invite link
                     setIsExpired(true);
                 }
-            } catch {
+            } catch (err) {
+                console.error('Token exchange failed:', err);
                 setIsExpired(true);
             }
         }
@@ -73,36 +97,66 @@ export default function InviteAcceptPage() {
             return;
         }
 
+        const client = clientRef.current;
+        if (!client) {
+            setError('Error de sesión. Intenta abrir el enlace de invitación de nuevo.');
+            return;
+        }
+
         setIsLoading(true);
 
         try {
-            // 1. Set the password for the INVITE user (session was set above)
-            const { error: updateError } = await supabase.auth.updateUser({ password });
+            // 1. Verify we have a valid session on the isolated client
+            const { data: { session } } = await client.auth.getSession();
+            if (!session) {
+                setError('La sesión ha expirado. Solicita una nueva invitación.');
+                setIsLoading(false);
+                return;
+            }
+
+            console.log('Setting password for user:', session.user.email, session.user.id);
+
+            // 2. Set the password for the INVITE user
+            const { error: updateError } = await client.auth.updateUser({ password });
 
             if (updateError) {
+                console.error('updateUser error:', updateError);
                 setError(updateError.message);
                 setIsLoading(false);
                 return;
             }
 
-            // 2. Sync with our backend (this activates the pending membership)
+            console.log('Password set successfully for:', session.user.email);
+
+            // 3. Try to sync with backend (activates the pending membership)
             try {
-                await authApi.sync();
+                const token = session.access_token;
+                const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                await fetch(`${apiBase}/users/sync`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
             } catch {
-                // Sync might fail if the backend rejects the token for some reason,
-                // but the password was already set. We'll still show success.
                 console.warn('Sync after password set failed — user can still login');
             }
 
-            // 3. Sign out the invite session — user should login fresh
-            await supabase.auth.signOut();
+            // 4. Sign out the isolated client session
+            await client.auth.signOut();
 
-            // 4. Show success message, then redirect to login
+            // 5. Also ensure the main client is signed out
+            const mainClient = (await import('@/lib/supabase')).supabase;
+            await mainClient.auth.signOut();
+
+            // 6. Show success, then redirect to login
             setIsSuccess(true);
             setTimeout(() => {
-                router.push('/');
+                window.location.href = '/';
             }, 3000);
         } catch (err) {
+            console.error('Password setup error:', err);
             setError(err instanceof Error ? err.message : 'Algo salió mal');
             setIsLoading(false);
         }
@@ -145,7 +199,7 @@ export default function InviteAcceptPage() {
                             una nueva invitación.
                         </p>
                         <button
-                            onClick={() => router.push('/')}
+                            onClick={() => { window.location.href = '/'; }}
                             className="mt-6 cursor-pointer font-space-mono text-xs uppercase tracking-[1px] text-[#2D00F7] hover:underline"
                         >
                             Ir al Inicio de Sesión

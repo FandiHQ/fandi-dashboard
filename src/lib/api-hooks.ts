@@ -22,6 +22,12 @@ export const authApi = {
     sync: () => unwrap(api.post<UserSyncResponse>('/users/sync', {})),
 };
 
+// ── Profile ──
+export const profileApi = {
+    update: (dto: { displayName?: string; phone?: string; avatarUrl?: string }) =>
+        unwrap(api.put<UserSyncResponse>('/users/me/profile', dto)),
+};
+
 // ── Events ──
 export const eventsApi = {
     list: (params?: { status?: string; eventType?: string; search?: string; page?: number; limit?: number }) =>

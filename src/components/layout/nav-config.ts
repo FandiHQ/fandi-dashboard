@@ -33,7 +33,6 @@ export const navItems: NavItem[] = [
         href: '/dashboard/settings',
         icon: Settings,
         labelKey: 'settings',
-        roles: ['owner', 'admin'],
     },
 ];
 

@@ -13,6 +13,7 @@ interface AuthContextType {
     memberRole: string | null;
     login: (email: string, password: string) => Promise<UserSyncResponse>;
     logout: () => Promise<void>;
+    refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -91,6 +92,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
+    const refreshUser = useCallback(async () => {
+        try {
+            const syncResponse = await authApi.sync();
+            if (syncResponse.role !== 'fan' && syncResponse.organization) {
+                setUser(syncResponse);
+            }
+        } catch { /* silently fail */ }
+    }, []);
+
     const isAuthenticated = user !== null;
     const organization = user?.organization ?? null;
     const memberRole = user?.organization?.memberRole ?? null;
@@ -98,7 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return (
         <AuthContext.Provider value={{
             user, isLoading, isAuthenticated,
-            organization, memberRole, login, logout
+            organization, memberRole, login, logout, refreshUser
         }}>
             {children}
         </AuthContext.Provider>
