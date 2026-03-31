@@ -43,7 +43,7 @@ export function DashboardHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
-        <header className="flex h-16 items-center border-b border-[#1A1A1A] px-5 lg:px-14">
+        <header className="flex h-20 items-center justify-between border-b border-[#2A2A2A] bg-black/50 px-5 backdrop-blur-md lg:px-14">
             {/* Left: mobile menu trigger + org info */}
             <div className="flex items-center gap-3">
                 {/* Mobile hamburger — hidden on desktop */}
@@ -85,10 +85,21 @@ export function DashboardHeader() {
 
                                 {/* User + role */}
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-8 w-8 items-center justify-center bg-[#121212]">
-                                        <span className="font-sora text-sm font-bold text-white">
-                                            {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
-                                        </span>
+                                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden bg-[#121212]">
+                                        {user?.avatarUrl ? (
+                                            <Image
+                                                src={user.avatarUrl}
+                                                alt={user.displayName || 'User'}
+                                                width={32}
+                                                height={32}
+                                                className="h-8 w-8 object-cover"
+                                                unoptimized
+                                            />
+                                        ) : (
+                                            <span className="font-sora text-sm font-bold text-white">
+                                                {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="font-space-mono text-xs text-[#A0A0A0]">
@@ -161,24 +172,35 @@ export function DashboardHeader() {
 
                 {/* Org name — always visible */}
                 <div className="flex flex-col">
-                    <span className="font-sora text-sm font-semibold text-white">
+                    <span className="font-sora text-base font-semibold text-white tracking-wide">
                         {organization?.name || 'Fandi'}
                     </span>
                 </div>
             </div>
 
             {/* Right: user info + role badge (desktop only) */}
-            <div className="ml-auto hidden items-center gap-3 lg:flex">
+            <div className="ml-auto hidden items-center gap-4 lg:flex">
                 <div className="flex flex-col items-end">
-                    <span className="font-space-mono text-xs text-[#A0A0A0]">
+                    <span className="font-space-mono text-sm text-[#E0E0E0]">
                         {user?.displayName}
                     </span>
                     {memberRole && <RoleBadge role={memberRole} />}
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center bg-[#121212]">
-                    <span className="font-sora text-sm font-bold text-white">
-                        {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
-                    </span>
+                <div className="group relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-none border border-[#2A2A2A] bg-[#121212] transition-colors duration-300 hover:border-[var(--color-tactical-acid)]">
+                    {user?.avatarUrl ? (
+                        <Image
+                            src={user.avatarUrl}
+                            alt={user.displayName || 'User'}
+                            width={48}
+                            height={48}
+                            className="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
+                            unoptimized
+                        />
+                    ) : (
+                        <span className="font-sora text-base font-bold text-white transition-colors duration-300 group-hover:text-[var(--color-tactical-acid)]">
+                            {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
+                        </span>
+                    )}
                 </div>
             </div>
         </header>

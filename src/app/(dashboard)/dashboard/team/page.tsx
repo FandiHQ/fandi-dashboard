@@ -67,6 +67,7 @@ export default function TeamPage() {
     const t = useTranslations('team');
     const { memberRole, organization } = useAuth();
     const isOwner = memberRole === 'owner';
+    const canInvite = memberRole === 'owner' || memberRole === 'admin';
 
     const { data: members, isLoading, error } = useQuery({
         queryKey: ['organization', 'members'],
@@ -90,7 +91,7 @@ export default function TeamPage() {
                         <p className="mt-2 font-space-mono text-sm text-[#737373]">{organization.name}</p>
                     )}
                 </div>
-                {isOwner && <InviteMemberDialog t={t} />}
+                {canInvite && <InviteMemberDialog t={t} isOwner={isOwner} />}
             </div>
 
             {/* Table */}
@@ -108,7 +109,7 @@ export default function TeamPage() {
                                 <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('role')}</th>
                                 <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('eventAccess')}</th>
                                 <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('status')}</th>
-                                {isOwner && (
+                                {canInvite && (
                                     <th className="px-5 py-4 text-right font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('actions')}</th>
                                 )}
                             </tr>
@@ -119,6 +120,7 @@ export default function TeamPage() {
                                     key={member.userId}
                                     member={member}
                                     isOwner={isOwner}
+                                    canInvite={canInvite}
                                     t={t}
                                 />
                             ))}
@@ -135,14 +137,38 @@ export default function TeamPage() {
 function MemberRow({
     member,
     isOwner,
+    canInvite,
     t,
 }: {
     member: OrganizationMember;
     isOwner: boolean;
+    canInvite: boolean;
     t: ReturnType<typeof useTranslations>;
 }) {
     const rc = ROLE_COLORS[member.role];
     const canModify = isOwner && member.role !== 'owner';
+
+    // Event access display logic
+    const renderEventAccess = () => {
+        if (member.role === 'owner' || member.role === 'admin') {
+            return <span className="text-[var(--color-tactical-acid)]">{t('allEvents')}</span>;
+        }
+        // staff / viewer
+        if (member.eventNames && member.eventNames.length > 0) {
+            return (
+                <div className="flex flex-col gap-0.5">
+                    {member.eventNames.map((name, i) => (
+                        <span key={i} className="leading-tight">{name}</span>
+                    ))}
+                </div>
+            );
+        }
+        if (member.eventIds && member.eventIds.length > 0) {
+            // Fallback if names aren't resolved
+            return `${member.eventIds.length} evento${member.eventIds.length > 1 ? 's' : ''}`;
+        }
+        return <span className="text-[var(--color-tactical-acid)]">{t('allEvents')}</span>;
+    };
 
     return (
         <tr className="border-b border-[#1E1E1E] bg-[#0D0D0D] transition-colors hover:bg-[#141414]">
@@ -158,11 +184,7 @@ function MemberRow({
                 </span>
             </td>
             <td className="px-5 py-4 font-space-mono text-[13px] text-[#A3A3A3]">
-                {member.role === 'staff'
-                    ? (member.eventIds && member.eventIds.length > 0
-                        ? `${member.eventIds.length} evento${member.eventIds.length > 1 ? 's' : ''}`
-                        : t('allEvents'))
-                    : '—'}
+                {renderEventAccess()}
             </td>
             <td className="px-5 py-4">
                 <div className="flex flex-col gap-1">
@@ -174,7 +196,7 @@ function MemberRow({
                     </span>
                 </div>
             </td>
-            {isOwner && (
+            {canInvite && (
                 <td className="px-5 py-4 text-right">
                     {canModify ? (
                         <MemberActions member={member} t={t} />
@@ -260,18 +282,20 @@ function MemberActions({
 
 // ── Invite Member Dialog ──
 
-function InviteMemberDialog({ t }: { t: ReturnType<typeof useTranslations> }) {
+function InviteMemberDialog({ t, isOwner }: { t: ReturnType<typeof useTranslations>; isOwner: boolean }) {
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [displayName, setDisplayName] = useState('');
-    const [role, setRole] = useState<OrgRole>('viewer');
+    const [role, setRole] = useState<OrgRole>(isOwner ? 'viewer' : 'staff');
     const [selectedEventIds, setSelectedEventIds] = useState<string[]>([]);
+
+    const showEventPicker = role === 'staff' || role === 'viewer';
 
     const { data: eventsData } = useQuery({
         queryKey: ['events'],
         queryFn: () => eventsApi.list({ limit: 100 }),
-        enabled: role === 'staff',
+        enabled: showEventPicker,
     });
 
     const nonDraftEvents = eventsData?.items?.filter(e => e.status !== 'draft') ?? [];
@@ -293,7 +317,7 @@ function InviteMemberDialog({ t }: { t: ReturnType<typeof useTranslations> }) {
     const resetForm = () => {
         setEmail('');
         setDisplayName('');
-        setRole('viewer');
+        setRole(isOwner ? 'viewer' : 'staff');
         setSelectedEventIds([]);
     };
 
@@ -303,7 +327,7 @@ function InviteMemberDialog({ t }: { t: ReturnType<typeof useTranslations> }) {
             email: email.trim(),
             role,
             ...(displayName.trim() ? { displayName: displayName.trim() } : {}),
-            ...(role === 'staff' && selectedEventIds.length > 0 ? { eventIds: selectedEventIds } : {}),
+            ...(showEventPicker && selectedEventIds.length > 0 ? { eventIds: selectedEventIds } : {}),
         };
         invite.mutate(dto);
     };
@@ -359,14 +383,14 @@ function InviteMemberDialog({ t }: { t: ReturnType<typeof useTranslations> }) {
                             onChange={(e) => { setRole(e.target.value as OrgRole); setSelectedEventIds([]); }}
                             className="h-12 w-full cursor-pointer rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
                         >
-                            <option value="admin">Admin</option>
+                            {isOwner && <option value="admin">Admin</option>}
                             <option value="viewer">Viewer</option>
                             <option value="staff">Staff</option>
                         </select>
                     </div>
 
-                    {/* Event restriction (staff only) */}
-                    {role === 'staff' && (
+                    {/* Event restriction (staff & viewer) */}
+                    {showEventPicker && (
                         <div className="flex flex-col gap-2">
                             <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('eventRestriction')}</label>
                             <p className="font-space-mono text-[11px] text-[#4A4A4A]">{t('eventRestrictionHint')}</p>
@@ -422,10 +446,12 @@ function ChangeRoleDialog({
     const [newRole, setNewRole] = useState<OrgRole>(member.role === 'owner' ? 'admin' : member.role);
     const [selectedEventIds, setSelectedEventIds] = useState<string[]>(member.eventIds ?? []);
 
+    const showEventPicker = newRole === 'staff' || newRole === 'viewer';
+
     const { data: eventsData } = useQuery({
         queryKey: ['events'],
         queryFn: () => eventsApi.list({ limit: 100 }),
-        enabled: newRole === 'staff',
+        enabled: showEventPicker,
     });
 
     const nonDraftEvents = eventsData?.items?.filter(e => e.status !== 'draft') ?? [];
@@ -446,7 +472,7 @@ function ChangeRoleDialog({
     const handleSubmit = () => {
         const dto: UpdateMemberRoleDto = {
             role: newRole,
-            ...(newRole === 'staff' && selectedEventIds.length > 0 ? { eventIds: selectedEventIds } : {}),
+            ...(showEventPicker && selectedEventIds.length > 0 ? { eventIds: selectedEventIds } : {}),
         };
         update.mutate(dto);
     };
@@ -481,7 +507,7 @@ function ChangeRoleDialog({
                         </select>
                     </div>
 
-                    {newRole === 'staff' && (
+                    {showEventPicker && (
                         <div className="flex flex-col gap-2">
                             <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('eventRestriction')}</label>
                             <div className="flex max-h-40 flex-col gap-1 overflow-y-auto rounded-none border border-[#1A1A1A] bg-[#0A0A0A] p-2">

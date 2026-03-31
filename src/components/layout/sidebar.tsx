@@ -22,7 +22,7 @@ export function Sidebar() {
     const visibleItems = getVisibleItems(memberRole);
 
     return (
-        <aside className="flex h-full w-20 flex-col items-center justify-between bg-black py-[18px]">
+        <aside className="flex h-full w-20 flex-col items-center justify-between border-r border-[#1A1A1A] bg-[#020202] py-6 shadow-xl">
             {/* Top section: logo + nav */}
             <div className="flex flex-col items-center gap-6">
                 {/* Fandi logo — links to dashboard home */}
@@ -111,10 +111,10 @@ export function Sidebar() {
                     </AlertDialogContent>
                 </AlertDialog>
 
-                {/* User avatar */}
+                {/* Org logo */}
                 <div
-                    className="flex h-12 w-12 items-center justify-center bg-[#121212]"
-                    aria-label={user?.displayName || 'User'}
+                    className="flex h-12 w-12 items-center justify-center overflow-hidden border border-[#2A2A2A] bg-[#121212] transition-colors duration-300 hover:border-[var(--color-tactical-acid)]"
+                    aria-label={organization?.name || 'Organization'}
                 >
                     {organization?.logoUrl ? (
                         <Image
@@ -122,11 +122,12 @@ export function Sidebar() {
                             alt={organization.name}
                             width={48}
                             height={48}
-                            className="h-12 w-12 object-cover"
+                            className="h-full w-full object-cover grayscale transition-all duration-300 hover:grayscale-0"
+                            unoptimized
                         />
                     ) : (
-                        <span className="font-sora text-lg font-bold text-white">
-                            {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
+                        <span className="font-sora text-lg font-bold uppercase text-[#A0A0A0] transition-colors duration-300 hover:text-[var(--color-tactical-acid)]">
+                            {organization?.name?.charAt(0) || 'F'}
                         </span>
                     )}
                 </div>

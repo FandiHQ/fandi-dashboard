@@ -200,6 +200,7 @@ export interface OrganizationMember {
     displayName: string | null;
     avatarUrl: string | null;
     eventIds: string[] | null;
+    eventNames: string[] | null;
     invitedAt: string;
     invitedBy: string | null;
 }
