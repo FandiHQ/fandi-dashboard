@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, MapPin, Tag, FileText, Clock, Radio } from 'lucide-react';
+import { Calendar, MapPin, Tag, FileText, Clock, Radio, Zap } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { eventsApi, analyticsApi } from '@/lib/api-hooks';
@@ -39,9 +39,15 @@ export default function EventOverviewPage() {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
         }).format(new Date(iso));
+
+    const formatTime = (iso: string | null | undefined) => {
+        if (!iso) return null;
+        try {
+            const d = new Date(iso);
+            return d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', hour12: true });
+        } catch { return null; }
+    };
 
     if (isLoading) {
         return (
@@ -215,12 +221,49 @@ export default function EventOverviewPage() {
                             {t('date')}
                         </span>
                         <div className="flex items-center gap-2">
-                            <Clock size={18} className="text-[#2D00F7]" />
+                            <Calendar size={18} className="text-[#2D00F7]" />
                             <span className="font-sora text-xl capitalize text-white">
                                 {formatDate(event.eventDate)}
                             </span>
                         </div>
                     </div>
+
+                    {/* Two-Clock: Informational hours */}
+                    {(formatTime(event.eventDate) || formatTime(event.eventEndDate)) && (
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2">
+                                <Clock size={14} className="text-[#737373]" />
+                                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373]">
+                                    Reloj Informativo (Boletas)
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2 pl-5">
+                                <span className="font-sora text-lg text-white">
+                                    {formatTime(event.eventDate)}
+                                    {formatTime(event.eventEndDate) && ` — ${formatTime(event.eventEndDate)}`}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Two-Clock: Fandi hours */}
+                    {(event.fandiOpensAt || event.fandiClosesAt) && (
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2">
+                                <Zap size={14} className="text-[#2D00F7]" />
+                                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#2D00F7]">
+                                    Reloj Fandi (Dinámicas)
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2 pl-5">
+                                <span className="font-sora text-lg text-white">
+                                    {formatTime(event.fandiOpensAt) || '--:--'}
+                                    {' — '}
+                                    {formatTime(event.fandiClosesAt) || '--:--'}
+                                </span>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Venue + City */}
                     {event.venue && (

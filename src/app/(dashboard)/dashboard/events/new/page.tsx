@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v3';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Loader2, Calendar, MapPin, Tag } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, MapPin, Tag, Clock, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
@@ -20,6 +20,14 @@ import {
     Select, SelectContent, SelectItem,
     SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+
+/** Combine a date (YYYY-MM-DD) and time (HH:MM) into ISO string, preserving local time */
+function combineDateAndTime(date: string, time: string): string | undefined {
+    if (!date || !time) return undefined;
+    const d = new Date(`${date}T${time}:00`);
+    if (isNaN(d.getTime())) return undefined;
+    return d.toISOString();
+}
 
 export default function CreateEventPage() {
     const router = useRouter();
@@ -39,7 +47,11 @@ export default function CreateEventPage() {
             z.object({
                 name: z.string().min(1, 'Este campo es requerido').max(255),
                 eventType: z.enum(['football', 'concert', 'other']).optional(),
-                eventDate: z.string().min(1, 'Este campo es requerido'),
+                eventDate: z.string().min(1, 'Este campo es requerido'), // YYYY-MM-DD
+                eventStartTime: z.string().min(1, 'Este campo es requerido'), // HH:MM
+                eventEndTime: z.string().optional().or(z.literal('')),
+                fandiOpensTime: z.string().optional().or(z.literal('')),
+                fandiClosesTime: z.string().optional().or(z.literal('')),
                 venue: z.string().min(1, 'Este campo es requerido'),
                 description: z.string().optional(),
                 coverImageUrl: z
@@ -65,6 +77,10 @@ export default function CreateEventPage() {
         defaultValues: {
             name: '',
             eventDate: '',
+            eventStartTime: '',
+            eventEndTime: '',
+            fandiOpensTime: '',
+            fandiClosesTime: '',
             venue: '',
             description: '',
             coverImageUrl: '',
@@ -88,14 +104,28 @@ export default function CreateEventPage() {
     });
 
     const onSubmit = (data: FormValues) => {
+        const eventDateTime = combineDateAndTime(data.eventDate, data.eventStartTime);
+        if (!eventDateTime) return;
+
         const dto: CreateEventDto = {
             name: data.name,
-            eventDate: new Date(data.eventDate).toISOString(),
+            eventDate: eventDateTime,
             venue: data.venue,
             ...(data.eventType && { eventType: data.eventType }),
             ...(data.description && { description: data.description }),
             ...(data.coverImageUrl && { coverImageUrl: data.coverImageUrl }),
         };
+
+        // Two-Clock: compose full datetime from date + time
+        const endDt = combineDateAndTime(data.eventDate, data.eventEndTime ?? '');
+        if (endDt) dto.eventEndDate = endDt;
+
+        const opensDt = combineDateAndTime(data.eventDate, data.fandiOpensTime ?? '');
+        if (opensDt) dto.fandiOpensAt = opensDt;
+
+        const closesDt = combineDateAndTime(data.eventDate, data.fandiClosesTime ?? '');
+        if (closesDt) dto.fandiClosesAt = closesDt;
+
         createEvent(dto);
     };
 
@@ -105,20 +135,27 @@ export default function CreateEventPage() {
         other: t('typeOther'),
     };
 
-    const formatPreviewDate = (iso: string) => {
-        if (!iso) return null;
+    const formatPreviewDate = (date: string) => {
+        if (!date) return null;
         try {
             return new Intl.DateTimeFormat('es', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-            }).format(new Date(iso));
+            }).format(new Date(date));
         } catch {
             return null;
         }
+    };
+
+    const formatTimeDisplay = (time: string) => {
+        if (!time) return null;
+        const [h, m] = time.split(':');
+        const hour = parseInt(h);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+        return `${h12}:${m} ${ampm}`;
     };
 
     if (memberRole && !isWriteRole) return null;
@@ -186,13 +223,13 @@ export default function CreateEventPage() {
                         </Select>
                     </div>
 
-                    {/* Event Date */}
+                    {/* Event Date (date only) */}
                     <div className="flex flex-col gap-2">
                         <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
                             {t('date')} *
                         </label>
                         <Input
-                            type="datetime-local"
+                            type="date"
                             {...register('eventDate')}
                             className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                         />
@@ -245,6 +282,81 @@ export default function CreateEventPage() {
                             disabled={isPending}
                             aspect="landscape"
                         />
+                    </div>
+
+                    {/* ── HORAS RELOJ INFORMATIVO (Boletas) ── */}
+                    <div className="mt-2 border-t border-[#1E1E1E] pt-6">
+                        <div className="mb-4 flex items-center gap-3">
+                            <Clock size={18} className="text-[#737373]" />
+                            <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                                {t('infoTimezoneSection')}
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    Inicio *
+                                </label>
+                                <Input
+                                    type="time"
+                                    {...register('eventStartTime')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                />
+                                {errors.eventStartTime && (
+                                    <span className="font-space-mono text-xs text-[#FF3366]">
+                                        {errors.eventStartTime.message}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    Fin
+                                </label>
+                                <Input
+                                    type="time"
+                                    {...register('eventEndTime')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── HORAS RELOJ FANDI (Dinámicas) ── */}
+                    <div className="border-t border-[#1E1E1E] pt-6">
+                        <div className="mb-4 flex items-center gap-3">
+                            <Zap size={18} className="text-[#2D00F7]" />
+                            <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#2D00F7]">
+                                {t('fandiTimezoneSection')}
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('fandiOpensAt')}
+                                </label>
+                                <Input
+                                    type="time"
+                                    {...register('fandiOpensTime')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                />
+                                <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                    {t('fandiOpensHint')}
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('fandiClosesAt')}
+                                </label>
+                                <Input
+                                    type="time"
+                                    {...register('fandiClosesTime')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                />
+                                <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                    {t('fandiClosesHint')}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Submit */}
@@ -323,6 +435,32 @@ export default function CreateEventPage() {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Time previews */}
+                                {(watchAll.eventStartTime || watchAll.eventEndTime) && (
+                                    <div className="flex items-center gap-2 border-t border-[#1E1E1E] pt-3">
+                                        <Clock size={14} className="text-[#737373]" />
+                                        <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
+                                            Boletas:
+                                        </span>
+                                        <span className="font-sora text-sm text-[#A0A0A0]">
+                                            {formatTimeDisplay(watchAll.eventStartTime || '')}
+                                            {watchAll.eventEndTime && ` — ${formatTimeDisplay(watchAll.eventEndTime)}`}
+                                        </span>
+                                    </div>
+                                )}
+                                {(watchAll.fandiOpensTime || watchAll.fandiClosesTime) && (
+                                    <div className="flex items-center gap-2">
+                                        <Zap size={14} className="text-[#2D00F7]" />
+                                        <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#2D00F7]">
+                                            Fandi:
+                                        </span>
+                                        <span className="font-sora text-sm text-[#A0A0A0]">
+                                            {formatTimeDisplay(watchAll.fandiOpensTime || '')}
+                                            {watchAll.fandiClosesTime && ` — ${formatTimeDisplay(watchAll.fandiClosesTime)}`}
+                                        </span>
+                                    </div>
+                                )}
 
                                 {/* Description */}
                                 {watchAll.description && (

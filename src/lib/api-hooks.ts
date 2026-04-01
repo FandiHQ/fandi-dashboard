@@ -60,6 +60,10 @@ export const experiencesApi = {
         unwrap(api.delete(`/dashboard/experiences/${id}`)),
     close: (id: string) =>
         unwrap(api.post(`/dashboard/experiences/${id}/close`)),
+    activate: (id: string) =>
+        unwrap(api.post<Experience>(`/dashboard/experiences/${id}/activate`)),
+    reveal: (id: string) =>
+        unwrap(api.post<Experience>(`/dashboard/experiences/${id}/reveal`)),
     getWinners: (id: string) =>
         unwrap(api.get<WinnersListItem[]>(`/dashboard/experiences/${id}/winners`)),
 };

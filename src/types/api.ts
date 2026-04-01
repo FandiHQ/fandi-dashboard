@@ -42,6 +42,9 @@ export interface Event {
     city: string | null;
     description: string | null;
     eventDate: string;
+    eventEndDate: string | null;
+    fandiOpensAt: string | null;
+    fandiClosesAt: string | null;
     status: EventStatus;
     coverImageUrl: string | null;
     publishedAt: string | null;
@@ -58,6 +61,9 @@ export interface CreateEventDto {
     city?: string;
     description?: string;
     eventDate: string;
+    eventEndDate?: string;
+    fandiOpensAt?: string;
+    fandiClosesAt?: string;
     coverImageUrl?: string;
 }
 
@@ -81,6 +87,13 @@ export interface PreLiveStatsResponse {
 // ── Experiences ──
 export type ExperienceStatus = 'pending' | 'active' | 'closed';
 
+export interface EscuadraInfo {
+    level: number;
+    name: string;
+    minAmount: number;
+    userCount: number;
+}
+
 export interface Experience {
     id: string;
     eventId: string;
@@ -90,15 +103,16 @@ export interface Experience {
     winnersPerEscuadra: number;
     escuadraNames: Record<string, string> | null;
     surpriseReveal: string | null;
+    surpriseRevealedAt: string | null;
+    redemptionInstructions: string | null;
     opensAt: string | null;
     closesAt: string | null;
     status: ExperienceStatus;
-    redemptionInstructions: string | null;
+    closedAt: string | null;
     createdAt: string;
     updatedAt: string;
-    totalRaised?: number;
+    escuadras?: EscuadraInfo[];
     contributorCount?: number;
-    thresholds?: EscuadraThresholds;
 }
 
 export interface EscuadraThresholds {
@@ -111,12 +125,9 @@ export interface EscuadraThresholds {
 export interface CreateExperienceDto {
     name: string;
     description?: string;
-    imageUrl?: string;
     winnersPerEscuadra: number;
     escuadraNames?: Record<string, string>;
     surpriseReveal?: string;
-    opensAt?: string;
-    closesAt?: string;
     redemptionInstructions?: string;
 }
 
