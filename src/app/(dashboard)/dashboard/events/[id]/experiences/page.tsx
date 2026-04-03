@@ -51,29 +51,40 @@ function StatusBadge({ status }: { status: ExperienceStatus }) {
 
 // ── Escuadra distribution bar ──
 function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
-    const total = escuadras.reduce((s, e) => s + e.userCount, 0) || 1;
+    const total = escuadras.reduce((s, e) => s + e.userCount, 0);
     // Sort by level descending: VIP (4) first, Base (1) last
     const sorted = [...escuadras].sort((a, b) => b.level - a.level);
+    const allEmpty = total === 0;
+
     return (
         <div className="flex flex-col gap-2">
+            {/* Color bar */}
             <div className="flex h-3 w-full overflow-hidden" style={{ border: '1px solid #1E1E1E' }}>
                 {sorted.map((esc) => {
-                    const pct = (esc.userCount / total) * 100;
                     const color = ESCUADRA_COLORS[esc.level] || ESCUADRA_COLORS[1];
+
+                    // When no participants, show equal segments at reduced opacity
+                    const widthStyle = allEmpty
+                        ? { flex: 1 }
+                        : { width: `${Math.max((esc.userCount / total) * 100, esc.userCount > 0 ? 4 : 0)}%` };
+
                     return (
                         <div
                             key={esc.level}
                             className="transition-all duration-500"
                             style={{
-                                width: `${Math.max(pct, 2)}%`,
+                                ...widthStyle,
                                 background: color.bar,
+                                opacity: allEmpty ? 0.3 : 1,
                                 boxShadow: esc.userCount > 0 ? `0 0 8px ${color.glow}` : 'none',
                             }}
                         />
                     );
                 })}
             </div>
-            <div className="flex justify-between">
+
+            {/* Labels - always evenly distributed */}
+            <div className="grid" style={{ gridTemplateColumns: `repeat(${sorted.length}, 1fr)` }}>
                 {sorted.map((esc) => {
                     const color = ESCUADRA_COLORS[esc.level] || ESCUADRA_COLORS[1];
                     const name = esc.name || DEFAULT_ESCUADRA_NAMES[esc.level] || `E${esc.level}`;
