@@ -138,12 +138,13 @@ export default function CreateEventPage() {
     const formatPreviewDate = (date: string) => {
         if (!date) return null;
         try {
+            // Append T12:00:00 to avoid UTC-midnight parsing of date-only strings
             return new Intl.DateTimeFormat('es', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric',
-            }).format(new Date(date));
+            }).format(new Date(date + 'T12:00:00'));
         } catch {
             return null;
         }
@@ -270,20 +271,6 @@ export default function CreateEventPage() {
                         />
                     </div>
 
-                    {/* Cover Image */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('coverImage')}
-                        </label>
-                        <ImageUpload
-                            value={coverImageUrl || null}
-                            onChange={(url) => setValue('coverImageUrl', url || '')}
-                            folder="events"
-                            disabled={isPending}
-                            aspect="landscape"
-                        />
-                    </div>
-
                     {/* ── HORAS RELOJ INFORMATIVO (Boletas) ── */}
                     <div className="mt-2 border-t border-[#1E1E1E] pt-6">
                         <div className="mb-4 flex items-center gap-3">
@@ -294,7 +281,7 @@ export default function CreateEventPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
                                     Inicio *
                                 </label>
                                 <Input
@@ -309,7 +296,7 @@ export default function CreateEventPage() {
                                 )}
                             </div>
                             <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
                                     Fin
                                 </label>
                                 <Input
@@ -331,32 +318,46 @@ export default function CreateEventPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    {t('fandiOpensAt')}
+                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
+                                    {t('fandiOpensAt')} *
                                 </label>
                                 <Input
                                     type="time"
                                     {...register('fandiOpensTime')}
                                     className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
-                                <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
                                     {t('fandiOpensHint')}
                                 </p>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    {t('fandiClosesAt')}
+                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
+                                    {t('fandiClosesAt')} *
                                 </label>
                                 <Input
                                     type="time"
                                     {...register('fandiClosesTime')}
                                     className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
-                                <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
                                     {t('fandiClosesHint')}
                                 </p>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Cover Image */}
+                    <div className="flex flex-col gap-2 border-t border-[#1E1E1E] pt-6">
+                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
+                            {t('coverImage')}
+                        </label>
+                        <ImageUpload
+                            value={coverImageUrl || null}
+                            onChange={(url) => setValue('coverImageUrl', url || '')}
+                            folder="events"
+                            disabled={isPending}
+                            aspect="landscape"
+                        />
                     </div>
 
                     {/* Submit */}

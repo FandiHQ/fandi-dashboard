@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import {
     Plus, Loader2, Users, Trophy, Eye, EyeOff,
     Zap, Lock, ChevronDown, ChevronUp, Gift,
-    Pencil, Trash2,
+    Pencil, Trash2, Info, X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { experiencesApi, eventsApi } from '@/lib/api-hooks';
@@ -16,6 +16,8 @@ import type { Experience, CreateExperienceDto, EscuadraInfo, ExperienceStatus } 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { motion } from 'framer-motion';
 
 // ── Escuadra tier colors (from FANDI_DESIGN_WEB.md) ──
 const ESCUADRA_COLORS: Record<number, { bar: string; glow: string; text: string }> = {
@@ -58,24 +60,21 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
 
     return (
         <div className="flex flex-col gap-2">
-            {/* Color bar */}
-            <div className="flex h-3 w-full overflow-hidden" style={{ border: '1px solid #1E1E1E' }}>
-                {sorted.map((esc) => {
+            {/* Progress bars */}
+            <div className="flex h-3 w-full overflow-hidden border border-[#2A2A2A] bg-[#121212]">
+                {[...sorted].reverse().map((esc) => {
+                    const widthPct = total > 0 ? (esc.userCount / total) * 100 : 25;
                     const color = ESCUADRA_COLORS[esc.level] || ESCUADRA_COLORS[1];
-
-                    // When no participants, show equal segments at reduced opacity
-                    const widthStyle = allEmpty
-                        ? { flex: 1 }
-                        : { width: `${Math.max((esc.userCount / total) * 100, esc.userCount > 0 ? 4 : 0)}%` };
 
                     return (
                         <div
                             key={esc.level}
-                            className="transition-all duration-500"
+                            className="h-full transition-all duration-500"
                             style={{
-                                ...widthStyle,
-                                background: color.bar,
-                                opacity: allEmpty ? 0.3 : 1,
+                                width: `${widthPct}%`,
+                                backgroundColor: esc.userCount > 0 ? color.bar : '#1E1E1E',
+                                borderRight: '1px solid #141414',
+                                opacity: esc.userCount > 0 ? 1 : 0.4,
                                 boxShadow: esc.userCount > 0 ? `0 0 8px ${color.glow}` : 'none',
                             }}
                         />
@@ -85,13 +84,19 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
 
             {/* Labels - always evenly distributed */}
             <div className="grid" style={{ gridTemplateColumns: `repeat(${sorted.length}, 1fr)` }}>
-                {sorted.map((esc) => {
+                {[...sorted].reverse().map((esc) => {
                     const color = ESCUADRA_COLORS[esc.level] || ESCUADRA_COLORS[1];
                     const name = esc.name || DEFAULT_ESCUADRA_NAMES[esc.level] || `E${esc.level}`;
+                    const tierLabels: Record<number, string> = {
+                        4: "Bot. 50%",
+                        3: "Sig. 30%",
+                        2: "Sig. 15%",
+                        1: "Top 5%"
+                    };
                     return (
                         <div key={esc.level} className="flex flex-col items-center gap-0.5">
-                            <span className="font-space-mono text-[10px] uppercase tracking-[1px]" style={{ color: color.text }}>
-                                {name}
+                            <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-center" style={{ color: color.text }}>
+                                {name} <span className="block opacity-70">({tierLabels[esc.level] || ''})</span>
                             </span>
                             <span className="font-sora text-[13px] font-bold" style={{ color: color.text }}>
                                 {esc.userCount}
@@ -106,7 +111,7 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
 
 // ── Opportunity card ──
 function OpportunityCard({
-    exp, isWrite, onReveal, onClose, onEdit, onDelete,
+    exp, isWrite, onReveal, onClose, onEdit, onDelete, index,
 }: {
     exp: Experience;
     isWrite: boolean;
@@ -114,13 +119,19 @@ function OpportunityCard({
     onClose: (id: string) => void;
     onEdit: (exp: Experience) => void;
     onDelete: (id: string) => void;
+    index?: number;
 }) {
     const t = useTranslations('experiences');
     const [expanded, setExpanded] = useState(false);
     const escuadras = exp.escuadras || [];
 
     return (
-        <div className="group flex flex-col border border-[#1E1E1E] bg-[#0A0A0A] transition-all duration-200 hover:border-[#2A2A2A]">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: (index ?? 0) * 0.1, duration: 0.3 }}
+            className="group flex flex-col border border-[#1E1E1E] bg-[#0A0A0A] transition-all duration-200 hover:border-[#2A2A2A]"
+        >
             {/* Header */}
             <div className="flex items-start justify-between p-5">
                 <div className="flex flex-col gap-2">
@@ -236,7 +247,7 @@ function OpportunityCard({
                     )}
                 </div>
             )}
-        </div>
+        </motion.div>
     );
 }
 
@@ -314,8 +325,14 @@ function OpportunityFormDialog({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-            <div className="w-full max-w-lg border border-[#1E1E1E] bg-[#0A0A0A] shadow-[0_0_60px_rgba(45,0,247,0.1)]">
+        <div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            onClick={onClose}
+        >
+            <div 
+                className="w-full max-w-lg max-h-[90vh] overflow-y-auto border border-[#1E1E1E] bg-[#0A0A0A] shadow-[0_0_60px_rgba(45,0,247,0.1)] custom-scrollbar"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* HUD bracket top */}
                 <div className="flex items-center gap-2 border-b border-[#1E1E1E] px-6 py-4">
                     <div className="h-3 w-1 bg-[#2D00F7]" />
@@ -366,18 +383,38 @@ function OpportunityFormDialog({
                     </div>
 
                     {/* Escuadra Names */}
-                    <div className="flex flex-col gap-3 border-t border-[#1E1E1E] pt-4">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            Nombres de Escuadras (opcional)
-                        </label>
-                        <div className="grid grid-cols-2 gap-3">
-                            {[4, 3, 2, 1].map((level) => {
+                    <div className="mt-4 flex flex-col gap-4 border border-[#2A2A2A] bg-[#0A0A0A] p-5 shadow-inner transition-colors duration-300 hover:border-[#4A4A4A]">
+                        <div className="flex items-center gap-2">
+                            <label className="font-space-mono text-[13px] uppercase tracking-[2px] text-white">
+                                Nombres y Distribución de Escuadras
+                            </label>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button type="button" className="cursor-help text-[#2D00F7] transition-colors hover:text-white hover:drop-shadow-[0_0_8px_rgba(45,0,247,0.8)] focus:outline-none">
+                                            <Info size={16} />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-[280px] rounded-none border-[#2D00F7] bg-[#020202] py-3 pl-3 pr-4 font-sora text-[12px] leading-relaxed text-[#A0A0A0] shadow-[0_0_20px_rgba(45,0,247,0.2)]">
+                                        Las Escuadras agrupan a los participantes según sus contribuciones. <strong className="text-[#FFD700]">Nivel 1</strong> agrupa al Top 5% dándoles la mayor probabilidad de ganar al competir contra menos personas.
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            {[1, 2, 3, 4].map((level) => {
                                 const color = ESCUADRA_COLORS[level];
                                 const placeholder = DEFAULT_ESCUADRA_NAMES[level];
+                                const tierLabels: Record<number, string> = {
+                                    4: "Bot. 50%",
+                                    3: "Sig. 30%",
+                                    2: "Sig. 15%",
+                                    1: "Top 5%"
+                                };
                                 return (
-                                    <div key={level} className="flex flex-col gap-1">
-                                        <span className="font-space-mono text-[10px] uppercase tracking-[1px]" style={{ color: color.text }}>
-                                            Nivel {level}
+                                    <div key={level} className="flex flex-col gap-1.5">
+                                        <span className="font-space-mono text-[11px] font-bold uppercase tracking-[1px]" style={{ color: color.text }}>
+                                            Nivel {level} <span className="font-normal opacity-70">({tierLabels[level]})</span>
                                         </span>
                                         <Input
                                             value={escuadraNames[String(level)]}
@@ -390,8 +427,8 @@ function OpportunityFormDialog({
                                 );
                             })}
                         </div>
-                        <p className="font-space-mono text-[10px] text-[#4A4A4A]">
-                            Deja vacío para usar: VIP, Alta, Media, Base
+                        <p className="font-space-mono text-[10px] text-[#737373]">
+                            Opcional. Deja vacío para usar nombres por defecto.
                         </p>
                     </div>
 
@@ -454,6 +491,7 @@ export default function OportunidadesPage() {
 
     const [showForm, setShowForm] = useState(false);
     const [editingExp, setEditingExp] = useState<Experience | null>(null);
+    const [showBanner, setShowBanner] = useState(true);
 
     const { data: experiences, isLoading } = useQuery({
         queryKey: ['experiences', eventId],
@@ -518,6 +556,26 @@ export default function OportunidadesPage() {
 
     return (
         <div className="flex flex-col gap-8 p-8">
+            {/* ── Banner ── */}
+            {showBanner && (
+                <div className="relative flex flex-col gap-3 border border-[#2D00F7] bg-[#2D00F705] p-6 shadow-[0_0_30px_rgba(45,0,247,0.1)] transition-all">
+                    <button 
+                        onClick={() => setShowBanner(false)}
+                        className="absolute right-4 top-4 cursor-pointer text-[#A0A0A0] transition-colors hover:text-white"
+                        aria-label="Cerrar banner"
+                    >
+                        <X size={18} />
+                    </button>
+                    <div className="flex items-center gap-3 text-[#2D00F7]">
+                        <Info size={20} />
+                        <h3 className="font-space-mono text-sm uppercase tracking-[2px]">¿Qué son las Oportunidades?</h3>
+                    </div>
+                    <p className="font-sora text-[15px] leading-relaxed text-[#E0E0E0]">
+                        Las Oportunidades son rifas escalonadas. Los fans participan fandeando (tokens) para ganar experiencias o artículos VIP. Se dividen en <span className="font-bold text-[#FFD700]">4 Escuadras</span> según su nivel de fandeo: a mayor Escuadra, compites contra menos personas por el mismo premio, aumentando tus posibilidades de ganar.
+                    </p>
+                </div>
+            )}
+
             {/* ── Header ── */}
             <div className="flex items-start justify-between">
                 <div className="flex flex-col gap-2">
@@ -553,11 +611,19 @@ export default function OportunidadesPage() {
 
             {/* ── Empty ── */}
             {!isLoading && (!experiences || experiences.length === 0) && (
-                <div className="flex flex-col items-center justify-center gap-4 py-20">
-                    <Zap size={48} className="text-[#1E1E1E]" />
-                    <p className="font-space-mono text-sm uppercase tracking-[1px] text-[#4A4A4A]">
-                        {t('noOpportunities')}
-                    </p>
+                <div className="flex flex-col items-center justify-center gap-6 border border-dashed border-[#2A2A2A] bg-[#121212] py-24 text-center">
+                    <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden border border-[#2D00F7] bg-[#0A0A0A] shadow-[0_0_40px_rgba(45,0,247,0.2)]">
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(45,0,247,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(45,0,247,0.1)_1px,transparent_1px)] bg-[size:4px_4px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)] opacity-50" />
+                        <Gift size={40} className="relative z-10 text-[#2D00F7]" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <p className="font-space-mono text-[16px] uppercase tracking-[2px] text-white">
+                            No hay recompensas configuradas
+                        </p>
+                        <p className="font-sora text-[14px] text-[#A0A0A0]">
+                            Activa la primera oportunidad para tus fans.
+                        </p>
+                    </div>
                 </div>
             )}
 
@@ -570,7 +636,7 @@ export default function OportunidadesPage() {
                             Activas ({active.length})
                         </h2>
                     </div>
-                    {active.map((exp) => (
+                    {active.map((exp, idx) => (
                         <OpportunityCard
                             key={exp.id}
                             exp={exp}
@@ -579,6 +645,7 @@ export default function OportunidadesPage() {
                             onClose={handleClose}
                             onEdit={handleEdit}
                             onDelete={handleDelete}
+                            index={idx}
                         />
                     ))}
                 </section>
@@ -590,7 +657,7 @@ export default function OportunidadesPage() {
                     <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
                         Pendientes ({pending.length})
                     </h2>
-                    {pending.map((exp) => (
+                    {pending.map((exp, idx) => (
                         <OpportunityCard
                             key={exp.id}
                             exp={exp}
@@ -599,6 +666,7 @@ export default function OportunidadesPage() {
                             onClose={handleClose}
                             onEdit={handleEdit}
                             onDelete={handleDelete}
+                            index={idx}
                         />
                     ))}
                 </section>
@@ -610,7 +678,7 @@ export default function OportunidadesPage() {
                     <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#FF3366]">
                         Cerradas ({closed.length})
                     </h2>
-                    {closed.map((exp) => (
+                    {closed.map((exp, idx) => (
                         <OpportunityCard
                             key={exp.id}
                             exp={exp}
@@ -619,6 +687,7 @@ export default function OportunidadesPage() {
                             onClose={handleClose}
                             onEdit={handleEdit}
                             onDelete={handleDelete}
+                            index={idx}
                         />
                     ))}
                 </section>

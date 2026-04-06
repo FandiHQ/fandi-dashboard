@@ -10,6 +10,8 @@ import { eventsApi, analyticsApi } from '@/lib/api-hooks';
 import { formatFandis, formatUsd } from '@/lib/currency';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { motion } from 'framer-motion';
 
 export default function EventOverviewPage() {
     const params = useParams();
@@ -85,7 +87,7 @@ export default function EventOverviewPage() {
             <div className={isLive ? 'live-pulse-container rounded-none border border-[#1E1E1E] p-4' : ''}>
                 <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
                     {/* Total Recaudado */}
-                    <div className="hud-card flex flex-col gap-1 rounded-none p-5">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }} className="hud-card flex flex-col gap-1 rounded-none p-5">
                         <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373]">
                             {t('totalRaised')}
                         </span>
@@ -103,10 +105,10 @@ export default function EventOverviewPage() {
                                 </span>
                             </div>
                         )}
-                    </div>
+                    </motion.div>
 
                     {/* Participantes */}
-                    <div className="hud-card flex flex-col gap-1 rounded-none p-5">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4 }} className="hud-card flex flex-col gap-1 rounded-none p-5">
                         <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373]">
                             {t('participants')}
                         </span>
@@ -119,39 +121,53 @@ export default function EventOverviewPage() {
                                 {summary?.uniqueParticipants ?? 0}
                             </span>
                         )}
-                    </div>
+                    </motion.div>
 
                     {/* Oportunidades */}
-                    <div className="hud-card flex flex-col gap-1 rounded-none p-5">
-                        <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373]">
-                            {t('tabs.experiences')}
-                        </span>
-                        {isDraft ? (
-                            <span className="font-sora text-[32px] font-semibold text-[#4A4A4A]">--</span>
-                        ) : summaryLoading ? (
-                            <Skeleton className="h-10 w-16 rounded-none bg-[#1E1E1E]" />
-                        ) : (
-                            <span className="font-sora text-[32px] font-semibold text-white">
-                                {summary?.experienceCount ?? 0}
-                            </span>
-                        )}
-                    </div>
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }} className="h-full">
+                        <Link href={`/dashboard/events/${eventId}/experiences`} className="hud-card group flex h-full flex-col gap-1 rounded-none p-5 transition-all duration-300 hover:border-[#2D00F7] hover:bg-[#2D00F705] hover:shadow-[0_0_20px_rgba(45,0,247,0.15)] focus:outline-none">
+                            <div className="flex items-center justify-between">
+                                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373] transition-colors group-hover:text-[#2D00F7]">
+                                    {t('tabs.experiences')}
+                                </span>
+                                <span className="font-space-mono text-[10px] text-transparent transition-colors group-hover:text-[#2D00F7]">
+                                    SELECCIONAR
+                                </span>
+                            </div>
+                            {isDraft ? (
+                                <span className="font-sora text-[32px] font-semibold text-[#4A4A4A]">--</span>
+                            ) : summaryLoading ? (
+                                <Skeleton className="h-10 w-16 rounded-none bg-[#1E1E1E]" />
+                            ) : (
+                                <span className="font-sora text-[32px] font-semibold text-white">
+                                    {summary?.experienceCount ?? 0}
+                                </span>
+                            )}
+                        </Link>
+                    </motion.div>
 
                     {/* Subastas */}
-                    <div className="hud-card flex flex-col gap-1 rounded-none p-5">
-                        <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373]">
-                            {t('tabs.auctions')}
-                        </span>
-                        {isDraft ? (
-                            <span className="font-sora text-[32px] font-semibold text-[#4A4A4A]">--</span>
-                        ) : summaryLoading ? (
-                            <Skeleton className="h-10 w-16 rounded-none bg-[#1E1E1E]" />
-                        ) : (
-                            <span className="font-sora text-[32px] font-semibold text-white">
-                                {summary?.auctionCount ?? 0}
-                            </span>
-                        )}
-                    </div>
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.4 }} className="h-full">
+                        <Link href={`/dashboard/events/${eventId}/auctions`} className="hud-card group flex h-full flex-col gap-1 rounded-none p-5 transition-all duration-300 hover:border-[var(--color-tactical-magenta)] hover:bg-[#FF005505] hover:shadow-[0_0_20px_rgba(255,0,85,0.15)] focus:outline-none">
+                            <div className="flex items-center justify-between">
+                                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373] transition-colors group-hover:text-[var(--color-tactical-magenta)]">
+                                    {t('tabs.auctions')}
+                                </span>
+                                <span className="font-space-mono text-[10px] text-transparent transition-colors group-hover:text-[var(--color-tactical-magenta)]">
+                                    SELECCIONAR
+                                </span>
+                            </div>
+                            {isDraft ? (
+                                <span className="font-sora text-[32px] font-semibold text-[#4A4A4A]">--</span>
+                            ) : summaryLoading ? (
+                                <Skeleton className="h-10 w-16 rounded-none bg-[#1E1E1E]" />
+                            ) : (
+                                <span className="font-sora text-[32px] font-semibold text-white">
+                                    {summary?.auctionCount ?? 0}
+                                </span>
+                            )}
+                        </Link>
+                    </motion.div>
                 </div>
             </div>
 
@@ -232,12 +248,12 @@ export default function EventOverviewPage() {
                     {(formatTime(event.eventDate) || formatTime(event.eventEndDate)) && (
                         <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
-                                <Clock size={14} className="text-[#737373]" />
-                                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#737373]">
+                                <Clock size={16} className="text-[#737373]" />
+                                <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#737373]">
                                     Reloj Informativo (Boletas)
                                 </span>
                             </div>
-                            <div className="flex items-center gap-2 pl-5">
+                            <div className="flex items-center gap-2 pl-6">
                                 <span className="font-sora text-lg text-white">
                                     {formatTime(event.eventDate)}
                                     {formatTime(event.eventEndDate) && ` — ${formatTime(event.eventEndDate)}`}
@@ -250,12 +266,12 @@ export default function EventOverviewPage() {
                     {(event.fandiOpensAt || event.fandiClosesAt) && (
                         <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
-                                <Zap size={14} className="text-[#2D00F7]" />
-                                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#2D00F7]">
+                                <Zap size={16} className="text-[#2D00F7]" />
+                                <span className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
                                     Reloj Fandi (Dinámicas)
                                 </span>
                             </div>
-                            <div className="flex items-center gap-2 pl-5">
+                            <div className="flex items-center gap-2 pl-6">
                                 <span className="font-sora text-lg text-white">
                                     {formatTime(event.fandiOpensAt) || '--:--'}
                                     {' — '}

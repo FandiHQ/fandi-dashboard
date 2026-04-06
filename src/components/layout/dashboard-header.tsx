@@ -179,14 +179,17 @@ export function DashboardHeader() {
             </div>
 
             {/* Right: user info + role badge (desktop only) */}
-            <div className="ml-auto hidden items-center gap-4 lg:flex">
-                <div className="flex flex-col items-end">
-                    <span className="font-space-mono text-sm text-[#E0E0E0]">
+            <Link 
+                href="/dashboard/settings"
+                className="group ml-auto hidden cursor-pointer items-center gap-4 transition-all duration-300 lg:flex"
+            >
+                <div className="flex flex-col items-end transition-colors duration-300 group-hover:text-[var(--color-tactical-acid)]">
+                    <span className="font-space-mono text-sm text-[#E0E0E0] transition-colors duration-300 group-hover:text-white">
                         {user?.displayName}
                     </span>
                     {memberRole && <RoleBadge role={memberRole} />}
                 </div>
-                <div className="group relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-none border border-[#2A2A2A] bg-[#121212] transition-colors duration-300 hover:border-[var(--color-tactical-acid)]">
+                <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-none border border-[#2A2A2A] bg-[#121212] transition-all duration-300 group-hover:border-[var(--color-tactical-acid)] group-hover:shadow-[0_0_15px_rgba(204,255,0,0.3)]">
                     {user?.avatarUrl ? (
                         <Image
                             src={user.avatarUrl}
@@ -202,7 +205,7 @@ export function DashboardHeader() {
                         </span>
                     )}
                 </div>
-            </div>
+            </Link>
         </header>
     );
 }

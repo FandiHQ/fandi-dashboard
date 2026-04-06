@@ -330,3 +330,19 @@ html {
   0%, 100% { box-shadow: 0 0 8px rgba(255,0,85,0.3), inset 0 0 8px rgba(255,0,85,0.05); }
   50% { box-shadow: 0 0 20px rgba(255,0,85,0.5), inset 0 0 12px rgba(255,0,85,0.1); }
 }
+/* Fandi Custom Scrollbar */
+::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track {
+  background: #0A0A0A;
+  border-left: 1px solid #141414;
+}
+::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2D00F7;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover, .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #4A00E0;
+}

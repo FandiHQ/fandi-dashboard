@@ -3,7 +3,7 @@
 import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2, Timer, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
@@ -19,7 +19,7 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import type { PreLiveStatsResponse } from '@/types/api';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const TABS = [
     { key: 'resumen', path: '', label: 'tabs.overview' },
@@ -243,6 +243,11 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 )}
             </div>
 
+            {/* ── Fandi Countdown ── */}
+            {event.fandiOpensAt && (event.status === 'published' || event.status === 'draft') && (
+                <FandiCountdown fandiOpensAt={event.fandiOpensAt} />
+            )}
+
             {/* ── Tabs ── */}
             <Tabs value={activeTab} onValueChange={handleTabChange}>
                 <TabsList className="w-full justify-start gap-0 rounded-none border-b border-[#1E1E1E] bg-transparent">
@@ -320,12 +325,8 @@ function GoLiveButton({
                 ) : stats ? (
                     <div className="scanlines relative flex flex-col gap-4">
                         <ChecklistItem
-                            label={t('checkExperiences')}
-                            passed={stats.experienceCount > 0}
-                        />
-                        <ChecklistItem
-                            label={t('checkExperiencesReady')}
-                            passed={stats.experiencesReady}
+                            label={`${t('checkExperiences')} (${stats.experienceCount})`}
+                            passed={stats.experienceCount > 0 && stats.experiencesReady}
                         />
                         <ChecklistItem
                             label={t('checkPublished')}
@@ -441,3 +442,78 @@ function ChecklistItem({ label, passed, optional }: { label: string; passed: boo
     );
 }
 
+// ── Fandi Countdown Timer ──
+
+function FandiCountdown({ fandiOpensAt }: { fandiOpensAt: string | Date }) {
+    const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
+    const [isPast, setIsPast] = useState(false);
+
+    useEffect(() => {
+        const target = new Date(fandiOpensAt).getTime();
+
+        const tick = () => {
+            const now = Date.now();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                setIsPast(true);
+                setTimeLeft(null);
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            setTimeLeft({ d, h, m, s });
+        };
+
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    }, [fandiOpensAt]);
+
+    if (isPast) {
+        return (
+            <div className="flex items-center gap-3 border border-[#2D00F7] bg-[#2D00F710] px-5 py-3">
+                <Zap size={16} className="text-[#2D00F7]" />
+                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#2D00F7]">
+                    Dinámicas Fandi listas para activar
+                </span>
+            </div>
+        );
+    }
+
+    if (!timeLeft) return null;
+
+    const units = [
+        { label: 'D', value: timeLeft.d },
+        { label: 'H', value: timeLeft.h },
+        { label: 'M', value: timeLeft.m },
+        { label: 'S', value: timeLeft.s },
+    ];
+
+    return (
+        <div className="flex items-center gap-4 border border-[#1E1E1E] bg-[#0A0A0A] px-5 py-3">
+            <div className="flex items-center gap-2">
+                <Timer size={16} className="text-[#2D00F7]" />
+                <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                    Fandi abre en
+                </span>
+            </div>
+            <div className="flex items-center gap-1">
+                {units.map((u) => (
+                    <div key={u.label} className="flex items-baseline gap-0.5">
+                        <span className="min-w-[28px] text-center font-sora text-[22px] font-bold tabular-nums text-white">
+                            {String(u.value).padStart(2, '0')}
+                        </span>
+                        <span className="font-space-mono text-[9px] text-[#4A4A4A]">{u.label}</span>
+                        {u.label !== 'S' && (
+                            <span className="mx-0.5 font-sora text-[18px] font-light text-[#2A2A2A]">:</span>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
