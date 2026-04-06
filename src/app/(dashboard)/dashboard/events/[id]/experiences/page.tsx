@@ -72,9 +72,9 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
                             className="h-full transition-all duration-500"
                             style={{
                                 width: `${widthPct}%`,
-                                backgroundColor: esc.userCount > 0 ? color.bar : '#1E1E1E',
+                                backgroundColor: esc.userCount > 0 ? color.bar : color.bar,
                                 borderRight: '1px solid #141414',
-                                opacity: esc.userCount > 0 ? 1 : 0.4,
+                                opacity: esc.userCount > 0 ? 1 : 0.15,
                                 boxShadow: esc.userCount > 0 ? `0 0 8px ${color.glow}` : 'none',
                             }}
                         />
@@ -88,10 +88,10 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
                     const color = ESCUADRA_COLORS[esc.level] || ESCUADRA_COLORS[1];
                     const name = esc.name || DEFAULT_ESCUADRA_NAMES[esc.level] || `E${esc.level}`;
                     const tierLabels: Record<number, string> = {
-                        4: "Bot. 50%",
-                        3: "Sig. 30%",
-                        2: "Sig. 15%",
-                        1: "Top 5%"
+                        4: "Top 5%",
+                        3: "Sig. 15%",
+                        2: "Sig. 30%",
+                        1: "Bot. 50%"
                     };
                     return (
                         <div key={esc.level} className="flex flex-col items-center gap-0.5">
@@ -100,6 +100,12 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
                             </span>
                             <span className="font-sora text-[13px] font-bold" style={{ color: color.text }}>
                                 {esc.userCount}
+                            </span>
+                            <span className="font-space-mono text-[8px] uppercase tracking-[1px] opacity-50" style={{ color: color.text }}>
+                                {esc.userCount === 1 ? 'fan' : 'fans'}
+                            </span>
+                            <span className="mt-0.5 font-space-mono text-[8px] tracking-[0.5px] opacity-40" style={{ color: color.text }}>
+                                {esc.minAmount > 0 ? `≥ ${esc.minAmount} fandis` : '—'}
                             </span>
                         </div>
                     );
@@ -330,11 +336,11 @@ function OpportunityFormDialog({
             onClick={onClose}
         >
             <div 
-                className="w-full max-w-lg max-h-[90vh] overflow-y-auto border border-[#1E1E1E] bg-[#0A0A0A] shadow-[0_0_60px_rgba(45,0,247,0.1)] custom-scrollbar"
+                className="flex w-full max-w-lg max-h-[90vh] flex-col border border-[#1E1E1E] bg-[#0A0A0A] shadow-[0_0_60px_rgba(45,0,247,0.1)]"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* HUD bracket top */}
-                <div className="flex items-center gap-2 border-b border-[#1E1E1E] px-6 py-4">
+                <div className="flex shrink-0 items-center gap-2 border-b border-[#1E1E1E] px-6 py-4">
                     <div className="h-3 w-1 bg-[#2D00F7]" />
                     <h2 className="font-space-mono text-[14px] uppercase tracking-[2px] text-white">
                         {isEditing ? 'Editar Oportunidad' : t('add')}
@@ -342,137 +348,145 @@ function OpportunityFormDialog({
                     <div className="ml-auto h-3 w-1 bg-[#2D00F7]" />
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('name')} *
-                        </label>
-                        <Input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder={t('name')}
-                            className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
-                        />
-                    </div>
+                <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+                    {/* Scrollable form content */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+                        <div className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('name')} *
+                                </label>
+                                <Input
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder={t('name')}
+                                    className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                />
+                            </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('description')}
-                        </label>
-                        <Textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            rows={3}
-                            className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
-                        />
-                    </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('description')}
+                                </label>
+                                <Textarea
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    rows={3}
+                                    className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                />
+                            </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('winnersPerEscuadra')}
-                        </label>
-                        <Input
-                            type="number"
-                            min={1}
-                            max={100}
-                            value={winnersPerEscuadra}
-                            onChange={(e) => setWinnersPerEscuadra(Number(e.target.value))}
-                            className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
-                        />
-                        <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('distribution')}</p>
-                    </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('winnersPerEscuadra')}
+                                </label>
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    max={100}
+                                    value={winnersPerEscuadra}
+                                    onChange={(e) => setWinnersPerEscuadra(Number(e.target.value))}
+                                    className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
+                                />
+                                <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('distribution')}</p>
+                            </div>
 
-                    {/* Escuadra Names */}
-                    <div className="mt-4 flex flex-col gap-4 border border-[#2A2A2A] bg-[#0A0A0A] p-5 shadow-inner transition-colors duration-300 hover:border-[#4A4A4A]">
-                        <div className="flex items-center gap-2">
-                            <label className="font-space-mono text-[13px] uppercase tracking-[2px] text-white">
-                                Nombres y Distribución de Escuadras
-                            </label>
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <button type="button" className="cursor-help text-[#2D00F7] transition-colors hover:text-white hover:drop-shadow-[0_0_8px_rgba(45,0,247,0.8)] focus:outline-none">
-                                            <Info size={16} />
-                                        </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent className="max-w-[280px] rounded-none border-[#2D00F7] bg-[#020202] py-3 pl-3 pr-4 font-sora text-[12px] leading-relaxed text-[#A0A0A0] shadow-[0_0_20px_rgba(45,0,247,0.2)]">
-                                        Las Escuadras agrupan a los participantes según sus contribuciones. <strong className="text-[#FFD700]">Nivel 1</strong> agrupa al Top 5% dándoles la mayor probabilidad de ganar al competir contra menos personas.
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                            {/* Escuadra Names */}
+                            <div className="mt-4 flex flex-col gap-4 border border-[#2A2A2A] bg-[#0A0A0A] p-5 shadow-inner transition-colors duration-300 hover:border-[#4A4A4A]">
+                                <div className="flex items-center gap-2">
+                                    <label className="font-space-mono text-[13px] uppercase tracking-[2px] text-white">
+                                        Nombres y Distribución de Escuadras
+                                    </label>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button type="button" className="cursor-help text-[#2D00F7] transition-colors hover:text-white hover:drop-shadow-[0_0_8px_rgba(45,0,247,0.8)] focus:outline-none">
+                                                    <Info size={16} />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-[280px] rounded-none border-[#2D00F7] bg-[#020202] py-3 pl-3 pr-4 font-sora text-[12px] leading-relaxed text-[#A0A0A0] shadow-[0_0_20px_rgba(45,0,247,0.2)]">
+                                                Las Escuadras agrupan a los participantes según sus contribuciones. <strong className="text-[#FFD700]">Nivel 1</strong> agrupa al Top 5% dándoles la mayor probabilidad de ganar al competir contra menos personas.
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {[4, 3, 2, 1].map((level) => {
+                                        const color = ESCUADRA_COLORS[level];
+                                        const placeholder = DEFAULT_ESCUADRA_NAMES[level];
+                                        const tierLabels: Record<number, string> = {
+                                            4: "Top 5%",
+                                            3: "Sig. 15%",
+                                            2: "Sig. 30%",
+                                            1: "Bot. 50%"
+                                        };
+                                        return (
+                                            <div key={level} className="flex flex-col gap-1.5">
+                                                <span className="font-space-mono text-[11px] font-bold uppercase tracking-[1px]" style={{ color: color.text }}>
+                                                    Nivel {level} <span className="font-normal opacity-70">({tierLabels[level]})</span>
+                                                </span>
+                                                <Input
+                                                    value={escuadraNames[String(level)]}
+                                                    onChange={(e) => setEscuadraNames(prev => ({ ...prev, [String(level)]: e.target.value }))}
+                                                    placeholder={placeholder}
+                                                    className="h-10 rounded-none border-[#2A2A2A] bg-[#141414] px-3 font-sora text-sm text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                                    style={{ borderColor: color.bar + '40' }}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <p className="font-space-mono text-[10px] text-[#737373]">
+                                    Opcional. Deja vacío para usar nombres por defecto.
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('surpriseReveal')}
+                                </label>
+                                <Input
+                                    value={surpriseReveal}
+                                    onChange={(e) => setSurpriseReveal(e.target.value)}
+                                    placeholder="Ej: ¡Backstage pass incluido!"
+                                    className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('redemptionInstructions')}
+                                </label>
+                                <Textarea
+                                    value={redemptionInstructions}
+                                    onChange={(e) => setRedemptionInstructions(e.target.value)}
+                                    rows={2}
+                                    placeholder="Ej: Presentarse en la entrada VIP con QR"
+                                    className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                />
+                            </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            {[1, 2, 3, 4].map((level) => {
-                                const color = ESCUADRA_COLORS[level];
-                                const placeholder = DEFAULT_ESCUADRA_NAMES[level];
-                                const tierLabels: Record<number, string> = {
-                                    4: "Bot. 50%",
-                                    3: "Sig. 30%",
-                                    2: "Sig. 15%",
-                                    1: "Top 5%"
-                                };
-                                return (
-                                    <div key={level} className="flex flex-col gap-1.5">
-                                        <span className="font-space-mono text-[11px] font-bold uppercase tracking-[1px]" style={{ color: color.text }}>
-                                            Nivel {level} <span className="font-normal opacity-70">({tierLabels[level]})</span>
-                                        </span>
-                                        <Input
-                                            value={escuadraNames[String(level)]}
-                                            onChange={(e) => setEscuadraNames(prev => ({ ...prev, [String(level)]: e.target.value }))}
-                                            placeholder={placeholder}
-                                            className="h-10 rounded-none border-[#2A2A2A] bg-[#141414] px-3 font-sora text-sm text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
-                                            style={{ borderColor: color.bar + '40' }}
-                                        />
-                                    </div>
-                                );
-                            })}
+                    </div>
+
+                    {/* Sticky footer — always visible */}
+                    <div className="shrink-0 border-t border-[#1E1E1E] bg-[#0A0A0A] px-6 py-4">
+                        <div className="flex gap-3">
+                            <button
+                                type="submit"
+                                disabled={!name.trim() || isPending}
+                                className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {isPending && <Loader2 size={14} className="animate-spin" />}
+                                {isEditing ? 'Guardar' : t('add')}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="cursor-pointer border border-[#2A2A2A] bg-transparent px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-[#A0A0A0] transition-colors hover:border-[#4A4A4A] hover:text-white"
+                            >
+                                Cancelar
+                            </button>
                         </div>
-                        <p className="font-space-mono text-[10px] text-[#737373]">
-                            Opcional. Deja vacío para usar nombres por defecto.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('surpriseReveal')}
-                        </label>
-                        <Input
-                            value={surpriseReveal}
-                            onChange={(e) => setSurpriseReveal(e.target.value)}
-                            placeholder="Ej: ¡Backstage pass incluido!"
-                            className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('redemptionInstructions')}
-                        </label>
-                        <Textarea
-                            value={redemptionInstructions}
-                            onChange={(e) => setRedemptionInstructions(e.target.value)}
-                            rows={2}
-                            placeholder="Ej: Presentarse en la entrada VIP con QR"
-                            className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
-                        />
-                    </div>
-
-                    <div className="flex gap-3 pt-2">
-                        <button
-                            type="submit"
-                            disabled={!name.trim() || isPending}
-                            className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {isPending && <Loader2 size={14} className="animate-spin" />}
-                            {isEditing ? 'Guardar' : t('add')}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="cursor-pointer border border-[#2A2A2A] bg-transparent px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-[#A0A0A0] transition-colors hover:border-[#4A4A4A] hover:text-white"
-                        >
-                            Cancelar
-                        </button>
                     </div>
                 </form>
             </div>

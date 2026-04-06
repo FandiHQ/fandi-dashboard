@@ -84,14 +84,6 @@ export default function CreateEventPage() {
                         path: ['fandiOpensTime'],
                     });
                 }
-                // Fandi closes should not be after event ends
-                if (data.fandiClosesTime && data.eventEndTime && data.fandiClosesTime > data.eventEndTime) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: 'Fandi no puede cerrar después de que el evento termine',
-                        path: ['fandiClosesTime'],
-                    });
-                }
             }),
         [],
     );

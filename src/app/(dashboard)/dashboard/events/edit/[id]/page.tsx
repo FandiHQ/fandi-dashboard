@@ -114,14 +114,6 @@ export default function EditEventPage() {
                         path: ['fandiOpensTime'],
                     });
                 }
-                // Fandi closes should not be after event ends
-                if (data.fandiClosesTime && data.eventEndTime && data.fandiClosesTime > data.eventEndTime) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: 'Fandi no puede cerrar después de que el evento termine',
-                        path: ['fandiClosesTime'],
-                    });
-                }
             }),
         [],
     );
@@ -134,7 +126,7 @@ export default function EditEventPage() {
         setValue,
         watch,
         reset,
-        formState: { errors, isDirty },
+        formState: { errors, isDirty, isValid },
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
         mode: 'onChange',
@@ -478,7 +470,7 @@ export default function EditEventPage() {
                     <div className="flex gap-4">
                         <button
                             type="submit"
-                            disabled={!isDirty || isPending}
+                            disabled={!isDirty || !isValid || isPending}
                             className="flex h-16 flex-1 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] px-8 font-space-mono text-[16px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isPending ? (
