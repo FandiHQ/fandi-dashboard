@@ -89,6 +89,39 @@ export default function EditEventPage() {
                     .url('URL no válida')
                     .optional()
                     .or(z.literal('')),
+            }).superRefine((data, ctx) => {
+                // Event end must be after event start
+                if (data.eventEndTime && data.eventStartTime && data.eventEndTime <= data.eventStartTime) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'La hora de fin debe ser posterior a la hora de inicio',
+                        path: ['eventEndTime'],
+                    });
+                }
+                // Fandi closes must be after Fandi opens
+                if (data.fandiClosesTime && data.fandiOpensTime && data.fandiClosesTime <= data.fandiOpensTime) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Fandi debe cerrar después de abrir',
+                        path: ['fandiClosesTime'],
+                    });
+                }
+                // Fandi opens should not be after event ends
+                if (data.fandiOpensTime && data.eventEndTime && data.fandiOpensTime > data.eventEndTime) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Fandi no puede abrir después de que el evento termine',
+                        path: ['fandiOpensTime'],
+                    });
+                }
+                // Fandi closes should not be after event ends
+                if (data.fandiClosesTime && data.eventEndTime && data.fandiClosesTime > data.eventEndTime) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'Fandi no puede cerrar después de que el evento termine',
+                        path: ['fandiClosesTime'],
+                    });
+                }
             }),
         [],
     );
@@ -370,6 +403,11 @@ export default function EditEventPage() {
                                     {...register('eventEndTime')}
                                     className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
+                                {errors.eventEndTime && (
+                                    <span className="font-space-mono text-xs text-[#FF3366]">
+                                        {errors.eventEndTime.message}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -392,6 +430,11 @@ export default function EditEventPage() {
                                     {...register('fandiOpensTime')}
                                     className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
+                                {errors.fandiOpensTime && (
+                                    <span className="font-space-mono text-xs text-[#FF3366]">
+                                        {errors.fandiOpensTime.message}
+                                    </span>
+                                )}
                                 <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
                                     {t('fandiOpensHint')}
                                 </p>
@@ -405,6 +448,11 @@ export default function EditEventPage() {
                                     {...register('fandiClosesTime')}
                                     className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
+                                {errors.fandiClosesTime && (
+                                    <span className="font-space-mono text-xs text-[#FF3366]">
+                                        {errors.fandiClosesTime.message}
+                                    </span>
+                                )}
                                 <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
                                     {t('fandiClosesHint')}
                                 </p>
