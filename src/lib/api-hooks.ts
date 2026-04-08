@@ -11,6 +11,7 @@ import type {
     LivePulseResponse, WinnersListItem, WinnersListQuery,
     PaginatedResponse, ScanResultResponse, RedemptionStats,
     NotificationSendResult,
+    BadgeTemplate, CreateBadgeTemplateDto, UpdateBadgeTemplateDto,
 } from '@/types/api';
 
 // ── Helper: extract .data from AxiosResponse ──
@@ -145,4 +146,18 @@ export const notificationsApi = {
         unwrap(api.post<NotificationSendResult>(`/dashboard/events/${eventId}/notify/event-reminder`)),
     sendNextEvent: (eventId: string) =>
         unwrap(api.post<NotificationSendResult>(`/dashboard/events/${eventId}/notify/next-event`)),
+};
+
+// ── Badge Templates ──
+export const badgeTemplatesApi = {
+    list: (eventId: string) =>
+        unwrap(api.get<BadgeTemplate[]>(`/dashboard/events/${eventId}/badge-templates`)),
+    get: (id: string) =>
+        unwrap(api.get<BadgeTemplate>(`/dashboard/badge-templates/${id}`)),
+    create: (eventId: string, dto: CreateBadgeTemplateDto) =>
+        unwrap(api.post<BadgeTemplate>(`/dashboard/events/${eventId}/badge-templates`, dto)),
+    update: (id: string, dto: UpdateBadgeTemplateDto) =>
+        unwrap(api.put<BadgeTemplate>(`/dashboard/badge-templates/${id}`, dto)),
+    delete: (id: string) =>
+        unwrap(api.delete(`/dashboard/badge-templates/${id}`)),
 };

@@ -326,5 +326,37 @@
         "contact": "hola@fandi.app",
         "madeIn": "Made with 💜 in Colombia",
         "copyright": "© 2026 Fandi. All rights reserved."
+    },
+    "badges": {
+        "title": "Badges",
+        "subtitle": "Configure badges awarded to fans",
+        "create": "Create Badge",
+        "edit": "Edit Badge",
+        "created": "Badge created successfully",
+        "updated": "Badge updated",
+        "deleted": "Badge deleted",
+        "name": "Badge name",
+        "description": "Description",
+        "image": "Badge image",
+        "category": "Category",
+        "applicableTo": "Awarded for",
+        "allCategories": "All categories",
+        "allTypes": "All types",
+        "empty": "No badges yet. Create the first one for this event!",
+        "inactive": "Inactive",
+        "deactivate": "Deactivate",
+        "activate": "Activate",
+        "cannotDelete": "Cannot delete: badges have already been awarded. You can deactivate it instead.",
+        "confirmDelete": "Delete this badge?",
+        "confirmDeleteDesc": "This action cannot be undone.",
+        "save": "Save",
+        "categories": {
+            "participation": "Participation",
+            "winner": "Winner"
+        },
+        "applicableOptions": {
+            "experience": "Experiences",
+            "auction": "Auctions"
+        }
     }
 }

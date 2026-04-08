@@ -410,3 +410,35 @@ export interface WsExperienceOpened extends WsMessage {
     experienceName: string;
     eventId: string;
 }
+
+// ── Badge Templates ──
+export type BadgeCategory = 'participation' | 'winner';
+export type BadgeApplicableTo = 'experience' | 'auction';
+
+export interface BadgeTemplate {
+    id: string;
+    eventId: string;
+    name: string;
+    description: string | null;
+    imageUrl: string | null;
+    category: BadgeCategory;
+    applicableTo: BadgeApplicableTo;
+    isActive: boolean;
+    metadata: Record<string, unknown> | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface CreateBadgeTemplateDto {
+    name: string;
+    description?: string;
+    imageUrl?: string;
+    category: BadgeCategory;
+    applicableTo: BadgeApplicableTo;
+    metadata?: Record<string, unknown>;
+}
+
+export interface UpdateBadgeTemplateDto extends Partial<CreateBadgeTemplateDto> {
+    isActive?: boolean;
+}
+

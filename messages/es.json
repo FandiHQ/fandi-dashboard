@@ -351,5 +351,37 @@
     "contact": "hola@fandi.app",
     "madeIn": "Hecho con 💜 en Colombia",
     "copyright": "© 2026 Fandi. Todos los derechos reservados."
+  },
+  "badges": {
+    "title": "Insignias",
+    "subtitle": "Configura las insignias que se otorgarán a los fans",
+    "create": "Crear Insignia",
+    "edit": "Editar Insignia",
+    "created": "Insignia creada exitosamente",
+    "updated": "Insignia actualizada",
+    "deleted": "Insignia eliminada",
+    "name": "Nombre de la insignia",
+    "description": "Descripción",
+    "image": "Imagen de la insignia",
+    "category": "Categoría",
+    "applicableTo": "Se otorga en",
+    "allCategories": "Todas las categorías",
+    "allTypes": "Todos los tipos",
+    "empty": "No hay insignias. ¡Crea la primera para este evento!",
+    "inactive": "Inactiva",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "cannotDelete": "No se puede eliminar: ya se han otorgado insignias con esta plantilla. Puedes desactivarla.",
+    "confirmDelete": "¿Eliminar esta insignia?",
+    "confirmDeleteDesc": "Esta acción no se puede deshacer.",
+    "save": "Guardar",
+    "categories": {
+      "participation": "Participación",
+      "winner": "Ganador"
+    },
+    "applicableOptions": {
+      "experience": "Oportunidades",
+      "auction": "Subastas"
+    }
   }
 }
