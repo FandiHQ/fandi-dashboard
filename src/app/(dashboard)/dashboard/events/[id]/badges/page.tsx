@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
     Plus, Loader2, Award, Pencil, Trash2, X,
-    Eye, EyeOff, Sparkles, Shield, Info,
+    Eye, EyeOff, Sparkles, Shield,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
@@ -311,27 +311,13 @@ function BadgeFormDialog({
 
                         {/* Description */}
                         <div className="space-y-1.5">
-                            <div className="flex items-center gap-1.5">
-                                <label className="font-space-mono text-[10px] font-medium uppercase tracking-[2px] text-[#A0A0A0]">
-                                    {t('description')}
-                                </label>
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <button type="button" className="cursor-help text-[#2D00F7] transition-colors hover:text-white hover:drop-shadow-[0_0_8px_rgba(45,0,247,0.8)] focus:outline-none">
-                                                <Info size={13} />
-                                            </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="max-w-[260px] rounded-none border-[#2D00F7] bg-[#020202] py-3 pl-3 pr-4 font-sora text-[12px] leading-relaxed text-[#A0A0A0] shadow-[0_0_20px_rgba(45,0,247,0.2)]">
-                                            Esta descripción es lo que el <strong className="text-[#CCFF00]">fan verá</strong> al recibir su insignia en la app.
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </div>
+                            <label className="font-space-mono text-[10px] font-medium uppercase tracking-[2px] text-[#A0A0A0]">
+                                {t('description')}
+                            </label>
                             <Textarea
                                 value={form.description}
                                 onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
-                                placeholder="Insignia para fans que participaron..."
+                                placeholder="Descripción que verá el fan. Ej: Recibes esta insignia porque participaste de mi concierto..."
                                 rows={3}
                                 className="rounded-none border-[#1E1E1E] bg-[#141414] text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] resize-none"
                             />
@@ -349,6 +335,9 @@ function BadgeFormDialog({
                                 aspect="portrait"
                                 enableCrop
                             />
+                            <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                Formato recomendado: proporción 3:4 (portrait). El recortador mantiene esta proporción automáticamente.
+                            </p>
                         </div>
 
                         {/* Category */}
@@ -402,19 +391,29 @@ function BadgeFormDialog({
                     <div className="shrink-0 flex items-center justify-between gap-3 border-t border-[#1E1E1E] px-6 py-4">
                         <div className="flex items-center gap-2">
                             {editing && (
-                                <button
-                                    type="button"
-                                    onClick={onToggleActive}
-                                    disabled={submitting}
-                                    className={`flex cursor-pointer items-center gap-1.5 border px-3 py-2 font-space-mono text-[10px] font-medium uppercase tracking-[1px] transition-colors ${
-                                        editing.isActive
-                                            ? 'border-[#FF3366]/40 text-[#FF3366] hover:bg-[#FF3366]/10'
-                                            : 'border-[#CCFF00]/40 text-[#CCFF00] hover:bg-[#CCFF00]/10'
-                                    }`}
-                                >
-                                    {editing.isActive ? <EyeOff size={12} /> : <Eye size={12} />}
-                                    {editing.isActive ? t('deactivate') : t('activate')}
-                                </button>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <button
+                                                type="button"
+                                                onClick={onToggleActive}
+                                                disabled={submitting}
+                                                className={`flex cursor-pointer items-center gap-1.5 border px-3 py-2 font-space-mono text-[10px] font-medium uppercase tracking-[1px] transition-colors ${editing.isActive
+                                                    ? 'border-[#FF3366]/40 text-[#FF3366] hover:bg-[#FF3366]/10'
+                                                    : 'border-[#CCFF00]/40 text-[#CCFF00] hover:bg-[#CCFF00]/10'
+                                                }`}
+                                            >
+                                                {editing.isActive ? <EyeOff size={12} /> : <Eye size={12} />}
+                                                {editing.isActive ? t('deactivate') : t('activate')}
+                                            </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-[240px] rounded-none border-[#2D00F7] bg-[#020202] py-3 pl-3 pr-4 font-sora text-[12px] leading-relaxed text-[#A0A0A0] shadow-[0_0_20px_rgba(45,0,247,0.2)]">
+                                            {editing.isActive
+                                                ? <>Pausar esta insignia. Los fans <strong className="text-[#FF3366]">no la recibirán</strong> hasta que la reactives.</>
+                                                : <>Reactivar esta insignia. Los fans <strong className="text-[#CCFF00]">volverán a recibirla</strong> al completar el evento.</>}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             )}
                         </div>
                         <div className="flex items-center gap-3">

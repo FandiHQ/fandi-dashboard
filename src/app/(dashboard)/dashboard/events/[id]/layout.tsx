@@ -3,10 +3,10 @@
 import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2, Timer, Zap } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2, Timer, Zap, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
-import { eventsApi } from '@/lib/api-hooks';
+import { eventsApi, badgeAwardingApi } from '@/lib/api-hooks';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -71,6 +71,18 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         onError: (err: unknown) => {
             const message = err instanceof Error ? err.message : 'Error';
             toast.error(message);
+        },
+    });
+
+    const { mutate: retryBadges, isPending: isRetrying } = useMutation({
+        mutationFn: () => badgeAwardingApi.awardBadges(eventId),
+        onSuccess: (result) => {
+            toast.success(
+                `${result.badgesCreated} insignias otorgadas a ${result.fansNotified} fans`,
+            );
+        },
+        onError: (err: unknown) => {
+            toast.error(err instanceof Error ? err.message : 'Error al otorgar insignias');
         },
     });
 
@@ -238,6 +250,17 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                 updateStatus={updateStatus}
                                 t={t}
                             />
+                        )}
+
+                        {event.status === 'ended' && (
+                            <button
+                                onClick={() => retryBadges()}
+                                disabled={isRetrying}
+                                className="flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-6 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-[#A0A0A0] transition-all duration-150 hover:border-[#2D00F7] hover:text-white hover:shadow-[0_0_20px_rgba(45,0,247,0.3)] disabled:opacity-50"
+                            >
+                                {isRetrying ? <Loader2 size={14} className="animate-spin" /> : <Award size={15} />}
+                                {t('retryBadges')}
+                            </button>
                         )}
                     </div>
                 )}

@@ -12,6 +12,7 @@ import type {
     PaginatedResponse, ScanResultResponse, RedemptionStats,
     NotificationSendResult,
     BadgeTemplate, CreateBadgeTemplateDto, UpdateBadgeTemplateDto,
+    BadgeAwardResult,
 } from '@/types/api';
 
 // ── Helper: extract .data from AxiosResponse ──
@@ -160,4 +161,10 @@ export const badgeTemplatesApi = {
         unwrap(api.put<BadgeTemplate>(`/dashboard/badge-templates/${id}`, dto)),
     delete: (id: string) =>
         unwrap(api.delete(`/dashboard/badge-templates/${id}`)),
+};
+
+// ── Badge Awarding ──
+export const badgeAwardingApi = {
+    awardBadges: (eventId: string) =>
+        unwrap(api.post<BadgeAwardResult>(`/dashboard/events/${eventId}/award-badges`)),
 };

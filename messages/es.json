@@ -132,6 +132,7 @@
     "publish": "Publicar Evento",
     "goLive": "Ir en Vivo",
     "endEvent": "Terminar Evento",
+    "retryBadges": "Reintentar Insignias",
     "confirmPublish": "¿Publicar este evento? Los fans podrán verlo.",
     "confirmGoLive": "¿Ir en vivo? Las experiencias y subastas se activarán.",
     "confirmEnd": "¿Terminar el evento? Esta acción no se puede deshacer.",

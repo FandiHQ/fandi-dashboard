@@ -442,3 +442,8 @@ export interface UpdateBadgeTemplateDto extends Partial<CreateBadgeTemplateDto> 
     isActive?: boolean;
 }
 
+export interface BadgeAwardResult {
+    badgesCreated: number;
+    fansNotified: number;
+}
+
