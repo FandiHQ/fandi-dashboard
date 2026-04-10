@@ -162,8 +162,10 @@ export interface Auction {
     endsAt: string | null;
     endedAt: string | null;
     pausedAt: string | null;
+    timeRemaining: number | null;
     bidCount: number;
     redemptionInstructions: string | null;
+    currentBidderName: string | null;
     createdAt: string;
     updatedAt: string;
 }
