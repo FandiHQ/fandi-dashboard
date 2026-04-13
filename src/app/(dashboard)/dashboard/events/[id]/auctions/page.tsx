@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-    Plus, Loader2, Pencil, Trash2, Info, X,
+    Plus, Loader2, Pencil, Trash2, Info,
     Play, Pause, RotateCcw, Square, Timer, Gavel, Trophy,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -528,45 +528,47 @@ function AuctionCard({
     const isActive = auction.status === 'active';
     const isPaused = auction.status === 'paused';
     const isEnded = auction.status === 'ended';
+    const isCancelled = auction.status === 'cancelled';
 
     const displayPrice = isPending ? auction.startingPrice : (auction.currentPrice ?? auction.startingPrice);
-    const priceLabel = isPending ? t('startingPrice') : isEnded ? t('finalPrice') : t('currentPrice');
+    const priceLabel = isPending ? t('startingPrice') : (isEnded || isCancelled) ? t('finalPrice') : t('currentPrice');
+
+    // Accent colors for dynamic styling
+    const getThemeColors = () => {
+        if (isActive) return { border: 'border-[#00FF88]/40 hover:border-[#00FF88]/80', glow: 'shadow-[0_0_20px_rgba(0,255,136,0.1)]', heroText: 'text-[#00FF88]', heroShadow: 'drop-shadow-[0_0_15px_rgba(0,255,136,0.6)]' };
+        if (isPaused) return { border: 'border-[#FF9900]/40 hover:border-[#FF9900]/80', glow: 'shadow-[0_0_20px_rgba(255,153,0,0.1)]', heroText: 'text-[#FFFFFF]', heroShadow: 'none' };
+        if (isEnded || isCancelled) return { border: 'border-[#2D00F7]/40 hover:border-[#2D00F7]/80', glow: 'shadow-[0_0_20px_rgba(45,0,247,0.1)]', heroText: 'text-[#FFFFFF]', heroShadow: 'none' };
+        return { border: 'border-[#1E1E1E] hover:border-[#2A2A2A]', glow: 'shadow-lg', heroText: 'text-[#FFFFFF]', heroShadow: 'none' };
+    };
+
+    const theme = getThemeColors();
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: (index ?? 0) * 0.08, duration: 0.3 }}
-            className="group flex flex-col border border-[#1E1E1E] bg-[#0A0A0A] transition-all duration-200 hover:border-[#2A2A2A]"
-            style={{
-                boxShadow: isActive
-                    ? '0 0 40px rgba(0,255,136,0.08), 0 4px 40px rgba(0,0,0,0.6)'
-                    : '0 4px 24px rgba(0,0,0,0.4)',
-            }}
+            className={`group relative flex h-full flex-col bg-[#0A0A0A] transition-all duration-300 border ${theme.border} ${theme.glow}`}
         >
-            {/* Header row */}
-            <div className="flex items-start justify-between p-5">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <Gavel size={18} className="text-[#2D00F7]" />
-                        <h3 className="font-sora text-xl font-bold text-white">{auction.name}</h3>
-                    </div>
+            {/* Header */}
+            <div className="flex items-start justify-between p-5 pb-3">
+                <div className="flex flex-col items-start gap-3 w-3/4">
                     <AuctionStatusBadge status={auction.status} />
+                    <h3 className="line-clamp-2 font-sora text-lg font-bold leading-tight text-white">{auction.name}</h3>
                 </div>
-
-                <div className="flex items-center gap-2">
+                {/* Actions Top Right */}
+                <div className="flex shrink-0 items-center gap-1.5 opacity-60 transition-opacity group-hover:opacity-100">
                     {isWrite && isPending && (
                         <>
                             <button
                                 onClick={() => onEdit(auction)}
-                                className="flex cursor-pointer items-center gap-1.5 border border-[#2A2A2A] bg-transparent px-3 py-2 font-space-mono text-[11px] uppercase tracking-[1px] text-[#A0A0A0] transition-all hover:border-[#2D00F7] hover:text-white hover:shadow-[0_0_12px_rgba(45,0,247,0.2)]"
+                                className="flex h-8 w-8 cursor-pointer items-center justify-center border border-[#2A2A2A] bg-[#141414] text-[#A0A0A0] transition-colors hover:border-[#2D00F7] hover:text-white"
                             >
                                 <Pencil size={13} />
-                                {t('edit')}
                             </button>
                             <button
                                 onClick={() => onDelete(auction)}
-                                className="flex cursor-pointer items-center gap-1.5 border border-[#2A2A2A] bg-transparent px-3 py-2 font-space-mono text-[11px] uppercase tracking-[1px] text-[#FF3366] transition-all hover:border-[#FF3366] hover:shadow-[0_0_12px_rgba(255,51,102,0.2)]"
+                                className="flex h-8 w-8 cursor-pointer items-center justify-center border border-[#2A2A2A] bg-[#141414] text-[#FF3366] transition-colors hover:border-[#FF3366] hover:bg-[#FF3366]/10"
                             >
                                 <Trash2 size={13} />
                             </button>
@@ -575,42 +577,48 @@ function AuctionCard({
                 </div>
             </div>
 
-            {/* Price + meta stats row */}
-            <div className="flex items-center gap-6 border-t border-[#141414] px-5 py-4">
-                {/* Price */}
-                <div className="flex flex-col gap-1">
-                    <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
-                        {priceLabel}
-                    </span>
-                    <span
-                        className="font-sora font-bold tabular-nums"
-                        style={{
-                            fontSize: isActive ? '32px' : '22px',
-                            color: isActive ? '#00FF88' : '#FFFFFF',
-                            textShadow: isActive
-                                ? '0 0 20px rgba(0,255,136,0.6), 0 0 40px rgba(0,255,136,0.2)'
-                                : 'none',
-                            lineHeight: 1.1,
-                        }}
-                    >
-                        {formatCOP(displayPrice)}
-                    </span>
-                    <span className="font-space-mono text-[11px] text-[#4A4A4A]">
-                        = {formatFandis(displayPrice)} Fandis
-                    </span>
+            {/* Description */}
+            {auction.description && (
+                <div className="px-5 pb-4">
+                     <p className="line-clamp-2 font-sora text-xs leading-relaxed text-[#737373]">{auction.description}</p>
                 </div>
+            )}
 
-                {/* Divider */}
-                <div className="h-10 w-px bg-[#1E1E1E]" />
+            {/* HERO STAT (The visual center of the widget) */}
+            <div className="flex flex-col items-center justify-center border-y border-[#141414] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_0%,transparent_70%)] py-8 text-center">
+                <span className="mb-2 font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
+                    {priceLabel}
+                </span>
+                <span
+                    className={`font-sora text-4xl font-extrabold tabular-nums tracking-tighter ${theme.heroText} ${theme.heroShadow}`}
+                >
+                    {formatCOP(displayPrice)}
+                </span>
+                <span className="mt-2 font-space-mono text-[11px] text-[#4A4A4A]">
+                    = {formatFandis(displayPrice)} Fandis
+                </span>
+            </div>
 
-                {/* Duration + soft-close */}
-                <div className="flex flex-col gap-1">
+            {/* Middle Stats Grid */}
+            <div className="grid grid-cols-2 gap-px border-b border-[#141414] bg-[#1E1E1E]">
+                <div className="flex flex-col gap-1.5 bg-[#0A0A0A] p-5">
                     <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
+                        {t('bids', { count: '' })}
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <Gavel size={14} className="text-[#A0A0A0]" />
+                        <span className="font-space-mono text-base font-semibold text-white">
+                            {auction.bidCount}
+                        </span>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1.5 bg-[#0A0A0A] p-5">
+                     <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
                         {t('form.durationMinutes')}
                     </span>
                     <div className="flex items-center gap-2">
-                        <span className="font-space-mono text-[14px] text-[#A0A0A0]">
-                            {t('duration', { minutes: auction.durationMinutes })}
+                        <span className="font-space-mono text-base text-white">
+                            {auction.durationMinutes} m
                         </span>
                         <SoftCloseInfo
                             softCloseSeconds={auction.softCloseSeconds}
@@ -618,136 +626,119 @@ function AuctionCard({
                         />
                     </div>
                 </div>
-
-                {/* Divider */}
-                <div className="h-10 w-px bg-[#1E1E1E]" />
-
-                {/* Bids */}
-                <div className="flex items-center gap-2">
-                    <Gavel size={14} className="text-[#4A4A4A]" />
-                    <span className="font-space-mono text-[12px] text-[#A0A0A0]">
-                        {t('bids', { count: auction.bidCount })}
-                    </span>
-                </div>
             </div>
 
-            {/* Pending: scheduled start countdown or manual label */}
-            {isPending && (
-                <div className="border-t border-[#141414] px-5 py-4">
-                    {auction.scheduledStart ? (
-                        <ScheduledStartCountdown
-                            scheduledStart={auction.scheduledStart}
-                            onExpire={onScheduledExpire}
-                        />
-                    ) : (
-                        <div className="flex items-center gap-2">
+            {/* Dynamic Footer Area (Pushes to bottom) */}
+            <div className="mt-auto flex flex-col">
+                {/* Pending */}
+                {isPending && (
+                    <div className="flex items-center justify-center bg-[#121212]/50 px-5 py-5">
+                        {auction.scheduledStart ? (
+                            <ScheduledStartCountdown
+                                scheduledStart={auction.scheduledStart}
+                                onExpire={onScheduledExpire}
+                            />
+                        ) : (
                             <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#4A4A4A]">
                                 {t('manualStartLabel')}
                             </span>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Active: Live countdown */}
-            {isActive && auction.endsAt && (
-                <div className="flex items-center justify-between border-t border-[#141414] px-5 py-4">
-                    <CountdownTimer endsAt={auction.endsAt} />
-                </div>
-            )}
-
-            {/* Paused: frozen timer */}
-            {isPaused && (
-                <div className="flex items-center gap-4 border-t border-[#141414] px-5 py-4">
-                    <span className="font-space-mono text-[14px] uppercase tracking-[2px] text-[#FF9900]">
-                        {t('paused')}
-                    </span>
-                    {auction.timeRemaining != null && (
-                        <span
-                            className="font-space-mono text-[22px] tabular-nums tracking-[4px] text-[#FF9900]"
-                            style={{ textShadow: '0 0 12px rgba(255,153,0,0.3)' }}
-                        >
-                            {formatMMS(auction.timeRemaining)}
-                        </span>
-                    )}
-                </div>
-            )}
-
-            {/* Ended: winner info */}
-            {isEnded && (
-                <div className="flex items-center gap-4 border-t border-[#141414] px-5 py-4">
-                    <Trophy size={16} className="text-[#FFD700]" />
-                    <div className="flex flex-col gap-0.5">
-                        <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
-                            {t('winner')}
-                        </span>
-                        <span className="font-sora text-[16px] font-semibold text-white">
-                            {auction.currentBidderName ?? '—'}
-                        </span>
+                        )}
                     </div>
-                </div>
-            )}
-
-            {/* Description (if present) */}
-            {auction.description && (
-                <div className="border-t border-[#141414] px-5 py-3">
-                    <p className="font-sora text-sm leading-relaxed text-[#737373]">{auction.description}</p>
-                </div>
-            )}
-
-            {/* Redemption instructions (visible on ended) */}
-            {isEnded && auction.redemptionInstructions && (
-                <div className="border-t border-[#141414] px-5 py-3">
-                    <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
-                        {t('redemptionInstructions')}
-                    </span>
-                    <p className="mt-1 font-sora text-sm text-[#A0A0A0]">{auction.redemptionInstructions}</p>
-                </div>
-            )}
-
-            {/* Live controls */}
-            {isWrite && (isPending || isActive || isPaused) && (
-                <div className="flex flex-wrap gap-2 border-t border-[#141414] px-5 py-4">
-                    {isPending && (
-                        <button
-                            onClick={() => onAction(auction.id, 'activate')}
-                            className="flex cursor-pointer items-center gap-2 bg-[#2D00F7] px-4 py-2.5 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)]"
-                        >
-                            <Play size={14} />
-                            {t('activate')}
-                        </button>
-                    )}
-
-                    {isActive && (
-                        <>
-                            <button
-                                onClick={() => onAction(auction.id, 'pause')}
-                                className="flex cursor-pointer items-center gap-2 border border-[#FF9900] bg-transparent px-4 py-2.5 font-space-mono text-[11px] uppercase tracking-[1px] text-[#FF9900] transition-all hover:bg-[#FF990010] hover:shadow-[0_0_12px_rgba(255,153,0,0.3)]"
+                )}
+                
+                {/* Paused */}
+                {isPaused && (
+                    <div className="flex items-center justify-between bg-[#121212]/50 px-5 py-5">
+                        <span className="flex items-center gap-2 font-space-mono text-[12px] uppercase tracking-[1px] text-[#FF9900]">
+                            <Pause size={14} /> {t('paused')}
+                        </span>
+                        {auction.timeRemaining != null && (
+                            <span
+                                className="font-space-mono text-xl tabular-nums tracking-[2px] text-[#FF9900]"
+                                style={{ textShadow: '0 0 12px rgba(255,153,0,0.3)' }}
                             >
-                                <Pause size={14} />
-                                {t('pause')}
-                            </button>
-                            <button
-                                onClick={() => onAction(auction.id, 'end')}
-                                className="flex cursor-pointer items-center gap-2 border border-[#FF3366] bg-transparent px-4 py-2.5 font-space-mono text-[11px] uppercase tracking-[1px] text-[#FF3366] transition-all hover:bg-[#FF336610] hover:shadow-[0_0_12px_rgba(255,51,102,0.3)]"
-                            >
-                                <Square size={14} />
-                                {t('end')}
-                            </button>
-                        </>
-                    )}
+                                {formatMMS(auction.timeRemaining)}
+                            </span>
+                        )}
+                    </div>
+                )}
 
-                    {isPaused && (
-                        <button
-                            onClick={() => onAction(auction.id, 'resume')}
-                            className="flex cursor-pointer items-center gap-2 bg-[#2D00F7] px-4 py-2.5 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)]"
-                        >
-                            <RotateCcw size={14} />
-                            {t('resume')}
-                        </button>
-                    )}
-                </div>
-            )}
+                {/* Active */}
+                {isActive && auction.endsAt && (
+                    <div className="flex justify-center bg-[#00FF88]/5 px-5 py-5">
+                         <CountdownTimer endsAt={auction.endsAt} />
+                    </div>
+                )}
+
+                {/* Ended Winner info */}
+                {(isEnded || isCancelled) && (
+                    <div className="flex flex-col gap-3 bg-[#121212]/50 px-5 py-5">
+                        <div className="flex items-center gap-3">
+                            <Trophy size={16} className={isCancelled ? "text-[#FF3366]" : "text-[#FFD700]"} />
+                            <div className="flex flex-col">
+                                <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
+                                    {t('winner')}
+                                </span>
+                                <span className="font-sora text-base font-semibold text-white">
+                                    {auction.currentBidderName ?? '—'}
+                                </span>
+                            </div>
+                        </div>
+                        {auction.redemptionInstructions && (
+                            <div className="mt-1 flex flex-col gap-1">
+                                <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">REDEMPTION INSTRUCTIONS</span>
+                                <p className="text-xs leading-relaxed text-[#A0A0A0]">
+                                    {auction.redemptionInstructions}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+                
+                {/* Actions Bar (Write Access Only) */}
+                {isWrite && (isPending || isActive || isPaused) && (
+                    <div className="flex w-full overflow-hidden border-t border-[#1E1E1E]">
+                        {isPending && (
+                            <button
+                                onClick={() => onAction(auction.id, 'activate')}
+                                className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-4 py-3.5 font-space-mono text-[11px] uppercase tracking-[2px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)]"
+                            >
+                                <Play size={14} />
+                                {t('activate')}
+                            </button>
+                        )}
+
+                        {isActive && (
+                            <>
+                                <button
+                                    onClick={() => onAction(auction.id, 'pause')}
+                                    className="group/btn flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#1A1A1A] px-4 py-3.5 font-space-mono text-[11px] uppercase tracking-[1px] text-[#FF9900] transition-colors hover:bg-[#FF9900]/10"
+                                >
+                                    <Pause size={14} className="transition-transform group-hover/btn:scale-110" />
+                                    {t('pause')}
+                                </button>
+                                <button
+                                    onClick={() => onAction(auction.id, 'end')}
+                                    className="group/btn flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#1A1A1A] border-l border-[#1E1E1E] px-4 py-3.5 font-space-mono text-[11px] uppercase tracking-[1px] text-[#FF3366] transition-colors hover:bg-[#FF3366]/10"
+                                >
+                                    <Square size={14} className="transition-transform group-hover/btn:scale-110" />
+                                    {t('end')}
+                                </button>
+                            </>
+                        )}
+
+                        {isPaused && (
+                            <button
+                                onClick={() => onAction(auction.id, 'resume')}
+                                className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-4 py-3.5 font-space-mono text-[11px] uppercase tracking-[2px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)]"
+                            >
+                                <RotateCcw size={14} />
+                                {t('resume')}
+                            </button>
+                        )}
+                    </div>
+                )}
+            </div>
         </motion.div>
     );
 }
@@ -959,72 +950,89 @@ export default function AuctionsPage() {
 
             {/* ── Active section ── */}
             {active.length > 0 && (
-                <section className="flex flex-col gap-4">
+                <section className="flex flex-col gap-6">
                     <div className="flex items-center gap-3">
-                        <span className="h-2 w-2 animate-pulse rounded-full bg-[#00FF88]" />
-                        <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#00FF88]">
+                        <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[#00FF88] shadow-[0_0_12px_rgba(0,255,136,0.8)]" />
+                        <h2 className="font-space-mono text-[14px] uppercase tracking-[2px] text-[#00FF88]">
                             {t('statusActive')} ({active.length})
                         </h2>
                     </div>
-                    {active.map((a, idx) => (
-                        <AuctionCard
-                            key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
-                            onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
-                            onScheduledExpire={handleScheduledExpire}
-                            index={idx}
-                        />
-                    ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+                        {active.map((a, idx) => (
+                            <AuctionCard
+                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
+                                onScheduledExpire={handleScheduledExpire}
+                                index={idx}
+                            />
+                        ))}
+                    </div>
                 </section>
             )}
 
             {/* ── Paused section ── */}
             {paused.length > 0 && (
-                <section className="flex flex-col gap-4">
-                    <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#FF9900]">
-                        {t('statusPaused')} ({paused.length})
-                    </h2>
-                    {paused.map((a, idx) => (
-                        <AuctionCard
-                            key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
-                            onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
-                            onScheduledExpire={handleScheduledExpire}
-                            index={idx}
-                        />
-                    ))}
+                <section className="flex flex-col gap-6">
+                    <div className="flex items-center gap-3">
+                        <span className="h-2.5 w-2.5 rounded-sm bg-[#FF9900]" />
+                        <h2 className="font-space-mono text-[14px] uppercase tracking-[2px] text-[#FF9900]">
+                            {t('statusPaused')} ({paused.length})
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+                        {paused.map((a, idx) => (
+                            <AuctionCard
+                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
+                                onScheduledExpire={handleScheduledExpire}
+                                index={idx}
+                            />
+                        ))}
+                    </div>
                 </section>
             )}
 
             {/* ── Pending section ── */}
             {pending.length > 0 && (
-                <section className="flex flex-col gap-4">
-                    <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
-                        {t('statusPending')} ({pending.length})
-                    </h2>
-                    {pending.map((a, idx) => (
-                        <AuctionCard
-                            key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
-                            onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
-                            onScheduledExpire={handleScheduledExpire}
-                            index={idx}
-                        />
-                    ))}
+                <section className="flex flex-col gap-6">
+                    <div className="flex items-center gap-3">
+                         <span className="h-2.5 w-2.5 rounded-full border-2 border-[#737373] bg-transparent" />
+                        <h2 className="font-space-mono text-[14px] uppercase tracking-[2px] text-[#737373]">
+                            {t('statusPending')} ({pending.length})
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+                        {pending.map((a, idx) => (
+                            <AuctionCard
+                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
+                                onScheduledExpire={handleScheduledExpire}
+                                index={idx}
+                            />
+                        ))}
+                    </div>
                 </section>
             )}
 
             {/* ── Ended section ── */}
             {ended.length > 0 && (
-                <section className="flex flex-col gap-4">
-                    <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#7B61FF]">
-                        {t('statusEnded')} ({ended.length})
-                    </h2>
-                    {ended.map((a, idx) => (
-                        <AuctionCard
-                            key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
-                            onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
-                            onScheduledExpire={handleScheduledExpire}
-                            index={idx}
-                        />
-                    ))}
+                <section className="flex flex-col gap-6">
+                    <div className="flex items-center gap-3">
+                        <Square size={12} fill="currentColor" className="text-[#2D00F7]" />
+                        <h2 className="font-space-mono text-[14px] uppercase tracking-[2px] text-[#7B61FF]">
+                            {t('statusEnded')} ({ended.length})
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+                        {ended.map((a, idx) => (
+                            <AuctionCard
+                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
+                                onScheduledExpire={handleScheduledExpire}
+                                index={idx}
+                            />
+                        ))}
+                    </div>
                 </section>
             )}
 
