@@ -22,6 +22,15 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 // ── Helpers ──
 const FANDI_RATE = 5_000;
 
+function isFandiAligned(cop: number): boolean {
+    return Number.isFinite(cop) && Number.isInteger(cop) && cop > 0 && cop % FANDI_RATE === 0;
+}
+
+function snapToFandi(cop: number): number {
+    if (!Number.isFinite(cop) || cop <= 0) return FANDI_RATE;
+    return Math.round(cop / FANDI_RATE) * FANDI_RATE;
+}
+
 function formatCOP(amount: number): string {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -336,6 +345,7 @@ function AuctionFormDialog({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim() || startingPrice < 10000 || durationMinutes < 1) return;
+        if (!isFandiAligned(startingPrice)) return;
 
         const dto: CreateAuctionDto = {
             name: name.trim(),
@@ -409,16 +419,27 @@ function AuctionFormDialog({
                                 <Input
                                     type="number"
                                     min={10000}
-                                    step={1000}
+                                    step={FANDI_RATE}
                                     value={startingPrice}
                                     onChange={(e) => setStartingPrice(Number(e.target.value))}
+                                    onBlur={(e) => {
+                                        const v = Number(e.target.value);
+                                        if (v >= 10000 && !isFandiAligned(v)) {
+                                            setStartingPrice(snapToFandi(v));
+                                        }
+                                    }}
                                     className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
                                 />
                                 <div className="flex items-center justify-between">
                                     <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('minPrice')}</p>
-                                    {startingPrice >= 10000 && (
+                                    {startingPrice >= 10000 && isFandiAligned(startingPrice) && (
                                         <p className="font-space-mono text-[10px] text-[#00FF88]">
                                             = {formatFandis(startingPrice)} Fandis
+                                        </p>
+                                    )}
+                                    {startingPrice >= 10000 && !isFandiAligned(startingPrice) && (
+                                        <p className="font-space-mono text-[10px] text-[#FF9900]">
+                                            Debe ser múltiplo de {FANDI_RATE.toLocaleString('es-CO')}
                                         </p>
                                     )}
                                 </div>
@@ -489,7 +510,7 @@ function AuctionFormDialog({
                         <div className="flex gap-3">
                             <button
                                 type="submit"
-                                disabled={!name.trim() || startingPrice < 10000 || isPending}
+                                disabled={!name.trim() || startingPrice < 10000 || !isFandiAligned(startingPrice) || isPending}
                                 className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isPending && <Loader2 size={14} className="animate-spin" />}
