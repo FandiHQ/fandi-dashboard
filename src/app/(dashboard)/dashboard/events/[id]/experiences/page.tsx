@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
     Plus, Loader2, Users, Trophy, Eye, EyeOff,
-    Zap, Lock, ChevronDown, ChevronUp, Gift,
+    Lock, ChevronDown, ChevronUp, Gift,
     Pencil, Trash2, Info, X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
@@ -30,6 +30,15 @@ const ESCUADRA_COLORS: Record<number, { bar: string; glow: string; text: string 
 const DEFAULT_ESCUADRA_NAMES: Record<number, string> = {
     4: 'VIP', 3: 'Alta', 2: 'Media', 1: 'Base',
 };
+
+const FANDI_RATE = 5_000;
+
+function formatFandis(cop: number): string {
+    const fandis = cop / FANDI_RATE;
+    return new Intl.NumberFormat('es-CO', {
+        maximumFractionDigits: Number.isInteger(fandis) ? 0 : 1,
+    }).format(fandis);
+}
 
 // ── Status badge ──
 function StatusBadge({ status }: { status: ExperienceStatus }) {
@@ -56,7 +65,6 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
     const total = escuadras.reduce((s, e) => s + e.userCount, 0);
     // Sort by level descending: VIP (4) first, Base (1) last
     const sorted = [...escuadras].sort((a, b) => b.level - a.level);
-    const allEmpty = total === 0;
 
     return (
         <div className="flex flex-col gap-2">
@@ -105,7 +113,7 @@ function EscuadraBar({ escuadras }: { escuadras: EscuadraInfo[] }) {
                                 {esc.userCount === 1 ? 'fan' : 'fans'}
                             </span>
                             <span className="mt-0.5 font-space-mono text-[8px] tracking-[0.5px] opacity-40" style={{ color: color.text }}>
-                                {esc.minAmount > 0 ? `≥ ${esc.minAmount} fandis` : '—'}
+                                {esc.minAmount > 0 ? `>= ${formatFandis(esc.minAmount)} fandis` : '-'}
                             </span>
                         </div>
                     );

@@ -31,6 +31,18 @@ function snapToFandi(cop: number): number {
     return Math.round(cop / FANDI_RATE) * FANDI_RATE;
 }
 
+function parseCOPInput(value: string): number {
+    const digitsOnly = value.replace(/\D/g, '');
+    return digitsOnly ? Number(digitsOnly) : 0;
+}
+
+function formatCOPInput(value: number): string {
+    if (!Number.isFinite(value) || value <= 0) return '';
+    return new Intl.NumberFormat('es-CO', {
+        maximumFractionDigits: 0,
+    }).format(value);
+}
+
 function formatCOP(amount: number): string {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -341,11 +353,16 @@ function AuctionFormDialog({
     });
 
     const isPending = isCreating || isUpdating;
+    const canSubmit =
+        Boolean(name.trim()) &&
+        startingPrice >= 10000 &&
+        durationMinutes >= 1 &&
+        isFandiAligned(startingPrice) &&
+        !isPending;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim() || startingPrice < 10000 || durationMinutes < 1) return;
-        if (!isFandiAligned(startingPrice)) return;
+        if (!canSubmit) return;
 
         const dto: CreateAuctionDto = {
             name: name.trim(),
@@ -417,13 +434,12 @@ function AuctionFormDialog({
                                     {t('form.startingPrice')} *
                                 </label>
                                 <Input
-                                    type="number"
-                                    min={10000}
-                                    step={FANDI_RATE}
-                                    value={startingPrice}
-                                    onChange={(e) => setStartingPrice(Number(e.target.value))}
-                                    onBlur={(e) => {
-                                        const v = Number(e.target.value);
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={formatCOPInput(startingPrice)}
+                                    onChange={(e) => setStartingPrice(parseCOPInput(e.target.value))}
+                                    onBlur={() => {
+                                        const v = startingPrice;
                                         if (v >= 10000 && !isFandiAligned(v)) {
                                             setStartingPrice(snapToFandi(v));
                                         }
@@ -509,9 +525,16 @@ function AuctionFormDialog({
                     <div className="shrink-0 border-t border-[#1E1E1E] bg-[#0A0A0A] px-6 py-4">
                         <div className="flex gap-3">
                             <button
-                                type="submit"
-                                disabled={!name.trim() || startingPrice < 10000 || !isFandiAligned(startingPrice) || isPending}
-                                className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
+                                type={canSubmit ? 'submit' : 'button'}
+                                disabled={!canSubmit}
+                                aria-disabled={!canSubmit}
+                                onClick={(e) => {
+                                    if (!canSubmit) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }
+                                }}
+                                className="flex flex-1 items-center justify-center gap-2 bg-[#2D00F7] px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)] enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-[#2D00F7] disabled:hover:shadow-none"
                             >
                                 {isPending && <Loader2 size={14} className="animate-spin" />}
                                 {isEditing ? 'Guardar' : t('create')}
@@ -533,11 +556,10 @@ function AuctionFormDialog({
 
 // ── Auction Card ──
 function AuctionCard({
-    auction, isWrite, eventId, onEdit, onDelete, onAction, onScheduledExpire, index,
+    auction, isWrite, onEdit, onDelete, onAction, onScheduledExpire, index,
 }: {
     auction: Auction;
     isWrite: boolean;
-    eventId: string;
     onEdit: (a: Auction) => void;
     onDelete: (a: Auction) => void;
     onAction: (id: string, action: 'activate' | 'pause' | 'resume' | 'end') => void;
@@ -981,7 +1003,7 @@ export default function AuctionsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                         {active.map((a, idx) => (
                             <AuctionCard
-                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                key={a.id} auction={a} isWrite={isWrite}
                                 onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
                                 onScheduledExpire={handleScheduledExpire}
                                 index={idx}
@@ -1003,7 +1025,7 @@ export default function AuctionsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                         {paused.map((a, idx) => (
                             <AuctionCard
-                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                key={a.id} auction={a} isWrite={isWrite}
                                 onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
                                 onScheduledExpire={handleScheduledExpire}
                                 index={idx}
@@ -1025,7 +1047,7 @@ export default function AuctionsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                         {pending.map((a, idx) => (
                             <AuctionCard
-                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                key={a.id} auction={a} isWrite={isWrite}
                                 onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
                                 onScheduledExpire={handleScheduledExpire}
                                 index={idx}
@@ -1047,7 +1069,7 @@ export default function AuctionsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
                         {ended.map((a, idx) => (
                             <AuctionCard
-                                key={a.id} auction={a} isWrite={isWrite} eventId={eventId}
+                                key={a.id} auction={a} isWrite={isWrite}
                                 onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
                                 onScheduledExpire={handleScheduledExpire}
                                 index={idx}
