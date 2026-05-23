@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import type { CreateEventDto } from '@/types/api';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { CityAutocomplete, type CityAutocompleteValue } from '@/components/places/CityAutocomplete';
 import {
     Select, SelectContent, SelectItem,
     SelectTrigger, SelectValue,
@@ -53,6 +54,8 @@ export default function CreateEventPage() {
                 fandiOpensTime: z.string().optional().or(z.literal('')),
                 fandiClosesTime: z.string().optional().or(z.literal('')),
                 venue: z.string().min(1, 'Este campo es requerido'),
+                cityId: z.string().regex(/^\d+$/, 'cityId must be numeric').nullable().optional(),
+                status: z.enum(['draft', 'published', 'live', 'ended']).optional(),
                 description: z.string().optional(),
                 coverImageUrl: z
                     .string()
@@ -84,6 +87,13 @@ export default function CreateEventPage() {
                         path: ['fandiOpensTime'],
                     });
                 }
+                if ((data.status === 'published' || data.status === 'live') && !data.cityId) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'events.form.cityRequired',
+                        path: ['cityId'],
+                    });
+                }
             }),
         [],
     );
@@ -107,13 +117,18 @@ export default function CreateEventPage() {
             fandiOpensTime: '',
             fandiClosesTime: '',
             venue: '',
+            cityId: null,
+            status: 'draft',
             description: '',
             coverImageUrl: '',
         },
     });
 
+    const [selectedCity, setSelectedCity] = useState<CityAutocompleteValue | null>(null);
     const watchAll = watch();
     const coverImageUrl = watchAll.coverImageUrl;
+    const formatFieldError = (message?: string) =>
+        message === 'events.form.cityRequired' ? t('form.cityRequired') : message;
 
     const { mutate: createEvent, isPending } = useMutation({
         mutationFn: (dto: CreateEventDto) => eventsApi.create(dto),
@@ -136,6 +151,7 @@ export default function CreateEventPage() {
             name: data.name,
             eventDate: eventDateTime,
             venue: data.venue,
+            cityId: data.cityId ?? null,
             ...(data.eventType && { eventType: data.eventType }),
             ...(data.description && { description: data.description }),
             ...(data.coverImageUrl && { coverImageUrl: data.coverImageUrl }),
@@ -249,23 +265,6 @@ export default function CreateEventPage() {
                         </Select>
                     </div>
 
-                    {/* Event Date (date only) */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('date')} *
-                        </label>
-                        <Input
-                            type="date"
-                            {...register('eventDate')}
-                            className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
-                        />
-                        {errors.eventDate && (
-                            <span className="font-space-mono text-base text-[#FF3366]">
-                                {errors.eventDate.message}
-                            </span>
-                        )}
-                    </div>
-
                     {/* Venue */}
                     <div className="flex flex-col gap-2">
                         <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
@@ -279,6 +278,41 @@ export default function CreateEventPage() {
                         {errors.venue && (
                             <span className="font-space-mono text-base text-[#FF3366]">
                                 {errors.venue.message}
+                            </span>
+                        )}
+                    </div>
+
+                    {/* City */}
+                    <div className="flex flex-col gap-2">
+                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
+                            {t('form.city')}
+                        </label>
+                        <CityAutocomplete
+                            value={selectedCity}
+                            onChange={(city) => {
+                                setSelectedCity(city);
+                                setValue('cityId', city?.id ?? null, {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                });
+                            }}
+                            error={formatFieldError(errors.cityId?.message)}
+                        />
+                    </div>
+
+                    {/* Event Date (date only) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
+                            {t('date')} *
+                        </label>
+                        <Input
+                            type="date"
+                            {...register('eventDate')}
+                            className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                        />
+                        {errors.eventDate && (
+                            <span className="font-space-mono text-base text-[#FF3366]">
+                                {errors.eventDate.message}
                             </span>
                         )}
                     </div>
@@ -412,7 +446,7 @@ export default function CreateEventPage() {
                                 {t('creating')}
                             </>
                         ) : (
-                            t('create')
+                            t('form.saveDraft')
                         )}
                     </button>
                 </form>

@@ -121,6 +121,16 @@
             "maxLength": "Maximum {max} characters",
             "invalidUrl": "Invalid URL"
         },
+        "form": {
+            "city": "City",
+            "cityPlaceholder": "Search a city...",
+            "cityClear": "Remove city",
+            "cityNetworkError": "Could not load cities. Try again.",
+            "cityRequired": "Select a city before publishing.",
+            "retry": "Retry",
+            "saveDraft": "Save draft",
+            "publish": "Publish"
+        },
         "publish": "Publish Event",
         "goLive": "Go Live",
         "endEvent": "End Event",

@@ -121,6 +121,16 @@
       "maxLength": "Máximo {max} caracteres",
       "invalidUrl": "URL no válida"
     },
+    "form": {
+      "city": "Ciudad",
+      "cityPlaceholder": "Busca una ciudad...",
+      "cityClear": "Quitar ciudad",
+      "cityNetworkError": "No se pudo cargar ciudades. Intenta de nuevo.",
+      "cityRequired": "Selecciona una ciudad antes de publicar.",
+      "retry": "Reintentar",
+      "saveDraft": "Guardar borrador",
+      "publish": "Publicar"
+    },
     "eventEndDate": "Fecha de fin del evento",
     "fandiOpensAt": "Apertura Fandi",
     "fandiClosesAt": "Cierre Fandi",

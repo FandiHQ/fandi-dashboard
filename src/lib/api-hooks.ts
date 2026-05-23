@@ -13,6 +13,7 @@ import type {
     NotificationSendResult,
     BadgeTemplate, CreateBadgeTemplateDto, UpdateBadgeTemplateDto,
     BadgeAwardResult,
+    CitySearchResult,
 } from '@/types/api';
 
 // ── Helper: extract .data from AxiosResponse ──
@@ -46,6 +47,22 @@ export const eventsApi = {
         unwrap(api.delete(`/dashboard/events/${id}`)),
     getPreLiveStats: (id: string) =>
         unwrap(api.get<PreLiveStatsResponse>(`/dashboard/events/${id}/pre-live-stats`)),
+};
+
+// ── Places ──
+export const placesApi = {
+    searchCities: (
+        q: string,
+        opts?: { country?: string; limit?: number; signal?: AbortSignal },
+    ) =>
+        unwrap(api.get<CitySearchResult[]>('/places/search', {
+            params: {
+                q,
+                country: opts?.country ?? 'CO',
+                limit: opts?.limit ?? 10,
+            },
+            signal: opts?.signal,
+        })),
 };
 
 // ── Experiences ──

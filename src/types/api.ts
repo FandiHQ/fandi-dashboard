@@ -40,6 +40,8 @@ export interface Event {
     eventType: EventType | null;
     venue: string | null;
     city: string | null;
+    cityId: string | null;
+    timezone: string | null;
     description: string | null;
     eventDate: string;
     eventEndDate: string | null;
@@ -59,6 +61,7 @@ export interface CreateEventDto {
     eventType?: EventType;
     venue?: string;
     city?: string;
+    cityId?: string | null;
     description?: string;
     eventDate: string;
     eventEndDate?: string;
@@ -67,7 +70,7 @@ export interface CreateEventDto {
     coverImageUrl?: string;
 }
 
-export interface UpdateEventDto extends Partial<CreateEventDto> {}
+export type UpdateEventDto = Partial<CreateEventDto>;
 
 export interface PaginatedEventsResponse {
     items: Event[];
@@ -82,6 +85,16 @@ export interface PreLiveStatsResponse {
     experiencesReady: boolean;
     auctionCount: number;
     isPublished: boolean;
+}
+
+export interface CitySearchResult {
+    id: string;
+    name: string;
+    timezone: string | null;
+    stateId: string;
+    stateName: string;
+    countryCode: string;
+    countryName: string;
 }
 
 // ── Experiences ──
@@ -448,4 +461,3 @@ export interface BadgeAwardResult {
     badgesCreated: number;
     fansNotified: number;
 }
-

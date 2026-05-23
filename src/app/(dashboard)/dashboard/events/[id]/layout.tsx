@@ -137,6 +137,8 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         );
     }
 
+    const canPublish = Boolean(event.cityId);
+
     return (
         <div className="flex flex-col gap-6 p-14">
             {/* ── Back ── */}
@@ -207,36 +209,44 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
 
                         {/* Status transitions */}
                         {event.status === 'draft' && (
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <button
-                                        disabled={isUpdatingStatus}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:opacity-50"
-                                    >
-                                        {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
-                                        {t('publish')}
-                                    </button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle className="font-sora text-xl text-white">{t('publish')}</AlertDialogTitle>
-                                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
-                                            {t('confirmPublish')}
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
-                                            Cancelar
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => updateStatus('published')}
-                                            className="rounded-none bg-[#2D00F7] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#2400C5]"
+                            <div className="flex flex-col items-end gap-2">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <button
+                                            disabled={isUpdatingStatus || !canPublish}
+                                            className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
                                         >
+                                            {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                             {t('publish')}
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle className="font-sora text-xl text-white">{t('publish')}</AlertDialogTitle>
+                                            <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                                                {t('confirmPublish')}
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                                                Cancelar
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => updateStatus('published')}
+                                                disabled={!canPublish}
+                                                className="rounded-none bg-[#2D00F7] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                {t('publish')}
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                                {!canPublish && (
+                                    <span className="max-w-64 text-right font-space-mono text-xs text-[#FF3366]">
+                                        {t('form.cityRequired')}
+                                    </span>
+                                )}
+                            </div>
                         )}
 
                         {event.status === 'published' && (
