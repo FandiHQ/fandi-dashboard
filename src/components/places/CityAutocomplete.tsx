@@ -9,6 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { placesApi } from '@/lib/api-hooks';
 
+// `retry` lives at `events.retry` (existing key, line 77 of es.json) —
+// we deliberately do NOT add a duplicate `events.form.retry`. Pull
+// from the parent `events` namespace via a second hook instance.
+
 export interface CityAutocompleteValue {
     id: string;
     name: string;
@@ -28,6 +32,7 @@ export function CityAutocomplete({
     error,
 }: CityAutocompleteProps) {
     const t = useTranslations('events.form');
+    const tEvents = useTranslations('events');
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [open, setOpen] = useState(false);
@@ -134,7 +139,7 @@ export function CityAutocomplete({
                         onClick={() => refetch()}
                         className="cursor-pointer font-space-mono text-sm uppercase tracking-[1px] text-[#2D00F7] hover:text-white"
                     >
-                        {t('retry')}
+                        {tEvents('retry')}
                     </button>
                 </div>
             )}

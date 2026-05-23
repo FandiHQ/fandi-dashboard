@@ -127,7 +127,6 @@
       "cityClear": "Quitar ciudad",
       "cityNetworkError": "No se pudo cargar ciudades. Intenta de nuevo.",
       "cityRequired": "Selecciona una ciudad antes de publicar.",
-      "retry": "Reintentar",
       "saveDraft": "Guardar borrador",
       "publish": "Publicar"
     },

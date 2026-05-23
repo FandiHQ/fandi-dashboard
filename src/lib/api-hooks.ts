@@ -63,6 +63,14 @@ export const placesApi = {
             },
             signal: opts?.signal,
         })),
+    // Single-city lookup. Used by the event-edit form on mount so
+    // the autocomplete chip renders the real city name instead of
+    // falling back to the legacy free-text event.city field, which
+    // is NULL for events created via the autocomplete-only flow.
+    getCityById: (id: string, opts?: { signal?: AbortSignal }) =>
+        unwrap(api.get<CitySearchResult>(`/places/cities/${id}`, {
+            signal: opts?.signal,
+        })),
 };
 
 // ── Experiences ──

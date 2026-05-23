@@ -11,7 +11,7 @@ import { ArrowLeft, Loader2, Calendar, MapPin, Tag, Clock, Zap } from 'lucide-re
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
-import { eventsApi } from '@/lib/api-hooks';
+import { eventsApi, placesApi } from '@/lib/api-hooks';
 import type { UpdateEventDto } from '@/types/api';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -157,6 +157,19 @@ export default function EditEventPage() {
 
     const [selectedCity, setSelectedCity] = useState<CityAutocompleteValue | null>(null);
 
+    // Resolve the stored cityId into a real city name via the
+    // dedicated /places/cities/:id endpoint. Falls back to event.city
+    // (legacy free-text) during the in-flight window so the chip is
+    // never empty / never shows a raw bigint. The cached lookup is
+    // effectively static (cities are immutable outside the quarterly
+    // refresh — see ADR-005), so staleTime can be aggressive.
+    const { data: cityFromLookup } = useQuery({
+        queryKey: ['places', 'city', event?.cityId],
+        queryFn: () => placesApi.getCityById(event!.cityId!),
+        enabled: Boolean(event?.cityId),
+        staleTime: 5 * 60 * 1000,
+    });
+
     // Populate form when event data loads
     useEffect(() => {
         if (event) {
@@ -174,13 +187,33 @@ export default function EditEventPage() {
                 description: event.description || '',
                 coverImageUrl: event.coverImageUrl || '',
             });
+            // Optimistic placeholder — uses legacy event.city when
+            // present so the chip is populated immediately. Empty
+            // string when both are null so the input renders blank
+            // rather than the bigint id (the chip is just suppressed
+            // until the user picks one).
             setSelectedCity(
                 event.cityId
-                    ? { id: event.cityId, name: event.city || event.cityId }
+                    ? { id: event.cityId, name: event.city || '' }
                     : null,
             );
         }
     }, [event, reset]);
+
+    // When the lookup resolves, upgrade the chip's label from the
+    // optimistic placeholder to the canonical city name. Identity
+    // write when the placeholder already matches; meaningful upgrade
+    // when event.city was NULL (i.e. events created post-Step 4.5.11
+    // via the autocomplete-only flow that never populated the legacy
+    // free-text column).
+    useEffect(() => {
+        if (cityFromLookup) {
+            setSelectedCity({
+                id: cityFromLookup.id,
+                name: cityFromLookup.name,
+            });
+        }
+    }, [cityFromLookup]);
 
     const watchAll = watch();
     const coverImageUrl = watchAll.coverImageUrl;
