@@ -312,23 +312,64 @@
   },
   "analytics": {
     "title": "Analíticas",
+    "loading": "Cargando...",
     "revenue": "Ingresos",
-    "revenueBreakdown": "Desglose de ingresos",
+    "revenueBreakdown": "Desglose de Ingresos",
     "contributionRevenue": "Ingresos por aportes",
     "auctionRevenue": "Ingresos por subastas",
-    "experienceBreakdown": "Desglose por experiencia",
-    "redemptionRate": "Tasa de canje",
-    "uniqueParticipants": "Participantes únicos"
+    "experienceBreakdown": "Desglose por Oportunidad",
+    "redemptionRate": "Tasa de Canje",
+    "uniqueParticipants": "Participantes únicos",
+    "totalRaised": "Total Recaudado",
+    "contributions": "Aportes",
+    "auctions": "Subastas",
+    "participants": "Participantes",
+    "noRevenueYet": "Sin ingresos aún",
+    "unavailableOnDraft": "Analítica disponible cuando el evento esté publicado",
+    "exp": {
+      "name": "Oportunidad",
+      "status": "Estado",
+      "raised": "Recaudado",
+      "contributors": "Aportantes",
+      "winners": "Ganadores",
+      "contributorsCount": "{count, plural, =0 {sin aportantes} one {# aportante} other {# aportantes}}",
+      "winnersCount": "{count, plural, =0 {sin ganadores} one {# ganador} other {# ganadores}}",
+      "escuadraSummary": "Nivel {level} · {count, plural, one {# fan} other {# fans}} · mínimo {min}",
+      "escuadraEmpty": "Sin participantes",
+      "statusLabel": {
+        "pending": "Pendiente",
+        "active": "En vivo",
+        "closed": "Cerrada"
+      },
+      "empty": "Sin experiencias configuradas"
+    }
   },
   "winners": {
     "title": "Ganadores",
     "exportCsv": "Exportar CSV",
+    "exportFailed": "No pudimos generar el CSV",
     "total": "Total",
+    "empty": "No hay ganadores todavía.",
+    "unavailableOnDraft": "Sin ganadores aún — el evento sigue en borrador.",
+    "dateFormat": "d MMM HH:mm",
+    "escuadraLevel": "Nivel {level}",
     "status": {
       "pending": "Pendiente",
       "redeemed": "Canjeado",
       "expired": "Expirado",
       "cancelled": "Cancelado"
+    },
+    "prizeType": {
+      "experience": "Oportunidad",
+      "auction": "Subasta"
+    },
+    "col": {
+      "fan": "Fan",
+      "prize": "Premio",
+      "escuadra": "Escuadra",
+      "amount": "Monto",
+      "status": "Estado",
+      "redeemedAt": "Canjeado"
     },
     "filterByStatus": "Filtrar por estado",
     "filterByType": "Filtrar por tipo"

@@ -287,23 +287,64 @@
     },
     "analytics": {
         "title": "Analytics",
+        "loading": "Loading...",
         "revenue": "Revenue",
-        "revenueBreakdown": "Revenue breakdown",
+        "revenueBreakdown": "Revenue Breakdown",
         "contributionRevenue": "Contribution revenue",
         "auctionRevenue": "Auction revenue",
-        "experienceBreakdown": "Breakdown by experience",
-        "redemptionRate": "Redemption rate",
-        "uniqueParticipants": "Unique participants"
+        "experienceBreakdown": "Experience Breakdown",
+        "redemptionRate": "Redemption Rate",
+        "uniqueParticipants": "Unique participants",
+        "totalRaised": "Total Raised",
+        "contributions": "Contributions",
+        "auctions": "Auctions",
+        "participants": "Participants",
+        "noRevenueYet": "No revenue yet",
+        "unavailableOnDraft": "Analytics available once the event is published",
+        "exp": {
+            "name": "Experience",
+            "status": "Status",
+            "raised": "Raised",
+            "contributors": "Contributors",
+            "winners": "Winners",
+            "contributorsCount": "{count, plural, =0 {no contributors} one {# contributor} other {# contributors}}",
+            "winnersCount": "{count, plural, =0 {no winners} one {# winner} other {# winners}}",
+            "escuadraSummary": "Level {level} · {count, plural, one {# fan} other {# fans}} · min {min}",
+            "escuadraEmpty": "No participants",
+            "statusLabel": {
+                "pending": "Pending",
+                "active": "Live",
+                "closed": "Closed"
+            },
+            "empty": "No experiences configured"
+        }
     },
     "winners": {
         "title": "Winners",
         "exportCsv": "Export CSV",
+        "exportFailed": "We couldn't generate the CSV",
         "total": "Total",
+        "empty": "No winners yet.",
+        "unavailableOnDraft": "No winners yet — the event is still in draft.",
+        "dateFormat": "MMM d, h:mm a",
+        "escuadraLevel": "Level {level}",
         "status": {
             "pending": "Pending",
             "redeemed": "Redeemed",
             "expired": "Expired",
             "cancelled": "Cancelled"
+        },
+        "prizeType": {
+            "experience": "Experience",
+            "auction": "Auction"
+        },
+        "col": {
+            "fan": "Fan",
+            "prize": "Prize",
+            "escuadra": "Escuadra",
+            "amount": "Amount",
+            "status": "Status",
+            "redeemedAt": "Redeemed"
         },
         "filterByStatus": "Filter by status",
         "filterByType": "Filter by type"
