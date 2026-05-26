@@ -114,7 +114,9 @@
             "experiences": "Experiences",
             "auctions": "Auctions",
             "badges": "Badges",
-            "winners": "Winners"
+            "winners": "Winners",
+            "analytics": "Analytics",
+            "notifications": "Notifications"
         },
         "validation": {
             "required": "This field is required",
@@ -366,11 +368,41 @@
         "cameraDenied": "Camera unavailable. Use manual entry."
     },
     "notifications": {
-        "walletReminder": "Remind fans to top up Fandies",
-        "eventReminder": "Remind that the event is coming soon",
-        "send": "Send",
-        "sent": "Reminder sent to {count} fans",
-        "cooldown": "Wait {seconds}s before sending another"
+        "title": "Notifications",
+        "subtitle": "Fire push reminders to your event audience.",
+        "unavailableOnDraft": "Publish the event to send notifications",
+        "noTriggersForStatus": "No reminders available for the event's current status.",
+        "cooldown": "Available in {seconds}s",
+        "cooldownBreached": "Wait {seconds}s before retrying",
+        "available": "Available",
+        "sending": "Sending...",
+        "sent": "{count, plural, one {# sent} other {# sent}}",
+        "skipped": "{count, plural, one {# skipped} other {# skipped}}",
+        "lastSent": "Last sent: {relative}",
+        "sendError": "We couldn't send the reminder",
+        "cancel": "Cancel",
+        "cta": {
+            "send": "Send Reminder"
+        },
+        "confirm": {
+            "title": "Send reminder",
+            "send": "Confirm send"
+        },
+        "walletReminder": {
+            "title": "Remind to Top Up",
+            "description": "Push to fans who haven't topped up Fandies for this event yet.",
+            "confirm": "A push will be sent to fans of this event who haven't topped up Fandies yet. This action cannot be undone."
+        },
+        "eventReminder": {
+            "title": "Remind About Event",
+            "description": "Push to every saved fan — the event is coming soon.",
+            "confirm": "A push will be sent to every fan who saved this event. This action cannot be undone."
+        },
+        "nextEvent": {
+            "title": "Recommend Next Event",
+            "description": "Push to participating fans — recommend the organizer's next event.",
+            "confirm": "A push will be sent recommending the next event to fans who participated in this one. This action cannot be undone."
+        }
     },
     "landing": {
         "title": "Interacting with your idols is no longer impossible",

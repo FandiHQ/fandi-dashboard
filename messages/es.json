@@ -114,7 +114,9 @@
       "experiences": "Oportunidades",
       "auctions": "Subastas",
       "badges": "Insignias",
-      "winners": "Ganadores"
+      "winners": "Ganadores",
+      "analytics": "Analítica",
+      "notifications": "Notificaciones"
     },
     "validation": {
       "required": "Este campo es requerido",
@@ -391,11 +393,41 @@
     "cameraDenied": "Cámara no disponible. Usa el ingreso manual."
   },
   "notifications": {
-    "walletReminder": "Recordar a fans que recarguen Fandies",
-    "eventReminder": "Recordar que el evento es pronto",
-    "send": "Enviar",
-    "sent": "Recordatorio enviado a {count} fans",
-    "cooldown": "Espera {seconds}s antes de enviar otro"
+    "title": "Notificaciones",
+    "subtitle": "Dispara recordatorios push a los fans del evento.",
+    "unavailableOnDraft": "Publica el evento para enviar notificaciones",
+    "noTriggersForStatus": "No hay recordatorios disponibles para el estado actual del evento.",
+    "cooldown": "Disponible en {seconds}s",
+    "cooldownBreached": "Espera {seconds}s antes de reintentar",
+    "available": "Disponible",
+    "sending": "Enviando...",
+    "sent": "{count, plural, one {# enviado} other {# enviados}}",
+    "skipped": "{count, plural, one {# omitido} other {# omitidos}}",
+    "lastSent": "Último envío: {relative}",
+    "sendError": "No pudimos enviar el recordatorio",
+    "cancel": "Cancelar",
+    "cta": {
+      "send": "Enviar Recordatorio"
+    },
+    "confirm": {
+      "title": "Enviar recordatorio",
+      "send": "Confirmar envío"
+    },
+    "walletReminder": {
+      "title": "Recordar Recarga",
+      "description": "Push a fans que aún no recargaron Fandies para este evento.",
+      "confirm": "Se enviará un push a los fans del evento que aún no han recargado Fandies. Esta acción no se puede deshacer."
+    },
+    "eventReminder": {
+      "title": "Recordar Evento",
+      "description": "Push a todos los fans guardados — el evento es pronto.",
+      "confirm": "Se enviará un push a todos los fans guardados del evento. Esta acción no se puede deshacer."
+    },
+    "nextEvent": {
+      "title": "Recomendar Próximo Evento",
+      "description": "Push a fans que participaron — recomienda el próximo evento del organizador.",
+      "confirm": "Se enviará un push recomendando el próximo evento a los fans que participaron en éste. Esta acción no se puede deshacer."
+    }
   },
   "landing": {
     "title": "Interactuar con tus ídolos ahora no es imposible",

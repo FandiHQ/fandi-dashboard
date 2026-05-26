@@ -21,12 +21,37 @@ import {
 import type { PreLiveStatsResponse } from '@/types/api';
 import { useState, useEffect } from 'react';
 
-const TABS = [
+type TabDef = {
+    key: string;
+    path: string;
+    label: string;
+    /**
+     * Hidden from viewer/staff. The Analytics and Notifications
+     * surfaces are organizer-management views — irrelevant for
+     * read-only roles, and the notifications page actively
+     * redirects them.
+     */
+    writeOnly?: boolean;
+};
+
+const TABS: readonly TabDef[] = [
     { key: 'resumen', path: '', label: 'tabs.overview' },
     { key: 'oportunidades', path: '/experiences', label: 'tabs.experiences' },
     { key: 'subastas', path: '/auctions', label: 'tabs.auctions' },
     { key: 'insignias', path: '/badges', label: 'tabs.badges' },
     { key: 'ganadores', path: '/winners', label: 'tabs.winners' },
+    {
+        key: 'analitica',
+        path: '/analytics',
+        label: 'tabs.analytics',
+        writeOnly: true,
+    },
+    {
+        key: 'notificaciones',
+        path: '/notifications',
+        label: 'tabs.notifications',
+        writeOnly: true,
+    },
 ] as const;
 
 export default function EventDetailLayout({ children }: { children: React.ReactNode }) {
@@ -86,8 +111,13 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         },
     });
 
+    // Filter tabs by role. Write-only tabs (Analytics,
+    // Notifications) disappear from the strip for viewer/staff so
+    // they can't even see they exist.
+    const visibleTabs = TABS.filter((tab) => !tab.writeOnly || isWriteRole);
+
     // Determine active tab from pathname
-    const activeTab = TABS.find((tab) => {
+    const activeTab = visibleTabs.find((tab) => {
         if (tab.path === '') {
             return pathname === `/dashboard/events/${eventId}`;
         }
@@ -95,7 +125,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
     })?.key || 'resumen';
 
     const handleTabChange = (value: string) => {
-        const tab = TABS.find((t) => t.key === value);
+        const tab = visibleTabs.find((t) => t.key === value);
         if (tab) {
             const path = tab.path
                 ? `/dashboard/events/${eventId}${tab.path}`
@@ -284,7 +314,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             {/* ── Tabs ── */}
             <Tabs value={activeTab} onValueChange={handleTabChange}>
                 <TabsList className="w-full justify-start gap-0 rounded-none border-b border-[#1E1E1E] bg-transparent">
-                    {TABS.map((tab) => (
+                    {visibleTabs.map((tab) => (
                         <TabsTrigger
                             key={tab.key}
                             value={tab.key}
