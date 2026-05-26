@@ -124,7 +124,6 @@ export function NotificationCard({
     // We track tick #s in state so React re-renders the relative
     // time even though `lastResult` itself didn't change.
     const [, setTick] = useState(0);
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // ─── Initial cooldown read (from localStorage) ───────────
     // This effect synchronizes React state with an EXTERNAL system
@@ -157,19 +156,32 @@ export function NotificationCard({
     /* eslint-enable react-hooks/set-state-in-effect */
 
     // ─── Ticker ──────────────────────────────────────────────
+    // Latest secondsRemaining for the interval callback to read
+    // without re-creating itself on every tick. The previous
+    // implementation tore down + recreated setInterval once per
+    // second during an active cooldown — wasteful, and the brief
+    // gap between teardown and recreate could drop a tick.
+    const secondsRemainingRef = useRef(secondsRemaining);
     useEffect(() => {
-        // Fast ticker (1s) while counting down; slow (60s) otherwise.
-        const intervalMs = secondsRemaining > 0 ? 1_000 : 60_000;
-        intervalRef.current = setInterval(() => {
+        secondsRemainingRef.current = secondsRemaining;
+    }, [secondsRemaining]);
+
+    // Single interval lifetime. Cadence toggles 1s ↔ 60s ONLY when
+    // crossing the on-cooldown boundary (`> 0` flips), not on
+    // every tick. Depending on the boolean (rather than the raw
+    // number) keeps the effect's identity stable across each
+    // active second of the countdown.
+    const onCooldownFlag = secondsRemaining > 0;
+    useEffect(() => {
+        const intervalMs = onCooldownFlag ? 1_000 : 60_000;
+        const id = setInterval(() => {
             setTick((n) => n + 1);
-            if (secondsRemaining > 0) {
+            if (secondsRemainingRef.current > 0) {
                 setSecondsRemaining((s) => Math.max(0, s - 1));
             }
         }, intervalMs);
-        return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        };
-    }, [secondsRemaining]);
+        return () => clearInterval(id);
+    }, [onCooldownFlag]);
 
     // ─── Mutation ────────────────────────────────────────────
     const enterCooldown = useCallback(
@@ -296,7 +308,10 @@ export function NotificationCard({
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                        <AlertDialogCancel
+                            disabled={mutation.isPending}
+                            className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        >
                             {t('cancel')}
                         </AlertDialogCancel>
                         <AlertDialogAction

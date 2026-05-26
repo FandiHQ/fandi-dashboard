@@ -26,10 +26,10 @@ type TabDef = {
     path: string;
     label: string;
     /**
-     * Hidden from viewer/staff. The Analytics and Notifications
-     * surfaces are organizer-management views — irrelevant for
-     * read-only roles, and the notifications page actively
-     * redirects them.
+     * Hidden from viewer/staff. Reserved for surfaces that fire
+     * broadcast/write actions (notifications today) — read-only
+     * analytics is intentionally NOT gated here so viewers can
+     * still consume post-event numbers.
      */
     writeOnly?: boolean;
 };
@@ -44,7 +44,9 @@ const TABS: readonly TabDef[] = [
         key: 'analitica',
         path: '/analytics',
         label: 'tabs.analytics',
-        writeOnly: true,
+        // Visible to ALL roles. The analytics page is read-only —
+        // viewers consume post-event numbers, staff may need it
+        // on event day. Do NOT add a redirect on the page itself.
     },
     {
         key: 'notificaciones',
