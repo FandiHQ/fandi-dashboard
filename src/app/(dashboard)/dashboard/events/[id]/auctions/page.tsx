@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -844,18 +844,22 @@ export default function AuctionsPage() {
         queryFn: () => auctionsApi.list(eventId),
         refetchInterval: (query) => {
             const data = query.state.data as Auction[] | undefined;
-            return data?.some((a) => a.status === 'active') ? 5_000 : false;
+            return data?.some((a) => a.status === 'active' || a.status === 'pending') ? 5_000 : false;
         },
     });
 
     // ── WebSocket for live updates ──
-    const activeAuctionTopics = (auctions ?? [])
-        .filter((a) => a.status === 'active')
-        .map((a) => `auction:${a.id}`);
+    const auctionTopics = useMemo(
+        () => [
+            `event:${eventId}`,
+            ...(auctions ?? []).map((a) => `auction:${a.id}`),
+        ],
+        [auctions, eventId],
+    );
 
     const { lastMessage } = useWebSocket({
-        topics: activeAuctionTopics,
-        enabled: activeAuctionTopics.length > 0,
+        topics: auctionTopics,
+        enabled: Boolean(eventId),
     });
 
     useEffect(() => {
