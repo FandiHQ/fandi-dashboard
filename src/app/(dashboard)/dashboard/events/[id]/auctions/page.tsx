@@ -67,6 +67,25 @@ function formatMMS(totalSeconds: number): string {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
+function toLocalScheduledParts(value?: string | null): { date: string; time: string } {
+    if (!value) return { date: '', time: '' };
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return { date: '', time: '' };
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return {
+        date: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,
+        time: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
+    };
+}
+
+function combineScheduledStart(date: string, time: string): string | undefined {
+    if (!date || !time) return undefined;
+    const value = new Date(`${date}T${time}:00`);
+    if (Number.isNaN(value.getTime())) return undefined;
+    return value.toISOString();
+}
+
 // ── Status badge (same pattern as experiences) ──
 const STATUS_CONFIG: Record<string, { bg: string; color: string; border: string }> = {
     pending:   { bg: '#73737320', color: '#737373', border: '#737373' },
@@ -329,7 +348,9 @@ function AuctionFormDialog({
     const [description, setDescription] = useState(existing?.description ?? '');
     const [startingPrice, setStartingPrice] = useState<number>(existing?.startingPrice ?? 10000);
     const [durationMinutes, setDurationMinutes] = useState<number>(existing?.durationMinutes ?? 15);
-    const [scheduledStart, setScheduledStart] = useState(existing?.scheduledStart ?? '');
+    const initialScheduledStart = toLocalScheduledParts(existing?.scheduledStart);
+    const [scheduledDate, setScheduledDate] = useState(initialScheduledStart.date);
+    const [scheduledTime, setScheduledTime] = useState(initialScheduledStart.time);
     const [redemptionInstructions, setRedemptionInstructions] = useState(existing?.redemptionInstructions ?? '');
 
     const { mutate: create, isPending: isCreating } = useMutation({
@@ -364,6 +385,7 @@ function AuctionFormDialog({
         e.preventDefault();
         if (!canSubmit) return;
 
+        const scheduledStart = combineScheduledStart(scheduledDate, scheduledTime);
         const dto: CreateAuctionDto = {
             name: name.trim(),
             ...(description && { description }),
@@ -480,12 +502,20 @@ function AuctionFormDialog({
                                 <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
                                     {t('form.scheduledStart')}
                                 </label>
-                                <Input
-                                    type="datetime-local"
-                                    value={scheduledStart}
-                                    onChange={(e) => setScheduledStart(e.target.value)}
-                                    className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
-                                />
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                    <Input
+                                        type="date"
+                                        value={scheduledDate}
+                                        onChange={(e) => setScheduledDate(e.target.value)}
+                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                    />
+                                    <Input
+                                        type="time"
+                                        value={scheduledTime}
+                                        onChange={(e) => setScheduledTime(e.target.value)}
+                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                    />
+                                </div>
                                 <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('scheduledStartHint')}</p>
                             </div>
 
