@@ -43,6 +43,8 @@ export const eventsApi = {
         unwrap(api.put<Event>(`/dashboard/events/${id}`, dto)),
     updateStatus: (id: string, status: EventStatus) =>
         unwrap(api.put<Event>(`/dashboard/events/${id}/status`, { status })),
+    duplicate: (id: string) =>
+        unwrap(api.post<Event>(`/dashboard/events/${id}/duplicate`, {})),
     delete: (id: string) =>
         unwrap(api.delete(`/dashboard/events/${id}`)),
     getPreLiveStats: (id: string) =>

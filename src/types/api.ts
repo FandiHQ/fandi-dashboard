@@ -85,6 +85,13 @@ export interface PreLiveStatsResponse {
     experiencesReady: boolean;
     auctionCount: number;
     isPublished: boolean;
+    /** All present content types have active winner + participation badges. */
+    badgesReady: boolean;
+    /**
+     * Codes for missing badge combos, e.g. "experience_winner".
+     * Empty when badgesReady is true.
+     */
+    missingBadges: string[];
 }
 
 export interface CitySearchResult {

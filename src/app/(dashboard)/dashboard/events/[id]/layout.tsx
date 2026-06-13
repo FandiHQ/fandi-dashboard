@@ -362,7 +362,12 @@ function GoLiveButton({
         }
     };
 
-    const allPassed = stats ? stats.experienceCount > 0 && stats.experiencesReady && stats.isPublished : false;
+    const allPassed = stats
+        ? stats.experienceCount > 0 &&
+          stats.experiencesReady &&
+          stats.isPublished &&
+          stats.badgesReady
+        : false;
 
     return (
         <Dialog>
@@ -396,6 +401,16 @@ function GoLiveButton({
                         <ChecklistItem
                             label={t('checkPublished')}
                             passed={stats.isPublished}
+                        />
+                        <ChecklistItem
+                            label={
+                                stats.badgesReady
+                                    ? t('checkBadges')
+                                    : `${t('checkBadges')} — ${stats.missingBadges
+                                          .map((code) => t(`missingBadge.${code}`))
+                                          .join(', ')}`
+                            }
+                            passed={stats.badgesReady}
                         />
                         <ChecklistItem
                             label={t('checkAuctions')}

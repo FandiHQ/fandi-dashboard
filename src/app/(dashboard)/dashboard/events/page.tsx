@@ -3,8 +3,9 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useQuery } from '@tanstack/react-query';
-import { Plus, Calendar, AlertCircle, ChevronRight } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Plus, Calendar, AlertCircle, ChevronRight, Copy, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -23,6 +24,7 @@ export default function EventsListPage() {
     const t = useTranslations('events');
     const { memberRole } = useAuth();
     const isWriteRole = memberRole === 'owner' || memberRole === 'admin';
+    const queryClient = useQueryClient();
 
     const [statusFilter, setStatusFilter] = useState<string>('all');
 
@@ -191,7 +193,18 @@ export default function EventsListPage() {
                                         {formatDate(event.eventDate)}
                                     </TableCell>
                                     <TableCell>
-                                        <ChevronRight size={16} className="text-[#4A4A4A]" />
+                                        <div className="flex items-center justify-end gap-1">
+                                            {isWriteRole && (
+                                                <DuplicateButton
+                                                    eventId={event.id}
+                                                    onDuplicated={(newId) => {
+                                                        queryClient.invalidateQueries({ queryKey: ['events'] });
+                                                        router.push(`/dashboard/events/edit/${newId}`);
+                                                    }}
+                                                />
+                                            )}
+                                            <ChevronRight size={16} className="text-[#4A4A4A]" />
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -200,6 +213,47 @@ export default function EventsListPage() {
                 </Table>
             </div>
         </div>
+    );
+}
+
+// ── Duplicate action ──
+
+function DuplicateButton({
+    eventId,
+    onDuplicated,
+}: {
+    eventId: string;
+    onDuplicated: (newEventId: string) => void;
+}) {
+    const t = useTranslations('events');
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => eventsApi.duplicate(eventId),
+        onSuccess: (created) => {
+            toast.success(t('duplicated'));
+            onDuplicated(created.id);
+        },
+        onError: () => toast.error(t('duplicateError')),
+    });
+
+    return (
+        <button
+            type="button"
+            title={t('duplicate')}
+            aria-label={t('duplicate')}
+            disabled={isPending}
+            onClick={(e) => {
+                // Don't trigger the row's navigate-to-detail handler.
+                e.stopPropagation();
+                mutate();
+            }}
+            className="flex cursor-pointer items-center justify-center rounded-none border border-transparent p-1.5 text-[#737373] transition-all duration-150 hover:border-[#2D00F7] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+        >
+            {isPending ? (
+                <Loader2 size={15} className="animate-spin" />
+            ) : (
+                <Copy size={15} />
+            )}
+        </button>
     );
 }
 

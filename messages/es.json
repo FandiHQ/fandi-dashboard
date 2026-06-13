@@ -151,7 +151,18 @@
     "checkExperiences": "Al menos 1 oportunidad creada",
     "checkExperiencesReady": "Oportunidades configuradas correctamente",
     "checkPublished": "Evento publicado",
+    "checkBadges": "Insignias configuradas",
+    "missingBadge": {
+      "experience_winner": "ganador de oportunidad",
+      "experience_participation": "participación en oportunidad",
+      "auction_winner": "ganador de subasta",
+      "auction_participation": "participación en subasta"
+    },
     "checkAuctions": "Subastas creadas (opcional)",
+    "duplicate": "Duplicar",
+    "duplicating": "Duplicando...",
+    "duplicated": "Evento duplicado",
+    "duplicateError": "No pudimos duplicar el evento",
     "eventLive": "🔴 ¡Evento en vivo!",
     "typeToConfirm": "Escribe el nombre del evento para confirmar",
     "viewLiveDashboard": "Ver Dashboard en Vivo →",
