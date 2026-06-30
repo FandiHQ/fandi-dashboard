@@ -13,6 +13,11 @@ import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi, placesApi } from '@/lib/api-hooks';
 import type { UpdateEventDto } from '@/types/api';
+import {
+    datetimeLocalToIso,
+    isoToDatetimeLocal,
+    eventDurationParts,
+} from '@/lib/event-datetime';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageUpload } from '@/components/ui/image-upload';
@@ -22,35 +27,6 @@ import {
     Select, SelectContent, SelectItem,
     SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-
-/** Combine a date (YYYY-MM-DD) and time (HH:MM) into ISO string, preserving local time */
-function combineDateAndTime(date: string, time: string): string | undefined {
-    if (!date || !time) return undefined;
-    // Create date in local timezone and serialize preserving the intended time
-    const d = new Date(`${date}T${time}:00`);
-    if (isNaN(d.getTime())) return undefined;
-    return d.toISOString();
-}
-
-/** Extract HH:MM from an ISO/date string using LOCAL time */
-function isoToTime(iso: string | null | undefined): string {
-    if (!iso) return '';
-    try {
-        const d = new Date(iso);
-        if (isNaN(d.getTime())) return '';
-        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-    } catch { return ''; }
-}
-
-/** Extract YYYY-MM-DD from an ISO/date string using LOCAL time */
-function isoToDate(iso: string | null | undefined): string {
-    if (!iso) return '';
-    try {
-        const d = new Date(iso);
-        if (isNaN(d.getTime())) return '';
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    } catch { return ''; }
-}
 
 export default function EditEventPage() {
     const params = useParams();
@@ -78,11 +54,11 @@ export default function EditEventPage() {
             z.object({
                 name: z.string().min(1, 'Este campo es requerido').max(255),
                 eventType: z.string().optional(),
-                eventDate: z.string().min(1, 'Este campo es requerido'), // YYYY-MM-DD
-                eventStartTime: z.string().min(1, 'Este campo es requerido'), // HH:MM
-                eventEndTime: z.string().min(1, 'Este campo es requerido'),
-                fandiOpensTime: z.string().min(1, 'Este campo es requerido'),
-                fandiClosesTime: z.string().min(1, 'Este campo es requerido'),
+                // Full datetimes (Step 6.1) — datetime-local "YYYY-MM-DDTHH:MM".
+                eventDate: z.string().min(1, 'Este campo es requerido'),
+                eventEndDate: z.string().optional().or(z.literal('')),
+                fandiOpensAt: z.string().optional().or(z.literal('')),
+                fandiClosesAt: z.string().optional().or(z.literal('')),
                 venue: z.string().min(1, 'Este campo es requerido'),
                 cityId: z.string().regex(/^\d+$/, 'cityId must be numeric').nullable().optional(),
                 status: z.enum(['draft', 'published', 'live', 'ended']).optional(),
@@ -93,29 +69,19 @@ export default function EditEventPage() {
                     .optional()
                     .or(z.literal('')),
             }).superRefine((data, ctx) => {
-                // Event end must be after event start
-                if (data.eventEndTime && data.eventStartTime && data.eventEndTime <= data.eventStartTime) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: 'La hora de fin debe ser posterior a la hora de inicio',
-                        path: ['eventEndTime'],
-                    });
+                // Mirror the backend invariants (events.service assertEventDatesValid).
+                const { eventDate, eventEndDate, fandiOpensAt, fandiClosesAt } = data;
+                if (eventEndDate && eventDate && eventEndDate <= eventDate) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'EVENT_END_BEFORE_START', path: ['eventEndDate'] });
                 }
-                // Fandi closes must be after Fandi opens
-                if (data.fandiClosesTime && data.fandiOpensTime && data.fandiClosesTime <= data.fandiOpensTime) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: 'Fandi debe cerrar después de abrir',
-                        path: ['fandiClosesTime'],
-                    });
+                if (fandiOpensAt && eventDate && fandiOpensAt < eventDate) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_OPENS_BEFORE_EVENT', path: ['fandiOpensAt'] });
                 }
-                // Fandi opens should not be after event ends
-                if (data.fandiOpensTime && data.eventEndTime && data.fandiOpensTime > data.eventEndTime) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: 'Fandi no puede abrir después de que el evento termine',
-                        path: ['fandiOpensTime'],
-                    });
+                if (fandiClosesAt && eventEndDate && fandiClosesAt > eventEndDate) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_CLOSES_AFTER_EVENT', path: ['fandiClosesAt'] });
+                }
+                if (fandiOpensAt && fandiClosesAt && fandiOpensAt >= fandiClosesAt) {
+                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_WINDOW_INVALID', path: ['fandiClosesAt'] });
                 }
                 if ((data.status === 'published' || data.status === 'live') && !data.cityId) {
                     ctx.addIssue({
@@ -143,10 +109,9 @@ export default function EditEventPage() {
         defaultValues: {
             name: '',
             eventDate: '',
-            eventStartTime: '',
-            eventEndTime: '',
-            fandiOpensTime: '',
-            fandiClosesTime: '',
+            eventEndDate: '',
+            fandiOpensAt: '',
+            fandiClosesAt: '',
             venue: '',
             cityId: null,
             status: 'draft',
@@ -176,11 +141,10 @@ export default function EditEventPage() {
             reset({
                 name: event.name,
                 eventType: event.eventType || undefined,
-                eventDate: isoToDate(event.eventDate),
-                eventStartTime: isoToTime(event.eventDate),
-                eventEndTime: isoToTime(event.eventEndDate),
-                fandiOpensTime: isoToTime(event.fandiOpensAt),
-                fandiClosesTime: isoToTime(event.fandiClosesAt),
+                eventDate: isoToDatetimeLocal(event.eventDate),
+                eventEndDate: isoToDatetimeLocal(event.eventEndDate),
+                fandiOpensAt: isoToDatetimeLocal(event.fandiOpensAt),
+                fandiClosesAt: isoToDatetimeLocal(event.fandiClosesAt),
                 venue: event.venue || '',
                 cityId: event.cityId ?? null,
                 status: event.status,
@@ -217,8 +181,18 @@ export default function EditEventPage() {
 
     const watchAll = watch();
     const coverImageUrl = watchAll.coverImageUrl;
-    const formatFieldError = (message?: string) =>
-        message === 'events.form.cityRequired' ? t('form.cityRequired') : message;
+    const VALIDATION_CODES = [
+        'EVENT_END_BEFORE_START',
+        'FANDI_OPENS_BEFORE_EVENT',
+        'FANDI_CLOSES_AFTER_EVENT',
+        'FANDI_WINDOW_INVALID',
+    ];
+    const formatFieldError = (message?: string) => {
+        if (!message) return message;
+        if (message === 'events.form.cityRequired') return t('form.cityRequired');
+        if (VALIDATION_CODES.includes(message)) return t(`validation.${message}`);
+        return message;
+    };
 
     const { mutate: updateEvent, isPending } = useMutation({
         mutationFn: (dto: UpdateEventDto) => eventsApi.update(eventId, dto),
@@ -234,7 +208,7 @@ export default function EditEventPage() {
     });
 
     const onSubmit = (data: FormValues) => {
-        const eventDateTime = combineDateAndTime(data.eventDate, data.eventStartTime);
+        const eventDateTime = datetimeLocalToIso(data.eventDate);
         if (!eventDateTime) return;
 
         const dto: UpdateEventDto = {
@@ -245,9 +219,9 @@ export default function EditEventPage() {
             eventType: (data.eventType || undefined) as UpdateEventDto['eventType'],
             description: data.description || undefined,
             coverImageUrl: data.coverImageUrl || undefined,
-            eventEndDate: combineDateAndTime(data.eventDate, data.eventEndTime ?? '') || undefined,
-            fandiOpensAt: combineDateAndTime(data.eventDate, data.fandiOpensTime ?? '') || undefined,
-            fandiClosesAt: combineDateAndTime(data.eventDate, data.fandiClosesTime ?? '') || undefined,
+            eventEndDate: datetimeLocalToIso(data.eventEndDate),
+            fandiOpensAt: datetimeLocalToIso(data.fandiOpensAt),
+            fandiClosesAt: datetimeLocalToIso(data.fandiClosesAt),
         };
         updateEvent(dto);
     };
@@ -258,29 +232,33 @@ export default function EditEventPage() {
         other: t('typeOther'),
     };
 
-    const formatPreviewDate = (date: string) => {
-        if (!date) return null;
-        try {
-            // Append T12:00:00 to avoid UTC-midnight parsing of date-only strings
-            return new Intl.DateTimeFormat('es', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-            }).format(new Date(date + 'T12:00:00'));
-        } catch {
-            return null;
-        }
+    // Format a datetime-local value ("YYYY-MM-DDTHH:MM") for the preview.
+    const formatDateTime = (local: string) => {
+        if (!local) return null;
+        const d = new Date(local);
+        if (isNaN(d.getTime())) return null;
+        return new Intl.DateTimeFormat('es', {
+            day: 'numeric',
+            month: 'short',
+            hour: 'numeric',
+            minute: '2-digit',
+        }).format(d);
     };
 
-    const formatTimeDisplay = (time: string) => {
-        if (!time) return null;
-        const [h, m] = time.split(':');
-        const hour = parseInt(h);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-        return `${h12}:${m} ${ampm}`;
-    };
+    // Live duration readout ("Dura 2 días 3 h").
+    const durationParts = eventDurationParts(watchAll.eventDate, watchAll.eventEndDate);
+    const durationText = durationParts
+        ? t('durationLabel', {
+              value: [
+                  durationParts.days > 0
+                      ? `${durationParts.days} ${t(durationParts.days === 1 ? 'durationDay' : 'durationDays')}`
+                      : '',
+                  `${durationParts.hours} ${t('durationHour')}`,
+              ]
+                  .filter(Boolean)
+                  .join(' '),
+          })
+        : null;
 
     if (memberRole && !isWriteRole) return null;
 
@@ -407,23 +385,6 @@ export default function EditEventPage() {
                         />
                     </div>
 
-                    {/* Event Date (date only) */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('date')} *
-                        </label>
-                        <Input
-                            type="date"
-                            {...register('eventDate')}
-                            className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
-                        />
-                        {errors.eventDate && (
-                            <span className="font-space-mono text-base text-[#FF3366]">
-                                {errors.eventDate.message}
-                            </span>
-                        )}
-                    </div>
-
                     {/* Description */}
                     <div className="flex flex-col gap-2">
                         <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
@@ -437,7 +398,7 @@ export default function EditEventPage() {
                         />
                     </div>
 
-                    {/* ── HORAS RELOJ INFORMATIVO (Boletas) ── */}
+                    {/* ── RELOJ INFORMATIVO (Boletas) — full datetimes ── */}
                     <div className="mt-2 border-t border-[#1E1E1E] pt-6">
                         <div className="mb-4 flex items-center gap-3">
                             <Clock size={18} className="text-[#737373]" />
@@ -448,38 +409,43 @@ export default function EditEventPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    Inicio *
+                                    {t('eventStart')} *
                                 </label>
                                 <Input
-                                    type="time"
-                                    {...register('eventStartTime')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                    type="datetime-local"
+                                    {...register('eventDate')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
-                                {errors.eventStartTime && (
+                                {errors.eventDate && (
                                     <span className="font-space-mono text-xs text-[#FF3366]">
-                                        {errors.eventStartTime.message}
+                                        {formatFieldError(errors.eventDate.message)}
                                     </span>
                                 )}
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    Fin *
+                                    {t('eventEnd')}
                                 </label>
                                 <Input
-                                    type="time"
-                                    {...register('eventEndTime')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                    type="datetime-local"
+                                    {...register('eventEndDate')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
-                                {errors.eventEndTime && (
+                                {errors.eventEndDate && (
                                     <span className="font-space-mono text-xs text-[#FF3366]">
-                                        {errors.eventEndTime.message}
+                                        {formatFieldError(errors.eventEndDate.message)}
                                     </span>
                                 )}
                             </div>
                         </div>
+                        {durationText && (
+                            <p className="mt-3 font-space-mono text-[12px] uppercase tracking-[1px] text-[#737373]">
+                                {durationText}
+                            </p>
+                        )}
                     </div>
 
-                    {/* ── HORAS RELOJ FANDI (Dinámicas) ── */}
+                    {/* ── RELOJ FANDI (Dinámicas) — full datetimes ── */}
                     <div className="border-t border-[#1E1E1E] pt-6">
                         <div className="mb-4 flex items-center gap-3">
                             <Zap size={18} className="text-[#2D00F7]" />
@@ -490,16 +456,16 @@ export default function EditEventPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
-                                    {t('fandiOpensAt')} *
+                                    {t('fandiOpensAt')}
                                 </label>
                                 <Input
-                                    type="time"
-                                    {...register('fandiOpensTime')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                    type="datetime-local"
+                                    {...register('fandiOpensAt')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
-                                {errors.fandiOpensTime && (
+                                {errors.fandiOpensAt && (
                                     <span className="font-space-mono text-xs text-[#FF3366]">
-                                        {errors.fandiOpensTime.message}
+                                        {formatFieldError(errors.fandiOpensAt.message)}
                                     </span>
                                 )}
                                 <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
@@ -508,16 +474,16 @@ export default function EditEventPage() {
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
-                                    {t('fandiClosesAt')} *
+                                    {t('fandiClosesAt')}
                                 </label>
                                 <Input
-                                    type="time"
-                                    {...register('fandiClosesTime')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                    type="datetime-local"
+                                    {...register('fandiClosesAt')}
+                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
                                 />
-                                {errors.fandiClosesTime && (
+                                {errors.fandiClosesAt && (
                                     <span className="font-space-mono text-xs text-[#FF3366]">
-                                        {errors.fandiClosesTime.message}
+                                        {formatFieldError(errors.fandiClosesAt.message)}
                                     </span>
                                 )}
                                 <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
@@ -619,34 +585,31 @@ export default function EditEventPage() {
                                         <div className="flex items-center gap-2">
                                             <Calendar size={16} className="text-[#2D00F7]" />
                                             <span className="font-space-mono text-base text-[#A0A0A0]">
-                                                {formatPreviewDate(watchAll.eventDate)}
+                                                {formatDateTime(watchAll.eventDate)}
+                                                {watchAll.eventEndDate && ` → ${formatDateTime(watchAll.eventEndDate)}`}
                                             </span>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Time previews */}
-                                {(watchAll.eventStartTime || watchAll.eventEndTime) && (
+                                {durationText && (
                                     <div className="flex items-center gap-2 border-t border-[#1E1E1E] pt-3">
                                         <Clock size={14} className="text-[#737373]" />
-                                        <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
-                                            Boletas:
-                                        </span>
                                         <span className="font-sora text-sm text-[#A0A0A0]">
-                                            {formatTimeDisplay(watchAll.eventStartTime || '')}
-                                            {watchAll.eventEndTime && ` — ${formatTimeDisplay(watchAll.eventEndTime)}`}
+                                            {durationText}
                                         </span>
                                     </div>
                                 )}
-                                {(watchAll.fandiOpensTime || watchAll.fandiClosesTime) && (
+                                {(watchAll.fandiOpensAt || watchAll.fandiClosesAt) && (
                                     <div className="flex items-center gap-2">
                                         <Zap size={14} className="text-[#2D00F7]" />
                                         <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#2D00F7]">
                                             Fandi:
                                         </span>
                                         <span className="font-sora text-sm text-[#A0A0A0]">
-                                            {formatTimeDisplay(watchAll.fandiOpensTime || '')}
-                                            {watchAll.fandiClosesTime && ` — ${formatTimeDisplay(watchAll.fandiClosesTime)}`}
+                                            {formatDateTime(watchAll.fandiOpensAt || '')}
+                                            {watchAll.fandiClosesAt && ` → ${formatDateTime(watchAll.fandiClosesAt)}`}
                                         </span>
                                     </div>
                                 )}

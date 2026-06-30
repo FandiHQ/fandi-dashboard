@@ -7,6 +7,8 @@ import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2, Tim
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi, badgeAwardingApi } from '@/lib/api-hooks';
+import { ApiError } from '@/lib/api';
+import { eventDateViolations, isoToDatetimeLocal } from '@/lib/event-datetime';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -83,6 +85,18 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             }
         },
         onError: (err: unknown) => {
+            // Surface the typed date/publish-gate codes as localized copy.
+            const DATE_CODES = [
+                'EVENT_END_REQUIRED',
+                'EVENT_END_BEFORE_START',
+                'FANDI_OPENS_BEFORE_EVENT',
+                'FANDI_CLOSES_AFTER_EVENT',
+                'FANDI_WINDOW_INVALID',
+            ];
+            if (err instanceof ApiError && DATE_CODES.includes(err.code)) {
+                toast.error(t(`validation.${err.code}`));
+                return;
+            }
             const message = err instanceof Error ? err.message : 'Error';
             toast.error(message);
         },
@@ -169,7 +183,22 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         );
     }
 
-    const canPublish = Boolean(event.cityId);
+    // Publish gate (Step 6.1): city + end date present + all date invariants
+    // hold. Mirrors the backend so the button reflects what the API enforces.
+    const dateViolations = eventDateViolations({
+        eventDate: isoToDatetimeLocal(event.eventDate),
+        eventEndDate: isoToDatetimeLocal(event.eventEndDate),
+        fandiOpensAt: isoToDatetimeLocal(event.fandiOpensAt),
+        fandiClosesAt: isoToDatetimeLocal(event.fandiClosesAt),
+    });
+    const publishBlockReason: string | null = !event.cityId
+        ? t('form.cityRequired')
+        : !event.eventEndDate
+          ? t('validation.EVENT_END_REQUIRED')
+          : dateViolations.length > 0
+            ? t(`validation.${dateViolations[0]}`)
+            : null;
+    const canPublish = publishBlockReason === null;
 
     return (
         <div className="flex flex-col gap-6 p-14">
@@ -273,9 +302,9 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-                                {!canPublish && (
+                                {!canPublish && publishBlockReason && (
                                     <span className="max-w-64 text-right font-space-mono text-xs text-[#FF3366]">
-                                        {t('form.cityRequired')}
+                                        {publishBlockReason}
                                     </span>
                                 )}
                             </div>
