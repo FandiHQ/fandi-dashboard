@@ -38,7 +38,7 @@ api.interceptors.response.use(
         }
         return response;
     },
-    (error: AxiosError<{ success: false; error: { code: string; message: string } }>) => {
+    (error: AxiosError<unknown>) => {
         if (error.response?.status === 401) {
             // Session expired — hard redirect
             // Cannot use Next.js router from non-component file
@@ -48,15 +48,33 @@ api.interceptors.response.use(
             return Promise.reject(new ApiError('UNAUTHORIZED', 'Session expired', 401));
         }
 
-        // Extract API error from response body
-        const apiError = error.response?.data?.error;
-        if (apiError) {
-            return Promise.reject(
-                new ApiError(apiError.code, apiError.message, error.response!.status)
-            );
+        const status = error.response?.status ?? 0;
+        const body = error.response?.data as
+            | {
+                  error?: { code?: string; message?: string };
+                  code?: string;
+                  message?: string | string[];
+              }
+            | undefined;
+
+        if (body && typeof body === 'object') {
+            // Shape A — standard envelope: { success: false, error: { code, message } }
+            if (body.error && typeof body.error === 'object') {
+                return Promise.reject(
+                    new ApiError(body.error.code ?? 'ERROR', body.error.message ?? 'Error', status)
+                );
+            }
+            // Shape B — object HttpException: { code, message }
+            // Shape C — Nest default: { statusCode, message: string | string[], error }
+            const rawMessage = Array.isArray(body.message)
+                ? body.message.join(', ')
+                : body.message;
+            if (typeof rawMessage === 'string' && rawMessage.length > 0) {
+                return Promise.reject(new ApiError(body.code ?? 'ERROR', rawMessage, status));
+            }
         }
 
-        // Network error / timeout
+        // Network error / timeout — no usable body
         return Promise.reject(
             new ApiError('NETWORK_ERROR', error.message || 'Network error', 0)
         );

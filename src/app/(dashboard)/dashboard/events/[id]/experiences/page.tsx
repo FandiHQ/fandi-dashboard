@@ -137,6 +137,9 @@ function OpportunityCard({
 }) {
     const t = useTranslations('experiences');
     const [expanded, setExpanded] = useState(false);
+    // Private organizer peek at the surprise text — local-only, does NOT
+    // trigger the public reveal (`onReveal`/`surpriseRevealedAt`).
+    const [showSurprise, setShowSurprise] = useState(false);
     const escuadras = exp.escuadras || [];
 
     return (
@@ -247,8 +250,18 @@ function OpportunityCard({
                                 Sorpresa:
                             </span>
                             <span className="font-sora text-sm text-[#FFD700]">
-                                {exp.surpriseRevealedAt ? exp.surpriseReveal : '••••••••'}
+                                {showSurprise || exp.surpriseRevealedAt ? exp.surpriseReveal : '••••••••'}
                             </span>
+                            {isWrite && !exp.surpriseRevealedAt && (
+                                <button
+                                    type="button"
+                                    onClick={() => setShowSurprise((v) => !v)}
+                                    aria-label={showSurprise ? t('hideSurprise') : t('showSurprise')}
+                                    className="cursor-pointer text-[#4A4A4A] transition-colors hover:text-[#FFD700]"
+                                >
+                                    {showSurprise ? <EyeOff size={14} /> : <Eye size={14} />}
+                                </button>
+                            )}
                         </div>
                     )}
                     {exp.redemptionInstructions && (

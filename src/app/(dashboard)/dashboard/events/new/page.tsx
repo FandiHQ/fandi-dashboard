@@ -50,9 +50,9 @@ export default function CreateEventPage() {
                 eventType: z.enum(['football', 'concert', 'other']).optional(),
                 eventDate: z.string().min(1, 'Este campo es requerido'), // YYYY-MM-DD
                 eventStartTime: z.string().min(1, 'Este campo es requerido'), // HH:MM
-                eventEndTime: z.string().optional().or(z.literal('')),
-                fandiOpensTime: z.string().optional().or(z.literal('')),
-                fandiClosesTime: z.string().optional().or(z.literal('')),
+                eventEndTime: z.string().min(1, 'Este campo es requerido'),
+                fandiOpensTime: z.string().min(1, 'Este campo es requerido'),
+                fandiClosesTime: z.string().min(1, 'Este campo es requerido'),
                 venue: z.string().min(1, 'Este campo es requerido'),
                 cityId: z.string().regex(/^\d+$/, 'cityId must be numeric').nullable().optional(),
                 status: z.enum(['draft', 'published', 'live', 'ended']).optional(),
@@ -356,7 +356,7 @@ export default function CreateEventPage() {
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    Fin
+                                    Fin *
                                 </label>
                                 <Input
                                     type="time"

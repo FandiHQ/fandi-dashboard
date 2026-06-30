@@ -13,7 +13,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { auctionsApi, eventsApi } from '@/lib/api-hooks';
-import type { Auction, CreateAuctionDto, UpdateAuctionDto, AuctionStatus } from '@/types/api';
+import { ApiError } from '@/lib/api';
+import type { Auction, CreateAuctionDto, UpdateAuctionDto, AuctionStatus, Event } from '@/types/api';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -333,10 +334,12 @@ function ConfirmDialog({
 // ── Form Dialog ──
 function AuctionFormDialog({
     eventId,
+    event,
     existing,
     onClose,
 }: {
     eventId: string;
+    event?: Event;
     existing?: Auction | null;
     onClose: () => void;
 }) {
@@ -353,6 +356,32 @@ function AuctionFormDialog({
     const [scheduledTime, setScheduledTime] = useState(initialScheduledStart.time);
     const [redemptionInstructions, setRedemptionInstructions] = useState(existing?.redemptionInstructions ?? '');
 
+    // Fandi-clock window for the scheduled-start tooltip — the auction must
+    // start within it, so showing the organizer the exact window saves a
+    // round-trip to the event page (and a 400 from the backend).
+    const fmtDt = (iso: string) =>
+        new Intl.DateTimeFormat('es-CO', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(iso));
+    const fandiWindowLabel =
+        event?.fandiOpensAt && event?.fandiClosesAt
+            ? t('fandiWindowTooltip', { opens: fmtDt(event.fandiOpensAt), closes: fmtDt(event.fandiClosesAt) })
+            : t('fandiWindowUnknown');
+
+    // Map backend error codes to friendly localized toasts. The Fandi-clock
+    // validations return typed codes; anything else falls back to the raw
+    // (now-surfaced) message, then a generic string.
+    const KNOWN_CODES = [
+        'AUCTION_STARTS_BEFORE_FANDI_CLOCK',
+        'AUCTION_EXCEEDS_FANDI_CLOCK',
+        'EVENT_MISSING_FANDI_CLOCK',
+    ];
+    const toErrorMessage = (err: unknown): string => {
+        if (err instanceof ApiError) {
+            if (KNOWN_CODES.includes(err.code)) return t(`errors.${err.code}`);
+            return err.message;
+        }
+        return t('createError');
+    };
+
     const { mutate: create, isPending: isCreating } = useMutation({
         mutationFn: (dto: CreateAuctionDto) => auctionsApi.create(eventId, dto),
         onSuccess: () => {
@@ -360,7 +389,7 @@ function AuctionFormDialog({
             toast.success(t('created'));
             onClose();
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t('createError')),
+        onError: (err: unknown) => toast.error(toErrorMessage(err)),
     });
 
     const { mutate: update, isPending: isUpdating } = useMutation({
@@ -370,7 +399,7 @@ function AuctionFormDialog({
             toast.success(t('updated'));
             onClose();
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : t('createError')),
+        onError: (err: unknown) => toast.error(toErrorMessage(err)),
     });
 
     const isPending = isCreating || isUpdating;
@@ -499,21 +528,37 @@ function AuctionFormDialog({
 
                             {/* Scheduled Start */}
                             <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    {t('form.scheduledStart')}
-                                </label>
+                                <div className="flex items-center gap-2">
+                                    <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                        {t('form.scheduledStart')}
+                                    </label>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button type="button" className="cursor-help text-[#2D00F7] transition-colors hover:text-white hover:drop-shadow-[0_0_8px_rgba(45,0,247,0.8)] focus:outline-none">
+                                                    <Info size={14} />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent
+                                                className="max-w-[260px] rounded-none border-[#2D00F7] bg-[#020202] py-3 pl-3 pr-4 font-sora text-[12px] leading-relaxed text-[#A0A0A0] shadow-[0_0_20px_rgba(45,0,247,0.2)]"
+                                            >
+                                                {fandiWindowLabel}
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <Input
                                         type="date"
                                         value={scheduledDate}
                                         onChange={(e) => setScheduledDate(e.target.value)}
-                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0 [color-scheme:dark]"
                                     />
                                     <Input
                                         type="time"
                                         value={scheduledTime}
                                         onChange={(e) => setScheduledTime(e.target.value)}
-                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0 [color-scheme:dark]"
                                     />
                                 </div>
                                 <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('scheduledStartHint')}</p>
@@ -1117,6 +1162,7 @@ export default function AuctionsPage() {
             {showForm && (
                 <AuctionFormDialog
                     eventId={eventId}
+                    event={event}
                     existing={editingAuction}
                     onClose={handleCloseForm}
                 />

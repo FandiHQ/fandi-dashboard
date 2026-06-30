@@ -7,7 +7,7 @@ import { Calendar, MapPin, Tag, FileText, Clock, Radio, Zap } from 'lucide-react
 import Image from 'next/image';
 import Link from 'next/link';
 import { eventsApi, analyticsApi } from '@/lib/api-hooks';
-import { formatFandis, formatUsd } from '@/lib/currency';
+import { formatFandis, formatCop } from '@/lib/currency';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -101,7 +101,7 @@ export default function EventOverviewPage() {
                                     {formatFandis(summary?.totalRaised ?? 0)} F
                                 </span>
                                 <span className="font-space-mono text-[11px] text-[#737373]">
-                                    ≈ {formatUsd(summary?.totalRaised ?? 0)}
+                                    ≈ {formatCop(summary?.totalRaised ?? 0)}
                                 </span>
                             </div>
                         )}

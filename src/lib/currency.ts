@@ -21,3 +21,8 @@ export const formatUsd = (cop: number) =>
     new Intl.NumberFormat('en-US', {
         style: 'currency', currency: 'USD', maximumFractionDigits: 0,
     }).format(copToUsd(cop));
+
+export const formatCop = (cop: number) =>
+    new Intl.NumberFormat('es-CO', {
+        style: 'currency', currency: 'COP', maximumFractionDigits: 0,
+    }).format(cop);

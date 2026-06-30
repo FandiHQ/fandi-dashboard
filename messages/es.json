@@ -188,6 +188,8 @@
     "reveal": "Revelar Sorpresa",
     "revealConfirm": "¿Revelar la sorpresa? Los fans la verán de inmediato.",
     "revealed": "¡Sorpresa revelada!",
+    "showSurprise": "Ver sorpresa",
+    "hideSurprise": "Ocultar sorpresa",
     "closeConfirm": "¿Cerrar esta oportunidad? Se seleccionarán ganadores.",
     "closed": "Oportunidad cerrada y ganadores seleccionados",
     "escuadra": {
@@ -208,6 +210,13 @@
     "create": "Crear Subasta",
     "created": "Subasta creada exitosamente",
     "createError": "Error al crear subasta",
+    "fandiWindowTooltip": "El reloj Fandi abre el {opens} y cierra el {closes}. La subasta debe iniciar y terminar dentro de esa ventana.",
+    "fandiWindowUnknown": "Este evento aún no tiene configurado el reloj Fandi. Configúralo en los detalles del evento.",
+    "errors": {
+      "AUCTION_STARTS_BEFORE_FANDI_CLOCK": "La subasta no puede iniciar antes de que abra el reloj Fandi. Programa el inicio más tarde.",
+      "AUCTION_EXCEEDS_FANDI_CLOCK": "La subasta terminaría después de que cierre el reloj Fandi. Acorta la duración o adelanta el inicio.",
+      "EVENT_MISSING_FANDI_CLOCK": "Este evento no tiene configurado el reloj Fandi. Configúralo antes de crear subastas."
+    },
     "updated": "Subasta actualizada",
     "deleted": "Subasta eliminada",
     "deleteError": "Error al eliminar subasta",

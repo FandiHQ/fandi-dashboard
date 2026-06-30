@@ -168,6 +168,8 @@
         "winnersPerEscuadra": "Winners per Escuadra",
         "redemptionInstructions": "Redemption instructions",
         "surpriseReveal": "Surprise text (revealed when opened)",
+        "showSurprise": "Show surprise",
+        "hideSurprise": "Hide surprise",
         "escuadra": {
             "1": "Fans",
             "2": "Supporters",
@@ -183,6 +185,13 @@
         "create": "Create Auction",
         "created": "Auction created successfully",
         "createError": "Error creating auction",
+        "fandiWindowTooltip": "The Fandi clock opens on {opens} and closes on {closes}. The auction must start and end within that window.",
+        "fandiWindowUnknown": "This event has no Fandi clock configured yet. Set it in the event details.",
+        "errors": {
+            "AUCTION_STARTS_BEFORE_FANDI_CLOCK": "The auction can't start before the Fandi clock opens. Schedule a later start.",
+            "AUCTION_EXCEEDS_FANDI_CLOCK": "The auction would end after the Fandi clock closes. Shorten the duration or move the start earlier.",
+            "EVENT_MISSING_FANDI_CLOCK": "This event has no Fandi clock configured. Set it before creating auctions."
+        },
         "updated": "Auction updated",
         "deleted": "Auction deleted",
         "deleteError": "Error deleting auction",

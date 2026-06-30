@@ -11,7 +11,7 @@ import { es } from 'date-fns/locale';
 
 import { eventsApi, analyticsApi, auctionsApi } from '@/lib/api-hooks';
 import { useWebSocket } from '@/hooks/use-websocket';
-import { formatFandis, formatUsd } from '@/lib/currency';
+import { formatFandis, formatCop } from '@/lib/currency';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { WsConnectionStatus, Auction } from '@/types/api';
 
@@ -374,7 +374,7 @@ export default function LiveDashboardPage() {
                 <StatCard
                     label={t('totalRaised')}
                     value={`${formatFandis(pulse?.totalRaised ?? 0)} F`}
-                    sub={`≈ ${formatUsd(pulse?.totalRaised ?? 0)}`}
+                    sub={`≈ ${formatCop(pulse?.totalRaised ?? 0)}`}
                     icon={TrendingUp}
                     glowColor="rgba(45,0,247,0.6)"
                 />
