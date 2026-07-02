@@ -176,6 +176,8 @@
     },
     "experiences": {
         "title": "Experiences",
+        "franja": "Slot",
+        "noFranja": "No slot → global window",
         "add": "Add Experience",
         "created": "Experience created",
         "winnersPerEscuadra": "Winners per Escuadra",
@@ -191,6 +193,33 @@
         },
         "customNames": "Customize escuadra names",
         "distribution": "Distribution: 50% / 30% / 15% / 5%"
+    },
+    "franjas": {
+        "title": "Slots",
+        "add": "Create Slot",
+        "help": "Group opportunities into time windows inside the Fandi clock. Opportunities in a slot open and close together. No slot → they use the global window.",
+        "empty": "No slots. Opportunities use the event's global window.",
+        "opportunityCount": "{count, plural, =0 {No opportunities} one {# opportunity} other {# opportunities}}",
+        "edit": "Edit slot",
+        "delete": "Delete slot",
+        "deleteConfirm": "Delete this slot? Its opportunities revert to the global window.",
+        "deleted": "Slot deleted",
+        "deleteError": "Could not delete the slot",
+        "createTitle": "Create Slot",
+        "editTitle": "Edit Slot",
+        "label": "Label",
+        "labelPlaceholder": "e.g. Day 1 · Evening",
+        "opensAt": "Opens",
+        "closesAt": "Closes",
+        "save": "Save",
+        "cancel": "Cancel",
+        "created": "Slot created",
+        "updated": "Slot updated",
+        "saveError": "Could not save the slot",
+        "validation": {
+            "SLOT_WINDOW_INVALID": "The slot must close after it opens.",
+            "SLOT_OUTSIDE_FANDI_WINDOW": "The slot must fall within the Fandi clock window."
+        }
     },
     "auctions": {
         "title": "Auctions",

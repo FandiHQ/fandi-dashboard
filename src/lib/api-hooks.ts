@@ -5,6 +5,7 @@ import type {
     PaginatedEventsResponse,
     PreLiveStatsResponse,
     Experience, CreateExperienceDto,
+    ExperienceSlot, CreateSlotDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
     Organization, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
     EventSummaryResponse, ExperienceBreakdownItem,
@@ -95,6 +96,19 @@ export const experiencesApi = {
         unwrap(api.post<Experience>(`/dashboard/experiences/${id}/reveal`)),
     getWinners: (id: string) =>
         unwrap(api.get<WinnersListItem[]>(`/dashboard/experiences/${id}/winners`)),
+};
+
+// ── Opportunity slots (Franjas) — Step 6.2 ──
+export const slotsApi = {
+    list: (eventId: string) =>
+        unwrap(api.get<ExperienceSlot[]>(`/dashboard/events/${eventId}/slots`)),
+    create: (eventId: string, dto: CreateSlotDto) =>
+        unwrap(api.post<ExperienceSlot>(`/dashboard/events/${eventId}/slots`, dto)),
+    update: (id: string, dto: Partial<CreateSlotDto>) =>
+        unwrap(api.put<ExperienceSlot>(`/dashboard/slots/${id}`, dto)),
+    delete: (id: string) => unwrap(api.delete(`/dashboard/slots/${id}`)),
+    assign: (id: string, experienceIds: string[]) =>
+        unwrap(api.post<ExperienceSlot>(`/dashboard/slots/${id}/assign`, { experienceIds })),
 };
 
 // ── Auctions ──

@@ -133,6 +133,34 @@ export interface Experience {
     updatedAt: string;
     escuadras?: EscuadraInfo[];
     contributorCount?: number;
+    // Slot (Franja, Step 6.2). null = global Fandi window.
+    slotId?: string | null;
+    slot?: ExperienceSlotBrief | null;
+}
+
+export interface ExperienceSlotBrief {
+    id: string;
+    label: string;
+    opensAt: string;
+    closesAt: string;
+}
+
+// Opportunity slot (Franja) — Step 6.2.
+export interface ExperienceSlot {
+    id: string;
+    eventId: string;
+    label: string;
+    opensAt: string;
+    closesAt: string;
+    experienceCount: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface CreateSlotDto {
+    label: string;
+    opensAt: string;
+    closesAt: string;
 }
 
 export interface EscuadraThresholds {
@@ -149,6 +177,8 @@ export interface CreateExperienceDto {
     escuadraNames?: Record<string, string>;
     surpriseReveal?: string;
     redemptionInstructions?: string;
+    // Slot (Franja) assignment — Step 6.2. null unassigns → global window.
+    slotId?: string | null;
 }
 
 export interface UserPosition {

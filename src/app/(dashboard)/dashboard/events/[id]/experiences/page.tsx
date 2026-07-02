@@ -11,7 +11,8 @@ import {
     Pencil, Trash2, Info, X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
-import { experiencesApi, eventsApi } from '@/lib/api-hooks';
+import { experiencesApi, eventsApi, slotsApi } from '@/lib/api-hooks';
+import { FranjasSection } from './FranjasSection';
 import type { Experience, CreateExperienceDto, EscuadraInfo, ExperienceStatus } from '@/types/api';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -303,6 +304,12 @@ function OpportunityFormDialog({
         '2': existing?.escuadraNames?.['2'] || '',
         '1': existing?.escuadraNames?.['1'] || '',
     });
+    // Franja (slot) assignment — Step 6.2. '' = global Fandi window.
+    const [slotId, setSlotId] = useState<string>(existing?.slotId ?? '');
+    const { data: slots = [] } = useQuery({
+        queryKey: ['events', eventId, 'slots'],
+        queryFn: () => slotsApi.list(eventId),
+    });
 
     const { mutate: create, isPending: isCreating } = useMutation({
         mutationFn: (dto: CreateExperienceDto) => experiencesApi.create(eventId, dto),
@@ -343,6 +350,8 @@ function OpportunityFormDialog({
             ...(Object.keys(names).length > 0 && { escuadraNames: names }),
             ...(surpriseReveal && { surpriseReveal }),
             ...(redemptionInstructions && { redemptionInstructions }),
+            // '' → null unassigns (global window); an id assigns + mirrors the slot window.
+            slotId: slotId || null,
         };
         if (isEditing) {
             update(dto);
@@ -410,6 +419,25 @@ function OpportunityFormDialog({
                                     className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
                                 />
                                 <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('distribution')}</p>
+                            </div>
+
+                            {/* Franja (slot) — Step 6.2 */}
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('franja')}
+                                </label>
+                                <select
+                                    value={slotId}
+                                    onChange={(e) => setSlotId(e.target.value)}
+                                    className="h-12 cursor-pointer rounded-none border border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white focus:border-[#2D00F7] focus:outline-none [color-scheme:dark]"
+                                >
+                                    <option value="">{t('noFranja')}</option>
+                                    {slots.map((slot) => (
+                                        <option key={slot.id} value={slot.id}>
+                                            {slot.label}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             {/* Escuadra Names */}
@@ -634,6 +662,9 @@ export default function OportunidadesPage() {
                     </button>
                 )}
             </div>
+
+            {/* ── Franjas (slots) — Step 6.2 ── */}
+            {isWrite && <FranjasSection eventId={eventId} />}
 
             {/* ── Loading ── */}
             {isLoading && (
