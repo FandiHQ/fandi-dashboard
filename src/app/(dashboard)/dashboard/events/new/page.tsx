@@ -68,12 +68,8 @@ export default function CreateEventPage() {
                 if (eventEndDate && eventDate && eventEndDate <= eventDate) {
                     ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'EVENT_END_BEFORE_START', path: ['eventEndDate'] });
                 }
-                if (fandiOpensAt && eventDate && fandiOpensAt < eventDate) {
-                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_OPENS_BEFORE_EVENT', path: ['fandiOpensAt'] });
-                }
-                if (fandiClosesAt && eventEndDate && fandiClosesAt > eventEndDate) {
-                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_CLOSES_AFTER_EVENT', path: ['fandiClosesAt'] });
-                }
+                // The Fandi window may open before / close after the event; only
+                // its own span must be positive.
                 if (fandiOpensAt && fandiClosesAt && fandiOpensAt >= fandiClosesAt) {
                     ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_WINDOW_INVALID', path: ['fandiClosesAt'] });
                 }

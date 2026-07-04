@@ -14,8 +14,6 @@ export type EventDateFields = {
 
 export type EventDateViolation =
     | 'EVENT_END_BEFORE_START'
-    | 'FANDI_OPENS_BEFORE_EVENT'
-    | 'FANDI_CLOSES_AFTER_EVENT'
     | 'FANDI_WINDOW_INVALID';
 
 /**
@@ -30,12 +28,8 @@ export function eventDateViolations(f: EventDateFields): EventDateViolation[] {
     if (eventEndDate && eventDate && eventEndDate <= eventDate) {
         v.push('EVENT_END_BEFORE_START');
     }
-    if (fandiOpensAt && eventDate && fandiOpensAt < eventDate) {
-        v.push('FANDI_OPENS_BEFORE_EVENT');
-    }
-    if (fandiClosesAt && eventEndDate && fandiClosesAt > eventEndDate) {
-        v.push('FANDI_CLOSES_AFTER_EVENT');
-    }
+    // The Fandi window may open before the event and close after it — it is
+    // NOT constrained to the event window, only its own span must be positive.
     if (fandiOpensAt && fandiClosesAt && fandiOpensAt >= fandiClosesAt) {
         v.push('FANDI_WINDOW_INVALID');
     }
