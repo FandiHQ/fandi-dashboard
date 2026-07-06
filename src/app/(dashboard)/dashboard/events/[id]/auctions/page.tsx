@@ -15,6 +15,7 @@ import { useWebSocket } from '@/hooks/use-websocket';
 import { auctionsApi, eventsApi } from '@/lib/api-hooks';
 import { ApiError } from '@/lib/api';
 import type { Auction, CreateAuctionDto, UpdateAuctionDto, AuctionStatus, Event } from '@/types/api';
+import { ArtistMultiSelect } from '@/components/events/ArtistMultiSelect';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -355,6 +356,7 @@ function AuctionFormDialog({
     const [scheduledDate, setScheduledDate] = useState(initialScheduledStart.date);
     const [scheduledTime, setScheduledTime] = useState(initialScheduledStart.time);
     const [redemptionInstructions, setRedemptionInstructions] = useState(existing?.redemptionInstructions ?? '');
+    const [tagIds, setTagIds] = useState<string[]>(existing?.tagIds ?? []);
 
     // Fandi-clock window for the scheduled-start tooltip — the auction must
     // start within it, so showing the organizer the exact window saves a
@@ -422,6 +424,7 @@ function AuctionFormDialog({
             durationMinutes,
             ...(scheduledStart && { scheduledStart }),
             ...(redemptionInstructions && { redemptionInstructions }),
+            tagIds,
         };
 
         if (isEditing) {
@@ -591,6 +594,19 @@ function AuctionFormDialog({
                                     rows={3}
                                     placeholder={t('redemptionPlaceholder')}
                                     className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                />
+                            </div>
+
+                            {/* Artistas (lineup tags) — Step 6.4 */}
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('artists')}
+                                </label>
+                                <ArtistMultiSelect
+                                    lineup={event?.lineup ?? []}
+                                    value={tagIds}
+                                    onChange={setTagIds}
+                                    emptyHint={t('artistsEmpty')}
                                 />
                             </div>
                         </div>

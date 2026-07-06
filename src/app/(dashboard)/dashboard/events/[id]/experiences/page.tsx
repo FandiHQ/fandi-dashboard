@@ -13,7 +13,8 @@ import {
 import { useAuth } from '@/contexts/auth-context';
 import { experiencesApi, eventsApi, slotsApi } from '@/lib/api-hooks';
 import { FranjasSection } from './FranjasSection';
-import type { Experience, CreateExperienceDto, EscuadraInfo, ExperienceStatus } from '@/types/api';
+import type { Experience, CreateExperienceDto, EscuadraInfo, ExperienceStatus, LineupEntry } from '@/types/api';
+import { ArtistMultiSelect } from '@/components/events/ArtistMultiSelect';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -283,10 +284,12 @@ function OpportunityCard({
 function OpportunityFormDialog({
     eventId,
     existing,
+    lineup,
     onClose,
 }: {
     eventId: string;
     existing?: Experience | null;
+    lineup: LineupEntry[];
     onClose: () => void;
 }) {
     const t = useTranslations('experiences');
@@ -306,6 +309,8 @@ function OpportunityFormDialog({
     });
     // Franja (slot) assignment — Step 6.2. '' = global Fandi window.
     const [slotId, setSlotId] = useState<string>(existing?.slotId ?? '');
+    // Artistas (lineup tags) — Step 6.4.
+    const [tagIds, setTagIds] = useState<string[]>(existing?.tagIds ?? []);
     const { data: slots = [] } = useQuery({
         queryKey: ['events', eventId, 'slots'],
         queryFn: () => slotsApi.list(eventId),
@@ -352,6 +357,7 @@ function OpportunityFormDialog({
             ...(redemptionInstructions && { redemptionInstructions }),
             // '' → null unassigns (global window); an id assigns + mirrors the slot window.
             slotId: slotId || null,
+            tagIds,
         };
         if (isEditing) {
             update(dto);
@@ -438,6 +444,19 @@ function OpportunityFormDialog({
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+
+                            {/* Artistas (lineup tags) — Step 6.4 */}
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('artists')}
+                                </label>
+                                <ArtistMultiSelect
+                                    lineup={lineup}
+                                    value={tagIds}
+                                    onChange={setTagIds}
+                                    emptyHint={t('artistsEmpty')}
+                                />
                             </div>
 
                             {/* Escuadra Names */}
@@ -764,6 +783,7 @@ export default function OportunidadesPage() {
                 <OpportunityFormDialog
                     eventId={eventId}
                     existing={editingExp}
+                    lineup={event?.lineup ?? []}
                     onClose={handleCloseForm}
                 />
             )}

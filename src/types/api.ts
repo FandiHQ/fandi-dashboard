@@ -33,6 +33,11 @@ export interface Organization {
 export type EventStatus = 'draft' | 'published' | 'live' | 'ended';
 export type EventType = 'football' | 'concert' | 'other';
 
+export interface LineupEntry {
+    id: string;
+    name: string;
+}
+
 export interface Event {
     id: string;
     organizationId: string;
@@ -49,6 +54,7 @@ export interface Event {
     fandiClosesAt: string | null;
     status: EventStatus;
     coverImageUrl: string | null;
+    lineup: LineupEntry[];
     publishedAt: string | null;
     liveAt: string | null;
     endedAt: string | null;
@@ -68,6 +74,8 @@ export interface CreateEventDto {
     fandiOpensAt?: string;
     fandiClosesAt?: string;
     coverImageUrl?: string;
+    // Lineup (Step 6.4). New entries may omit id (server assigns).
+    lineup?: { id?: string; name: string }[];
 }
 
 export type UpdateEventDto = Partial<CreateEventDto>;
@@ -136,6 +144,9 @@ export interface Experience {
     // Slot (Franja, Step 6.2). null = global Fandi window.
     slotId?: string | null;
     slot?: ExperienceSlotBrief | null;
+    // Lineup tags (Step 6.4).
+    tagIds?: string[];
+    tags?: LineupEntry[];
 }
 
 export interface ExperienceSlotBrief {
@@ -179,6 +190,8 @@ export interface CreateExperienceDto {
     redemptionInstructions?: string;
     // Slot (Franja) assignment — Step 6.2. null unassigns → global window.
     slotId?: string | null;
+    // Lineup tag ids (Step 6.4).
+    tagIds?: string[];
 }
 
 export interface UserPosition {
@@ -216,6 +229,9 @@ export interface Auction {
     bidCount: number;
     redemptionInstructions: string | null;
     currentBidderName: string | null;
+    // Lineup tags (Step 6.4).
+    tagIds?: string[];
+    tags?: LineupEntry[];
     createdAt: string;
     updatedAt: string;
 }
@@ -228,6 +244,8 @@ export interface CreateAuctionDto {
     durationMinutes?: number;
     scheduledStart?: string;
     redemptionInstructions?: string;
+    // Lineup tag ids (Step 6.4).
+    tagIds?: string[];
 }
 
 export interface UpdateAuctionDto extends Partial<CreateAuctionDto> {

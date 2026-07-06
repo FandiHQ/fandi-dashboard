@@ -12,7 +12,8 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi, placesApi } from '@/lib/api-hooks';
-import type { UpdateEventDto } from '@/types/api';
+import type { UpdateEventDto, LineupEntry } from '@/types/api';
+import { LineupEditor } from '@/components/events/LineupEditor';
 import {
     datetimeLocalToIso,
     isoToDatetimeLocal,
@@ -117,6 +118,8 @@ export default function EditEventPage() {
     });
 
     const [selectedCity, setSelectedCity] = useState<CityAutocompleteValue | null>(null);
+    // Lineup (Step 6.4) — array editor kept outside the RHF schema.
+    const [lineup, setLineup] = useState<LineupEntry[]>([]);
 
     // Resolve the stored cityId into a real city name via the
     // dedicated /places/cities/:id endpoint. Falls back to event.city
@@ -147,6 +150,7 @@ export default function EditEventPage() {
                 description: event.description || '',
                 coverImageUrl: event.coverImageUrl || '',
             });
+            setLineup(event.lineup ?? []);
             // Optimistic placeholder — uses legacy event.city when
             // present so the chip is populated immediately. Empty
             // string when both are null so the input renders blank
@@ -198,6 +202,11 @@ export default function EditEventPage() {
             toast.success(t('updated'));
         },
         onError: (err: unknown) => {
+            const code = (err as { code?: string })?.code;
+            if (code === 'LINEUP_ENTRY_IN_USE') {
+                toast.error(t('lineupInUse'));
+                return;
+            }
             const message = err instanceof Error ? err.message : 'Error';
             toast.error(message);
         },
@@ -218,6 +227,7 @@ export default function EditEventPage() {
             eventEndDate: datetimeLocalToIso(data.eventEndDate),
             fandiOpensAt: datetimeLocalToIso(data.fandiOpensAt),
             fandiClosesAt: datetimeLocalToIso(data.fandiClosesAt),
+            lineup: lineup.map((e) => ({ id: e.id, name: e.name })),
         };
         updateEvent(dto);
     };
@@ -487,6 +497,22 @@ export default function EditEventPage() {
                                 </p>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Lineup (Step 6.4) */}
+                    <div className="flex flex-col gap-2 border-t border-[#1E1E1E] pt-6">
+                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
+                            {t('lineup')}
+                        </label>
+                        <p className="font-space-mono text-[11px] leading-relaxed text-[#737373]">
+                            {t('lineupHint')}
+                        </p>
+                        <LineupEditor
+                            value={lineup}
+                            onChange={setLineup}
+                            addLabel={t('lineupAdd')}
+                            placeholder={t('lineupPlaceholder')}
+                        />
                     </div>
 
                     {/* Cover Image */}
