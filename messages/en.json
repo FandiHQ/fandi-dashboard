@@ -91,6 +91,7 @@
         "lineupAdd": "Add",
         "lineupPlaceholder": "Artist name",
         "lineupInUse": "Can't remove an artist still tagged on items. Untag them first.",
+        "endsIn": "Ends in",
         "durationLabel": "Lasts {value}",
         "durationDay": "day",
         "durationDays": "days",
@@ -192,6 +193,7 @@
         "hideSurprise": "Hide surprise",
         "artists": "Artists",
         "artistsEmpty": "Add artists to the event lineup to tag items.",
+        "noParticipantsYet": "No participants yet",
         "escuadra": {
             "1": "Fans",
             "2": "Supporters",

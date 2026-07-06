@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import {
     Plus, Loader2, Users, Trophy, Eye, EyeOff,
     Lock, ChevronDown, ChevronUp, Gift,
-    Pencil, Trash2, Info, X,
+    Pencil, Trash2, Info, X, Clock,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { experiencesApi, eventsApi, slotsApi } from '@/lib/api-hooks';
@@ -233,10 +233,37 @@ function OpportunityCard({
                 </div>
             </div>
 
-            {/* Escuadra bar */}
-            {escuadras.length > 0 && (
+            {/* Franja + Artistas chips (Step 6.4) */}
+            {(exp.slot || (exp.tags && exp.tags.length > 0)) && (
+                <div className="flex flex-wrap items-center gap-2 border-t border-[#141414] px-5 py-2.5">
+                    {exp.slot && (
+                        <span className="flex items-center gap-1.5 rounded-full border border-[#2A2A2A] bg-[#141414] px-2.5 py-1 font-space-mono text-[11px] text-[#A0A0A0]">
+                            <Clock size={11} className="text-[#737373]" />
+                            {exp.slot.label}
+                        </span>
+                    )}
+                    {exp.tags?.map((tag) => (
+                        <span
+                            key={tag.id}
+                            className="rounded-full border border-[#2D00F740] bg-[#2D00F715] px-2.5 py-1 font-sora text-[12px] text-[#B3A8FF]"
+                        >
+                            {tag.name}
+                        </span>
+                    ))}
+                </div>
+            )}
+
+            {/* Escuadra bar — only once there are participants; an empty
+                0/0/0/0 bar is just noise pre-event. */}
+            {(exp.contributorCount || 0) > 0 ? (
                 <div className="border-t border-[#141414] px-5 py-4">
                     <EscuadraBar escuadras={escuadras} />
+                </div>
+            ) : (
+                <div className="border-t border-[#141414] px-5 py-3">
+                    <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#4A4A4A]">
+                        {t('noParticipantsYet')}
+                    </span>
                 </div>
             )}
 
@@ -320,6 +347,7 @@ function OpportunityFormDialog({
         mutationFn: (dto: CreateExperienceDto) => experiencesApi.create(eventId, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
+            queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
             toast.success(t('created'));
             onClose();
         },
@@ -330,6 +358,7 @@ function OpportunityFormDialog({
         mutationFn: (dto: Partial<CreateExperienceDto>) => experiencesApi.update(existing!.id, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
+            queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
             toast.success(t('updated'));
             onClose();
         },

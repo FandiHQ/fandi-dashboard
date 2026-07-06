@@ -147,6 +147,7 @@
     "lineupAdd": "Agregar",
     "lineupPlaceholder": "Nombre del artista",
     "lineupInUse": "No puedes eliminar un artista que aún está etiquetado en items. Quita las etiquetas primero.",
+    "endsIn": "Termina en",
     "durationLabel": "Dura {value}",
     "durationDay": "día",
     "durationDays": "días",
@@ -212,6 +213,7 @@
     "hideSurprise": "Ocultar sorpresa",
     "artists": "Artistas",
     "artistsEmpty": "Agrega artistas al lineup del evento para poder etiquetar.",
+    "noParticipantsYet": "Sin participantes aún",
     "closeConfirm": "¿Cerrar esta oportunidad? Se seleccionarán ganadores.",
     "closed": "Oportunidad cerrada y ganadores seleccionados",
     "escuadra": {

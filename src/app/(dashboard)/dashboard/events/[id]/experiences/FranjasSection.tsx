@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Clock, Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
-import { eventsApi, slotsApi } from '@/lib/api-hooks';
+import { eventsApi, slotsApi, experiencesApi } from '@/lib/api-hooks';
 import { ApiError } from '@/lib/api';
 import type { ExperienceSlot, CreateSlotDto } from '@/types/api';
 import { isoToDatetimeLocal, datetimeLocalToIso } from '@/lib/event-datetime';
@@ -48,6 +48,12 @@ export function FranjasSection({ eventId }: { eventId: string }) {
         queryKey: ['events', eventId, 'slots'],
         queryFn: () => slotsApi.list(eventId),
     });
+    // Shares the cache with the Oportunidades list, so membership + counts
+    // update the moment an opportunity is (re)assigned to a franja.
+    const { data: experiences = [] } = useQuery({
+        queryKey: ['experiences', eventId],
+        queryFn: () => experiencesApi.list(eventId),
+    });
 
     const fmt = (iso: string) =>
         new Intl.DateTimeFormat('es-CO', {
@@ -89,7 +95,11 @@ export function FranjasSection({ eventId }: { eventId: string }) {
 
             {slots.length > 0 ? (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    {slots.map((slot) => (
+                    {slots.map((slot) => {
+                        const members = experiences.filter(
+                            (e) => e.slotId === slot.id,
+                        );
+                        return (
                         <div
                             key={slot.id}
                             className="flex items-start justify-between border border-[#1E1E1E] bg-[#0A0A0A] p-4"
@@ -102,8 +112,20 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                                     {fmt(slot.opensAt)} → {fmt(slot.closesAt)}
                                 </span>
                                 <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
-                                    {t('opportunityCount', { count: slot.experienceCount })}
+                                    {t('opportunityCount', { count: members.length })}
                                 </span>
+                                {members.length > 0 && (
+                                    <ul className="mt-1 flex flex-col gap-0.5">
+                                        {members.map((e) => (
+                                            <li
+                                                key={e.id}
+                                                className="font-sora text-[13px] text-[#A0A0A0]"
+                                            >
+                                                • {e.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                             <div className="flex items-center gap-2">
                                 <button
@@ -119,7 +141,8 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                                 <DeleteSlotButton slot={slot} eventId={eventId} t={t} />
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <p className="border border-dashed border-[#2A2A2A] bg-[#121212] p-4 text-center font-space-mono text-[12px] text-[#4A4A4A]">

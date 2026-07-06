@@ -217,7 +217,15 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                     <h1 className="font-sora text-[50px] font-bold leading-none tracking-[-1px] text-white">
                         {event.name}
                     </h1>
-                    <StatusBadge status={event.status} />
+                    <div className="flex flex-wrap items-center gap-3">
+                        <StatusBadge status={event.status} />
+                        {event.status === 'live' && event.fandiClosesAt && (
+                            <EndsInCountdown
+                                target={event.fandiClosesAt}
+                                label={t('endsIn')}
+                            />
+                        )}
+                    </div>
                 </div>
 
                 {/* ── Action Buttons ── */}
@@ -546,6 +554,53 @@ function ChecklistItem({ label, passed, optional }: { label: string; passed: boo
                 {optional && !passed && (
                     <span className="ml-2 text-[11px] text-[#4A4A4A]">(opcional)</span>
                 )}
+            </span>
+        </div>
+    );
+}
+
+// ── Live "ends in" countdown (to the Fandi close = auto event end) ──
+
+function EndsInCountdown({
+    target,
+    label,
+}: {
+    target: string | Date;
+    label: string;
+}) {
+    const [left, setLeft] = useState<string | null>(null);
+
+    useEffect(() => {
+        const end = new Date(target).getTime();
+        const tick = () => {
+            const diff = end - Date.now();
+            if (diff <= 0) {
+                setLeft('00:00:00');
+                return;
+            }
+            const d = Math.floor(diff / 86_400_000);
+            const h = Math.floor((diff / 3_600_000) % 24);
+            const m = Math.floor((diff / 60_000) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            const pad = (n: number) => String(n).padStart(2, '0');
+            setLeft(
+                (d > 0 ? `${d}d ` : '') + `${pad(h)}:${pad(m)}:${pad(s)}`,
+            );
+        };
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    }, [target]);
+
+    if (!left) return null;
+    return (
+        <div className="flex items-center gap-2 border border-[#FF3366] bg-[#FF336610] px-3 py-1">
+            <Timer size={13} className="text-[#FF3366]" />
+            <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
+                {label}
+            </span>
+            <span className="font-space-mono text-[13px] tabular-nums text-white">
+                {left}
             </span>
         </div>
     );
