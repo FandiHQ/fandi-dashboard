@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { profileApi } from '@/lib/api-hooks';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { ArtistProfileCard } from '@/components/settings/artist-profile-card';
 
 export default function SettingsPage() {
     const { user, organization, memberRole, refreshUser } = useAuth();
@@ -312,6 +313,9 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
+
+            {/* ── Artist Public Profile (Step 7.2, owner only) ── */}
+            {memberRole === 'owner' && <ArtistProfileCard />}
         </div>
     );
 }

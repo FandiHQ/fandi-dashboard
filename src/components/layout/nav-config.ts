@@ -1,5 +1,5 @@
 import {
-    LayoutDashboard, Calendar, Users, Settings,
+    LayoutDashboard, Calendar, Users, Settings, Trophy,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -22,6 +22,11 @@ export const navItems: NavItem[] = [
         href: '/dashboard/events',
         icon: Calendar,
         labelKey: 'events',
+    },
+    {
+        href: '/dashboard/top-fans',
+        icon: Trophy,
+        labelKey: 'topFans',
     },
     {
         href: '/dashboard/team',

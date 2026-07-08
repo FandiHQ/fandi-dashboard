@@ -36,8 +36,44 @@
   "dashboardNav": {
     "home": "Inicio",
     "events": "Eventos",
+    "topFans": "Top Fans",
     "team": "Equipo",
     "settings": "Configuración"
+  },
+  "fanTiers": {
+    "leyenda": "Leyenda",
+    "elite": "Élite",
+    "superfan": "Superfan",
+    "fan_real": "Fan Real"
+  },
+  "topFans": {
+    "title": "Top Fans",
+    "subtitle": "Tus fans más devotos, en ranking",
+    "rankedFans": "{count} fans en el ranking",
+    "privateFan": "Perfil privado",
+    "anonymousFan": "Fan",
+    "empty": "Aún no hay fans en el ranking. Se construye cuando tus fans participan en tus eventos.",
+    "errorLoading": "No se pudo cargar el ranking",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "pageOf": "Página {page} de {pages}"
+  },
+  "artistProfile": {
+    "title": "Perfil de Artista",
+    "subtitle": "Esto es lo que ven tus fans en tu página pública dentro de la app.",
+    "description": "Bio",
+    "descriptionPlaceholder": "Cuéntales a tus fans quién eres...",
+    "avatar": "Avatar",
+    "avatarFallbackHint": "Sin avatar, tus fans ven tu logo.",
+    "cover": "Imagen de portada",
+    "publicOn": "Público",
+    "publicOff": "Oculto",
+    "uploadHint": "JPG, PNG o WEBP. Máx 5MB.",
+    "save": "Guardar perfil",
+    "saving": "Guardando...",
+    "saved": "Perfil de artista actualizado",
+    "errorSaving": "Error al guardar el perfil de artista",
+    "errorUploading": "Error al subir la imagen"
   },
   "settings": {
     "title": "Configuración",

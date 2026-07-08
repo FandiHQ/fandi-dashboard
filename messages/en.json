@@ -36,8 +36,44 @@
     "dashboardNav": {
         "home": "Home",
         "events": "Events",
+        "topFans": "Top Fans",
         "team": "Team",
         "settings": "Settings"
+    },
+    "fanTiers": {
+        "leyenda": "Leyenda",
+        "elite": "Élite",
+        "superfan": "Superfan",
+        "fan_real": "Fan Real"
+    },
+    "topFans": {
+        "title": "Top Fans",
+        "subtitle": "Your most devoted fans, ranked",
+        "rankedFans": "{count} ranked fans",
+        "privateFan": "Private profile",
+        "anonymousFan": "Fan",
+        "empty": "No ranked fans yet. Rankings build as fans participate in your events.",
+        "errorLoading": "Could not load the leaderboard",
+        "previous": "Previous",
+        "next": "Next",
+        "pageOf": "Page {page} of {pages}"
+    },
+    "artistProfile": {
+        "title": "Artist Profile",
+        "subtitle": "This is what fans see on your public artist page in the app.",
+        "description": "Bio",
+        "descriptionPlaceholder": "Tell your fans who you are...",
+        "avatar": "Avatar",
+        "avatarFallbackHint": "Without an avatar, your logo is shown to fans.",
+        "cover": "Cover Image",
+        "publicOn": "Public",
+        "publicOff": "Hidden",
+        "uploadHint": "JPG, PNG or WEBP. Max 5MB.",
+        "save": "Save Profile",
+        "saving": "Saving...",
+        "saved": "Artist profile updated",
+        "errorSaving": "Error saving the artist profile",
+        "errorUploading": "Error uploading image"
     },
     "settings": {
         "title": "Settings",

@@ -25,8 +25,50 @@ export interface Organization {
     id: string;
     name: string;
     logoUrl: string | null;
+    // Artist profile (Step 7.2) — fan-facing content, org-managed
+    description: string | null;
+    avatarUrl: string | null;
+    coverUrl: string | null;
+    isPublic: boolean;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface UpdateOrganizationDto {
+    name?: string;
+    logoUrl?: string;
+    description?: string;
+    avatarUrl?: string;
+    coverUrl?: string;
+    isPublic?: boolean;
+}
+
+// ── Fan ranking (Step 7.2 — Top Fans) ──
+// NO spend anywhere: the API only exposes rank/tier, never amounts.
+export type FanTier = 'leyenda' | 'elite' | 'superfan' | 'fan_real';
+
+export interface LeaderboardEntry {
+    userId: string;
+    firstName: string | null;
+    isPrivate: boolean;
+    rank: number;
+    tier: FanTier | null;
+}
+
+export interface ArtistLeaderboard {
+    entries: LeaderboardEntry[];
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+    yourRow: {
+        userId: string;
+        firstName: string | null;
+        rank: number;
+        total: number;
+        percentile: number;
+        tier: FanTier | null;
+    } | null;
 }
 
 // ── Events ──

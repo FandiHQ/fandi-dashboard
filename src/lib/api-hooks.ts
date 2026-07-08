@@ -7,7 +7,8 @@ import type {
     Experience, CreateExperienceDto,
     ExperienceSlot, CreateSlotDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
-    Organization, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
+    Organization, UpdateOrganizationDto, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
+    ArtistLeaderboard,
     EventSummaryResponse, ExperienceBreakdownItem,
     LivePulseResponse, WinnersListItem, WinnersListQuery,
     PaginatedResponse, ScanResultResponse, RedemptionStats,
@@ -139,6 +140,13 @@ export const auctionsApi = {
 export const orgApi = {
     get: () =>
         unwrap(api.get<Organization>('/dashboard/organization')),
+    update: (dto: UpdateOrganizationDto) =>
+        unwrap(api.put<Organization>('/dashboard/organization', dto)),
+    // Top Fans (Step 7.2) — public fan-ranking endpoint, PII-free.
+    // Private fans arrive as { firstName: null, isPrivate: true } and
+    // MUST render as "Perfil privado · #N"; never any spend.
+    getLeaderboard: (orgId: string, params?: { page?: number; limit?: number }) =>
+        unwrap(api.get<ArtistLeaderboard>(`/artists/${orgId}/leaderboard`, { params })),
     getMembers: () =>
         unwrap(api.get<OrganizationMember[]>('/dashboard/organization/members')),
     inviteMember: (dto: InviteMemberDto) =>
