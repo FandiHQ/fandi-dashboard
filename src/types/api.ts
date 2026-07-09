@@ -71,6 +71,83 @@ export interface ArtistLeaderboard {
     } | null;
 }
 
+// ── Fan analytics CRM (Step 7.5.3) — NO spend anywhere ──
+
+export interface FanAnalytics {
+    totalRankedFans: number;
+    /** Derived from first participation (no created_at on scores). */
+    newFansThisMonth: number;
+    tierDistribution: {
+        leyenda: number;
+        elite: number;
+        superfan: number;
+        fanReal: number;
+        none: number;
+    };
+    topCities: {
+        cityId: string;
+        cityName: string | null;
+        fanCount: number;
+    }[];
+}
+
+/** Private fans: rank + tier kept; identity AND activity nulled. */
+export interface RichTopFanRow {
+    userId: string;
+    firstName: string | null;
+    isPrivate: boolean;
+    rank: number;
+    tier: FanTier | null;
+    badgesCount: number | null;
+    eventsParticipated: number | null;
+    memberSince: string | null;
+}
+
+export interface RichTopFans {
+    entries: RichTopFanRow[];
+    /** Rows matching the tier filter (= scopeTotal when unfiltered). */
+    total: number;
+    /** All ranked fans in the scope (org, or org+city). */
+    scopeTotal: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+}
+
+export interface FanBadge {
+    id: string;
+    type: string;
+    referenceType: string | null;
+    referenceId: string | null;
+    name: string;
+    description: string | null;
+    imageUrl: string | null;
+    metadata: Record<string, unknown> | null;
+    createdAt: string;
+}
+
+/** GET /fans/:userId?orgId= — the drill-down detail. */
+export interface FanPublicProfile {
+    userId: string;
+    firstName: string | null;
+    avatarSeed: string | null;
+    isPrivate: boolean;
+    isSelf: boolean;
+    rank: {
+        rank: number | null;
+        total: number;
+        percentile: number | null;
+        tier: FanTier | null;
+    };
+    badges: FanBadge[];
+    superlatives: {
+        eventsParticipated: number;
+        auctionsWon: number;
+        experiencesWon: number;
+        fanSince: number | null;
+    } | null;
+}
+
 // ── Events ──
 export type EventStatus = 'draft' | 'published' | 'live' | 'ended';
 export type EventType = 'football' | 'concert' | 'other';

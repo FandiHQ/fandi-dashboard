@@ -8,7 +8,7 @@ import type {
     ExperienceSlot, CreateSlotDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
     Organization, UpdateOrganizationDto, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
-    ArtistLeaderboard,
+    ArtistLeaderboard, FanAnalytics, RichTopFans, FanPublicProfile, FanTier,
     EventSummaryResponse, ExperienceBreakdownItem,
     LivePulseResponse, WinnersListItem, WinnersListQuery,
     PaginatedResponse, ScanResultResponse, RedemptionStats,
@@ -147,6 +147,19 @@ export const orgApi = {
     // MUST render as "Perfil privado · #N"; never any spend.
     getLeaderboard: (orgId: string, params?: { page?: number; limit?: number }) =>
         unwrap(api.get<ArtistLeaderboard>(`/artists/${orgId}/leaderboard`, { params })),
+    // Fan analytics CRM (Step 7.5.3) — owner/admin, NO spend anywhere.
+    getFanAnalytics: () =>
+        unwrap(api.get<FanAnalytics>('/dashboard/organization/fan-analytics')),
+    getTopFansRich: (params?: {
+        page?: number;
+        limit?: number;
+        cityId?: string;
+        tier?: FanTier | 'none';
+    }) =>
+        unwrap(api.get<RichTopFans>('/dashboard/organization/top-fans', { params })),
+    // Per-fan drill-down — reuses the public artist-scoped fan profile.
+    getFanDetail: (userId: string, orgId: string) =>
+        unwrap(api.get<FanPublicProfile>(`/fans/${userId}`, { params: { orgId } })),
     getMembers: () =>
         unwrap(api.get<OrganizationMember[]>('/dashboard/organization/members')),
     inviteMember: (dto: InviteMemberDto) =>

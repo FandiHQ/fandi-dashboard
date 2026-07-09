@@ -56,7 +56,33 @@
     "errorLoading": "No se pudo cargar el ranking",
     "previous": "Anterior",
     "next": "Siguiente",
-    "pageOf": "Página {page} de {pages}"
+    "pageOf": "Página {page} de {pages}",
+    "rowMeta": "{badges} insignias · {events} eventos",
+    "rowSince": "desde {date}",
+    "stats": {
+      "totalFans": "Fans en ranking",
+      "newThisMonth": "Nuevos este mes",
+      "topCity": "Ciudad top",
+      "tierDistribution": "Distribución por nivel",
+      "mostDevoted": "Fan más devoto"
+    },
+    "filters": {
+      "city": "Ciudad",
+      "allCities": "Todas las ciudades",
+      "tier": "Nivel",
+      "allTiers": "Todos los niveles",
+      "noTier": "Sin nivel"
+    },
+    "fanDetail": {
+      "title": "Detalle del fan",
+      "privateBody": "Este fan mantiene su identidad privada. Su puesto igual cuenta.",
+      "events": "Eventos",
+      "wins": "Victorias",
+      "auctionsWon": "Subastas",
+      "fanSince": "Fan desde {year}",
+      "badges": "Insignias",
+      "noBadges": "Aún sin insignias."
+    }
   },
   "artistProfile": {
     "title": "Perfil de Artista",
@@ -155,9 +181,11 @@
       "notifications": "Notificaciones"
     },
     "validation": {
-      "required": "Este campo es requerido",
-      "maxLength": "Máximo {max} caracteres",
-      "invalidUrl": "URL no válida"
+      "EVENT_END_BEFORE_START": "El evento debe terminar después de comenzar.",
+      "FANDI_OPENS_BEFORE_EVENT": "El reloj Fandi no puede abrir antes de que comience el evento.",
+      "FANDI_CLOSES_AFTER_EVENT": "El reloj Fandi no puede cerrar después de que termine el evento.",
+      "FANDI_WINDOW_INVALID": "El reloj Fandi debe cerrar después de abrir.",
+      "EVENT_END_REQUIRED": "Define la fecha de fin del evento para poder publicarlo."
     },
     "form": {
       "city": "Ciudad",
@@ -188,13 +216,6 @@
     "durationDay": "día",
     "durationDays": "días",
     "durationHour": "h",
-    "validation": {
-      "EVENT_END_BEFORE_START": "El evento debe terminar después de comenzar.",
-      "FANDI_OPENS_BEFORE_EVENT": "El reloj Fandi no puede abrir antes de que comience el evento.",
-      "FANDI_CLOSES_AFTER_EVENT": "El reloj Fandi no puede cerrar después de que termine el evento.",
-      "FANDI_WINDOW_INVALID": "El reloj Fandi debe cerrar después de abrir.",
-      "EVENT_END_REQUIRED": "Define la fecha de fin del evento para poder publicarlo."
-    },
     "publish": "Publicar Evento",
     "goLive": "Ir en Vivo",
     "endEvent": "Terminar Evento",
