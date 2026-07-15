@@ -587,7 +587,43 @@
       "insigniasTitle": "BADGES",
       "insigniasPill": "COLLECT",
       "insigniasBody": "Loyalty pays off — collect badges from every event...",
-      "insigniasTagline": "...and be surprised by what's coming."
+      "insigniasTagline": "...and be surprised by what's coming.",
+      "rankingTitle": "RANKING",
+      "rankingPill": "Your rank, live",
+      "rankingSubheading": "Every artist has a leaderboard. You have a rank on it.",
+      "rankingBullet1": "Climb live with every contribution and every bid",
+      "rankingBullet2": "Know exactly where you stand: #38 of 500",
+      "rankingBullet3": "Share your rank and defend it at the next show",
+      "rankingTagline": "How big a fan are you? Prove it."
+    },
+    "howItWorks": {
+      "kicker": "HOW IT WORKS",
+      "title": "Three steps. All live.",
+      "step1Title": "Top up Fandies",
+      "step1Desc": "Your wallet for the show. 1 Fandi = 5,000 COP. Top up in seconds and you are in.",
+      "step2Title": "Participate live",
+      "step2Desc": "Back opportunities or bid in auctions while the event happens. Everything runs LIVE, stadium full.",
+      "step3Title": "Win and climb",
+      "step3Desc": "VIP experiences, badges nobody can take from you, and your rank on your artist's leaderboard."
+    },
+    "commandCenter": {
+      "kicker": "FOR ARTISTS & TEAMS",
+      "title": "Your command center",
+      "desc": "Every event, every dynamic and your most devoted fans — one tactical panel, in real time.",
+      "chip1": "TOP FANS RANKED",
+      "chip2": "LIVE ANALYTICS",
+      "chip3": "FULL EVENT CONTROL",
+      "cta": "ENTER THE DASHBOARD"
+    },
+    "rail": {
+      "inicio": "START",
+      "enVivo": "LIVE",
+      "laApp": "THE APP",
+      "artistas": "ARTISTS",
+      "unete": "JOIN"
+    },
+    "marquee": {
+      "kicker": "THE APP · REAL CAPTURES"
     }
   },
   "nav": {

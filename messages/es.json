@@ -614,7 +614,43 @@
       "insigniasTitle": "INSIGNIAS",
       "insigniasPill": "COLECCIONA",
       "insigniasBody": "Ser leal premia, colecciona las insignias de cada evento...",
-      "insigniasTagline": "...y sorpréndete con lo que llega."
+      "insigniasTagline": "...y sorpréndete con lo que llega.",
+      "rankingTitle": "RANKING",
+      "rankingPill": "Tu puesto, en vivo",
+      "rankingSubheading": "Cada artista tiene su tabla. Tú tienes tu puesto.",
+      "rankingBullet1": "Sube en vivo con cada aporte y cada puja",
+      "rankingBullet2": "Sabes exactamente qué puesto ocupas: #38 de 500",
+      "rankingBullet3": "Comparte tu posición y defiéndela en el próximo show",
+      "rankingTagline": "¿Qué tan fan eres? Demuéstralo."
+    },
+    "howItWorks": {
+      "kicker": "CÓMO FUNCIONA",
+      "title": "Tres pasos. Todo en vivo.",
+      "step1Title": "Recarga Fandies",
+      "step1Desc": "Tu billetera para el show. 1 Fandi = 5.000 COP. Recargas en segundos y estás listo.",
+      "step2Title": "Participa en vivo",
+      "step2Desc": "Aporta a oportunidades o puja en subastas mientras el evento sucede. Todo pasa EN VIVO, con el estadio lleno.",
+      "step3Title": "Gana y asciende",
+      "step3Desc": "Experiencias VIP, insignias que nadie te puede quitar y tu puesto en el ranking de tu artista."
+    },
+    "commandCenter": {
+      "kicker": "PARA ARTISTAS Y EQUIPOS",
+      "title": "Tu centro de comando",
+      "desc": "Cada evento, cada dinámica y tus fans más devotos — en un solo panel táctico, en tiempo real.",
+      "chip1": "TOP FANS EN RANKING",
+      "chip2": "ANALÍTICA EN VIVO",
+      "chip3": "CONTROL TOTAL DEL EVENTO",
+      "cta": "ENTRAR AL DASHBOARD"
+    },
+    "rail": {
+      "inicio": "INICIO",
+      "enVivo": "EN VIVO",
+      "laApp": "LA APP",
+      "artistas": "ARTISTAS",
+      "unete": "ÚNETE"
+    },
+    "marquee": {
+      "kicker": "LA APP · CAPTURAS REALES"
     }
   },
   "nav": {

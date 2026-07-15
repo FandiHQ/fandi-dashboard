@@ -10,18 +10,28 @@ import ImageSequenceCanvas from '@/components/landing/ImageSequenceCanvas';
 import ScrollText from '@/components/landing/ScrollText';
 import EnVivoReveal from '@/components/landing/EnVivoReveal';
 import LandingNav from '@/components/landing/LandingNav';
-import PhoneMockupSection from '@/components/landing/PhoneMockupSection';
+import PhoneMockupSection, { MOCKUP_SECTION_VH } from '@/components/landing/PhoneMockupSection';
+import HowItWorksSection, { HOW_IT_WORKS_VH } from '@/components/landing/HowItWorksSection';
+import CommandCenterSection, { COMMAND_CENTER_VH } from '@/components/landing/CommandCenterSection';
+import AppStripMarquee, { MARQUEE_VH } from '@/components/landing/AppStripMarquee';
+import ScrollProgressRail, { type RailStop } from '@/components/landing/ScrollProgressRail';
 import SignInModal from '@/components/landing/SignInModal';
 import LandingLoader from '@/components/landing/LandingLoader';
 
 /* ─── Scroll range calculations ─── */
+// Every section's real DOM height MUST be listed here — the pinned
+// scroll scenes (concert text, EN VIVO, artist pitch, participate)
+// derive their global scroll fractions from this map.
 const SECTIONS = {
     concert: { vh: 400 },
     enVivo: { vh: 250 },
-    mockup: { vh: 550 },
+    howItWorks: { vh: HOW_IT_WORKS_VH },
+    mockup: { vh: MOCKUP_SECTION_VH },
     artist: { vh: 300 },
+    commandCenter: { vh: COMMAND_CENTER_VH },
     artistPitch: { vh: 250 },
     participate: { vh: 100 },
+    marquee: { vh: MARQUEE_VH },
     footer: { vh: 0 },
 } as const;
 
@@ -75,6 +85,16 @@ export default function LandingPage() {
         concertRange[0] + (concertRange[1] - concertRange[0]) * 0.7,
     ];
 
+    // HUD rail stops — derived from the same range math, so they stay
+    // correct if section heights change.
+    const railStops: RailStop[] = [
+        { key: 'inicio', at: 0, anchor: 'main-content' },
+        { key: 'enVivo', at: ranges.enVivo[0], anchor: 'en-vivo' },
+        { key: 'laApp', at: ranges.mockup[0], anchor: 'como-funciona' },
+        { key: 'artistas', at: ranges.artist[0], anchor: 'para-artistas' },
+        { key: 'unete', at: ranges.participate[0], anchor: 'participa' },
+    ];
+
     return (
         <>
             {/* Skip-to-content link for accessibility */}
@@ -91,6 +111,9 @@ export default function LandingPage() {
 
             {/* Navbar */}
             <LandingNav onSignInClick={() => setSignInOpen(true)} />
+
+            {/* HUD scroll rail (desktop) — orientation across ~2000vh */}
+            <ScrollProgressRail stops={railStops} />
 
             {/* Sign-In Modal */}
             <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
@@ -145,7 +168,7 @@ export default function LandingPage() {
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4 mt-10">
                                     <a
-                                        href="#"
+                                        href="#como-funciona"
                                         className="btn-tactical font-space-mono text-[13px] font-bold uppercase tracking-[2px] px-8 py-4 transition-all text-center"
                                         aria-label="Download the Fandi app"
                                     >
@@ -195,7 +218,12 @@ export default function LandingPage() {
                     />
                 </section>
 
-                {/* ===== D. PHONE MOCKUP SECTION ===== */}
+                {/* ===== C2. CÓMO FUNCIONA — the mechanic, in HUD cards ===== */}
+                <section aria-label="How Fandi works">
+                    <HowItWorksSection />
+                </section>
+
+                {/* ===== D. PHONE MOCKUP SECTION (real app captures) ===== */}
                 <section id="como-funciona" aria-label="Features for fans">
                     <PhoneMockupSection />
                 </section>
@@ -215,6 +243,11 @@ export default function LandingPage() {
                             </h2>
                         </ScrollText>
                     </ImageSequenceCanvas>
+                </section>
+
+                {/* ===== E2. CENTRO DE COMANDO — the real dashboard ===== */}
+                <section aria-label="Artist command center">
+                    <CommandCenterSection onOrganizerClick={() => setSignInOpen(true)} />
                 </section>
 
                 {/* ===== F. ARTIST PITCH TEXTS ===== */}
@@ -241,7 +274,7 @@ export default function LandingPage() {
                 </section>
 
                 {/* ===== G. PARTICIPA + CTAs ===== */}
-                <section style={{ height: `${SECTIONS.participate.vh}vh` }} aria-label="Call to action">
+                <section id="participa" style={{ height: `${SECTIONS.participate.vh}vh` }} aria-label="Call to action">
                     <ScrollText scrollRange={ranges.participate} interactive>
                         <div className="flex flex-col items-center text-center px-6">
                             <h2 className="animate-glitch font-sora font-extrabold text-white text-[28px] md:text-5xl lg:text-[72px] leading-tight tracking-tighter [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
@@ -252,7 +285,7 @@ export default function LandingPage() {
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 mt-10">
                                 <a
-                                    href="#"
+                                    href="#como-funciona"
                                     className="btn-tactical font-space-mono text-[13px] font-bold uppercase tracking-[2px] px-8 py-4 transition-all text-center"
                                     aria-label="Download the Fandi app"
                                 >
@@ -272,6 +305,11 @@ export default function LandingPage() {
                     </ScrollText>
                 </section>
 
+                {/* ===== G2. APP STRIP — end on product, not words ===== */}
+                <section aria-label="App gallery">
+                    <AppStripMarquee />
+                </section>
+
                 {/* ===== H. FOOTER ===== */}
                 <footer className="bg-[#121212] py-12 px-6 md:px-12">
                     <div className="max-w-6xl mx-auto">
@@ -283,10 +321,10 @@ export default function LandingPage() {
                             className="h-10 w-auto"
                         />
                         <nav aria-label="Footer links" className="flex flex-wrap gap-6 mt-6">
-                            <a href="#" className="font-space-mono text-[14px] text-[#A0A0A0] hover:text-white transition-colors">
+                            <a href="#como-funciona" className="font-space-mono text-[14px] text-[#A0A0A0] hover:text-white transition-colors">
                                 {tFooter('terms')}
                             </a>
-                            <a href="#" className="font-space-mono text-[14px] text-[#A0A0A0] hover:text-white transition-colors">
+                            <a href="#como-funciona" className="font-space-mono text-[14px] text-[#A0A0A0] hover:text-white transition-colors">
                                 {tFooter('privacy')}
                             </a>
                             <a href="mailto:hola@fandi.app" className="font-space-mono text-[14px] text-[#A0A0A0] hover:text-white transition-colors">
