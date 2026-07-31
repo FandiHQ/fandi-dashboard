@@ -669,8 +669,8 @@
       "founderB": "Conocemos esta frustración de memoria."
     },
     "frustracion": {
-      "l1": "Te sabes todas.",
-      "l2": "Compras la boleta más cara.",
+      "l1": "Te sabes todas las canciones.",
+      "l2": "Compras cada boleta de cada concierto.",
       "l3": "Llegas seis horas antes.",
       "slamA": "Y por más que pagues,",
       "slamB": "nunca pasas de la tarima o de la pantalla."
@@ -772,12 +772,12 @@
       "v3": "Fidelizamos",
       "pitchTail": "tu fanbase a través de la euforia de tus eventos.",
       "dashAlt": "Dashboard de Fandi mostrando el ranking de fans en tiempo real",
-      "p1Title": "Ingresos en el show",
-      "p1Body": "La euforia se vuelve ingreso en el momento exacto en que ocurre, sin logística de premios masiva.",
-      "p2Title": "Sabes quiénes son",
-      "p2Body": "Dejas de tener un número de asistentes y pasas a tener nombres: quiénes participan, desde qué ciudad y en qué eventos.",
+      "p1Title": "Ingresos en vivo",
+      "p1Body": "La euforia se vuelve ingreso en el momento exacto en que ocurre, sin logísticas complejas, usas lo que ya existe.",
+      "p2Title": "Fanbases reales",
+      "p2Body": "Dejas de tener un número de oyentes, seguidores, likes o asistentes y pasas a tener nombres: quiénes participan, desde qué ciudad, en qué eventos, etc.",
       "p3Title": "Más cerca en cada evento",
-      "p3Body": "Por cada evento en Fandi refuerzas tu cercanía con tus fans: el ranking y las insignias dejan constancia de quién estuvo, y les dan una razón para volver.",
+      "p3Body": "Por cada evento en Fandi refuerzas tu cercanía con tus fans: los rankings y las insignias dejan constancia de quién estuvo, y les dan una razón para volver.",
       "cta": "Escríbenos",
       "ctaSub": "Por ahora no estamos disponibles para artistas emergentes."
     },

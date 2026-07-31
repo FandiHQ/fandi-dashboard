@@ -136,10 +136,10 @@ export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
                         <Image
                             src="/fandi-logo.png"
                             alt="Fandi"
-                            width={967}
-                            height={747}
+                            width={267}
+                            height={447}
                             quality={95}
-                            className="h-10 w-auto"
+                            className="h-15 w-18"
                         />
                         <p className="max-w-xs font-sora text-base text-[#8A8A94]">
                             {t('tagline')}
