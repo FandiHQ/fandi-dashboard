@@ -659,6 +659,166 @@
     "forFans": "PARA FANS",
     "forArtists": "PARA ARTISTAS"
   },
+  "landingV2": {
+    "hero": {
+      "slogan": "Convertimos a tu ídolo en tu amigo",
+      "sub": "Compite en vivo por experiencias con tu ídolo. Desde donde estés.",
+      "signIn": "Ingresar",
+      "idol": "Soy Ídolo · Escríbenos",
+      "founderA": "Los que hicimos Fandi somos fans.",
+      "founderB": "Conocemos esta frustración de memoria."
+    },
+    "frustracion": {
+      "l1": "Te sabes todas.",
+      "l2": "Compras la boleta más cara.",
+      "l3": "Llegas seis horas antes.",
+      "slamA": "Y por más que pagues,",
+      "slamB": "nunca pasas de la tarima o de la pantalla."
+    },
+    "recargas": {
+      "kicker": "#1 · Recargas",
+      "title": "Primero, tus Fandis",
+      "b1": "Compras Fandis: los créditos con los que participas.",
+      "rate": "1 Fandi = $5.000 COP",
+      "b2": "Quedan en tu billetera. No se queman en un solo show.",
+      "w1": "Conciertos",
+      "w2": "Deportes",
+      "w3": "Y más eventos",
+      "b2sub": "Los usas en cualquier evento de Fandi, cuando quieras.",
+      "before": "Publicado",
+      "after": "En vivo",
+      "live": "En vivo",
+      "b3": "El evento que ya veías en la app abre su reloj. Ahí empieza todo.",
+      "b4": "Y en vivo entras por dos caminos:",
+      "oportunidades": "Oportunidades",
+      "oportunidadesSub": "Aportas y se sortea",
+      "subastas": "Subastas",
+      "subastasSub": "El mejor postor gana"
+    },
+    "giro": {
+      "intro": "Hasta hoy.",
+      "slamA": "Ahora sí",
+      "slamB": "pasas.",
+      "p1": "Desde la tribuna",
+      "p2": "Desde tu casa",
+      "p3": "Desde donde estés"
+    },
+    "seoTitle": "Fandi · Convertimos a tu ídolo en tu amigo",
+    "nav": {
+      "label": "Secciones",
+      "categorias": "Categorías",
+      "subastas": "Subastas",
+      "idolos": "Ídolos",
+      "signIn": "Ingresar",
+      "download": "Descargar",
+      "idol": "Soy Ídolo",
+      "lang": "Idioma"
+    },
+    "categorias": {
+      "kicker": "#2 · Oportunidades",
+      "title": "Así se gana",
+      "canvasAlt": "Simulación de {total} fans repartidos en cuatro categorías",
+      "c1": "Miles de fans aportan para ganar la misma interacción: una experiencia o un artículo exclusivo.",
+      "c2": "Según cuánto aportas, entras en una categoría.",
+      "c3": "Todas las categorías tienen al menos un ganador y el mismo premio. El ídolo define cuántos ganadores por categoría.",
+      "c4": "Al cerrar, se sortean los ganadores correspondientes en cada una.",
+      "onePrize": "1 ganador",
+      "band": {
+        "vip": "VIP",
+        "alta": "Alta",
+        "media": "Media",
+        "base": "Base"
+      },
+      "payoffA": "Aportar más no compra el premio.",
+      "payoffB": "Te mueve a donde hay menos competencia para ganar.",
+      "liveA": "Y todo se mueve en vivo.",
+      "liveB": "Las categorías se recalculan mientras los fans aportan durante el evento."
+    },
+    "subastas": {
+      "kicker": "#3 · Subastas",
+      "title": "Sin sorteo",
+      "body": "Algunas cosas no se rifan. Se pelean en vivo, puja a puja, hasta que el reloj llega a cero.",
+      "contrastA": "Oportunidades:",
+      "contrastARest": "aportas, entras en una categoría y se sortea.",
+      "contrastB": "Subastas:",
+      "contrastBRest": "el mejor postor gana. Punto.",
+      "live": "En vivo",
+      "lotName": "Guitarra firmada en el escenario",
+      "currentBid": "Puja actual",
+      "leading": "Va ganando",
+      "cardNote": "Ejemplo ilustrativo · Tus Fandis se reservan mientras pujas y solo se cobran si ganas"
+    },
+    "loQueQueda": {
+      "kicker": "Lo que te queda",
+      "title": "Ganes o no, te llevas algo",
+      "body": "Cada evento deja insignias que nadie te puede quitar y un puesto en el ranking de tu ídolo. Tu lealtad queda registrada.",
+      "rankAlt": "Perfil de ídolo con el ranking de fans en la app Fandi",
+      "tiersLabel": "Niveles de fan",
+      "tier": {
+        "leyenda": "Leyenda",
+        "elite": "Élite",
+        "superfan": "Superfan",
+        "fanReal": "Fan Real"
+      },
+      "noMoney": "Tu perfil nunca muestra cuánto gastas.",
+      "noMoneySub": "Solo tu puesto, tu nivel y tus insignias. Lo que importa es qué tan fan eres."
+    },
+    "idolos": {
+      "overline": "Para ídolos y equipos",
+      "kicker": "Para ídolos y equipos",
+      "title": "Para ídolos",
+      "v1": "Monetizamos",
+      "v2": "Identificamos",
+      "v3": "Fidelizamos",
+      "pitchTail": "tu fanbase a través de la euforia de tus eventos.",
+      "dashAlt": "Dashboard de Fandi mostrando el ranking de fans en tiempo real",
+      "p1Title": "Ingresos en el show",
+      "p1Body": "La euforia se vuelve ingreso en el momento exacto en que ocurre, sin logística de premios masiva.",
+      "p2Title": "Sabes quiénes son",
+      "p2Body": "Dejas de tener un número de asistentes y pasas a tener nombres: quiénes participan, desde qué ciudad y en qué eventos.",
+      "p3Title": "Más cerca en cada evento",
+      "p3Body": "Por cada evento en Fandi refuerzas tu cercanía con tus fans: el ranking y las insignias dejan constancia de quién estuvo, y les dan una razón para volver.",
+      "cta": "Escríbenos",
+      "ctaSub": "Por ahora no estamos disponibles para artistas emergentes."
+    },
+    "descargar": {
+      "kicker": "Tu próximo evento",
+      "title": "Ahora te toca",
+      "body": "Descarga Fandi, recarga tus Fandis y compite en el próximo show de tu ídolo.",
+      "priceNote": "Gratis · Recargas desde $10.000 COP"
+    },
+    "faq": {
+      "kicker": "Preguntas",
+      "title": "Lo que todos preguntan",
+      "q1": "¿Qué es un Fandi?",
+      "a1": "Es la moneda dentro de la app: 1 Fandi = $5.000 COP. La usas para aportar a oportunidades y pujar en subastas. El saldo que no uses se queda en tu billetera.",
+      "q2": "¿Tengo que estar en el estadio?",
+      "a2": "No. Fandi funciona en vivo desde donde estés: en la tribuna, en tu casa o viendo la transmisión. Solo necesitas conexión mientras el evento está activo.",
+      "q3": "¿Cómo se eligen los ganadores? ¿Es justo?",
+      "a3": "En las oportunidades, tu aporte acumulado te ubica en una categoría y, al cerrar, se sortea al azar entre los fans de esa categoría. Aportar más no compra el premio: te mueve a una categoría donde compites contra menos fans. En las subastas gana el mejor postor, sin sorteo.",
+      "q4": "¿Es seguro pagar?",
+      "a4": "Los pagos se procesan con pasarelas de pago certificadas. Fandi nunca le muestra a nadie cuánto gastas: tu perfil público solo muestra tu puesto, tu nivel y tus insignias.",
+      "q5": "Soy ídolo, manager o equipo. ¿Cómo empiezo?",
+      "a5": "Escríbenos a hola@fandi.app y te montamos un evento de prueba. Tú defines las experiencias; nosotros ponemos las subastas, el cobro, la entrega por QR y el dashboard en tiempo real."
+    },
+    "store": {
+      "iosLine1": "Descárgala en el",
+      "iosLine2": "App Store",
+      "androidLine1": "Disponible en",
+      "androidLine2": "Google Play",
+      "soon": "Muy pronto"
+    },
+    "footer": {
+      "tagline": "Convertimos a tu ídolo en tu amigo.",
+      "signIn": "Ingresar",
+      "idolCta": "Soy Ídolo · Escríbenos",
+      "linksLabel": "Enlaces",
+      "terms": "Términos y Condiciones",
+      "privacy": "Privacidad",
+      "madeIn": "Hecho en Colombia",
+      "copyright": "© 2026 Fandi"
+    }
+  },
   "footer": {
     "terms": "Términos y Condiciones",
     "privacy": "Política de Privacidad",
