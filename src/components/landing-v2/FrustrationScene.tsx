@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { ScrollCue } from './ScrollAffordance';
 
 /**
  * §1 — LA FRUSTRACIÓN.
@@ -129,6 +130,8 @@ export default function FrustrationScene() {
                         </span>
                     </motion.p>
                 </div>
+
+                <ScrollCue targetRef={ref} />
             </div>
         </section>
     );

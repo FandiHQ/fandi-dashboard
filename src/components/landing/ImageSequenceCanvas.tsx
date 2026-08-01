@@ -11,8 +11,14 @@ interface Props {
     onLoadProgress?: (progress: number) => void;
 }
 
+/**
+ * Frames are WebP at native 1920x1080. The sequences were JPEG (~47MB for
+ * both cinematics, downloaded on every full scroll); WebP at q75 keeps the
+ * same resolution while roughly halving the bytes, which matters a lot on
+ * Colombian mobile data.
+ */
 const getFramePath = (folder: string, index: number): string =>
-    `/images/${folder}/frame-${String(index).padStart(4, '0')}.jpg`;
+    `/images/${folder}/frame-${String(index).padStart(4, '0')}.webp`;
 
 export default function ImageSequenceCanvas({
     folder,

@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { ScrollCue } from './ScrollAffordance';
 
 /**
  * §2 — EL GIRO.
@@ -136,6 +137,8 @@ export default function TurnScene() {
                         ))}
                     </motion.div>
                 </div>
+
+                <ScrollCue targetRef={ref} />
             </div>
         </section>
     );

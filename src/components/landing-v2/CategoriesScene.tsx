@@ -9,6 +9,7 @@ import {
     useReducedMotion,
 } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { ScrollCue } from './ScrollAffordance';
 
 /**
  * §3 — CATEGORÍAS. The section the whole landing exists for.
@@ -179,12 +180,25 @@ export default function CategoriesScene() {
         resize();
         window.addEventListener('resize', resize);
 
+        // This loop previously ran at 60fps for the entire life of the page,
+        // redrawing 600 dots even with the section nowhere near the viewport.
+        // It now runs only while the scene is on (or close to) screen, and
+        // inside that it skips the redraw when neither the scroll position
+        // nor the drift animation has moved.
+        let visible = false;
+        let running = false;
+        let lastP = -1;
+
         const draw = (time: number) => {
+            if (!visible) {
+                running = false;
+                rafRef.current = 0;
+                return;
+            }
+
             const p = reduceMotion ? 1 : progressRef.current;
             const dots = dotsRef.current;
             const boxes = boxesRef.current;
-
-            ctx.clearRect(0, 0, w, h);
 
             // Sorting progress + reveal gates
             const sort = easeInOut(
@@ -194,6 +208,16 @@ export default function CategoriesScene() {
             const prizeIn = clamp01((p - P.prizes) / 0.08);
             const drawIn = clamp01((p - P.draw) / 0.1);
             const drift = reduceMotion ? 0 : (1 - sort) * 9;
+
+            // Nothing moved and nothing is drifting: the last frame is still
+            // correct, so don't repaint it.
+            if (p === lastP && drift === 0) {
+                rafRef.current = requestAnimationFrame(draw);
+                return;
+            }
+            lastP = p;
+
+            ctx.clearRect(0, 0, w, h);
 
             // ── dots ──
             for (let i = 0; i < dots.length; i++) {
@@ -273,9 +297,27 @@ export default function CategoriesScene() {
             rafRef.current = requestAnimationFrame(draw);
         };
 
-        rafRef.current = requestAnimationFrame(draw);
+        const start = () => {
+            if (running) return;
+            running = true;
+            lastP = -1; // force one repaint on re-entry
+            rafRef.current = requestAnimationFrame(draw);
+        };
+
+        // rootMargin gives the loop a screen of lead time so the first
+        // painted frame is already correct when the scene scrolls in.
+        const io = new IntersectionObserver(
+            ([entry]) => {
+                visible = entry.isIntersecting;
+                if (visible) start();
+            },
+            { rootMargin: '100% 0px' }
+        );
+        const wrap = wrapRef.current;
+        if (wrap) io.observe(wrap);
 
         return () => {
+            io.disconnect();
             cancelAnimationFrame(rafRef.current);
             window.removeEventListener('resize', resize);
         };
@@ -382,6 +424,8 @@ export default function CategoriesScene() {
                         {t('liveB')}
                     </p>
                 </motion.div>
+
+                <ScrollCue targetRef={wrapRef} />
             </div>
         </section>
     );

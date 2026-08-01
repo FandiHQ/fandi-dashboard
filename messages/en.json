@@ -637,9 +637,11 @@
       "slogan": "We turn your idol into your friend",
       "sub": "Compete live for experiences with your idol. From wherever you are.",
       "signIn": "Sign in",
-      "idol": "I'm an Idol · Write to us",
+      "idol": "Write to us",
       "founderA": "The people who built Fandi are fans.",
-      "founderB": "We know this frustration by heart."
+      "founderB": "We know this frustration by heart.",
+      "forFans": "For fans · the mobile app",
+      "forIdols": "For idols and teams"
     },
     "frustracion": {
       "l1": "You know every word.",
@@ -790,7 +792,8 @@
       "privacy": "Privacy",
       "madeIn": "Made in Colombia",
       "copyright": "© 2026 Fandi"
-    }
+    },
+    "scrollCue": "Keep scrolling"
   },
   "footer": {
     "terms": "Terms & Conditions",

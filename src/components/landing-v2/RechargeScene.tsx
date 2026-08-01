@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { ScrollCue } from './ScrollAffordance';
 
 /**
  * §3 — #1 RECARGAS. The step the narrative was missing entirely.
@@ -222,6 +223,8 @@ export default function RechargeScene() {
                         ))}
                     </div>
                 </motion.div>
+
+                <ScrollCue targetRef={ref} />
             </div>
         </section>
     );

@@ -20,6 +20,8 @@ import KeepScene from './KeepScene';
 import IdolsScene from './IdolsScene';
 import { DownloadScene, FaqScene, FooterV2 } from './CloseScene';
 import { Cta, StoreButtons } from './Cta';
+import { ScrollProgress, ScrollCue } from './ScrollAffordance';
+import LazyImageSequence from './LazyImageSequence';
 
 /**
  * The Fandi landing page.
@@ -41,6 +43,17 @@ import { Cta, StoreButtons } from './Cta';
  *   §  ídolos         monetizamos · identificamos · fidelizamos
  *   §  descargar / faq / footer
  */
+/** Hairline-flanked label that separates the two hero audiences. */
+function GroupLabel({ children }: { children: React.ReactNode }) {
+    return (
+        <span className="flex items-center gap-3 font-space-mono text-[10px] uppercase tracking-[4px] text-[#9A9AA6]">
+            <span className="h-px w-6 bg-white/20" aria-hidden="true" />
+            {children}
+            <span className="h-px w-6 bg-white/20" aria-hidden="true" />
+        </span>
+    );
+}
+
 export default function LandingV2() {
     const t = useTranslations('landingV2');
     // Hero timing is LOCAL to the concert section, so adding or cutting any
@@ -88,6 +101,8 @@ export default function LandingV2() {
     return (
         <>
             <LandingLoader progress={loadProgress} loaded={loaded} />
+            {/* "There is more" — global, always on. */}
+            <ScrollProgress />
             <NavV2 onSignIn={() => setSignInOpen(true)} />
             <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
 
@@ -134,24 +149,34 @@ export default function LandingV2() {
                                     {t('hero.sub')}
                                 </p>
 
-                                {/* Real CTAs, in the hero */}
-                                <StoreButtons className="mt-8 justify-center" />
+                                {/* Two audiences, explicitly labelled. Fans
+                                    download the app; "Ingresar" is the
+                                    dashboard login and belongs to ídolos, not
+                                    to fans — unlabelled it read as a fan
+                                    action. */}
+                                <div className="mt-8 flex flex-col items-center gap-3.5">
+                                    <GroupLabel>{t('hero.forFans')}</GroupLabel>
+                                    <StoreButtons className="justify-center" />
+                                </div>
 
-                                <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row">
-                                    <Cta
-                                        onClick={() => setSignInOpen(true)}
-                                        variant="ghost"
-                                        className="!px-7 !py-3"
-                                    >
-                                        {t('hero.signIn')}
-                                    </Cta>
-                                    <Cta
-                                        href="mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento"
-                                        variant="ghost"
-                                        className="!px-7 !py-3"
-                                    >
-                                        {t('hero.idol')}
-                                    </Cta>
+                                <div className="mt-7 flex flex-col items-center gap-3.5">
+                                    <GroupLabel>{t('hero.forIdols')}</GroupLabel>
+                                    <div className="flex flex-col items-center gap-3 sm:flex-row">
+                                        <Cta
+                                            onClick={() => setSignInOpen(true)}
+                                            variant="ghost"
+                                            className="!px-7 !py-3"
+                                        >
+                                            {t('hero.signIn')}
+                                        </Cta>
+                                        <Cta
+                                            href="mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento"
+                                            variant="ghost"
+                                            className="!px-7 !py-3"
+                                        >
+                                            {t('hero.idol')}
+                                        </Cta>
+                                    </div>
                                 </div>
                             </div>
 
@@ -189,6 +214,10 @@ export default function LandingV2() {
                                 </span>
                             </motion.p>
                         </motion.div>
+
+                        {/* Labelled once, here, to teach the pattern. Later
+                            scenes use the bare cue. */}
+                        <ScrollCue targetRef={heroRef} label={t('scrollCue')} />
                     </ImageSequenceCanvas>
                 </section>
 
@@ -209,8 +238,10 @@ export default function LandingV2() {
                 <KeepScene />
 
                 {/* ═══ PARA ÍDOLOS ═══ */}
+                {/* Lazy: this sequence is ~20 viewports down, so its 240
+                    frames must not be decoded at page load. */}
                 <section aria-label={t('idolos.title')}>
-                    <ImageSequenceCanvas folder="artist" frameCount={240} heightVh={280}>
+                    <LazyImageSequence folder="artist" frameCount={240} heightVh={280}>
                         <div className="absolute inset-0 flex items-end justify-center pb-[12vh]">
                             <div
                                 className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_40%,rgba(0,0,0,0.9)_100%)]"
@@ -220,7 +251,7 @@ export default function LandingV2() {
                                 {t('idolos.overline')}
                             </p>
                         </div>
-                    </ImageSequenceCanvas>
+                    </LazyImageSequence>
                 </section>
                 <IdolsScene />
 

@@ -664,9 +664,11 @@
       "slogan": "Convertimos a tu ídolo en tu amigo",
       "sub": "Compite en vivo por experiencias con tu ídolo. Desde donde estés.",
       "signIn": "Ingresar",
-      "idol": "Soy Ídolo · Escríbenos",
+      "idol": "Escríbenos",
       "founderA": "Los que hicimos Fandi somos fans.",
-      "founderB": "Conocemos esta frustración de memoria."
+      "founderB": "Conocemos esta frustración de memoria.",
+      "forFans": "Para fans · la app móvil",
+      "forIdols": "Para ídolos y equipos"
     },
     "frustracion": {
       "l1": "Te sabes todas las canciones.",
@@ -817,7 +819,8 @@
       "privacy": "Privacidad",
       "madeIn": "Hecho en Colombia",
       "copyright": "© 2026 Fandi"
-    }
+    },
+    "scrollCue": "Sigue bajando"
   },
   "footer": {
     "terms": "Términos y Condiciones",
