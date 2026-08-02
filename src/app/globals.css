@@ -347,6 +347,22 @@ html {
   background: #4A00E0;
 }
 
+/* ── Scroll cue ──
+ * CSS rather than a JS-driven animation: there are five of these on the
+ * page, and a framer-motion `repeat: Infinity` drives each one from the
+ * main thread for the life of the page. A transform/opacity keyframe goes
+ * to the compositor instead, and browsers throttle it while off-screen. */
+@keyframes scroll-cue {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50% { transform: translateY(7px); opacity: 1; }
+}
+.animate-scroll-cue {
+  animation: scroll-cue 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-cue { animation: none; }
+}
+
 /* ── Landing app-strip marquee (Step: landing redesign) ── */
 @keyframes marquee {
   from { transform: translateX(0); }

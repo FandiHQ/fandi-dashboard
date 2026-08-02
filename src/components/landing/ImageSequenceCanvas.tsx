@@ -31,6 +31,15 @@ export default function ImageSequenceCanvas({
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const imagesRef = useRef<HTMLImageElement[]>([]);
     const currentFrameRef = useRef(0);
+    /** Guards the loader bar so a re-entry never rewinds it. */
+    const hasLoadedOnceRef = useRef(false);
+    /**
+     * Held in a ref, NOT read from the effect's deps: the parent recreates
+     * this callback when its own state changes, and a dep on it would tear
+     * down and re-run the loader — releasing and re-decoding every frame.
+     */
+    const onLoadProgressRef = useRef(onLoadProgress);
+    onLoadProgressRef.current = onLoadProgress;
     const [loadProgress, setLoadProgress] = useState(0);
 
     const drawFrame = useCallback((index: number) => {
@@ -75,46 +84,91 @@ export default function ImageSequenceCanvas({
         return () => window.removeEventListener('resize', updateCanvasSize);
     }, [updateCanvasSize]);
 
-    // Image preloading in batches
+    /**
+     * Frames are loaded while the sequence is near the viewport and RELEASED
+     * once it is far away.
+     *
+     * A decoded 1920x1080 frame costs ~8.3MB of RGBA in memory no matter how
+     * small the WebP is on the wire, so holding 240 of them is ~2GB per
+     * sequence. Previously they were decoded on mount and never let go, so
+     * memory only ever climbed. Dropping `src` releases the browser's decoded
+     * bitmap; the bytes stay in the HTTP cache, so coming back is a re-decode
+     * rather than a re-download.
+     */
     useEffect(() => {
-        const images: HTMLImageElement[] = new Array(frameCount);
-        let loaded = 0;
+        const container = containerRef.current;
+        if (!container) return;
+
+        let images: HTMLImageElement[] = [];
+        let loading = false;
+        let cancelled = false;
         const BATCH_SIZE = 20;
 
-        const loadBatch = (startIndex: number) => {
-            const end = Math.min(startIndex + BATCH_SIZE, frameCount);
-            for (let i = startIndex; i < end; i++) {
-                const img = new Image();
-                img.src = getFramePath(folder, i + 1); // 1-indexed
-                img.onload = () => {
-                    loaded++;
+        const load = () => {
+            if (loading || images.length === frameCount) return;
+            loading = true;
+            cancelled = false;
+            images = new Array(frameCount);
+            let loaded = 0;
+
+            const step = (i: number, end: number) => {
+                loaded++;
+                // The loader bar is a first-impression thing; re-entering the
+                // section later must not rewind it.
+                if (!hasLoadedOnceRef.current) {
                     const p = loaded / frameCount;
                     setLoadProgress(p);
-                    onLoadProgress?.(p);
-                    // Draw first frame immediately
-                    if (i === 0 && canvasRef.current) {
-                        drawFrame(0);
-                    }
-                    // When this batch is done, load the next
-                    if (loaded >= end && end < frameCount) {
-                        loadBatch(end);
-                    }
-                };
-                img.onerror = () => {
-                    loaded++;
-                    const p = loaded / frameCount;
-                    setLoadProgress(p);
-                    onLoadProgress?.(p);
-                    if (loaded >= end && end < frameCount) {
-                        loadBatch(end);
-                    }
-                };
-                images[i] = img;
-            }
+                    onLoadProgressRef.current?.(p);
+                }
+                if (i === 0 && canvasRef.current) drawFrame(0);
+                if (loaded >= end && end < frameCount) loadBatch(end);
+                if (loaded >= frameCount) {
+                    hasLoadedOnceRef.current = true;
+                    loading = false;
+                }
+            };
+
+            const loadBatch = (startIndex: number) => {
+                if (cancelled) return;
+                const end = Math.min(startIndex + BATCH_SIZE, frameCount);
+                for (let i = startIndex; i < end; i++) {
+                    const img = new Image();
+                    img.src = getFramePath(folder, i + 1); // 1-indexed
+                    img.onload = () => step(i, end);
+                    img.onerror = () => step(i, end);
+                    images[i] = img;
+                }
+            };
+
+            loadBatch(0);
+            imagesRef.current = images;
         };
 
-        loadBatch(0);
-        imagesRef.current = images;
+        const release = () => {
+            cancelled = true;
+            loading = false;
+            for (const img of images) {
+                if (!img) continue;
+                img.onload = null;
+                img.onerror = null;
+                img.src = ''; // lets the decoded bitmap be collected
+            }
+            images = [];
+            imagesRef.current = [];
+        };
+
+        // A viewport and a half of hysteresis: enough that normal scrolling
+        // never thrashes load/release at the boundary.
+        const io = new IntersectionObserver(
+            ([entry]) => (entry.isIntersecting ? load() : release()),
+            { rootMargin: '150% 0px' }
+        );
+        io.observe(container);
+
+        return () => {
+            io.disconnect();
+            release();
+        };
     }, [folder, frameCount, drawFrame]);
 
     // Scroll-driven frame drawing

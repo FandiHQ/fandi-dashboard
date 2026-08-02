@@ -58,7 +58,6 @@ export function ScrollCue({
     targetRef: RefObject<HTMLElement | null>;
     label?: string;
 }) {
-    const reduceMotion = useReducedMotion();
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ['start start', 'end end'],
@@ -82,15 +81,11 @@ export function ScrollCue({
                     {label}
                 </span>
             ) : null}
-            <motion.span
-                animate={reduceMotion ? undefined : { y: [0, 7, 0] }}
-                transition={
-                    reduceMotion
-                        ? undefined
-                        : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }
-                }
-                className="block h-6 w-px bg-gradient-to-b from-transparent via-white/50 to-[#CCFF00]"
-            />
+            {/* CSS keyframe, not a JS animation: five of these run for the
+                life of the page, and framer-motion would drive each one from
+                the main thread. .animate-scroll-cue already no-ops under
+                prefers-reduced-motion. */}
+            <span className="animate-scroll-cue block h-6 w-px bg-gradient-to-b from-transparent via-white/50 to-[#CCFF00]" />
         </motion.div>
     );
 }
