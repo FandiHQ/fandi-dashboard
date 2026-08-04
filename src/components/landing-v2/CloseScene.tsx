@@ -129,17 +129,27 @@ export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
             <div className="mx-auto flex max-w-6xl flex-col gap-10">
                 <div className="flex flex-col justify-between gap-10 md:flex-row md:items-start">
                     <div className="flex flex-col gap-5">
-                        {/* Same treatment and scale as the nav mark: true
-                            intrinsic ratio (967x747), no glow. Rendered
-                            larger than this the artwork's baked-in 3D
-                            extrusion reads as blur. */}
+                        {/* Same treatment as the nav mark: the TRUE intrinsic
+                            ratio (967x747), no glow. Rendered larger than this
+                            the artwork's baked-in 3D extrusion reads as blur.
+
+                            width/height must be the real pixel dimensions —
+                            they are how next/image derives the aspect ratio
+                            and picks a source width, not a display size. The
+                            display size belongs in className, and `w-auto`
+                            keeps the ratio instead of forcing a box the
+                            artwork does not fit.
+
+                            `self-start` is load-bearing: the parent is a flex
+                            column, and its default align-items:stretch beats
+                            width:auto — without it the logo smears to the full
+                            column width (288px against a 60px height). */}
                         <Image
                             src="/fandi-logo.png"
                             alt="Fandi"
-                            width={267}
-                            height={447}
-                            quality={95}
-                            className="h-15 w-18"
+                            width={967}
+                            height={747}
+                            className="h-15 w-auto self-start"
                         />
                         <p className="max-w-xs font-sora text-base text-[#8A8A94]">
                             {t('tagline')}
