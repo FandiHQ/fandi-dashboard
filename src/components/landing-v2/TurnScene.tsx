@@ -68,11 +68,16 @@ export default function TurnScene() {
                     className="absolute inset-0"
                     style={reduceMotion ? undefined : { scale: imgScale, filter }}
                 >
+                    {/* Below the fold — see FrustrationScene for why this
+                        must not load eagerly. WebP q72; the scrim and
+                        vignette hide the compression entirely. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src="/images/crowd/euforia.jpg"
+                        src="/images/crowd/euforia.webp"
                         alt=""
                         aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover opacity-80"
                     />
                 </motion.div>

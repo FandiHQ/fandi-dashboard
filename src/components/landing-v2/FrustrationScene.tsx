@@ -75,12 +75,20 @@ export default function FrustrationScene() {
                             : { scale, y: imageY, filter }
                     }
                 >
-                    {/* Decorative: the copy carries the meaning. */}
+                    {/* Decorative: the copy carries the meaning.
+                        lazy + async decode: this scene sits several
+                        screens below the fold, and eager-loading it put
+                        the photo on the critical path of the FIRST paint
+                        for something nobody sees until they scroll.
+                        WebP q72 — invisible at 70% opacity behind the
+                        vignette, and 45% smaller than the JPEG. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src="/images/crowd/frustracion.jpg"
+                        src="/images/crowd/frustracion.webp"
                         alt=""
                         aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover opacity-70"
                     />
                 </motion.div>

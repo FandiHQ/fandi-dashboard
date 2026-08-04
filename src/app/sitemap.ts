@@ -5,18 +5,32 @@ const SITE = 'https://fandi.app';
 /**
  * Serves /sitemap.xml (Next file convention).
  *
- * Only the landing is listed. A sitemap must contain URLs that return 200 —
- * listing /terminos and /privacidad while they still 404 would hand Google
- * broken URLs and hurt more than it helps. Add them here the moment those
- * pages exist.
+ * Every URL here must return 200 — handing Google broken URLs hurts more
+ * than omitting them. The legal pages carry lower priority and a yearly
+ * change frequency because they change only when Legal revises them.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
+    const now = new Date();
     return [
         {
             url: SITE,
-            lastModified: new Date(),
+            lastModified: now,
             changeFrequency: 'weekly',
             priority: 1,
         },
+        ...[
+            '/terminos',
+            '/privacidad',
+            '/datos-personales',
+            // Google Play requires this URL to be publicly reachable and
+            // it is named in all three legal documents, so it must be
+            // discoverable rather than an orphan page.
+            '/eliminar-cuenta',
+        ].map((path) => ({
+            url: `${SITE}${path}`,
+            lastModified: now,
+            changeFrequency: 'yearly' as const,
+            priority: 0.4,
+        })),
     ];
 }

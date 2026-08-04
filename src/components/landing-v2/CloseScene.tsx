@@ -177,6 +177,18 @@ export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
                         {t('privacy')}
                     </a>
                     <a
+                        href="/datos-personales"
+                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                    >
+                        {t('dataPolicy')}
+                    </a>
+                    <a
+                        href="/eliminar-cuenta"
+                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                    >
+                        {t('deleteAccount')}
+                    </a>
+                    <a
                         href="mailto:hola@fandi.app"
                         target="_blank"
                         rel="noopener noreferrer"
