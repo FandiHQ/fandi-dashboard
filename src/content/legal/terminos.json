@@ -1,1 +1,853 @@
-[{"t":"p","level":0,"text":"FANDI"},{"t":"p","level":0,"text":"TÉRMINOS Y CONDICIONES DE USO"},{"t":"p","level":0,"text":"Aplicación móvil Fandi · iOS y Android"},{"t":"p","level":0,"text":"Fandi Holding S.A.S. · NIT 902.070.820-4 · Medellín, Colombia"},{"t":"p","level":0,"text":"Versión 1.0 · Vigente desde 1 de agosto de 2026"},{"t":"table","rows":[["Antes de continuarLee estos Términos con atención. Al descargar, instalar, registrarte o utilizar la aplicación Fandi, declaras que los has leído, los entiendes y los aceptas de forma libre, expresa e informada. Si no estás de acuerdo, no utilices la aplicación.La aplicación es de uso exclusivo de personas mayores de dieciocho (18) años. Las modalidades de participación implican la adquisición y el uso de una unidad de crédito interna. El saldo que no comprometas en una dinámica puedes solicitar su reintegro en dinero escribiendo a hola@fandi.app, sujeto a un cobro administrativo de COP 8.000 más IVA. Revisa en especial las Secciones 6, 7 y 12."]]},{"t":"p","level":0,"text":"Tabla de contenido"},{"t":"p","level":0,"text":"TOC \\h \\u \\z \\t \"Heading 1,1,\"1. Identificación del prestador y aceptación3"},{"t":"h","level":2,"text":"2. Definiciones3"},{"t":"h","level":2,"text":"3. Objeto y descripción del servicio3"},{"t":"h","level":2,"text":"4. Elegibilidad y verificación de edad4"},{"t":"h","level":2,"text":"5. Registro, cuenta y seguridad4"},{"t":"h","level":2,"text":"6. Fandis, Billetera y devolución de saldo5"},{"t":"h","level":2,"text":"7. Modalidades de participación6"},{"t":"h","level":2,"text":"8. Adjudicación y entrega de Experiencias7"},{"t":"h","level":2,"text":"9. Juego responsable7"},{"t":"h","level":2,"text":"10. Conducta del Usuario y usos prohibidos7"},{"t":"h","level":2,"text":"11. Propiedad intelectual7"},{"t":"h","level":2,"text":"12. Protección de datos personales8"},{"t":"h","level":2,"text":"13. Disponibilidad, cambios y contenidos de terceros8"},{"t":"h","level":2,"text":"14. Suspensión y terminación8"},{"t":"h","level":2,"text":"15. Garantías y limitación de responsabilidad8"},{"t":"h","level":2,"text":"16. Ley aplicable y resolución de disputas9"},{"t":"h","level":2,"text":"17. Modificaciones de los Términos9"},{"t":"h","level":2,"text":"18. Condiciones específicas de las tiendas de aplicaciones9"},{"t":"h","level":2,"text":"19. Disposiciones generales10"},{"t":"h","level":2,"text":"20. Contacto10"},{"t":"h","level":1,"text":"1. Identificación del prestador y aceptación"},{"t":"p","level":0,"text":"La aplicación móvil «Fandi» (la «Aplicación» o la «Plataforma») es operada por Fandi Holding S.A.S. («Fandi», «nosotros»), sociedad por acciones simplificada identificada con NIT 902.070.820-4, con domicilio en Carrera 84F #3C-39, Medellín, Colombia, correo de contacto hola@fandi.app."},{"t":"p","level":0,"text":"Estos Términos y Condiciones (los «Términos») constituyen un contrato vinculante entre Fandi y la persona que se registra y utiliza la Aplicación (el «Usuario» o «tú»). La aceptación se produce mediante una acción afirmativa e inequívoca al momento del registro. Junto con la Política de Tratamiento y Protección de Datos Personales y las reglas específicas de cada Evento, estos Términos rigen íntegramente la relación entre las partes."},{"t":"p","level":0,"text":"Estos Términos regulan la relación entre Fandi y el Usuario. La descarga de la Aplicación a través de la App Store de Apple o de Google Play se rige, además, por los términos de la tienda correspondiente; ni Apple ni Google son parte de estos Términos ni responsables de la Aplicación, sin perjuicio de lo previsto en la Sección 18."},{"t":"h","level":1,"text":"2. Definiciones"},{"t":"table","rows":[["Término","Definición"],["Aplicación / Plataforma","La aplicación móvil Fandi y los servicios tecnológicos asociados."],["Usuario / Usuario Verificado","Persona natural mayor de 18 años, registrada y con su identidad y edad verificadas conforme a la Sección 5."],["Fandis","Unidad de crédito virtual de uso exclusivamente interno que el Usuario adquiere para participar en las modalidades y acceder a Experiencias. No es dinero de curso legal ni medio de pago de propósito general, no constituye depósito, préstamo ni inversión y no genera rendimiento. El saldo no utilizado es reembolsable conforme a la Sección 6."],["Saldo no utilizado","Los Fandis que el Usuario ha adquirido y que aún no ha comprometido en una puja (Subasta) ni en un aporte (Oportunidad)."],["Billetera","Registro interno del saldo de Fandis del Usuario y de sus movimientos dentro de la Aplicación. Es de circulación cerrada: el saldo solo puede usarse dentro de la Aplicación."],["Recarga","Operación por la cual el Usuario adquiere Fandis con dinero real, a la tasa de conversión vigente."],["Experiencia","Encuentro, artículo, beneficio o premio exclusivo que se adjudica al Usuario a través de las modalidades."],["Subasta","Modalidad en la que el Usuario puja con Fandis y gana quien realiza la mayor puja válida antes del cierre."],["Oportunidad","Modalidad en la que el Usuario aporta Fandis, es agrupado por rango de aporte y resulta ganador mediante selección aleatoria dentro de su grupo."],["Grupo de Aporte","Segmento de participantes de una Oportunidad, definido por rangos de Fandis aportados, dentro del cual se selecciona al ganador."],["Evento","Contexto (presencial o digital) en el que se ofrecen Experiencias, con sus reglas específicas."],["Aliado","Organizador, promotor, artista o tercero que aporta Experiencias o en cuyo Evento opera la Plataforma."]]},{"t":"h","level":1,"text":"3. Objeto y descripción del servicio"},{"t":"p","level":0,"text":"Fandi ofrece una plataforma de fidelización y entretenimiento en vivo mediante la cual el Usuario, previa adquisición de Fandis, participa en las Experiencias vinculadas a artistas, deportistas, ídolos y eventos. El servicio comprende dos componentes inseparables:"},{"t":"p","level":0,"text":"Reconocimiento y posición de fan. Toda participación, con independencia de su resultado, otorga al Usuario una insignia digital del Evento y computa en su posición dentro del ranking de fans del ídolo correspondiente, tanto global como por ciudad. Este reconocimiento es acumulativo, permanece asociado a la cuenta del Usuario y no depende del azar: se obtiene por el solo hecho de participar. Los Usuarios que resultan adjudicatarios de una Experiencia reciben además una insignia distintiva."},{"t":"p","level":0,"text":"Acceso a Experiencias. A través de dos modalidades, Subasta y Oportunidad, el Usuario puede resultar adjudicatario de encuentros, artículos o beneficios exclusivos ofrecidos por el ídolo o el Aliado, conforme a las reglas de la Sección 7."},{"t":"p","level":0,"text":"Las insignias y la posición en el ranking constituyen reconocimientos de fidelización sin valor monetario, no son canjeables por dinero y no pueden transferirse ni comercializarse. Su función es acreditar la trayectoria del Usuario como seguidor y darle visibilidad ante el ídolo."},{"t":"table","rows":[["Naturaleza del servicio y estado regulatorioLas modalidades de participación pueden constituir juego de suerte y azar bajo la normativa colombiana, en tanto suponen un aporte económico, la intervención del azar y la obtención de un premio. En consecuencia, la operación de cada modalidad está condicionada a la obtención y vigencia de las autorizaciones que exija la autoridad competente (Coljuegos o la entidad territorial que corresponda).Cuando una modalidad requiera autorización y esta no se encuentre vigente, Fandi se abstendrá de operarla. Fandi podrá habilitar, restringir o suspender modalidades, Experiencias o territorios en función del estado de dichas autorizaciones, sin que ello constituya incumplimiento de estos Términos."]]},{"t":"h","level":1,"text":"4. Elegibilidad y verificación de edad"},{"t":"table","rows":[["Uso exclusivo de personas mayores de 18 añosLa Aplicación está dirigida exclusivamente a personas naturales mayores de dieciocho (18) años. Está prohibido el registro, la recarga y la participación de menores de edad, sin excepción y aun mediando autorización de los padres o representantes legales."]]},{"t":"p","level":0,"text":"Para utilizar la Aplicación, el Usuario declara y garantiza que: es mayor de 18 años; tiene capacidad legal para obligarse; los datos que suministra son veraces y corresponden a su identidad; y no se encuentra en una jurisdicción donde el uso de la Aplicación esté prohibido. Fandi verifica la mayoría de edad y la identidad conforme a la Sección 5 y a su Política de Tratamiento de Datos, y bloquea el acceso cuando la edad declarada o verificada sea inferior a 18 años."},{"t":"p","level":0,"text":"Si Fandi detecta que una cuenta pertenece a un menor de edad, la suspenderá de inmediato, bloqueará la Billetera y las participaciones, y procederá conforme al protocolo de su Política de Tratamiento de Datos, incluida la supresión de los datos del menor y el reintegro de las sumas efectivamente pagadas a su representante legal."},{"t":"h","level":1,"text":"5. Registro, cuenta y seguridad"},{"t":"p","level":0,"text":"El uso de la Aplicación requiere crear una cuenta y completar la verificación de identidad y edad antes de habilitar la Billetera y cualquier participación. El Usuario se obliga a suministrar información veraz y a mantenerla actualizada."},{"t":"li","level":0,"text":"La cuenta es personal e intransferible. El Usuario es responsable de la confidencialidad de sus credenciales y de toda actividad realizada desde su cuenta."},{"t":"li","level":0,"text":"El Usuario debe notificar a Fandi de inmediato cualquier uso no autorizado de su cuenta a través de hola@fandi.app."},{"t":"li","level":0,"text":"Fandi podrá exigir una nueva verificación de identidad cuando existan indicios de suplantación, fraude, multicuenta o uso por un tercero, y suspender preventivamente la cuenta mientras se resuelve."},{"t":"li","level":0,"text":"No está permitido crear más de una cuenta por persona, usar identidades falsas, ni acceder mediante herramientas automatizadas."},{"t":"h","level":1,"text":"6. Fandis, Billetera y devolución de saldo"},{"t":"p","level":0,"text":"6.1. Naturaleza y uso exclusivo de los Fandis"},{"t":"p","level":0,"text":"Los Fandis son una unidad de crédito virtual de circulación cerrada dentro de la Aplicación. Al adquirirlos, el Usuario obtiene una licencia limitada, personal, intransferible y revocable para usarlos única y exclusivamente en las modalidades de Subasta y Oportunidad y para acceder a las Experiencias dentro de la Aplicación. En consecuencia, los Fandis:"},{"t":"li","level":0,"text":"Solo pueden usarse dentro de la Aplicación y para sus dinámicas. No sirven para adquirir bienes o servicios de terceros, no son un medio de pago de propósito general y no pueden emplearse fuera de la Aplicación para ningún fin."},{"t":"li","level":0,"text":"No son transferibles ni cedibles entre usuarios ni a terceros, por ningún medio."},{"t":"li","level":0,"text":"No son dinero de curso legal, no constituyen depósito, préstamo ni inversión, no generan intereses ni rendimiento financiero y no representan una cuenta de depósito."},{"t":"p","level":0,"text":"Por su naturaleza de circulación cerrada, la adquisición de Fandis es un pago anticipado por el consumo de los servicios propios de Fandi, y no una entrega de dinero en administración. Fandi no presta servicios de pago ni realiza captación de recursos del público."},{"t":"p","level":0,"text":"6.2. Recargas, precios y tasa de conversión"},{"t":"p","level":0,"text":"El Usuario adquiere Fandis mediante recargas procesadas por la pasarela de pagos contratada por Fandi. Las condiciones económicas son las siguientes:"},{"t":"table","rows":[["Concepto","Condición"],["Tasa de conversión","1 Fandi = COP 5.000"],["Paquetes de recarga disponibles","Los paquetes vigentes y su precio se muestran en la Aplicación antes de confirmar la recarga."],["Medios de pago admitidos","Tarjetas de crédito y débito, PSE y los demás medios habilitados por la pasarela, informados en la Aplicación."],["Monto mínimo / máximo de recarga","Mínimo 4 Fandis (COP 20.000). El máximo por operación y por periodo se informa en la Aplicación y puede ajustarse por razones de prevención de fraude y de cumplimiento."],["Impuestos","Los precios incluyen los impuestos aplicables, salvo indicación en contrario al momento de la compra."]]},{"t":"p","level":0,"text":"Las recargas se procesan a través de la pasarela de pagos contratada por Fandi. Los Fandis constituyen el medio por el cual el Usuario accede a Experiencias que se ejecutan materialmente fuera de la Aplicación, en el mundo físico o en canales del Aliado, y no a contenido digital consumible dentro de la Aplicación. Fandi no cobra por funcionalidades digitales internas. Cuando la tienda de aplicaciones a través de la cual se descargó la Aplicación imponga un método de cobro distinto, aplicarán también sus condiciones, comisiones y reglas de reembolso."},{"t":"p","level":0,"text":"6.3. Consumo de Fandis en las dinámicas"},{"t":"p","level":0,"text":"Los Fandis que el Usuario compromete en una puja (Subasta) o en un aporte (Oportunidad) se rigen por las reglas de la modalidad respectiva y se consideran consumidos conforme a dichas reglas. Los Fandis así comprometidos no forman parte del saldo no utilizado y no son objeto de la devolución prevista en la Sección 6.4. El Usuario reconoce que, por la naturaleza de las modalidades, el resultado depende del azar y de la mecánica descrita, y que los Fandis comprometidos pueden perderse conforme a las reglas informadas antes de participar."},{"t":"p","level":0,"text":"6.4. Devolución del saldo no utilizado"},{"t":"p","level":0,"text":"El Usuario puede solicitar la devolución en dinero del saldo de Fandis no utilizado, es decir, de los Fandis adquiridos que no haya comprometido en ninguna dinámica. La devolución opera bajo las siguientes reglas:"},{"t":"li","level":0,"text":"Solicitud expresa por correo. El reintegro debe solicitarse de forma expresa por el Usuario mediante correo electrónico a hola@fandi.app, desde la dirección registrada en su cuenta, acreditando la titularidad a través de los mecanismos de verificación de identidad que Fandi disponga. Fandi confirma la recepción y puede requerir información adicional para validar la identidad del solicitante."},{"t":"li","level":0,"text":"Monto. Se reintegra el valor en pesos correspondiente al saldo no utilizado, calculado conforme a la tasa de conversión aplicada en la recarga."},{"t":"li","level":0,"text":"Cobro administrativo. El reintegro está sujeto a un cobro administrativo fijo de ocho mil pesos (COP 8.000) más IVA, que refleja el costo operativo del trámite y se descuenta del valor a reintegrar. El cobro se informa al Usuario antes de confirmar la solicitud. No aplica cuando el reintegro proceda del ejercicio del derecho de retracto o de reversión del pago previstos en la Ley 1480 de 2011, ni cuando la devolución obedezca a una causa imputable a Fandi, por tratarse de derechos irrenunciables del consumidor."},{"t":"li","level":0,"text":"Plazo. Como el saldo no caduca (Sección 6.5), el Usuario puede presentar la solicitud en cualquier momento mientras exista saldo no utilizado. Fandi tramitará la devolución dentro del término legal aplicable, que no excederá de quince (15) días hábiles contados desde la solicitud completa y verificada, y la efectuará, cuando sea posible, al mismo medio de pago utilizado en la recarga."},{"t":"li","level":0,"text":"Derechos legales prevalentes. Lo anterior se entiende sin perjuicio del derecho de retracto y de los derechos de reversión del pago previstos en la Ley 1480 de 2011 y sus normas reglamentarias. Cuando estos apliquen, operan en los términos, plazos y condiciones de ley y sin el cobro administrativo, por tratarse de derechos irrenunciables del consumidor. Igualmente prevalecen los reembolsos que imponga la tienda de aplicaciones a través de la cual se realizó la compra."},{"t":"p","level":0,"text":"6.5. No caducidad del saldo y cuentas inactivas"},{"t":"p","level":0,"text":"El saldo de Fandis no caduca y Fandi no se apropia del saldo no utilizado. Si el Usuario desinstala la Aplicación, deja su cuenta inactiva o se presenta una situación análoga, para recuperar el saldo no utilizado deberá presentar una solicitud formal de reintegro por los canales indicados, acreditando la titularidad de la cuenta. Fandi conservará el registro del saldo conforme a su Política de Tratamiento de Datos y a la ley, y atenderá la solicitud en los términos de la Sección 6.4."},{"t":"h","level":1,"text":"7. Modalidades de participación"},{"t":"p","level":0,"text":"7.1. Reglas comunes"},{"t":"li","level":0,"text":"La participación se realiza exclusivamente con Fandis previamente cargados en la Billetera."},{"t":"li","level":0,"text":"Las reglas específicas de cada Experiencia y Evento (valor base, incremento mínimo, rangos de Grupos de Aporte, número de ganadores, fechas y cierre) se informan en la Aplicación antes de participar y forman parte de estos Términos."},{"t":"li","level":0,"text":"Fandi opera y audita cada participación de forma trazable. Los registros de participación son la evidencia de la integridad del juego y se conservan conforme a la ley y a la Política de Tratamiento de Datos."},{"t":"li","level":0,"text":"Todo participante, gane o no, recibe la insignia del Evento y computa en el ranking de fans, conforme a la Sección 3."},{"t":"li","level":0,"text":"Naturaleza diferenciada de las modalidades. La Subasta se adjudica exclusivamente al mejor postor y su resultado depende de la voluntad y la conducta de los participantes, no del azar; en consecuencia, no constituye juego de suerte y azar. La Oportunidad incorpora un componente aleatorio en la selección de los adjudicatarios dentro de cada Grupo de Aporte y, por ello, se sujeta al régimen de autorizaciones descrito en esta Sección. Ambas modalidades son independientes entre sí y pueden ofrecerse por separado."},{"t":"p","level":0,"text":"7.2. Subasta"},{"t":"p","level":0,"text":"En la Subasta, el Usuario puja con Fandis por una Experiencia. Resulta ganador quien realice la mayor puja válida antes del cierre. Cada Subasta puede tener un valor base y un incremento mínimo de puja, informados en la Aplicación. El cierre y la validación del ganador son gestionados por Fandi a través de la Plataforma."},{"t":"p","level":0,"text":"7.3. Oportunidad"},{"t":"p","level":0,"text":"En la Oportunidad, el Usuario aporta Fandis y es asignado a un Grupo de Aporte según el rango aportado. Dentro de cada grupo, la Plataforma selecciona uno o más ganadores mediante un mecanismo aleatorio. Un mayor aporte mejora la probabilidad relativa dentro del grupo, pero no elimina la posibilidad de ganar de quien realiza el aporte mínimo habilitado. La selección no se basa en las características personales del Usuario ni en la elaboración de perfiles: el único parámetro que determina el grupo es el monto aportado."},{"t":"table","rows":[["Condición de operación de la OportunidadFandi obtiene, con carácter previo a cada Evento, la autorización que exija la autoridad competente para el conjunto de Oportunidades que se ofrecerán en él. Ninguna Oportunidad se habilita en la Aplicación sin que dicha autorización se encuentre expedida y vigente. La autorización es un acto de la autoridad frente a Fandi y no se publica en la Aplicación; Fandi la conserva y la pone a disposición de la autoridad que la requiera.En ausencia de autorización vigente, el Evento podrá operar únicamente bajo la modalidad de Subasta, que no depende del azar y se adjudica al mejor postor, o la Experiencia podrá no ofrecerse. Ello no genera responsabilidad para Fandi ni derecho a indemnización a favor del Usuario, más allá del reintegro íntegro de los Fandis aportados a una Oportunidad que no llegue a realizarse.Reglas oficiales y ausencia de patrocinio de las tiendas. Las reglas completas de cada Subasta y de cada Oportunidad se presentan en la Aplicación antes de participar. Apple Inc. y Google LLC no patrocinan ni promueven estas modalidades, no participan en su operación ni en la adjudicación de las Experiencias, y no asumen responsabilidad alguna en relación con ellas."]]},{"t":"h","level":1,"text":"8. Adjudicación y entrega de Experiencias"},{"t":"li","level":0,"text":"La condición de ganador se notifica a través de la Aplicación y por los canales de contacto registrados por el Usuario."},{"t":"li","level":0,"text":"Para reclamar una Experiencia, el Usuario debe estar plenamente identificado y verificado, y cumplir las condiciones específicas de la Experiencia (fechas, ubicación, requisitos de acceso, vigencia de reclamo)."},{"t":"li","level":0,"text":"Las Experiencias son personales, intransferibles y no canjeables por dinero, salvo que la regla específica disponga lo contrario."},{"t":"li","level":0,"text":"Cuando la Experiencia sea aportada o ejecutada por un Aliado, Fandi coordina la entrega, pero la ejecución material puede depender del Aliado. Fandi responde por la correcta operación de la mecánica de adjudicación; la disponibilidad y calidad de la Experiencia en sí se rigen por las condiciones informadas."},{"t":"li","level":0,"text":"Si por causa no imputable al Usuario una Experiencia adjudicada no puede entregarse, Fandi ofrecerá una Experiencia equivalente o la reacreditación de los Fandis correspondientes en la Billetera del Usuario, a su elección informada al Usuario; los Fandis reacreditados podrán devolverse en dinero conforme a la Sección 6.4."},{"t":"li","level":0,"text":"El Usuario es responsable de los impuestos que, por su cuenta, se deriven de la obtención de una Experiencia, conforme a la ley aplicable."},{"t":"h","level":1,"text":"9. Juego responsable"},{"t":"p","level":0,"text":"Fandi promueve un uso sano de la Aplicación y pone a disposición del Usuario herramientas de autocontrol: límites de recarga, límites de participación, periodos de enfriamiento y autoexclusión. El Usuario puede solicitar su autoexclusión temporal o permanente. Fandi respeta estas medidas y se abstiene de dirigir comunicaciones de recarga o participación a quienes las hayan activado. Ninguna participación es un medio de inversión ni una fuente de ingresos; los resultados dependen del azar y de la mecánica descrita."},{"t":"h","level":1,"text":"10. Conducta del Usuario y usos prohibidos"},{"t":"p","level":0,"text":"El Usuario se obliga a utilizar la Aplicación de buena fe y conforme a la ley. Queda prohibido, entre otras conductas:"},{"t":"li","level":0,"text":"Suplantar identidades, crear múltiples cuentas o falsear datos de registro o de edad."},{"t":"li","level":0,"text":"Manipular, o intentar manipular, los resultados de las modalidades, incluida la colusión entre usuarios."},{"t":"li","level":0,"text":"Utilizar bots, scrapers, automatizaciones o cualquier medio para interferir con la Plataforma o eludir sus controles."},{"t":"li","level":0,"text":"Emplear la Aplicación para lavado de activos, financiación del terrorismo o cualquier fin ilícito."},{"t":"li","level":0,"text":"Vulnerar la seguridad de la Plataforma, acceder a datos de terceros o realizar ingeniería inversa del software."},{"t":"li","level":0,"text":"Revender, ceder o comercializar Fandis, cuentas o Experiencias por fuera de la Aplicación."},{"t":"p","level":0,"text":"El incumplimiento faculta a Fandi para suspender o cancelar la cuenta y retener las participaciones afectadas, sin perjuicio de las acciones legales que correspondan y de los deberes de reporte ante las autoridades."},{"t":"h","level":1,"text":"11. Propiedad intelectual"},{"t":"p","level":0,"text":"La Aplicación, su código, diseño, marcas, logotipos, textos, interfaces y contenidos son de titularidad de Fandi o de sus licenciantes y están protegidos por la normativa de propiedad intelectual. Estos Términos otorgan al Usuario una licencia limitada, personal, intransferible, revocable y no exclusiva para usar la Aplicación conforme a su finalidad. Queda prohibida su reproducción, distribución, modificación o explotación no autorizada."},{"t":"p","level":0,"text":"Las marcas, nombres e imágenes de artistas, deportistas, Aliados y terceros mostrados en la Aplicación pertenecen a sus respectivos titulares y se utilizan bajo autorización o acuerdo con estos. El Usuario que aporte contenido a la Aplicación concede a Fandi una licencia gratuita y no exclusiva para usarlo en la operación del servicio, garantizando que cuenta con los derechos para ello."},{"t":"h","level":1,"text":"12. Protección de datos personales"},{"t":"p","level":0,"text":"El tratamiento de los datos personales del Usuario se rige por la Política de Tratamiento y Protección de Datos Personales de Fandi, disponible en www.fandi.app/privacidad y en la Aplicación, que forma parte integral de estos Términos. Al aceptar estos Términos, el Usuario declara conocerla. En ella se describen las finalidades, las bases de legitimación, los encargados y aliados, las transferencias nacionales e internacionales, los plazos de conservación, las medidas de seguridad y los mecanismos para ejercer los derechos de conocer, actualizar, rectificar, suprimir, revocar la autorización, oponerse y solicitar la portabilidad."},{"t":"p","level":0,"text":"El Usuario puede ejercer sus derechos y presentar consultas o reclamos escribiendo a hola@fandi.app o desde la sección «Privacidad y mis datos» de la Aplicación."},{"t":"h","level":1,"text":"13. Disponibilidad, cambios y contenidos de terceros"},{"t":"li","level":0,"text":"Fandi procura la disponibilidad continua de la Aplicación, pero no garantiza que sea ininterrumpida o libre de errores. Podrá realizar mantenimientos, actualizaciones o suspensiones temporales, procurando afectar lo menos posible al Usuario."},{"t":"li","level":0,"text":"Fandi podrá modificar, suspender o descontinuar, total o parcialmente, funcionalidades, modalidades, Experiencias o la Aplicación misma, por razones técnicas, comerciales o regulatorias."},{"t":"li","level":0,"text":"La Aplicación puede integrar servicios de terceros (pasarela de pagos, proveedores de infraestructura, canales de mensajería). El uso de esos servicios puede sujetarse a sus propios términos. Fandi no responde por fallas atribuibles exclusivamente a dichos terceros, sin perjuicio de sus deberes legales."},{"t":"li","level":0,"text":"El Usuario es responsable de contar con un dispositivo compatible y con conexión a internet; los costos de datos corren por su cuenta."},{"t":"h","level":1,"text":"14. Suspensión y terminación"},{"t":"p","level":0,"text":"El Usuario puede eliminar su cuenta en cualquier momento y de forma directa desde la propia Aplicación, en la sección «Perfil › Configuración › Eliminar mi cuenta», sin necesidad de contactar a Fandi ni de justificar su decisión. Alternativamente puede solicitarlo a hola@fandi.app o desde www.fandi.app/eliminar-cuenta. Antes de ejecutar la eliminación, la Aplicación informa al Usuario el saldo no utilizado que tenga en su Billetera y le permite solicitar su reintegro conforme a la Sección 6.4. Fandi puede suspender o cancelar la cuenta, de forma inmediata y sin indemnización, cuando el Usuario incumpla estos Términos, cuando lo exija una autoridad o la ley, o cuando existan indicios de fraude, suplantación o riesgo para la Plataforma o para terceros."},{"t":"p","level":0,"text":"La eliminación de la cuenta implica la supresión de los datos personales del Usuario en los términos de la Política de Tratamiento de Datos, con excepción de aquellos que Fandi deba conservar por mandato legal, en particular los registros de participación exigidos por la regulación de juego, los soportes de conocimiento del cliente y la información contable y tributaria. Esos datos quedan bloqueados y su uso se limita estrictamente al cumplimiento del deber legal que impone su conservación. Fandi informa al Usuario, de forma motivada, qué categorías se conservan y por cuánto tiempo."},{"t":"p","level":0,"text":"Al terminar la relación: el Usuario deja de tener acceso a la Aplicación; el saldo de Fandis no utilizado puede devolverse en dinero conforme a la Sección 6.4, previa solicitud y acreditación de titularidad; y subsisten las obligaciones que por su naturaleza deban permanecer vigentes (propiedad intelectual, responsabilidad, confidencialidad, resolución de disputas y conservación de registros exigida por la ley). Cuando la terminación obedezca a un incumplimiento grave del Usuario o a una conducta fraudulenta, Fandi podrá retener el saldo comprometido en las participaciones afectadas mientras se resuelve, sin perjuicio de la devolución del saldo no utilizado que corresponda."},{"t":"h","level":1,"text":"15. Garantías y limitación de responsabilidad"},{"t":"p","level":0,"text":"La Aplicación se ofrece «tal cual» y «según disponibilidad». Dentro de los límites permitidos por la ley, Fandi no garantiza que la Aplicación satisfaga expectativas particulares del Usuario ni que esté libre de interrupciones o errores. Nada en estos Términos excluye o limita la responsabilidad que, conforme al régimen imperativo de protección al consumidor y demás normas aplicables, no pueda excluirse ni limitarse; en particular, se respetan los derechos irrenunciables del consumidor bajo la Ley 1480 de 2011."},{"t":"p","level":0,"text":"En la medida permitida por la ley, Fandi no responde por daños indirectos, incidentales, punitivos o lucro cesante derivados del uso o la imposibilidad de uso de la Aplicación, ni por conductas de terceros o de otros usuarios. La responsabilidad de Fandi frente al Usuario, cuando resulte procedente, se limita al valor de las recargas efectuadas por el Usuario en los tres (3) meses anteriores al hecho que da lugar a la reclamación, salvo que la ley disponga un régimen distinto e imperativo."},{"t":"p","level":0,"text":"El Usuario mantendrá indemne a Fandi frente a reclamaciones de terceros derivadas de su uso indebido de la Aplicación o del incumplimiento de estos Términos, en los términos permitidos por la ley."},{"t":"h","level":1,"text":"16. Ley aplicable y resolución de disputas"},{"t":"p","level":0,"text":"Estos Términos se rigen por las leyes de la República de Colombia. Antes de acudir a la vía judicial, el Usuario y Fandi procurarán resolver cualquier controversia de manera directa a través de los canales de atención. Las reclamaciones de consumo se tramitarán conforme a la Ley 1480 de 2011 y podrán presentarse ante la Superintendencia de Industria y Comercio en ejercicio de sus funciones jurisdiccionales."},{"t":"p","level":0,"text":"Las disputas se someterán a los jueces competentes del domicilio del Usuario cuando así lo imponga el régimen de protección al consumidor, o a los jueces de Medellín en los demás casos, sin renuncia a los fueros irrenunciables que la ley reconozca al consumidor."},{"t":"p","level":0,"text":"Territorios habilitados. La Aplicación se ofrece únicamente en los territorios en los que Fandi cuenta con las autorizaciones exigidas. Fandi aplica controles de geolocalización y puede restringir el registro o la participación desde territorios no habilitados."},{"t":"h","level":1,"text":"17. Modificaciones de los Términos"},{"t":"p","level":0,"text":"Fandi puede modificar estos Términos. Cuando el cambio sea sustancial, lo comunicará por un medio eficaz con antelación razonable a su entrada en vigencia. El uso continuado de la Aplicación tras la entrada en vigencia implica la aceptación de los Términos modificados; si el Usuario no está de acuerdo, puede terminar la relación conforme a la Sección 14. Cada versión se identifica con número y fecha, y se conserva un archivo histórico accesible."},{"t":"h","level":1,"text":"18. Condiciones específicas de las tiendas de aplicaciones"},{"t":"p","level":0,"text":"Cuando la Aplicación se descargue desde la App Store de Apple o desde Google Play, aplican, además, las siguientes condiciones:"},{"t":"p","level":0,"text":"18.1. Apple"},{"t":"li","level":0,"text":"Estos Términos se celebran entre el Usuario y Fandi, no con Apple. Apple no es responsable de la Aplicación ni de su contenido."},{"t":"li","level":0,"text":"La licencia de uso de la Aplicación es intransferible y se limita a los dispositivos Apple que el Usuario posea o controle, conforme a las Reglas de Uso de la App Store."},{"t":"li","level":0,"text":"El mantenimiento, el soporte y la atención de garantías de la Aplicación son responsabilidad de Fandi, no de Apple."},{"t":"li","level":0,"text":"Fandi, y no Apple, atiende las reclamaciones del Usuario y de terceros relacionadas con la Aplicación, incluidas las de responsabilidad por producto, cumplimiento normativo y propiedad intelectual, en los términos de estos Términos y de la ley."},{"t":"li","level":0,"text":"Apple y sus filiales son terceros beneficiarios de estos Términos y podrán exigir su cumplimiento frente al Usuario en lo que les concierna."},{"t":"p","level":0,"text":"18.2. Google Play"},{"t":"li","level":0,"text":"La descarga y uso a través de Google Play se sujetan, además, al Acuerdo de Distribución y a las políticas de Google Play. En caso de conflicto entre estos Términos y dichas políticas respecto de la distribución, prevalecen las de Google Play en lo que corresponda."},{"t":"li","level":0,"text":"Google no es responsable de la Aplicación ni parte de la relación entre el Usuario y Fandi."},{"t":"h","level":1,"text":"19. Disposiciones generales"},{"t":"li","level":0,"text":"Integralidad. Estos Términos, junto con la Política de Tratamiento de Datos y las reglas de cada Evento, constituyen el acuerdo íntegro entre las partes."},{"t":"li","level":0,"text":"Divisibilidad. Si una cláusula se declara inválida, las demás conservan su vigencia."},{"t":"li","level":0,"text":"No renuncia. La tolerancia de Fandi frente a un incumplimiento no implica renuncia a exigir el cumplimiento futuro."},{"t":"li","level":0,"text":"Cesión. El Usuario no puede ceder su posición contractual sin autorización de Fandi. Fandi puede cederla en el marco de una reorganización empresarial, informando al Usuario."},{"t":"li","level":0,"text":"Notificaciones. Fandi se comunica con el Usuario por los canales registrados en la Aplicación. El Usuario se comunica con Fandi a través de hola@fandi.app."},{"t":"h","level":1,"text":"20. Contacto"},{"t":"p","level":0,"text":"Para dudas, soporte o reclamaciones sobre estos Términos o sobre la Aplicación:"},{"t":"table","rows":[["Canal","Detalle"],["Titular","Fandi Holding S.A.S. · NIT 902.070.820-4"],["Domicilio","Carrera 84F #3C-39, Medellín, Antioquia, Colombia"],["Soporte y reclamaciones","hola@fandi.app"],["Protección de datos","hola@fandi.app"],["Sitio web","www.fandi.app"],["Teléfono y WhatsApp","+57 301 448 9622"]]},{"t":"p","level":0,"text":"Al pulsar «Acepto» o al utilizar la Aplicación, el Usuario declara haber leído, entendido y aceptado estos Términos y Condiciones y la Política de Tratamiento y Protección de Datos Personales de Fandi."}]
+[
+  {
+    "t": "p",
+    "level": 0,
+    "text": "FANDI"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "TÉRMINOS Y CONDICIONES DE USO"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Aplicación móvil Fandi · iOS y Android"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi Holding S.A.S. · NIT 902.070.820-4 · Medellín, Colombia"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Versión 1.0 · Vigente desde 1 de agosto de 2026"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Antes de continuarLee estos Términos con atención. Al descargar, instalar, registrarte o utilizar la aplicación Fandi, declaras que los has leído, los entiendes y los aceptas de forma libre, expresa e informada. Si no estás de acuerdo, no utilices la aplicación.La aplicación es de uso exclusivo de personas mayores de dieciocho (18) años. Las modalidades de participación implican la adquisición y el uso de una unidad de crédito interna. El saldo que no comprometas en una dinámica puedes solicitar su reintegro en dinero escribiendo a hola@fandi.app, sujeto a un cobro administrativo de COP 8.000 más IVA. Revisa en especial las Secciones 6, 7 y 12."
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Tabla de contenido"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "1. Identificación del prestador y aceptación3"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "2. Definiciones3"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "3. Objeto y descripción del servicio3"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "4. Elegibilidad y verificación de edad4"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "5. Registro, cuenta y seguridad4"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "6. Fandis, Billetera y devolución de saldo5"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "7. Modalidades de participación6"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "8. Adjudicación y entrega de Experiencias7"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "9. Juego responsable7"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "10. Conducta del Usuario y usos prohibidos7"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "11. Propiedad intelectual7"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "12. Protección de datos personales8"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "13. Disponibilidad, cambios y contenidos de terceros8"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "14. Suspensión y terminación8"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "15. Garantías y limitación de responsabilidad8"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "16. Ley aplicable y resolución de disputas9"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "17. Modificaciones de los Términos9"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "18. Condiciones específicas de las tiendas de aplicaciones9"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "19. Disposiciones generales10"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "20. Contacto10"
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "1. Identificación del prestador y aceptación"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "La aplicación móvil «Fandi» (la «Aplicación» o la «Plataforma») es operada por Fandi Holding S.A.S. («Fandi», «nosotros»), sociedad por acciones simplificada identificada con NIT 902.070.820-4, con domicilio en Carrera 84F #3C-39, Medellín, Colombia, correo de contacto hola@fandi.app."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Estos Términos y Condiciones (los «Términos») constituyen un contrato vinculante entre Fandi y la persona que se registra y utiliza la Aplicación (el «Usuario» o «tú»). La aceptación se produce mediante una acción afirmativa e inequívoca al momento del registro. Junto con la Política de Tratamiento y Protección de Datos Personales y las reglas específicas de cada Evento, estos Términos rigen íntegramente la relación entre las partes."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Estos Términos regulan la relación entre Fandi y el Usuario. La descarga de la Aplicación a través de la App Store de Apple o de Google Play se rige, además, por los términos de la tienda correspondiente; ni Apple ni Google son parte de estos Términos ni responsables de la Aplicación, sin perjuicio de lo previsto en la Sección 18."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "2. Definiciones"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Término",
+        "Definición"
+      ],
+      [
+        "Aplicación / Plataforma",
+        "La aplicación móvil Fandi y los servicios tecnológicos asociados."
+      ],
+      [
+        "Usuario / Usuario Verificado",
+        "Persona natural mayor de 18 años, registrada y con su identidad y edad verificadas conforme a la Sección 5."
+      ],
+      [
+        "Fandis",
+        "Unidad de crédito virtual de uso exclusivamente interno que el Usuario adquiere para participar en las modalidades y acceder a Experiencias. No es dinero de curso legal ni medio de pago de propósito general, no constituye depósito, préstamo ni inversión y no genera rendimiento. El saldo no utilizado es reembolsable conforme a la Sección 6."
+      ],
+      [
+        "Saldo no utilizado",
+        "Los Fandis que el Usuario ha adquirido y que aún no ha comprometido en una puja (Subasta) ni en un aporte (Oportunidad)."
+      ],
+      [
+        "Billetera",
+        "Registro interno del saldo de Fandis del Usuario y de sus movimientos dentro de la Aplicación. Es de circulación cerrada: el saldo solo puede usarse dentro de la Aplicación."
+      ],
+      [
+        "Recarga",
+        "Operación por la cual el Usuario adquiere Fandis con dinero real, a la tasa de conversión vigente."
+      ],
+      [
+        "Experiencia",
+        "Encuentro, artículo, beneficio o premio exclusivo que se adjudica al Usuario a través de las modalidades."
+      ],
+      [
+        "Subasta",
+        "Modalidad en la que el Usuario puja con Fandis y gana quien realiza la mayor puja válida antes del cierre."
+      ],
+      [
+        "Oportunidad",
+        "Modalidad en la que el Usuario aporta Fandis, es agrupado por rango de aporte y resulta ganador mediante selección aleatoria dentro de su grupo."
+      ],
+      [
+        "Grupo de Aporte",
+        "Segmento de participantes de una Oportunidad, definido por rangos de Fandis aportados, dentro del cual se selecciona al ganador."
+      ],
+      [
+        "Evento",
+        "Contexto (presencial o digital) en el que se ofrecen Experiencias, con sus reglas específicas."
+      ],
+      [
+        "Aliado",
+        "Organizador, promotor, artista o tercero que aporta Experiencias o en cuyo Evento opera la Plataforma."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "3. Objeto y descripción del servicio"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi ofrece una plataforma de fidelización y entretenimiento en vivo mediante la cual el Usuario, previa adquisición de Fandis, participa en las Experiencias vinculadas a artistas, deportistas, ídolos y eventos. El servicio comprende dos componentes inseparables:"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Reconocimiento y posición de fan. Toda participación, con independencia de su resultado, otorga al Usuario una insignia digital del Evento y computa en su posición dentro del ranking de fans del ídolo correspondiente, tanto global como por ciudad. Este reconocimiento es acumulativo, permanece asociado a la cuenta del Usuario y no depende del azar: se obtiene por el solo hecho de participar. Los Usuarios que resultan adjudicatarios de una Experiencia reciben además una insignia distintiva."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Acceso a Experiencias. A través de dos modalidades, Subasta y Oportunidad, el Usuario puede resultar adjudicatario de encuentros, artículos o beneficios exclusivos ofrecidos por el ídolo o el Aliado, conforme a las reglas de la Sección 7."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Las insignias y la posición en el ranking constituyen reconocimientos de fidelización sin valor monetario, no son canjeables por dinero y no pueden transferirse ni comercializarse. Su función es acreditar la trayectoria del Usuario como seguidor y darle visibilidad ante el ídolo."
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Naturaleza del servicio y estado regulatorioLas modalidades de participación pueden constituir juego de suerte y azar bajo la normativa colombiana, en tanto suponen un aporte económico, la intervención del azar y la obtención de un premio. En consecuencia, la operación de cada modalidad está condicionada a la obtención y vigencia de las autorizaciones que exija la autoridad competente (Coljuegos o la entidad territorial que corresponda).Cuando una modalidad requiera autorización y esta no se encuentre vigente, Fandi se abstendrá de operarla. Fandi podrá habilitar, restringir o suspender modalidades, Experiencias o territorios en función del estado de dichas autorizaciones, sin que ello constituya incumplimiento de estos Términos."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "4. Elegibilidad y verificación de edad"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Uso exclusivo de personas mayores de 18 añosLa Aplicación está dirigida exclusivamente a personas naturales mayores de dieciocho (18) años. Está prohibido el registro, la recarga y la participación de menores de edad, sin excepción y aun mediando autorización de los padres o representantes legales."
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Para utilizar la Aplicación, el Usuario declara y garantiza que: es mayor de 18 años; tiene capacidad legal para obligarse; los datos que suministra son veraces y corresponden a su identidad; y no se encuentra en una jurisdicción donde el uso de la Aplicación esté prohibido. Fandi verifica la mayoría de edad y la identidad conforme a la Sección 5 y a su Política de Tratamiento de Datos, y bloquea el acceso cuando la edad declarada o verificada sea inferior a 18 años."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Si Fandi detecta que una cuenta pertenece a un menor de edad, la suspenderá de inmediato, bloqueará la Billetera y las participaciones, y procederá conforme al protocolo de su Política de Tratamiento de Datos, incluida la supresión de los datos del menor y el reintegro de las sumas efectivamente pagadas a su representante legal."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "5. Registro, cuenta y seguridad"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El uso de la Aplicación requiere crear una cuenta y completar la verificación de identidad y edad antes de habilitar la Billetera y cualquier participación. El Usuario se obliga a suministrar información veraz y a mantenerla actualizada."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "La cuenta es personal e intransferible. El Usuario es responsable de la confidencialidad de sus credenciales y de toda actividad realizada desde su cuenta."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "El Usuario debe notificar a Fandi de inmediato cualquier uso no autorizado de su cuenta a través de hola@fandi.app."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Fandi podrá exigir una nueva verificación de identidad cuando existan indicios de suplantación, fraude, multicuenta o uso por un tercero, y suspender preventivamente la cuenta mientras se resuelve."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "No está permitido crear más de una cuenta por persona, usar identidades falsas, ni acceder mediante herramientas automatizadas."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "6. Fandis, Billetera y devolución de saldo"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "6.1. Naturaleza y uso exclusivo de los Fandis"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Los Fandis son una unidad de crédito virtual de circulación cerrada dentro de la Aplicación. Al adquirirlos, el Usuario obtiene una licencia limitada, personal, intransferible y revocable para usarlos única y exclusivamente en las modalidades de Subasta y Oportunidad y para acceder a las Experiencias dentro de la Aplicación. En consecuencia, los Fandis:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Solo pueden usarse dentro de la Aplicación y para sus dinámicas. No sirven para adquirir bienes o servicios de terceros, no son un medio de pago de propósito general y no pueden emplearse fuera de la Aplicación para ningún fin."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "No son transferibles ni cedibles entre usuarios ni a terceros, por ningún medio."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "No son dinero de curso legal, no constituyen depósito, préstamo ni inversión, no generan intereses ni rendimiento financiero y no representan una cuenta de depósito."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Por su naturaleza de circulación cerrada, la adquisición de Fandis es un pago anticipado por el consumo de los servicios propios de Fandi, y no una entrega de dinero en administración. Fandi no presta servicios de pago ni realiza captación de recursos del público."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "6.2. Recargas, precios y tasa de conversión"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Usuario adquiere Fandis mediante recargas procesadas por la pasarela de pagos contratada por Fandi. Las condiciones económicas son las siguientes:"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Concepto",
+        "Condición"
+      ],
+      [
+        "Tasa de conversión",
+        "1 Fandi = COP 5.000"
+      ],
+      [
+        "Paquetes de recarga disponibles",
+        "Los paquetes vigentes y su precio se muestran en la Aplicación antes de confirmar la recarga."
+      ],
+      [
+        "Medios de pago admitidos",
+        "Tarjetas de crédito y débito, PSE y los demás medios habilitados por la pasarela, informados en la Aplicación."
+      ],
+      [
+        "Monto mínimo / máximo de recarga",
+        "Mínimo 4 Fandis (COP 20.000). El máximo por operación y por periodo se informa en la Aplicación y puede ajustarse por razones de prevención de fraude y de cumplimiento."
+      ],
+      [
+        "Impuestos",
+        "Los precios incluyen los impuestos aplicables, salvo indicación en contrario al momento de la compra."
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Las recargas se procesan a través de la pasarela de pagos contratada por Fandi. Los Fandis constituyen el medio por el cual el Usuario accede a Experiencias que se ejecutan materialmente fuera de la Aplicación, en el mundo físico o en canales del Aliado, y no a contenido digital consumible dentro de la Aplicación. Fandi no cobra por funcionalidades digitales internas. Cuando la tienda de aplicaciones a través de la cual se descargó la Aplicación imponga un método de cobro distinto, aplicarán también sus condiciones, comisiones y reglas de reembolso."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "6.3. Consumo de Fandis en las dinámicas"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Los Fandis que el Usuario compromete en una puja (Subasta) o en un aporte (Oportunidad) se rigen por las reglas de la modalidad respectiva y se consideran consumidos conforme a dichas reglas. Los Fandis así comprometidos no forman parte del saldo no utilizado y no son objeto de la devolución prevista en la Sección 6.4. El Usuario reconoce que, por la naturaleza de las modalidades, el resultado depende del azar y de la mecánica descrita, y que los Fandis comprometidos pueden perderse conforme a las reglas informadas antes de participar."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "6.4. Devolución del saldo no utilizado"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Usuario puede solicitar la devolución en dinero del saldo de Fandis no utilizado, es decir, de los Fandis adquiridos que no haya comprometido en ninguna dinámica. La devolución opera bajo las siguientes reglas:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Solicitud expresa por correo. El reintegro debe solicitarse de forma expresa por el Usuario mediante correo electrónico a hola@fandi.app, desde el medio de contacto registrado en su cuenta, acreditando la titularidad a través de los mecanismos de verificación de identidad que Fandi disponga. Fandi confirma la recepción y puede requerir información adicional para validar la identidad del solicitante."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Monto. Se reintegra el valor en pesos correspondiente al saldo no utilizado, calculado conforme a la tasa de conversión aplicada en la recarga."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Cobro administrativo. El reintegro está sujeto a un cobro administrativo fijo de ocho mil pesos (COP 8.000) más IVA, que refleja el costo operativo del trámite y se descuenta del valor a reintegrar. El cobro se informa al Usuario antes de confirmar la solicitud. No aplica cuando el reintegro proceda del ejercicio del derecho de retracto o de reversión del pago previstos en la Ley 1480 de 2011, ni cuando la devolución obedezca a una causa imputable a Fandi, por tratarse de derechos irrenunciables del consumidor."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Plazo. Como el saldo no caduca (Sección 6.5), el Usuario puede presentar la solicitud en cualquier momento mientras exista saldo no utilizado. Fandi tramitará la devolución dentro del término legal aplicable, que no excederá de quince (15) días hábiles contados desde la solicitud completa y verificada, y la efectuará, cuando sea posible, al mismo medio de pago utilizado en la recarga."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Derechos legales prevalentes. Lo anterior se entiende sin perjuicio del derecho de retracto y de los derechos de reversión del pago previstos en la Ley 1480 de 2011 y sus normas reglamentarias. Cuando estos apliquen, operan en los términos, plazos y condiciones de ley y sin el cobro administrativo, por tratarse de derechos irrenunciables del consumidor. Igualmente prevalecen los reembolsos que imponga la tienda de aplicaciones a través de la cual se realizó la compra."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "6.5. No caducidad del saldo y cuentas inactivas"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El saldo de Fandis no caduca y Fandi no se apropia del saldo no utilizado. Si el Usuario desinstala la Aplicación, deja su cuenta inactiva o se presenta una situación análoga, para recuperar el saldo no utilizado deberá presentar una solicitud formal de reintegro por los canales indicados, acreditando la titularidad de la cuenta. Fandi conservará el registro del saldo conforme a su Política de Tratamiento de Datos y a la ley, y atenderá la solicitud en los términos de la Sección 6.4."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "7. Modalidades de participación"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.1. Reglas comunes"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "La participación se realiza exclusivamente con Fandis previamente cargados en la Billetera."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Las reglas específicas de cada Experiencia y Evento (valor base, incremento mínimo, rangos de Grupos de Aporte, número de ganadores, fechas y cierre) se informan en la Aplicación antes de participar y forman parte de estos Términos."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Fandi opera y audita cada participación de forma trazable. Los registros de participación son la evidencia de la integridad del juego y se conservan conforme a la ley y a la Política de Tratamiento de Datos."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Todo participante, gane o no, recibe la insignia del Evento y computa en el ranking de fans, conforme a la Sección 3."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Naturaleza diferenciada de las modalidades. La Subasta se adjudica exclusivamente al mejor postor y su resultado depende de la voluntad y la conducta de los participantes, no del azar; en consecuencia, no constituye juego de suerte y azar. La Oportunidad incorpora un componente aleatorio en la selección de los adjudicatarios dentro de cada Grupo de Aporte y, por ello, se sujeta al régimen de autorizaciones descrito en esta Sección. Ambas modalidades son independientes entre sí y pueden ofrecerse por separado."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.2. Subasta"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "En la Subasta, el Usuario puja con Fandis por una Experiencia. Resulta ganador quien realice la mayor puja válida antes del cierre. Cada Subasta puede tener un valor base y un incremento mínimo de puja, informados en la Aplicación. El cierre y la validación del ganador son gestionados por Fandi a través de la Plataforma."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3. Oportunidad"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "En la Oportunidad, el Usuario aporta Fandis y es asignado a un Grupo de Aporte según el rango aportado. Dentro de cada grupo, la Plataforma selecciona uno o más ganadores mediante un mecanismo aleatorio. Un mayor aporte mejora la probabilidad relativa dentro del grupo, pero no elimina la posibilidad de ganar de quien realiza el aporte mínimo habilitado. La selección no se basa en las características personales del Usuario ni en la elaboración de perfiles: el único parámetro que determina el grupo es el monto aportado."
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Condición de operación de la OportunidadFandi obtiene, con carácter previo a cada Evento, la autorización que exija la autoridad competente para el conjunto de Oportunidades que se ofrecerán en él. Ninguna Oportunidad se habilita en la Aplicación sin que dicha autorización se encuentre expedida y vigente. La autorización es un acto de la autoridad frente a Fandi y no se publica en la Aplicación; Fandi la conserva y la pone a disposición de la autoridad que la requiera.En ausencia de autorización vigente, el Evento podrá operar únicamente bajo la modalidad de Subasta, que no depende del azar y se adjudica al mejor postor, o la Experiencia podrá no ofrecerse. Ello no genera responsabilidad para Fandi ni derecho a indemnización a favor del Usuario, más allá del reintegro íntegro de los Fandis aportados a una Oportunidad que no llegue a realizarse.Reglas oficiales y ausencia de patrocinio de las tiendas. Las reglas completas de cada Subasta y de cada Oportunidad se presentan en la Aplicación antes de participar. Apple Inc. y Google LLC no patrocinan ni promueven estas modalidades, no participan en su operación ni en la adjudicación de las Experiencias, y no asumen responsabilidad alguna en relación con ellas."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "8. Adjudicación y entrega de Experiencias"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "La condición de ganador se notifica a través de la Aplicación y por los canales de contacto registrados por el Usuario."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Para reclamar una Experiencia, el Usuario debe estar plenamente identificado y verificado, y cumplir las condiciones específicas de la Experiencia (fechas, ubicación, requisitos de acceso, vigencia de reclamo)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Las Experiencias son personales, intransferibles y no canjeables por dinero, salvo que la regla específica disponga lo contrario."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Cuando la Experiencia sea aportada o ejecutada por un Aliado, Fandi coordina la entrega, pero la ejecución material puede depender del Aliado. Fandi responde por la correcta operación de la mecánica de adjudicación; la disponibilidad y calidad de la Experiencia en sí se rigen por las condiciones informadas."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Si por causa no imputable al Usuario una Experiencia adjudicada no puede entregarse, Fandi ofrecerá una Experiencia equivalente o la reacreditación de los Fandis correspondientes en la Billetera del Usuario, a su elección informada al Usuario; los Fandis reacreditados podrán devolverse en dinero conforme a la Sección 6.4."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "El Usuario es responsable de los impuestos que, por su cuenta, se deriven de la obtención de una Experiencia, conforme a la ley aplicable."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "9. Juego responsable"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi promueve un uso sano de la Aplicación y pone a disposición del Usuario herramientas de autocontrol: límites de recarga, límites de participación, periodos de enfriamiento y autoexclusión. El Usuario puede solicitar su autoexclusión temporal o permanente. Fandi respeta estas medidas y se abstiene de dirigir comunicaciones de recarga o participación a quienes las hayan activado. Ninguna participación es un medio de inversión ni una fuente de ingresos; los resultados dependen del azar y de la mecánica descrita."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "10. Conducta del Usuario y usos prohibidos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Usuario se obliga a utilizar la Aplicación de buena fe y conforme a la ley. Queda prohibido, entre otras conductas:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Suplantar identidades, crear múltiples cuentas o falsear datos de registro o de edad."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Manipular, o intentar manipular, los resultados de las modalidades, incluida la colusión entre usuarios."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Utilizar bots, scrapers, automatizaciones o cualquier medio para interferir con la Plataforma o eludir sus controles."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Emplear la Aplicación para lavado de activos, financiación del terrorismo o cualquier fin ilícito."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Vulnerar la seguridad de la Plataforma, acceder a datos de terceros o realizar ingeniería inversa del software."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Revender, ceder o comercializar Fandis, cuentas o Experiencias por fuera de la Aplicación."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El incumplimiento faculta a Fandi para suspender o cancelar la cuenta y retener las participaciones afectadas, sin perjuicio de las acciones legales que correspondan y de los deberes de reporte ante las autoridades."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "11. Propiedad intelectual"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "La Aplicación, su código, diseño, marcas, logotipos, textos, interfaces y contenidos son de titularidad de Fandi o de sus licenciantes y están protegidos por la normativa de propiedad intelectual. Estos Términos otorgan al Usuario una licencia limitada, personal, intransferible, revocable y no exclusiva para usar la Aplicación conforme a su finalidad. Queda prohibida su reproducción, distribución, modificación o explotación no autorizada."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Las marcas, nombres e imágenes de artistas, deportistas, Aliados y terceros mostrados en la Aplicación pertenecen a sus respectivos titulares y se utilizan bajo autorización o acuerdo con estos. El Usuario que aporte contenido a la Aplicación concede a Fandi una licencia gratuita y no exclusiva para usarlo en la operación del servicio, garantizando que cuenta con los derechos para ello."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "12. Protección de datos personales"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El tratamiento de los datos personales del Usuario se rige por la Política de Tratamiento y Protección de Datos Personales de Fandi, disponible en www.fandi.app/privacidad y en la Aplicación, que forma parte integral de estos Términos. Al aceptar estos Términos, el Usuario declara conocerla. En ella se describen las finalidades, las bases de legitimación, los encargados y aliados, las transferencias nacionales e internacionales, los plazos de conservación, las medidas de seguridad y los mecanismos para ejercer los derechos de conocer, actualizar, rectificar, suprimir, revocar la autorización, oponerse y solicitar la portabilidad."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Usuario puede ejercer sus derechos y presentar consultas o reclamos escribiendo a hola@fandi.app o desde la sección «Privacidad y mis datos» de la Aplicación."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "13. Disponibilidad, cambios y contenidos de terceros"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Fandi procura la disponibilidad continua de la Aplicación, pero no garantiza que sea ininterrumpida o libre de errores. Podrá realizar mantenimientos, actualizaciones o suspensiones temporales, procurando afectar lo menos posible al Usuario."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Fandi podrá modificar, suspender o descontinuar, total o parcialmente, funcionalidades, modalidades, Experiencias o la Aplicación misma, por razones técnicas, comerciales o regulatorias."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "La Aplicación puede integrar servicios de terceros (pasarela de pagos, proveedores de infraestructura, canales de mensajería). El uso de esos servicios puede sujetarse a sus propios términos. Fandi no responde por fallas atribuibles exclusivamente a dichos terceros, sin perjuicio de sus deberes legales."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "El Usuario es responsable de contar con un dispositivo compatible y con conexión a internet; los costos de datos corren por su cuenta."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "14. Suspensión y terminación"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Usuario puede eliminar su cuenta en cualquier momento y de forma directa desde la Aplicación móvil, en la sección «Perfil › Configuración › Eliminar mi cuenta», sin necesidad de contactar a Fandi ni de justificar su decisión. Si el Usuario ya desinstaló la Aplicación, puede solicitar la eliminación en www.fandi.app/eliminar-cuenta, formulario de acceso público que no requiere cuenta ni credenciales, o escribiendo a hola@fandi.app; en ambos casos Fandi verifica la titularidad a través del medio de contacto registrado del Usuario, correo electrónico o número de celular, y procesa la solicitud en un plazo máximo de quince (15) días hábiles. Antes de ejecutar la eliminación, la Aplicación informa al Usuario el saldo no utilizado que tenga en su Billetera y le permite solicitar su reintegro conforme a la Sección 6.4. Fandi puede suspender o cancelar la cuenta, de forma inmediata y sin indemnización, cuando el Usuario incumpla estos Términos, cuando lo exija una autoridad o la ley, o cuando existan indicios de fraude, suplantación o riesgo para la Plataforma o para terceros."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "La eliminación de la cuenta es permanente e irreversible y no constituye una desactivación temporal. Implica la supresión de los datos personales del Usuario en los términos de la Política de Tratamiento de Datos, con excepción de aquellos que Fandi deba conservar por mandato legal, en particular los registros de participación exigidos por la regulación de juego, los soportes de conocimiento del cliente y la información contable y tributaria. Esos datos quedan disociados de la identidad del Usuario y bloqueados, su uso se limita estrictamente al cumplimiento del deber legal que impone su conservación, y se suprimen al vencimiento de los plazos legales aplicables, que no exceden de cinco (5) años. Fandi informa al Usuario, de forma motivada, qué categorías se conservan y por cuánto tiempo."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Al terminar la relación: el Usuario deja de tener acceso a la Aplicación; el saldo de Fandis no utilizado puede devolverse en dinero conforme a la Sección 6.4, previa solicitud y acreditación de titularidad; y subsisten las obligaciones que por su naturaleza deban permanecer vigentes (propiedad intelectual, responsabilidad, confidencialidad, resolución de disputas y conservación de registros exigida por la ley). Cuando la terminación obedezca a un incumplimiento grave del Usuario o a una conducta fraudulenta, Fandi podrá retener el saldo comprometido en las participaciones afectadas mientras se resuelve, sin perjuicio de la devolución del saldo no utilizado que corresponda."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "15. Garantías y limitación de responsabilidad"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "La Aplicación se ofrece «tal cual» y «según disponibilidad». Dentro de los límites permitidos por la ley, Fandi no garantiza que la Aplicación satisfaga expectativas particulares del Usuario ni que esté libre de interrupciones o errores. Nada en estos Términos excluye o limita la responsabilidad que, conforme al régimen imperativo de protección al consumidor y demás normas aplicables, no pueda excluirse ni limitarse; en particular, se respetan los derechos irrenunciables del consumidor bajo la Ley 1480 de 2011."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "En la medida permitida por la ley, Fandi no responde por daños indirectos, incidentales, punitivos o lucro cesante derivados del uso o la imposibilidad de uso de la Aplicación, ni por conductas de terceros o de otros usuarios. La responsabilidad de Fandi frente al Usuario, cuando resulte procedente, se limita al valor de las recargas efectuadas por el Usuario en los tres (3) meses anteriores al hecho que da lugar a la reclamación, salvo que la ley disponga un régimen distinto e imperativo."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Usuario mantendrá indemne a Fandi frente a reclamaciones de terceros derivadas de su uso indebido de la Aplicación o del incumplimiento de estos Términos, en los términos permitidos por la ley."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "16. Ley aplicable y resolución de disputas"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Estos Términos se rigen por las leyes de la República de Colombia. Antes de acudir a la vía judicial, el Usuario y Fandi procurarán resolver cualquier controversia de manera directa a través de los canales de atención. Las reclamaciones de consumo se tramitarán conforme a la Ley 1480 de 2011 y podrán presentarse ante la Superintendencia de Industria y Comercio en ejercicio de sus funciones jurisdiccionales."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Las disputas se someterán a los jueces competentes del domicilio del Usuario cuando así lo imponga el régimen de protección al consumidor, o a los jueces de Medellín en los demás casos, sin renuncia a los fueros irrenunciables que la ley reconozca al consumidor."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Territorios habilitados. La Aplicación se ofrece únicamente en los territorios en los que Fandi cuenta con las autorizaciones exigidas. Fandi aplica controles de geolocalización y puede restringir el registro o la participación desde territorios no habilitados."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "17. Modificaciones de los Términos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi puede modificar estos Términos. Cuando el cambio sea sustancial, lo comunicará por un medio eficaz con antelación razonable a su entrada en vigencia. El uso continuado de la Aplicación tras la entrada en vigencia implica la aceptación de los Términos modificados; si el Usuario no está de acuerdo, puede terminar la relación conforme a la Sección 14. Cada versión se identifica con número y fecha, y se conserva un archivo histórico accesible."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "18. Condiciones específicas de las tiendas de aplicaciones"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Cuando la Aplicación se descargue desde la App Store de Apple o desde Google Play, aplican, además, las siguientes condiciones:"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "18.1. Apple"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Estos Términos se celebran entre el Usuario y Fandi, no con Apple. Apple no es responsable de la Aplicación ni de su contenido."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "La licencia de uso de la Aplicación es intransferible y se limita a los dispositivos Apple que el Usuario posea o controle, conforme a las Reglas de Uso de la App Store."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "El mantenimiento, el soporte y la atención de garantías de la Aplicación son responsabilidad de Fandi, no de Apple."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Fandi, y no Apple, atiende las reclamaciones del Usuario y de terceros relacionadas con la Aplicación, incluidas las de responsabilidad por producto, cumplimiento normativo y propiedad intelectual, en los términos de estos Términos y de la ley."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Apple y sus filiales son terceros beneficiarios de estos Términos y podrán exigir su cumplimiento frente al Usuario en lo que les concierna."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "18.2. Google Play"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "La descarga y uso a través de Google Play se sujetan, además, al Acuerdo de Distribución y a las políticas de Google Play. En caso de conflicto entre estos Términos y dichas políticas respecto de la distribución, prevalecen las de Google Play en lo que corresponda."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Google no es responsable de la Aplicación ni parte de la relación entre el Usuario y Fandi."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "19. Disposiciones generales"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Integralidad. Estos Términos, junto con la Política de Tratamiento de Datos y las reglas de cada Evento, constituyen el acuerdo íntegro entre las partes."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Divisibilidad. Si una cláusula se declara inválida, las demás conservan su vigencia."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "No renuncia. La tolerancia de Fandi frente a un incumplimiento no implica renuncia a exigir el cumplimiento futuro."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Cesión. El Usuario no puede ceder su posición contractual sin autorización de Fandi. Fandi puede cederla en el marco de una reorganización empresarial, informando al Usuario."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Notificaciones. Fandi se comunica con el Usuario por los canales registrados en la Aplicación. El Usuario se comunica con Fandi a través de hola@fandi.app."
+  },
+  {
+    "t": "h",
+    "level": 1,
+    "text": "20. Contacto"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Para dudas, soporte o reclamaciones sobre estos Términos o sobre la Aplicación:"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Canal",
+        "Detalle"
+      ],
+      [
+        "Titular",
+        "Fandi Holding S.A.S. · NIT 902.070.820-4"
+      ],
+      [
+        "Domicilio",
+        "Carrera 84F #3C-39, Medellín, Antioquia, Colombia"
+      ],
+      [
+        "Soporte y reclamaciones",
+        "hola@fandi.app"
+      ],
+      [
+        "Protección de datos",
+        "hola@fandi.app"
+      ],
+      [
+        "Sitio web",
+        "www.fandi.app"
+      ],
+      [
+        "Teléfono y WhatsApp",
+        "+57 301 448 9622"
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Al pulsar «Acepto» o al utilizar la Aplicación, el Usuario declara haber leído, entendido y aceptado estos Términos y Condiciones y la Política de Tratamiento y Protección de Datos Personales de Fandi."
+  }
+]

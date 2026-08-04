@@ -1,1 +1,969 @@
-[{"t":"p","level":0,"text":"FANDI HOLDING S.A.S."},{"t":"p","level":0,"text":"POLÍTICA DE TRATAMIENTO Y PROTECCIÓN DE DATOS PERSONALES"},{"t":"p","level":0,"text":"Manual interno de políticas y procedimientos"},{"t":"p","level":0,"text":"NIT 902.070.820-4 · Medellín, Antioquia, Colombia"},{"t":"p","level":0,"text":"Versión 1.0 · Vigente desde 1 de agosto de 2026"},{"t":"p","level":0,"text":"Tabla de contenido"},{"t":"p","level":0,"text":"TOC \\h \\o \"1-2\"Tabla de contenido PAGEREF _Toc235637502 \\h 2"},{"t":"h","level":2,"text":"1. Objeto, alcance y estándar PAGEREF _Toc235637503 \\h 4"},{"t":"h","level":2,"text":"2. Responsable del Tratamiento PAGEREF _Toc235637504 \\h 4"},{"t":"h","level":2,"text":"3. Marco normativo PAGEREF _Toc235637505 \\h 4"},{"t":"h","level":2,"text":"4. Definiciones PAGEREF _Toc235637506 \\h 5"},{"t":"h","level":2,"text":"5. Bases de datos y datos tratados PAGEREF _Toc235637507 \\h 5"},{"t":"p","level":0,"text":"5.1. Datos de los Usuarios de la Plataforma PAGEREF _Toc235637508 \\h 5"},{"t":"p","level":0,"text":"5.2. Otras bases de datos PAGEREF _Toc235637509 \\h 6"},{"t":"h","level":2,"text":"6. Principios PAGEREF _Toc235637510 \\h 6"},{"t":"h","level":2,"text":"7. Prohibición de participación de menores PAGEREF _Toc235637511 \\h 7"},{"t":"p","level":0,"text":"7.1. Verificación de edad (en capas, no una simple casilla) PAGEREF _Toc235637512 \\h 7"},{"t":"p","level":0,"text":"7.2. Protocolo ante detección de un menor PAGEREF _Toc235637513 \\h 7"},{"t":"h","level":2,"text":"8. Datos sensibles, imagen, voz y biométricos PAGEREF _Toc235637514 \\h 7"},{"t":"h","level":2,"text":"9. Finalidades del tratamiento PAGEREF _Toc235637515 \\h 9"},{"t":"p","level":0,"text":"9.1. Usuarios — finalidades necesarias PAGEREF _Toc235637516 \\h 9"},{"t":"p","level":0,"text":"9.2. Usuarios — finalidades opcionales PAGEREF _Toc235637517 \\h 9"},{"t":"p","level":0,"text":"9.3. Empleados, proveedores, Aliados y artistas PAGEREF _Toc235637518 \\h 10"},{"t":"h","level":2,"text":"10. Tratamiento en las mecánicas de participación PAGEREF _Toc235637519 \\h 10"},{"t":"h","level":2,"text":"11. Billetera, medios de pago y prevención de LA/FT PAGEREF _Toc235637520 \\h 10"},{"t":"h","level":2,"text":"12. Autorización del Titular PAGEREF _Toc235637521 \\h 12"},{"t":"h","level":2,"text":"13. Encargados, Aliados y flujos internacionales PAGEREF _Toc235637522 \\h 12"},{"t":"p","level":0,"text":"13.1. Encargados PAGEREF _Toc235637523 \\h 12"},{"t":"p","level":0,"text":"13.2. Transferencias a Aliados PAGEREF _Toc235637524 \\h 13"},{"t":"p","level":0,"text":"13.3. Flujos internacionales PAGEREF _Toc235637525 \\h 13"},{"t":"h","level":2,"text":"14. Derechos de los Titulares y procedimientos PAGEREF _Toc235637526 \\h 14"},{"t":"p","level":0,"text":"14.1. Derechos PAGEREF _Toc235637527 \\h 14"},{"t":"p","level":0,"text":"14.2. Canales PAGEREF _Toc235637528 \\h 14"},{"t":"p","level":0,"text":"14.3. Consultas y reclamos PAGEREF _Toc235637529 \\h 14"},{"t":"p","level":0,"text":"14.4. Límites a la supresión PAGEREF _Toc235637530 \\h 14"},{"t":"p","level":0,"text":"14.5. Casos sin autorización PAGEREF _Toc235637531 \\h 14"},{"t":"h","level":2,"text":"15. Conservación y supresión PAGEREF _Toc235637532 \\h 14"},{"t":"h","level":2,"text":"16. Seguridad de la información PAGEREF _Toc235637533 \\h 16"},{"t":"h","level":2,"text":"17. Gestión de incidentes PAGEREF _Toc235637534 \\h 16"},{"t":"h","level":2,"text":"18. Responsabilidad demostrada y RNBD PAGEREF _Toc235637535 \\h 16"},{"t":"h","level":2,"text":"19. Cookies y tecnologías de seguimiento PAGEREF _Toc235637536 \\h 17"},{"t":"h","level":2,"text":"20. Vigencia, modificaciones y control de versiones PAGEREF _Toc235637537 \\h 17"},{"t":"p","level":0,"text":"Anexo 1. Texto de autorización para la Plataforma PAGEREF _Toc235637538 \\h 18"},{"t":"p","level":0,"text":"Anexo 2. Aviso de Privacidad PAGEREF _Toc235637539 \\h 19"},{"t":"h","level":2,"text":"1. Objeto, alcance y estándar"},{"t":"p","level":0,"text":"Fandi Holding S.A.S. («Fandi») opera una aplicación móvil y servicios asociados (la «Plataforma») en la que personas mayores de edad adquieren una unidad de crédito virtual («Fandis») y la destinan a las modalidades de Subasta y de Oportunidad para acceder a experiencias, encuentros y beneficios exclusivos vinculados a artistas, deportistas y eventos (las «Experiencias»). Toda participación, con independencia de su resultado, otorga al Usuario una insignia digital del evento y computa en su posición dentro del ranking de fans del ídolo, lo que implica el tratamiento de datos de participación con finalidad de fidelización además de la finalidad de adjudicación."},{"t":"p","level":0,"text":"Esta operación implica tratamiento intensivo de datos: verificación de identidad y de edad, billetera digital con recargas y saldos, trazabilidad de cada participación, prevención de fraude y cumplimiento de las obligaciones de juego, de prevención de lavado de activos y de protección al consumidor. Este documento es el manual interno exigido por el literal k) del artículo 17 de la Ley 1581 de 2012 y el artículo 2.2.2.25.3.1 del Decreto 1074 de 2015, y aplica a todo tratamiento que Fandi realice, por sí o a través de terceros, sobre las bases de datos de la Sección 5."},{"t":"p","level":0,"text":"Ámbito territorial. Aplica al tratamiento efectuado en Colombia y a aquel sujeto a la ley colombiana. De manera voluntaria, Fandi adopta como referencia el Reglamento (UE) 2016/679 (RGPD) (minimización, limitación del plazo, privacidad desde el diseño, portabilidad, oposición, evaluación de impacto y garantías frente a decisiones automatizadas) para operar con titulares de otras jurisdicciones y anticipar la reforma en trámite (Proyectos de Ley 214 y 274 de 2025 Cámara, acumulados)."},{"t":"h","level":2,"text":"2. Responsable del Tratamiento"},{"t":"table","rows":[["Concepto","Información"],["Razón social","Fandi Holding S.A.S."],["NIT","902.070.820-4"],["Representante legal","Juan José Aranzales Ochoa (C.C. 1.027.801.014), o quien haga sus veces"],["Domicilio","Carrera 84F #3C-39, Medellín, Antioquia, Colombia"],["Canal de protección de datos","Correo: hola@fandi.app · Teléfono y WhatsApp: +57 301 448 9622 · Sitio web: www.fandi.app · Sección «Privacidad y mis datos» de la Aplicación"],["Oficial de Protección de Datos","El Representante Legal ejerce esta función hasta la designación de un titular específico. Lidera el programa, atiende solicitudes, coordina incidentes y sirve de contacto con la SIC."]]},{"t":"h","level":2,"text":"3. Marco normativo"},{"t":"li","level":0,"text":"Protección de datos: arts. 15 y 20 de la Constitución; Ley 1581 de 2012 y Sentencia C-748 de 2011; Decreto 1074 de 2015 (Cap. 25 y 26); Decreto 090 de 2018 (RNBD); Circular Única de la SIC, Título V, incl. Circular Externa 005 de 2017 (transferencias internacionales); Ley 1266 de 2008 en lo aplicable."},{"t":"li","level":0,"text":"Sectorial que condiciona el tratamiento: régimen de juegos de suerte y azar (Ley 643 de 2001 y reglamentación de Coljuegos sobre rifas y rifas sistematizadas, con deberes de registro, trazabilidad, auditabilidad y certificación); SARLAFT y reportes a la UIAF; protección al consumidor (Ley 1480 de 2011); comunicaciones comerciales (Ley 2300 de 2023); entorno digital (Leyes 527 de 1999 y 1273 de 2009); prohibición de captación (art. 316 C.P. y Decreto 1981 de 1988)."},{"t":"li","level":0,"text":"Estándar voluntario: RGPD; buenas prácticas ISO/IEC 27001 y 27701; y PCI DSS respecto de datos de tarjetas, que observan las pasarelas contratadas."},{"t":"h","level":2,"text":"4. Definiciones"},{"t":"p","level":0,"text":"Rigen las definiciones de la Ley 1581 de 2012 y el Decreto 1074 de 2015. Se precisan además:"},{"t":"table","rows":[["Término","Definición"],["Dato sensible","El que afecta la intimidad o cuyo uso indebido puede generar discriminación: origen racial o étnico, orientación política, convicciones, pertenencia a sindicatos u organizaciones, salud, vida sexual y datos biométricos."],["Dato biométrico","Dato de características físicas, fisiológicas o conductuales que permite la identificación única (imagen facial, huella, voz). Es dato sensible."],["Transferencia / Transmisión","Transferencia: envío a un receptor que es Responsable. Transmisión: comunicación para que un Encargado trate por cuenta del Responsable."],["Anonimización / Seudonimización","Anonimización: proceso irreversible; el dato deja de ser personal. Seudonimización: reversible con información conservada aparte; sigue siendo dato personal."],["Elaboración de perfiles / Decisión automatizada","Tratamiento automatizado para evaluar o predecir aspectos de una persona / decisión adoptada sin intervención humana significativa."],["Fandis","Unidad de crédito virtual de circulación cerrada dentro de la Plataforma. No es dinero de curso legal, no constituye depósito ni inversión y no genera rendimientos. El saldo que el Usuario no haya comprometido en una dinámica es reintegrable en dinero, a solicitud suya por correo electrónico y sujeto al cobro administrativo previsto en los Términos y Condiciones."],["Usuario Verificado","Persona mayor de 18 años que superó la verificación de identidad y edad de la Sección 7."],["Aliado","Organizador, promotor, artista o tercero con quien Fandi acuerda desplegar la Plataforma en un evento."],["Incidente de seguridad","Acceso, divulgación, alteración, pérdida o destrucción no autorizados de datos personales."]]},{"t":"h","level":2,"text":"5. Bases de datos y datos tratados"},{"t":"p","level":0,"text":"Fandi administra las bases de datos de Usuarios, Empleados, Aliados, clientes y organizadores. Cada una tiene finalidades y plazos propios (Secciones 9 y 15)."},{"t":"p","level":0,"text":"5.1. Datos de los Usuarios de la Plataforma"},{"t":"li","level":0,"text":"Identificación: nombres, tipo y número de documento, fecha de nacimiento, nacionalidad."},{"t":"li","level":0,"text":"Contacto: correo, teléfono móvil, ciudad."},{"t":"li","level":0,"text":"Cuenta y autenticación: usuario, credenciales cifradas de forma irreversible, doble factor, historial de sesiones."},{"t":"li","level":0,"text":"Billetera y transacciones: recargas, medio de pago tokenizado, saldo en Fandis, movimientos y referencias de la pasarela."},{"t":"li","level":0,"text":"Participación y juego: pujas, aportes, Grupo de Aporte, resultados, Experiencias adjudicadas e insignias."},{"t":"li","level":0,"text":"Técnicos y de dispositivo: IP, identificador de dispositivo, sistema operativo, versión de la app, registros de auditoría."},{"t":"li","level":0,"text":"Ubicación: aproximada por IP y, solo si el Usuario lo habilita, precisa del dispositivo (opcional y revocable)."},{"t":"li","level":0,"text":"Imagen y voz: captadas en Experiencias o activaciones, bajo autorización explícita y separada (Sección 8)."},{"t":"li","level":0,"text":"Soporte y PQR: contenido de solicitudes, conversaciones y documentos aportados."},{"t":"table","rows":[["Datos que Fandi NO trata de los UsuariosNo solicita datos sensibles, salvo imagen y voz bajo autorización separada (Sección 8). No recolecta datos de menores: la Plataforma es exclusiva de mayores de 18 años (Sección 7). No almacena el número completo de la tarjeta, su vencimiento ni el código de verificación: esos datos los trata la pasarela bajo estándar PCI DSS."]]},{"t":"h","level":2,"text":"6. Principios"},{"t":"p","level":0,"text":"Legales (art. 4, Ley 1581): legalidad, finalidad, libertad, veracidad o calidad, transparencia, acceso y circulación restringida, seguridad y confidencialidad."},{"t":"p","level":0,"text":"Adoptados voluntariamente: minimización (solo datos necesarios, ningún campo «por si acaso»); limitación del plazo de conservación (Sección 15); privacidad desde el diseño y por defecto; responsabilidad demostrada (Sección 18); juego responsable (no se usan datos de comportamiento para intensificar la exposición de quien presente participación problemática); y no discriminación algorítmica."},{"t":"h","level":2,"text":"7. Prohibición de participación de menores"},{"t":"table","rows":[["Regla fundamentalLa Plataforma es exclusiva de personas mayores de dieciocho (18) años. Fandi no permite el registro, la recarga, la participación ni la adjudicación a menores en ninguna circunstancia, ni siquiera con autorización de los padres. La prohibición obedece a dos mandatos independientes: el estándar reforzado del art. 7 de la Ley 1581 y la Sentencia C-748 de 2011, y la prohibición absoluta de participación de menores en juegos de suerte y azar."]]},{"t":"p","level":0,"text":"7.1. Verificación de edad (en capas, no una simple casilla)"},{"t":"li","level":0,"text":"Registro: se exige fecha de nacimiento y documento; el sistema bloquea el registro si la edad es inferior a 18 años."},{"t":"li","level":0,"text":"Verificación de identidad: antes de habilitar la billetera y cualquier recarga, se valida la correspondencia entre identidad declarada y documento. Hasta completarla, la cuenta permanece no verificada y sin capacidad de participar."},{"t":"li","level":0,"text":"Antifraude: controles de consistencia entre fecha de nacimiento, documento, medio de pago y señales del dispositivo, para detectar intentos de elusión."},{"t":"li","level":0,"text":"Revalidación y presencial: revalidación ante indicios de uso por un menor, con suspensión preventiva; y en eventos, exigencia del documento de identidad del Usuario Verificado."},{"t":"p","level":0,"text":"7.2. Protocolo ante detección de un menor"},{"t":"p","level":0,"text":"Confirmado el hallazgo, Fandi: (i) suspende la cuenta y bloquea la billetera y las participaciones; (ii) cesa todo tratamiento no imprescindible; (iii) excluye al menor de toda base con fines comerciales, analíticos o de perfilamiento y no transfiere sus datos a Aliados; (iv) suprime los datos dentro de los quince (15) días hábiles siguientes, salvo los de conservación imperativa por deber legal, que se bloquean con acceso restringido; (v) reintegra las recargas al padre, madre o representante acreditado; y (vi) registra el caso y evalúa el refuerzo de los controles. Toda autorización otorgada por un menor carece de validez. Fandi no dirige publicidad ni pauta segmentada a menores e incluye en sus materiales la advertencia de uso restringido a mayores de 18 años."},{"t":"h","level":2,"text":"8. Datos sensibles, imagen, voz y biométricos"},{"t":"p","level":0,"text":"El Titular no está obligado a autorizar datos sensibles; la negativa no impide usar la Plataforma, salvo funcionalidades que dependan técnicamente de ellos, lo cual se informa previamente."},{"t":"p","level":0,"text":"Imagen y voz. Su captación en Experiencias o activaciones requiere autorización explícita, separada y específica, distinta de la general, indicando uso, canales, ámbito y vigencia. El derecho a la propia imagen es autónomo: cuando el uso sea publicitario o promocional, se recaba por documento separado. La revocatoria opera hacia el futuro; Fandi cesa nueva difusión y suprime el material de sus propios canales en un plazo razonable."},{"t":"p","level":0,"text":"Biométricos. Fandi no usa reconocimiento facial ni otro tratamiento biométrico, salvo que se anuncie en una versión posterior; de implementarse, exigirá evaluación de impacto (Sección 18), autorización explícita con advertencia expresa, alternativa no biométrica equivalente y conservación mínima con supresión de las plantillas al cumplir la finalidad."},{"t":"p","level":0,"text":"Videovigilancia. En espacios propios o activaciones bajo su control, Fandi señaliza las cámaras, informa finalidad y responsable, restringe el acceso a las grabaciones y las conserva por el plazo de la Sección 15."},{"t":"h","level":2,"text":"9. Finalidades del tratamiento"},{"t":"p","level":0,"text":"9.1. Usuarios: finalidades necesarias"},{"t":"p","level":0,"text":"Sin estas finalidades el servicio no puede prestarse o su ejecución es legalmente exigible; no requieren autorización adicional a la general:"},{"t":"li","level":0,"text":"Crear, verificar, administrar y dar de baja la cuenta; verificar identidad y mayoría de edad (Sección 7)."},{"t":"li","level":0,"text":"Operar la billetera (recargas, acreditación y débito de Fandis, saldos, movimientos y relación con la pasarela)."},{"t":"li","level":0,"text":"Operar Subastas y Oportunidades: registro de pujas y aportes, asignación al Grupo de Aporte, selección de ganadores y publicación de resultados."},{"t":"li","level":0,"text":"Garantizar integridad, trazabilidad y auditabilidad de cada participación, en los términos exigidos por la regulación de juego."},{"t":"li","level":0,"text":"Adjudicar y entregar Experiencias y coordinar la logística estrictamente necesaria con el tercero que corresponda."},{"t":"li","level":0,"text":"Administrar insignias; atender PQR, soporte y solicitudes de reversión del pago."},{"t":"li","level":0,"text":"Prevenir, detectar e investigar fraude, suplantación, multicuenta, colusión, manipulación de resultados y uso automatizado no autorizado."},{"t":"li","level":0,"text":"Cumplir SARLAFT (conocimiento del cliente, monitoreo y reportes a la UIAF), obligaciones tributarias y de facturación, y atender requerimientos de Coljuegos, entidades territoriales, SIC, Superintendencia Financiera, Fiscalía y autoridades judiciales."},{"t":"li","level":0,"text":"Ejercer y defender los derechos de Fandi; ejecutar medidas de juego responsable (límites, alertas, enfriamiento y autoexclusión); e informar cambios en los términos o en esta Política."},{"t":"li","level":0,"text":"Analítica de producto y mejora de la Plataforma, preferentemente sobre datos agregados, anonimizados o seudonimizados."},{"t":"p","level":0,"text":"9.2. Usuarios: finalidades opcionales"},{"t":"p","level":0,"text":"Cada una se autoriza por casilla separada y no premarcada; la negativa no restringe el acceso ni la participación:"},{"t":"li","level":0,"text":"Comunicaciones comerciales y de fidelización por correo, notificaciones, SMS o mensajería, con sujeción a la Ley 2300 de 2023 y mecanismo de exclusión gratuito en cada envío."},{"t":"li","level":0,"text":"Transferir identificación y contacto a un Aliado identificado por su razón social al recabar la autorización, para que lo trate como Responsable independiente con las finalidades que informe."},{"t":"li","level":0,"text":"Usar imagen y voz captadas en una Experiencia (Sección 8)."},{"t":"li","level":0,"text":"Elaborar perfiles de preferencias para personalizar contenido y recomendaciones dentro de la Plataforma."},{"t":"table","rows":[["Regla de granularidadFandi no recaba autorizaciones globales ni «en bloque»: cada finalidad opcional se presenta de forma individual y su aceptación no es condición para usar el servicio. El consentimiento es tan fácil de revocar como de otorgar. La autorización para transferir a un Aliado identifica siempre al receptor por su nombre."]]},{"t":"h","level":2,"text":"10. Tratamiento en las mecánicas de participación"},{"t":"p","level":0,"text":"Trazabilidad. Cada Subasta y Oportunidad genera un registro de momento y monto de pujas y aportes, Grupo asignado, resultado y adjudicación. Este registro es la evidencia de la integridad del juego; su conservación es exigida por la regulación. Por ello, Fandi lo conserva de forma inalterable, lo pone a disposición de Coljuegos, entidades territoriales, laboratorios de certificación y auditores cuando sea requerido, e informa que el derecho de supresión sobre estos registros está limitado durante el término legal (Sección 14.4)."},{"t":"p","level":0,"text":"Selección de ganadores. En la Oportunidad, la Plataforma agrupa por rangos de Fandis aportados y selecciona ganadores dentro de cada grupo de forma aleatoria. La selección no se basa en perfilamiento del Usuario: el único parámetro del grupo es el monto aportado, y la selección dentro del grupo es aleatoria. Fandi obtiene, con carácter previo a cada Evento, la autorización que exija la autoridad competente para el conjunto de Oportunidades ofrecidas en él, y somete el sistema de sorteos a la certificación que dicha autoridad requiera. Ninguna Oportunidad se habilita sin autorización vigente."},{"t":"p","level":0,"text":"Juego responsable. Los límites, periodos de enfriamiento y autoexclusión generan registros que Fandi respeta; sus datos se usan solo para hacerlos efectivos y nunca para segmentación comercial. Fandi no dirige comunicaciones de recarga o participación a quien se haya autoexcluido o presente indicadores de participación problemática."},{"t":"h","level":2,"text":"11. Billetera, medios de pago y prevención de LA/FT"},{"t":"p","level":0,"text":"Datos de pago. Las recargas se procesan por una pasarela contratada. Los datos completos del instrumento (número, vencimiento y código) los captura y trata la pasarela en su entorno bajo PCI DSS. Fandi conserva solo identificadores tokenizados, últimos dígitos, marca, resultado y referencia, necesarios para conciliar, atender reclamos y prevenir fraude. La pasarela actúa como Responsable respecto de lo que captura directamente y como Encargado respecto de lo que trata por cuenta de Fandi."},{"t":"p","level":0,"text":"Fandis. Crédito virtual interno de circulación cerrada, sin rendimiento. El saldo no comprometido en una dinámica es reintegrable en dinero a solicitud del Usuario por correo electrónico, sujeto al cobro administrativo previsto en los Términos y Condiciones. Los saldos y movimientos de la Billetera no constituyen dato financiero, crediticio o comercial de la Ley 1266 de 2008 y no se reportan a operadores de información crediticia."},{"t":"p","level":0,"text":"Conocimiento del cliente. SARLAFT obliga a identificar plenamente al Usuario, conservar soportes y monitorear operaciones. Los reportes a la UIAF cumplen un deber legal, no requieren autorización del Titular y están sujetos a reserva: Fandi no informa al Usuario sobre su existencia, por prohibición legal."},{"t":"h","level":2,"text":"12. Autorización del Titular"},{"t":"p","level":0,"text":"Forma. El tratamiento requiere consentimiento libre, previo, expreso e informado, salvo los casos en que la ley lo releva. En la Plataforma se recaba en el registro, antes de cualquier recolección efectiva, mediante un flujo que presenta el Aviso de Privacidad, permite acceder a esta Política y exige una acción afirmativa. No se admiten casillas premarcadas, el silencio ni la continuación de la navegación."},{"t":"p","level":0,"text":"Información previa. Antes de autorizar, el Titular conoce: identidad y contacto del Responsable; datos recolectados; finalidades necesarias y opcionales diferenciadas; carácter facultativo de los datos sensibles; derechos y canales; existencia de transferencias a Aliados y de transmisiones internacionales; plazos de conservación; y forma de acceder a esta Política."},{"t":"p","level":0,"text":"Prueba. Fandi registra, por Titular y finalidad: identificador, finalidad autorizada o rechazada, marca de tiempo, versión y resumen criptográfico del texto aceptado, canal, IP e identificador de dispositivo. Conserva el archivo histórico de todas las versiones de la Política y del Aviso, con su fecha de vigencia."},{"t":"p","level":0,"text":"Revocatoria. El Titular revoca en cualquier momento, total o parcialmente, por el mismo medio y sin costo, desde el panel «Privacidad y mis datos». Opera hacia el futuro y no afecta la licitud del tratamiento previo. No procede respecto de finalidades necesarias para un deber legal o contractual (régimen de juego, SARLAFT, obligaciones tributarias y defensa de derechos), lo que se informa de forma motivada."},{"t":"h","level":2,"text":"13. Encargados, Aliados y flujos internacionales"},{"t":"p","level":0,"text":"13.1. Encargados"},{"t":"p","level":0,"text":"Con cada proveedor que trata datos por cuenta de Fandi se suscribe un contrato de transmisión (art. 2.2.2.25.5.2 del Decreto 1074 de 2015) que define el alcance, las obligaciones de seguridad y confidencialidad, la asistencia frente a solicitudes de Titulares, la prohibición de subcontratar sin autorización previa y la devolución o supresión al terminar. Las categorías de proveedores son:"},{"t":"table","rows":[["Categoría","Función","Ubicación"],["Infraestructura en la nube","Alojamiento, bases de datos, respaldos, CDN.","Estados Unidos"],["Autenticación e identidad","Credenciales y sesiones.","Estados Unidos"],["Mensajería SMS / voz","Códigos de verificación y avisos.","Estados Unidos"],["Correo transaccional","Confirmaciones y comprobantes.","Estados Unidos"],["Notificaciones push","Notificaciones a la app.","Estados Unidos"],["Pasarela de pagos","Recargas y conciliación.","Colombia"],["Verificación de identidad","Validación documental y de edad.","Estados Unidos"],["Analítica y monitoreo","Desempeño, errores, observabilidad.","Estados Unidos"],["Servicios profesionales","Contable, jurídica y auditoría.","Colombia"]]},{"t":"p","level":0,"text":"Fandi evalúa la idoneidad de cada proveedor, mantiene un inventario de encargados y subencargados e informa a los Titulares con antelación razonable cuando incorpore uno que implique un cambio sustancial. El listado detallado y actualizado se mantiene en el canal de la Sección 2."},{"t":"p","level":0,"text":"13.2. Transferencias a Aliados"},{"t":"p","level":0,"text":"Al operar en un evento de un tercero, Fandi puede entregar al Aliado los datos de contacto de los Usuarios que lo hayan autorizado. Es una transferencia entre Responsables independientes: desde la entrega, el Aliado decide autónomamente y responde conforme a su propia política. Reglas mínimas:"},{"t":"li","level":0,"text":"Autorización identificada: solo se transfieren datos de Usuarios cuya autorización identifique al Aliado por su razón social y describa sus finalidades."},{"t":"li","level":0,"text":"Minimización: solo identificación y contacto. No se transfieren datos transaccionales, saldos, historial de pujas o aportes, comportamiento de juego ni datos técnicos. El desempeño del evento se comparte agregado y anonimizado."},{"t":"li","level":0,"text":"Formalización y trazabilidad: acuerdo escrito con campos entregados, finalidades, plazo, prohibición de retransferir sin autorización, medidas de seguridad y deber recíproco de notificar incidentes; y registro de qué se entregó, a quién, cuándo y bajo qué autorización."},{"t":"li","level":0,"text":"Derechos: cada Responsable atiende lo propio; si Fandi recibe una solicitud del Aliado, la traslada en cinco (5) días hábiles e informa al Titular."},{"t":"p","level":0,"text":"13.3. Flujos internacionales"},{"t":"p","level":0,"text":"El art. 26 de la Ley 1581 prohíbe transferir datos a países sin nivel adecuado de protección. La Circular Externa 005 de 2017 de la SIC fijó el listado de países que sí lo ofrecen, entre ellos Estados Unidos, Reino Unido, los Estados de la Unión Europea, México, Perú, Costa Rica, Japón y Corea. Fandi verifica el destino antes de cada flujo; si el país no figura, se abstiene salvo que aplique una excepción del art. 26 (incluida la autorización expresa e inequívoca del Titular) y, en todo caso, adopta garantías contractuales equivalentes a las cláusulas tipo. Las transmisiones internacionales a encargados se rigen por el contrato de transmisión del Decreto 1074 de 2015."},{"t":"h","level":2,"text":"14. Derechos de los Titulares y procedimientos"},{"t":"p","level":0,"text":"14.1. Derechos"},{"t":"p","level":0,"text":"Legales (art. 8, Ley 1581): conocer, actualizar y rectificar; solicitar prueba de la autorización; ser informado del uso dado a los datos; presentar quejas ante la SIC una vez agotado el trámite ante Fandi; revocar la autorización y solicitar la supresión cuando no lo impida un deber legal o contractual; y acceder gratuitamente."},{"t":"p","level":0,"text":"Adicionales voluntarios: portabilidad (obtener en formato estructurado los datos suministrados); oposición al mercadeo directo y al perfilamiento comercial sin necesidad de justificación; limitación temporal del tratamiento mientras se resuelve una controversia; e intervención humana sobre decisiones automatizadas que le afecten significativamente, con explicación de la lógica y posibilidad de controvertir."},{"t":"p","level":0,"text":"14.2. Canales"},{"t":"p","level":0,"text":"Correo hola@fandi.app; sección «Privacidad y mis datos» de la app; formulario en www.fandi.app/privacidad; o correspondencia física en Carrera 84F #3C-39, Medellín. La solicitud debe indicar nombre y documento del Titular, un canal para respuesta, la descripción precisa de los datos y del derecho, y los soportes. Si la presenta un tercero sin acreditar representación, se tiene por no presentada. Fandi verifica la identidad del solicitante antes de resolver."},{"t":"p","level":0,"text":"Eliminación de la cuenta. El Titular puede eliminar su cuenta y solicitar la supresión de sus datos directamente desde la Aplicación, en «Perfil › Configuración › Eliminar mi cuenta», sin necesidad de contactar a Fandi. También puede hacerlo desde www.fandi.app/eliminar-cuenta. Antes de ejecutar la eliminación, Fandi informa el saldo no utilizado y permite solicitar su reintegro. Ejecutada la eliminación, Fandi suprime los datos de forma irreversible en sistemas y respaldos, salvo aquellos de conservación imperativa (registros de juego, soportes SARLAFT e información contable y tributaria), que quedan bloqueados con acceso restringido y uso limitado a ese deber legal, conforme a la Sección 14.4."},{"t":"p","level":0,"text":"14.3. Consultas y reclamos"},{"t":"p","level":0,"text":"Consultas: diez (10) días hábiles, prorrogables por cinco (5) días hábiles previa comunicación de los motivos."},{"t":"p","level":0,"text":"Reclamos: si está incompleto, se requiere en cinco (5) días para subsanar (desistimiento a los dos meses sin respuesta); si no corresponde a Fandi, se traslada en dos (2) días hábiles; recibido completo, se inserta la leyenda «reclamo en trámite» en dos (2) días hábiles; y se resuelve en quince (15) días hábiles, prorrogables por ocho (8) días hábiles previa comunicación de los motivos."},{"t":"p","level":0,"text":"14.4. Límites a la supresión"},{"t":"p","level":0,"text":"La supresión no procede cuando exista deber legal o contractual de permanecer, cuando obstaculice actuaciones fiscales, penales o sancionatorias, o cuando los datos sean necesarios para intereses jurídicamente tutelados. En Fandi opera típicamente sobre los registros de juego, los soportes SARLAFT y la información contable y tributaria. Cuando no proceda, Fandi lo informa de forma motivada, cita la norma que impone la conservación y bloquea los datos, limitando su uso a ese deber. Cuando proceda, la supresión se ejecuta de forma irreversible en sistemas y respaldos, y se comunica a los encargados."},{"t":"p","level":0,"text":"14.5. Casos sin autorización"},{"t":"p","level":0,"text":"No se requiere autorización cuando la información sea requerida por entidad pública o judicial en ejercicio de sus funciones, se trate de datos públicos o de registro civil, medie urgencia médica o sanitaria, o el tratamiento esté autorizado por la ley para fines históricos, estadísticos o científicos. Fandi puede entregar datos sin autorización adicional al propio Titular o su representante, a autoridades competentes, a terceros autorizados por ley y a terceros a quienes el Titular haya autorizado expresamente."},{"t":"h","level":2,"text":"15. Conservación y supresión"},{"t":"p","level":0,"text":"Fandi conserva los datos solo el tiempo necesario para la finalidad y para los deberes legales; cumplido el plazo, los suprime de forma irreversible o los anonimiza. Plazos de referencia:"},{"t":"table","rows":[["Categoría","Plazo","Fundamento"],["Cuenta de Usuario activa","Mientras la cuenta esté activa.","Ejecución de la relación."],["Cuenta tras cierre / inactividad","5 años desde el cierre.","Prescripción, SARLAFT, defensa."],["Registros de participación y adjudicación","El exigido por la regulación de juego; no inferior a 5 años.","Trazabilidad y supervisión."],["Soportes de conocimiento del cliente","5 años desde el fin de la relación.","LA/FT/FPADM."],["Información contable y tributaria","5 años.","Estatuto Tributario."],["Autorizaciones y evidencia del consentimiento","Duración del tratamiento + 5 años.","Prueba de la autorización."],["Datos con fines comerciales","Hasta la revocatoria; evidencia 5 años.","Acreditación."],["Exclusión y autoexclusión","Vigente indefinido; +5 años tras levantarse.","Eficacia de la medida."],["Registros técnicos y de auditoría","2 años, salvo incidente o autoridad.","Seguridad."],["Videovigilancia","90 días.","Proporcionalidad."],["Expedientes laborales","Términos de la normativa laboral.","Obligaciones laborales."],["Hojas de vida no seleccionadas","1 año, salvo autorización.","Minimización."],["Imagen y voz de Experiencias","Vigencia de la autorización; en su defecto dos (2) años.","Autorización del Titular."]]},{"t":"p","level":0,"text":"El Oficial de Protección de Datos revisa anualmente esta tabla y documenta las supresiones y anonimizaciones."},{"t":"h","level":2,"text":"16. Seguridad de la información"},{"t":"p","level":0,"text":"Fandi adopta medidas proporcionales al riesgo, considerando que la Plataforma maneja identificación plena, medios de pago y registros de juego:"},{"t":"li","level":0,"text":"Técnicas: cifrado en tránsito y en reposo; credenciales con derivación de clave resistente sin recuperación en claro; control de acceso por roles con mínimo privilegio y multifactor obligatorio; segregación de ambientes sin datos reales en no producción salvo seudonimización; gestión de secretos y llaves con rotación; auditoría de accesos protegida contra alteración; protección perimetral, monitoreo y gestión de vulnerabilidades; respaldos cifrados y probados; y plan de continuidad y recuperación."},{"t":"li","level":0,"text":"Humanas: acuerdos de confidencialidad que sobreviven al vínculo; capacitación obligatoria al ingreso y anual con registro; y revocación inmediata de accesos al terminar el vínculo o cambiar de rol."},{"t":"li","level":0,"text":"Administrativas: inventario de bases y registro de actividades de tratamiento; clasificación de la información y disposición segura de soportes; cláusulas de protección de datos en todos los contratos; auditorías y pruebas de seguridad con remediación documentada; y revisión de privacidad y seguridad previa a cada nueva funcionalidad."},{"t":"h","level":2,"text":"17. Gestión de incidentes"},{"t":"p","level":0,"text":"Fandi cuenta con un procedimiento documentado de detección, contención, evaluación, notificación, erradicación y recuperación, con roles definidos y escalamiento permanente. Ante un incidente:"},{"t":"li","level":0,"text":"Detección y contención: se reporta de inmediato al Oficial de Protección de Datos, se registra en el log y se adoptan sin demora medidas para detenerlo y limitar su alcance."},{"t":"li","level":0,"text":"Evaluación: naturaleza, categorías y volumen de datos y Titulares afectados, consecuencias y nivel de riesgo."},{"t":"li","level":0,"text":"Notificación a la SIC: se informan los incidentes que afecten la administración de la información, en la forma y plazo de la Circular Única (actualmente dentro de los quince (15) días hábiles siguientes a su detección y puesta en conocimiento del área responsable) por el canal habilitado."},{"t":"li","level":0,"text":"Notificación a Titulares: ante riesgo significativo, se les comunica sin dilación, en lenguaje claro, la naturaleza, los datos comprometidos, las consecuencias, las medidas y las recomendaciones."},{"t":"li","level":0,"text":"Notificación a Aliados y encargados: dentro de las setenta y dos (72) horas siguientes a conocer el incidente, con deber recíproco."},{"t":"li","level":0,"text":"Cierre: restablecimiento seguro, causa raíz, acciones correctivas verificadas por el Oficial, y conservación del registro de todos los incidentes (incluidos los no notificados, con su motivación) como evidencia de responsabilidad demostrada."},{"t":"h","level":2,"text":"18. Responsabilidad demostrada y RNBD"},{"t":"p","level":0,"text":"Programa de gestión. Fandi mantiene: registro interno de actividades de tratamiento; evaluación de impacto previa a todo tratamiento de alto riesgo (biometría, perfilamiento a gran escala, cambios en la verificación de edad, nuevas mecánicas y despliegue en otras jurisdicciones); revisión periódica de autorizaciones, exactitud y plazos; gestión de proveedores; indicadores y reporte a la administración; y seguimiento normativo de la SIC, Coljuegos y las entidades territoriales."},{"t":"p","level":0,"text":"RNBD. Conforme al Decreto 090 de 2018, la obligación de inscribir bases en el Registro Nacional de Bases de Datos recae en sociedades cuyos activos superen el umbral allí previsto. Fandi evalúa anualmente, con corte al cierre contable, si está obligada, deja constancia del resultado y, de estarlo, inscribe sus bases y reporta novedades en los plazos legales. En todo caso mantiene el inventario interno de bases de datos."},{"t":"h","level":2,"text":"19. Cookies y tecnologías de seguimiento"},{"t":"p","level":0,"text":"El sitio web y la Plataforma usan cookies. Las estrictamente necesarias para el funcionamiento, la autenticación y la seguridad se instalan sin consentimiento. Las analíticas, de personalización y de publicidad requieren consentimiento previo mediante un mecanismo que permite aceptarlas, rechazarlas o configurarlas por categoría con la misma facilidad. El Titular puede cambiar su elección en cualquier momento."},{"t":"h","level":2,"text":"20. Vigencia, modificaciones y control de versiones"},{"t":"p","level":0,"text":"Esta Política rige desde la fecha de la portada hasta que sea sustituida; las bases tienen la vigencia de la Sección 15. Fandi puede modificarla; cuando el cambio sea sustancial (nuevas finalidades, categorías, destinatarios o plazos) lo comunica con antelación razonable, y si implica una finalidad no cubierta por la autorización vigente, recaba una nueva antes de iniciar ese tratamiento (el Titular que no la otorgue conserva su cuenta para las finalidades ya autorizadas). Cada versión se identifica con número y fecha y se conserva en archivo histórico accesible."},{"t":"p","level":0,"text":"Aprobación. Esta Política fue aprobada por la representación legal de Fandi Holding S.A.S. y es de obligatorio cumplimiento para su personal, contratistas y proveedores."},{"t":"p","level":0,"text":"__________________________________________"},{"t":"p","level":0,"text":"Juan José Aranzales Ochoa, Representante Legal, Fandi Holding S.A.S."},{"t":"p","level":0,"text":"Medellín, 1 de agosto de 2026"},{"t":"p","level":0,"text":"Anexo 1. Texto de autorización para la Plataforma"},{"t":"p","level":0,"text":"Se presenta al Usuario en el registro, antes de cualquier recolección, con casillas sin premarcar y cada finalidad opcional aceptada por separado."},{"t":"table","rows":[["Bloque obligatorio☐ Declaro que soy mayor de dieciocho (18) años y que mis datos son veraces. *(Bloqueante: sin ella no continúa el registro.)*☐ He leído y acepto la Política de Tratamiento y Protección de Datos Personales de Fandi Holding S.A.S. (NIT 902.070.820-4) y autorizo el tratamiento de mis datos de identificación, contacto, cuenta, billetera, participación y datos técnicos, con las finalidades necesarias allí descritas: crear y administrar mi cuenta, verificar mi identidad y edad, operar mi billetera y participaciones, adjudicarme Experiencias, prevenir el fraude, atender mis solicitudes y cumplir las obligaciones legales de Fandi en juego, prevención de lavado de activos y tributación."],["Bloque opcional (puedes usar Fandi sin otorgarlo; se activa o desactiva en «Privacidad y mis datos»)☐ Autorizo comunicaciones comerciales y novedades por correo, notificaciones, SMS o mensajería.☐ Autorizo entregar mi nombre, correo y teléfono a [RAZÓN SOCIAL DEL ALIADO], como responsable independiente, para que me contacte sobre sus eventos y sus análisis estadísticos anonimizados, conforme a su política en [enlace].☐ Autorizo captar y usar mi imagen y voz durante la Experiencia adjudicada, en los canales de Fandi, por [] años y en el ámbito de [].☐ Autorizo analizar mis preferencias para personalizar el contenido que me recomienda la Plataforma.Nota de implementación: los campos entre corchetes de este bloque se completan dinámicamente en la Aplicación con la razón social del Aliado del Evento correspondiente y el enlace a su política de tratamiento. La casilla no se presenta al Usuario si no hay un Aliado identificado."]]},{"t":"p","level":0,"text":"Datos sensibles. La imagen y la voz son datos sensibles; no estás obligado a autorizar su tratamiento y tu negativa no afecta tu participación. Tus derechos: conocer, actualizar, rectificar, suprimir, solicitar prueba de la autorización, revocarla y presentar quejas ante la SIC, escribiendo a hola@fandi.app o desde «Privacidad y mis datos»."},{"t":"p","level":0,"text":"Anexo 2. Aviso de Privacidad"},{"t":"p","level":0,"text":"Resumen de la información esencial. La versión completa está en la Política, disponible en www.fandi.app/privacidad."},{"t":"table","rows":[["Aspecto","Detalle"],["Responsable","Fandi Holding S.A.S., NIT 902.070.820-4, Carrera 84F #3C-39, Medellín. Contacto: hola@fandi.app."],["Restricción de edad","Uso exclusivo de mayores de 18 años. Fandi no recolecta datos de menores."],["Datos que tratamos","Identificación y contacto; cuenta y autenticación; recargas, saldo y movimientos; participación y resultados; datos técnicos; y, con autorización específica, imagen y voz."],["Para qué","Crear y administrar tu cuenta; verificar identidad y edad; operar billetera y participaciones; adjudicarte Experiencias; atender solicitudes; prevenir fraude; y cumplir obligaciones de juego, prevención de lavado de activos, tributación y atención de autoridades."],["Opcionales","Comunicaciones comerciales; entrega de contacto a un aliado identificado; uso de imagen y voz; personalización. Se autorizan por separado y se revocan cuando quieras."],["Con quién compartimos","Proveedores que actúan por cuenta de Fandi bajo contrato de transmisión; aliados solo si lo autorizas; y autoridades cuando la ley lo exige."],["Internacional","Parte de la infraestructura opera fuera de Colombia, en países con nivel adecuado reconocido por la SIC."],["Conservación","El tiempo necesario y los plazos legales, en especial los de juego y prevención de lavado de activos."],["Tus derechos","Conocer, actualizar, rectificar y suprimir; prueba de la autorización; información sobre el uso; revocar; oponerte al mercadeo; portabilidad; revisión humana de decisiones automatizadas; y quejas ante la SIC."],["Cómo ejercerlos","hola@fandi.app o «Privacidad y mis datos». Consultas: 10 días hábiles. Reclamos: 15 días hábiles, prorrogables por ley."]]}]
+[
+  {
+    "t": "p",
+    "level": 0,
+    "text": "FANDI HOLDING S.A.S."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "POLÍTICA DE TRATAMIENTO Y PROTECCIÓN DE DATOS PERSONALES"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Manual interno de políticas y procedimientos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "NIT 902.070.820-4 · Medellín, Antioquia, Colombia"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Versión 1.0 · Vigente desde 1 de agosto de 2026"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Tabla de contenido"
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "1. Objeto, alcance y estándar"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi Holding S.A.S. («Fandi») opera una aplicación móvil y servicios asociados (la «Plataforma») en la que personas mayores de edad adquieren una unidad de crédito virtual («Fandis») y la destinan a las modalidades de Subasta y de Oportunidad para acceder a experiencias, encuentros y beneficios exclusivos vinculados a artistas, deportistas y eventos (las «Experiencias»). Toda participación, con independencia de su resultado, otorga al Usuario una insignia digital del evento y computa en su posición dentro del ranking de fans del ídolo, lo que implica el tratamiento de datos de participación con finalidad de fidelización además de la finalidad de adjudicación."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Esta operación implica tratamiento intensivo de datos: verificación de identidad y de edad, billetera digital con recargas y saldos, trazabilidad de cada participación, prevención de fraude y cumplimiento de las obligaciones de juego, de prevención de lavado de activos y de protección al consumidor. Este documento es el manual interno exigido por el literal k) del artículo 17 de la Ley 1581 de 2012 y el artículo 2.2.2.25.3.1 del Decreto 1074 de 2015, y aplica a todo tratamiento que Fandi realice, por sí o a través de terceros, sobre las bases de datos de la Sección 5."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Ámbito territorial. Aplica al tratamiento efectuado en Colombia y a aquel sujeto a la ley colombiana. De manera voluntaria, Fandi adopta como referencia el Reglamento (UE) 2016/679 (RGPD) (minimización, limitación del plazo, privacidad desde el diseño, portabilidad, oposición, evaluación de impacto y garantías frente a decisiones automatizadas) para operar con titulares de otras jurisdicciones y anticipar la reforma en trámite (Proyectos de Ley 214 y 274 de 2025 Cámara, acumulados)."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "2. Responsable del Tratamiento"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Concepto",
+        "Información"
+      ],
+      [
+        "Razón social",
+        "Fandi Holding S.A.S."
+      ],
+      [
+        "NIT",
+        "902.070.820-4"
+      ],
+      [
+        "Representante legal",
+        "Juan José Aranzales Ochoa (C.C. 1.027.801.014), o quien haga sus veces"
+      ],
+      [
+        "Domicilio",
+        "Carrera 84F #3C-39, Medellín, Antioquia, Colombia"
+      ],
+      [
+        "Canal de protección de datos",
+        "Correo: hola@fandi.app · Teléfono y WhatsApp: +57 301 448 9622 · Sitio web: www.fandi.app · Sección «Privacidad y mis datos» de la Aplicación"
+      ],
+      [
+        "Oficial de Protección de Datos",
+        "El Representante Legal ejerce esta función hasta la designación de un titular específico. Lidera el programa, atiende solicitudes, coordina incidentes y sirve de contacto con la SIC."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "3. Marco normativo"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Protección de datos: arts. 15 y 20 de la Constitución; Ley 1581 de 2012 y Sentencia C-748 de 2011; Decreto 1074 de 2015 (Cap. 25 y 26); Decreto 090 de 2018 (RNBD); Circular Única de la SIC, Título V, incl. Circular Externa 005 de 2017 (transferencias internacionales); Ley 1266 de 2008 en lo aplicable."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Sectorial que condiciona el tratamiento: régimen de juegos de suerte y azar (Ley 643 de 2001 y reglamentación de Coljuegos sobre rifas y rifas sistematizadas, con deberes de registro, trazabilidad, auditabilidad y certificación); SARLAFT y reportes a la UIAF; protección al consumidor (Ley 1480 de 2011); comunicaciones comerciales (Ley 2300 de 2023); entorno digital (Leyes 527 de 1999 y 1273 de 2009); prohibición de captación (art. 316 C.P. y Decreto 1981 de 1988)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Estándar voluntario: RGPD; buenas prácticas ISO/IEC 27001 y 27701; y PCI DSS respecto de datos de tarjetas, que observan las pasarelas contratadas."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "4. Definiciones"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Rigen las definiciones de la Ley 1581 de 2012 y el Decreto 1074 de 2015. Se precisan además:"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Término",
+        "Definición"
+      ],
+      [
+        "Dato sensible",
+        "El que afecta la intimidad o cuyo uso indebido puede generar discriminación: origen racial o étnico, orientación política, convicciones, pertenencia a sindicatos u organizaciones, salud, vida sexual y datos biométricos."
+      ],
+      [
+        "Dato biométrico",
+        "Dato de características físicas, fisiológicas o conductuales que permite la identificación única (imagen facial, huella, voz). Es dato sensible."
+      ],
+      [
+        "Transferencia / Transmisión",
+        "Transferencia: envío a un receptor que es Responsable. Transmisión: comunicación para que un Encargado trate por cuenta del Responsable."
+      ],
+      [
+        "Anonimización / Seudonimización",
+        "Anonimización: proceso irreversible; el dato deja de ser personal. Seudonimización: reversible con información conservada aparte; sigue siendo dato personal."
+      ],
+      [
+        "Elaboración de perfiles / Decisión automatizada",
+        "Tratamiento automatizado para evaluar o predecir aspectos de una persona / decisión adoptada sin intervención humana significativa."
+      ],
+      [
+        "Fandis",
+        "Unidad de crédito virtual de circulación cerrada dentro de la Plataforma. No es dinero de curso legal, no constituye depósito ni inversión y no genera rendimientos. El saldo que el Usuario no haya comprometido en una dinámica es reintegrable en dinero, a solicitud suya por correo electrónico y sujeto al cobro administrativo previsto en los Términos y Condiciones."
+      ],
+      [
+        "Usuario Verificado",
+        "Persona mayor de 18 años que superó la verificación de identidad y edad de la Sección 7."
+      ],
+      [
+        "Aliado",
+        "Organizador, promotor, artista o tercero con quien Fandi acuerda desplegar la Plataforma en un evento."
+      ],
+      [
+        "Incidente de seguridad",
+        "Acceso, divulgación, alteración, pérdida o destrucción no autorizados de datos personales."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "5. Bases de datos y datos tratados"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi administra las bases de datos de Usuarios, Empleados, Aliados, clientes y organizadores. Cada una tiene finalidades y plazos propios (Secciones 9 y 15)."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "5.1. Datos de los Usuarios de la Plataforma"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Identificación: nombres, tipo y número de documento, fecha de nacimiento, nacionalidad."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Contacto: correo, teléfono móvil, ciudad."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Cuenta y autenticación: usuario, credenciales cifradas de forma irreversible, doble factor, historial de sesiones."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Billetera y transacciones: recargas, medio de pago tokenizado, saldo en Fandis, movimientos y referencias de la pasarela."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Participación y juego: pujas, aportes, Grupo de Aporte, resultados, Experiencias adjudicadas e insignias."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Técnicos y de dispositivo: IP, identificador de dispositivo, sistema operativo, versión de la app, registros de auditoría."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Ubicación: aproximada por IP y, solo si el Usuario lo habilita, precisa del dispositivo (opcional y revocable)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Imagen y voz: captadas en Experiencias o activaciones, bajo autorización explícita y separada (Sección 8)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Soporte y PQR: contenido de solicitudes, conversaciones y documentos aportados."
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Datos que Fandi NO trata de los UsuariosNo solicita datos sensibles, salvo imagen y voz bajo autorización separada (Sección 8). No recolecta datos de menores: la Plataforma es exclusiva de mayores de 18 años (Sección 7). No almacena el número completo de la tarjeta, su vencimiento ni el código de verificación: esos datos los trata la pasarela bajo estándar PCI DSS."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "6. Principios"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Legales (art. 4, Ley 1581): legalidad, finalidad, libertad, veracidad o calidad, transparencia, acceso y circulación restringida, seguridad y confidencialidad."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Adoptados voluntariamente: minimización (solo datos necesarios, ningún campo «por si acaso»); limitación del plazo de conservación (Sección 15); privacidad desde el diseño y por defecto; responsabilidad demostrada (Sección 18); juego responsable (no se usan datos de comportamiento para intensificar la exposición de quien presente participación problemática); y no discriminación algorítmica."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "7. Prohibición de participación de menores"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Regla fundamentalLa Plataforma es exclusiva de personas mayores de dieciocho (18) años. Fandi no permite el registro, la recarga, la participación ni la adjudicación a menores en ninguna circunstancia, ni siquiera con autorización de los padres. La prohibición obedece a dos mandatos independientes: el estándar reforzado del art. 7 de la Ley 1581 y la Sentencia C-748 de 2011, y la prohibición absoluta de participación de menores en juegos de suerte y azar."
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.1. Verificación de edad (en capas, no una simple casilla)"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Registro: se exige fecha de nacimiento y documento; el sistema bloquea el registro si la edad es inferior a 18 años."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Verificación de identidad: antes de habilitar la billetera y cualquier recarga, se valida la correspondencia entre identidad declarada y documento. Hasta completarla, la cuenta permanece no verificada y sin capacidad de participar."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Antifraude: controles de consistencia entre fecha de nacimiento, documento, medio de pago y señales del dispositivo, para detectar intentos de elusión."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Revalidación y presencial: revalidación ante indicios de uso por un menor, con suspensión preventiva; y en eventos, exigencia del documento de identidad del Usuario Verificado."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.2. Protocolo ante detección de un menor"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Confirmado el hallazgo, Fandi: (i) suspende la cuenta y bloquea la billetera y las participaciones; (ii) cesa todo tratamiento no imprescindible; (iii) excluye al menor de toda base con fines comerciales, analíticos o de perfilamiento y no transfiere sus datos a Aliados; (iv) suprime los datos dentro de los quince (15) días hábiles siguientes, salvo los de conservación imperativa por deber legal, que se bloquean con acceso restringido; (v) reintegra las recargas al padre, madre o representante acreditado; y (vi) registra el caso y evalúa el refuerzo de los controles. Toda autorización otorgada por un menor carece de validez. Fandi no dirige publicidad ni pauta segmentada a menores e incluye en sus materiales la advertencia de uso restringido a mayores de 18 años."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "8. Datos sensibles, imagen, voz y biométricos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Titular no está obligado a autorizar datos sensibles; la negativa no impide usar la Plataforma, salvo funcionalidades que dependan técnicamente de ellos, lo cual se informa previamente."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Imagen y voz. Su captación en Experiencias o activaciones requiere autorización explícita, separada y específica, distinta de la general, indicando uso, canales, ámbito y vigencia. El derecho a la propia imagen es autónomo: cuando el uso sea publicitario o promocional, se recaba por documento separado. La revocatoria opera hacia el futuro; Fandi cesa nueva difusión y suprime el material de sus propios canales en un plazo razonable."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Biométricos. Fandi no usa reconocimiento facial ni otro tratamiento biométrico, salvo que se anuncie en una versión posterior; de implementarse, exigirá evaluación de impacto (Sección 18), autorización explícita con advertencia expresa, alternativa no biométrica equivalente y conservación mínima con supresión de las plantillas al cumplir la finalidad."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Videovigilancia. En espacios propios o activaciones bajo su control, Fandi señaliza las cámaras, informa finalidad y responsable, restringe el acceso a las grabaciones y las conserva por el plazo de la Sección 15."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "9. Finalidades del tratamiento"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "9.1. Usuarios: finalidades necesarias"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Sin estas finalidades el servicio no puede prestarse o su ejecución es legalmente exigible; no requieren autorización adicional a la general:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Crear, verificar, administrar y dar de baja la cuenta; verificar identidad y mayoría de edad (Sección 7)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Operar la billetera (recargas, acreditación y débito de Fandis, saldos, movimientos y relación con la pasarela)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Operar Subastas y Oportunidades: registro de pujas y aportes, asignación al Grupo de Aporte, selección de ganadores y publicación de resultados."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Garantizar integridad, trazabilidad y auditabilidad de cada participación, en los términos exigidos por la regulación de juego."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Adjudicar y entregar Experiencias y coordinar la logística estrictamente necesaria con el tercero que corresponda."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Administrar insignias; atender PQR, soporte y solicitudes de reversión del pago."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Prevenir, detectar e investigar fraude, suplantación, multicuenta, colusión, manipulación de resultados y uso automatizado no autorizado."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Cumplir SARLAFT (conocimiento del cliente, monitoreo y reportes a la UIAF), obligaciones tributarias y de facturación, y atender requerimientos de Coljuegos, entidades territoriales, SIC, Superintendencia Financiera, Fiscalía y autoridades judiciales."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Ejercer y defender los derechos de Fandi; ejecutar medidas de juego responsable (límites, alertas, enfriamiento y autoexclusión); e informar cambios en los términos o en esta Política."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Analítica de producto y mejora de la Plataforma, preferentemente sobre datos agregados, anonimizados o seudonimizados."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "9.2. Usuarios: finalidades opcionales"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Cada una se autoriza por casilla separada y no premarcada; la negativa no restringe el acceso ni la participación:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Comunicaciones comerciales y de fidelización por correo, notificaciones, SMS o mensajería, con sujeción a la Ley 2300 de 2023 y mecanismo de exclusión gratuito en cada envío."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Transferir identificación y contacto a un Aliado identificado por su razón social al recabar la autorización, para que lo trate como Responsable independiente con las finalidades que informe."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Usar imagen y voz captadas en una Experiencia (Sección 8)."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Elaborar perfiles de preferencias para personalizar contenido y recomendaciones dentro de la Plataforma."
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Regla de granularidadFandi no recaba autorizaciones globales ni «en bloque»: cada finalidad opcional se presenta de forma individual y su aceptación no es condición para usar el servicio. El consentimiento es tan fácil de revocar como de otorgar. La autorización para transferir a un Aliado identifica siempre al receptor por su nombre."
+      ]
+    ]
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "10. Tratamiento en las mecánicas de participación"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Trazabilidad. Cada Subasta y Oportunidad genera un registro de momento y monto de pujas y aportes, Grupo asignado, resultado y adjudicación. Este registro es la evidencia de la integridad del juego; su conservación es exigida por la regulación. Por ello, Fandi lo conserva de forma inalterable, lo pone a disposición de Coljuegos, entidades territoriales, laboratorios de certificación y auditores cuando sea requerido, e informa que el derecho de supresión sobre estos registros está limitado durante el término legal (Sección 14.4)."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Selección de ganadores. En la Oportunidad, la Plataforma agrupa por rangos de Fandis aportados y selecciona ganadores dentro de cada grupo de forma aleatoria. La selección no se basa en perfilamiento del Usuario: el único parámetro del grupo es el monto aportado, y la selección dentro del grupo es aleatoria. Fandi obtiene, con carácter previo a cada Evento, la autorización que exija la autoridad competente para el conjunto de Oportunidades ofrecidas en él, y somete el sistema de sorteos a la certificación que dicha autoridad requiera. Ninguna Oportunidad se habilita sin autorización vigente."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Juego responsable. Los límites, periodos de enfriamiento y autoexclusión generan registros que Fandi respeta; sus datos se usan solo para hacerlos efectivos y nunca para segmentación comercial. Fandi no dirige comunicaciones de recarga o participación a quien se haya autoexcluido o presente indicadores de participación problemática."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "11. Billetera, medios de pago y prevención de LA/FT"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Datos de pago. Las recargas se procesan por una pasarela contratada. Los datos completos del instrumento (número, vencimiento y código) los captura y trata la pasarela en su entorno bajo PCI DSS. Fandi conserva solo identificadores tokenizados, últimos dígitos, marca, resultado y referencia, necesarios para conciliar, atender reclamos y prevenir fraude. La pasarela actúa como Responsable respecto de lo que captura directamente y como Encargado respecto de lo que trata por cuenta de Fandi."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandis. Crédito virtual interno de circulación cerrada, sin rendimiento. El saldo no comprometido en una dinámica es reintegrable en dinero a solicitud del Usuario por correo electrónico, sujeto al cobro administrativo previsto en los Términos y Condiciones. Los saldos y movimientos de la Billetera no constituyen dato financiero, crediticio o comercial de la Ley 1266 de 2008 y no se reportan a operadores de información crediticia."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Conocimiento del cliente. SARLAFT obliga a identificar plenamente al Usuario, conservar soportes y monitorear operaciones. Los reportes a la UIAF cumplen un deber legal, no requieren autorización del Titular y están sujetos a reserva: Fandi no informa al Usuario sobre su existencia, por prohibición legal."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "12. Autorización del Titular"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Forma. El tratamiento requiere consentimiento libre, previo, expreso e informado, salvo los casos en que la ley lo releva. En la Plataforma se recaba en el registro, antes de cualquier recolección efectiva, mediante un flujo que presenta el Aviso de Privacidad, permite acceder a esta Política y exige una acción afirmativa. No se admiten casillas premarcadas, el silencio ni la continuación de la navegación."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Información previa. Antes de autorizar, el Titular conoce: identidad y contacto del Responsable; datos recolectados; finalidades necesarias y opcionales diferenciadas; carácter facultativo de los datos sensibles; derechos y canales; existencia de transferencias a Aliados y de transmisiones internacionales; plazos de conservación; y forma de acceder a esta Política."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Prueba. Fandi registra, por Titular y finalidad: identificador, finalidad autorizada o rechazada, marca de tiempo, versión y resumen criptográfico del texto aceptado, canal, IP e identificador de dispositivo. Conserva el archivo histórico de todas las versiones de la Política y del Aviso, con su fecha de vigencia."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Revocatoria. El Titular revoca en cualquier momento, total o parcialmente, por el mismo medio y sin costo, desde el panel «Privacidad y mis datos». Opera hacia el futuro y no afecta la licitud del tratamiento previo. No procede respecto de finalidades necesarias para un deber legal o contractual (régimen de juego, SARLAFT, obligaciones tributarias y defensa de derechos), lo que se informa de forma motivada."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "13. Encargados, Aliados y flujos internacionales"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "13.1. Encargados"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Con cada proveedor que trata datos por cuenta de Fandi se suscribe un contrato de transmisión (art. 2.2.2.25.5.2 del Decreto 1074 de 2015) que define el alcance, las obligaciones de seguridad y confidencialidad, la asistencia frente a solicitudes de Titulares, la prohibición de subcontratar sin autorización previa y la devolución o supresión al terminar. Las categorías de proveedores son:"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Categoría",
+        "Función",
+        "Ubicación"
+      ],
+      [
+        "Infraestructura en la nube",
+        "Alojamiento, bases de datos, respaldos, CDN.",
+        "Estados Unidos"
+      ],
+      [
+        "Autenticación e identidad",
+        "Credenciales y sesiones.",
+        "Estados Unidos"
+      ],
+      [
+        "Mensajería SMS / voz",
+        "Códigos de verificación y avisos.",
+        "Estados Unidos"
+      ],
+      [
+        "Correo transaccional",
+        "Confirmaciones y comprobantes.",
+        "Estados Unidos"
+      ],
+      [
+        "Notificaciones push",
+        "Notificaciones a la app.",
+        "Estados Unidos"
+      ],
+      [
+        "Pasarela de pagos",
+        "Recargas y conciliación.",
+        "Colombia"
+      ],
+      [
+        "Verificación de identidad",
+        "Validación documental y de edad.",
+        "Estados Unidos"
+      ],
+      [
+        "Analítica y monitoreo",
+        "Desempeño, errores, observabilidad.",
+        "Estados Unidos"
+      ],
+      [
+        "Servicios profesionales",
+        "Contable, jurídica y auditoría.",
+        "Colombia"
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi evalúa la idoneidad de cada proveedor, mantiene un inventario de encargados y subencargados e informa a los Titulares con antelación razonable cuando incorpore uno que implique un cambio sustancial. El listado detallado y actualizado se mantiene en el canal de la Sección 2."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "13.2. Transferencias a Aliados"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Al operar en un evento de un tercero, Fandi puede entregar al Aliado los datos de contacto de los Usuarios que lo hayan autorizado. Es una transferencia entre Responsables independientes: desde la entrega, el Aliado decide autónomamente y responde conforme a su propia política. Reglas mínimas:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Autorización identificada: solo se transfieren datos de Usuarios cuya autorización identifique al Aliado por su razón social y describa sus finalidades."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Minimización: solo identificación y contacto. No se transfieren datos transaccionales, saldos, historial de pujas o aportes, comportamiento de juego ni datos técnicos. El desempeño del evento se comparte agregado y anonimizado."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Formalización y trazabilidad: acuerdo escrito con campos entregados, finalidades, plazo, prohibición de retransferir sin autorización, medidas de seguridad y deber recíproco de notificar incidentes; y registro de qué se entregó, a quién, cuándo y bajo qué autorización."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Derechos: cada Responsable atiende lo propio; si Fandi recibe una solicitud del Aliado, la traslada en cinco (5) días hábiles e informa al Titular."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "13.3. Flujos internacionales"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El art. 26 de la Ley 1581 prohíbe transferir datos a países sin nivel adecuado de protección. La Circular Externa 005 de 2017 de la SIC fijó el listado de países que sí lo ofrecen, entre ellos Estados Unidos, Reino Unido, los Estados de la Unión Europea, México, Perú, Costa Rica, Japón y Corea. Fandi verifica el destino antes de cada flujo; si el país no figura, se abstiene salvo que aplique una excepción del art. 26 (incluida la autorización expresa e inequívoca del Titular) y, en todo caso, adopta garantías contractuales equivalentes a las cláusulas tipo. Las transmisiones internacionales a encargados se rigen por el contrato de transmisión del Decreto 1074 de 2015."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "14. Derechos de los Titulares y procedimientos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "14.1. Derechos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Legales (art. 8, Ley 1581): conocer, actualizar y rectificar; solicitar prueba de la autorización; ser informado del uso dado a los datos; presentar quejas ante la SIC una vez agotado el trámite ante Fandi; revocar la autorización y solicitar la supresión cuando no lo impida un deber legal o contractual; y acceder gratuitamente."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Adicionales voluntarios: portabilidad (obtener en formato estructurado los datos suministrados); oposición al mercadeo directo y al perfilamiento comercial sin necesidad de justificación; limitación temporal del tratamiento mientras se resuelve una controversia; e intervención humana sobre decisiones automatizadas que le afecten significativamente, con explicación de la lógica y posibilidad de controvertir."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "14.2. Canales"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Correo hola@fandi.app; sección «Privacidad y mis datos» de la app; formulario en www.fandi.app/privacidad; o correspondencia física en Carrera 84F #3C-39, Medellín. La solicitud debe indicar nombre y documento del Titular, un canal para respuesta, la descripción precisa de los datos y del derecho, y los soportes. Si la presenta un tercero sin acreditar representación, se tiene por no presentada. Fandi verifica la identidad del solicitante antes de resolver."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Eliminación de la cuenta. El Titular puede eliminar su cuenta y solicitar la supresión de sus datos directamente desde la Aplicación móvil, en «Perfil › Configuración › Eliminar mi cuenta», sin necesidad de contactar a Fandi. Si ya desinstaló la Aplicación, puede presentar la solicitud en www.fandi.app/eliminar-cuenta, formulario público que no exige credenciales, o en hola@fandi.app; Fandi verifica la titularidad por el medio de contacto registrado del Titular, correo electrónico o número de celular, y resuelve en un máximo de quince (15) días hábiles. Antes de ejecutar la eliminación, Fandi informa el saldo no utilizado y permite solicitar su reintegro. Ejecutada la eliminación, Fandi suprime los datos de forma irreversible en sistemas y respaldos, salvo aquellos de conservación imperativa (registros de juego, soportes SARLAFT e información contable y tributaria), que quedan bloqueados con acceso restringido y uso limitado a ese deber legal, conforme a la Sección 14.4."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "14.3. Consultas y reclamos"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Consultas: diez (10) días hábiles, prorrogables por cinco (5) días hábiles previa comunicación de los motivos."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Reclamos: si está incompleto, se requiere en cinco (5) días para subsanar (desistimiento a los dos meses sin respuesta); si no corresponde a Fandi, se traslada en dos (2) días hábiles; recibido completo, se inserta la leyenda «reclamo en trámite» en dos (2) días hábiles; y se resuelve en quince (15) días hábiles, prorrogables por ocho (8) días hábiles previa comunicación de los motivos."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "14.4. Límites a la supresión"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "La supresión no procede cuando exista deber legal o contractual de permanecer, cuando obstaculice actuaciones fiscales, penales o sancionatorias, o cuando los datos sean necesarios para intereses jurídicamente tutelados. En Fandi opera típicamente sobre los registros de juego, los soportes SARLAFT y la información contable y tributaria. Cuando no proceda, Fandi lo informa de forma motivada, cita la norma que impone la conservación y bloquea los datos, limitando su uso a ese deber. Cuando proceda, la supresión se ejecuta de forma irreversible en sistemas y respaldos, y se comunica a los encargados."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "14.5. Casos sin autorización"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "No se requiere autorización cuando la información sea requerida por entidad pública o judicial en ejercicio de sus funciones, se trate de datos públicos o de registro civil, medie urgencia médica o sanitaria, o el tratamiento esté autorizado por la ley para fines históricos, estadísticos o científicos. Fandi puede entregar datos sin autorización adicional al propio Titular o su representante, a autoridades competentes, a terceros autorizados por ley y a terceros a quienes el Titular haya autorizado expresamente."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "15. Conservación y supresión"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi conserva los datos solo el tiempo necesario para la finalidad y para los deberes legales; cumplido el plazo, los suprime de forma irreversible o los anonimiza. Plazos de referencia:"
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Categoría",
+        "Plazo",
+        "Fundamento"
+      ],
+      [
+        "Cuenta de Usuario activa",
+        "Mientras la cuenta esté activa.",
+        "Ejecución de la relación."
+      ],
+      [
+        "Cuenta tras cierre / inactividad",
+        "5 años desde el cierre.",
+        "Prescripción, SARLAFT, defensa."
+      ],
+      [
+        "Registros de participación y adjudicación",
+        "El exigido por la regulación de juego; no inferior a 5 años.",
+        "Trazabilidad y supervisión."
+      ],
+      [
+        "Soportes de conocimiento del cliente",
+        "5 años desde el fin de la relación.",
+        "LA/FT/FPADM."
+      ],
+      [
+        "Información contable y tributaria",
+        "5 años.",
+        "Estatuto Tributario."
+      ],
+      [
+        "Autorizaciones y evidencia del consentimiento",
+        "Duración del tratamiento + 5 años.",
+        "Prueba de la autorización."
+      ],
+      [
+        "Datos con fines comerciales",
+        "Hasta la revocatoria; evidencia 5 años.",
+        "Acreditación."
+      ],
+      [
+        "Exclusión y autoexclusión",
+        "Vigente indefinido; +5 años tras levantarse.",
+        "Eficacia de la medida."
+      ],
+      [
+        "Registros técnicos y de auditoría",
+        "2 años, salvo incidente o autoridad.",
+        "Seguridad."
+      ],
+      [
+        "Videovigilancia",
+        "90 días.",
+        "Proporcionalidad."
+      ],
+      [
+        "Expedientes laborales",
+        "Términos de la normativa laboral.",
+        "Obligaciones laborales."
+      ],
+      [
+        "Hojas de vida no seleccionadas",
+        "1 año, salvo autorización.",
+        "Minimización."
+      ],
+      [
+        "Imagen y voz de Experiencias",
+        "Vigencia de la autorización; en su defecto dos (2) años.",
+        "Autorización del Titular."
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El Oficial de Protección de Datos revisa anualmente esta tabla y documenta las supresiones y anonimizaciones."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "16. Seguridad de la información"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi adopta medidas proporcionales al riesgo, considerando que la Plataforma maneja identificación plena, medios de pago y registros de juego:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Técnicas: cifrado en tránsito y en reposo; credenciales con derivación de clave resistente sin recuperación en claro; control de acceso por roles con mínimo privilegio y multifactor obligatorio; segregación de ambientes sin datos reales en no producción salvo seudonimización; gestión de secretos y llaves con rotación; auditoría de accesos protegida contra alteración; protección perimetral, monitoreo y gestión de vulnerabilidades; respaldos cifrados y probados; y plan de continuidad y recuperación."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Humanas: acuerdos de confidencialidad que sobreviven al vínculo; capacitación obligatoria al ingreso y anual con registro; y revocación inmediata de accesos al terminar el vínculo o cambiar de rol."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Administrativas: inventario de bases y registro de actividades de tratamiento; clasificación de la información y disposición segura de soportes; cláusulas de protección de datos en todos los contratos; auditorías y pruebas de seguridad con remediación documentada; y revisión de privacidad y seguridad previa a cada nueva funcionalidad."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "17. Gestión de incidentes"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Fandi cuenta con un procedimiento documentado de detección, contención, evaluación, notificación, erradicación y recuperación, con roles definidos y escalamiento permanente. Ante un incidente:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Detección y contención: se reporta de inmediato al Oficial de Protección de Datos, se registra en el log y se adoptan sin demora medidas para detenerlo y limitar su alcance."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Evaluación: naturaleza, categorías y volumen de datos y Titulares afectados, consecuencias y nivel de riesgo."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Notificación a la SIC: se informan los incidentes que afecten la administración de la información, en la forma y plazo de la Circular Única (actualmente dentro de los quince (15) días hábiles siguientes a su detección y puesta en conocimiento del área responsable) por el canal habilitado."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Notificación a Titulares: ante riesgo significativo, se les comunica sin dilación, en lenguaje claro, la naturaleza, los datos comprometidos, las consecuencias, las medidas y las recomendaciones."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Notificación a Aliados y encargados: dentro de las setenta y dos (72) horas siguientes a conocer el incidente, con deber recíproco."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Cierre: restablecimiento seguro, causa raíz, acciones correctivas verificadas por el Oficial, y conservación del registro de todos los incidentes (incluidos los no notificados, con su motivación) como evidencia de responsabilidad demostrada."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "18. Responsabilidad demostrada y RNBD"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Programa de gestión. Fandi mantiene: registro interno de actividades de tratamiento; evaluación de impacto previa a todo tratamiento de alto riesgo (biometría, perfilamiento a gran escala, cambios en la verificación de edad, nuevas mecánicas y despliegue en otras jurisdicciones); revisión periódica de autorizaciones, exactitud y plazos; gestión de proveedores; indicadores y reporte a la administración; y seguimiento normativo de la SIC, Coljuegos y las entidades territoriales."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "RNBD. Conforme al Decreto 090 de 2018, la obligación de inscribir bases en el Registro Nacional de Bases de Datos recae en sociedades cuyos activos superen el umbral allí previsto. Fandi evalúa anualmente, con corte al cierre contable, si está obligada, deja constancia del resultado y, de estarlo, inscribe sus bases y reporta novedades en los plazos legales. En todo caso mantiene el inventario interno de bases de datos."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "19. Cookies y tecnologías de seguimiento"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "El sitio web y la Plataforma usan cookies. Las estrictamente necesarias para el funcionamiento, la autenticación y la seguridad se instalan sin consentimiento. Las analíticas, de personalización y de publicidad requieren consentimiento previo mediante un mecanismo que permite aceptarlas, rechazarlas o configurarlas por categoría con la misma facilidad. El Titular puede cambiar su elección en cualquier momento."
+  },
+  {
+    "t": "h",
+    "level": 2,
+    "text": "20. Vigencia, modificaciones y control de versiones"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Esta Política rige desde la fecha de la portada hasta que sea sustituida; las bases tienen la vigencia de la Sección 15. Fandi puede modificarla; cuando el cambio sea sustancial (nuevas finalidades, categorías, destinatarios o plazos) lo comunica con antelación razonable, y si implica una finalidad no cubierta por la autorización vigente, recaba una nueva antes de iniciar ese tratamiento (el Titular que no la otorgue conserva su cuenta para las finalidades ya autorizadas). Cada versión se identifica con número y fecha y se conserva en archivo histórico accesible."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Aprobación. Esta Política fue aprobada por la representación legal de Fandi Holding S.A.S. y es de obligatorio cumplimiento para su personal, contratistas y proveedores."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "__________________________________________"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Juan José Aranzales Ochoa, Representante Legal, Fandi Holding S.A.S."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Medellín, 1 de agosto de 2026"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Anexo 1. Texto de autorización para la Plataforma"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Se presenta al Usuario en el registro, antes de cualquier recolección, con casillas sin premarcar y cada finalidad opcional aceptada por separado."
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Bloque obligatorio☐ Declaro que soy mayor de dieciocho (18) años y que mis datos son veraces. *(Bloqueante: sin ella no continúa el registro.)*☐ He leído y acepto la Política de Tratamiento y Protección de Datos Personales de Fandi Holding S.A.S. (NIT 902.070.820-4) y autorizo el tratamiento de mis datos de identificación, contacto, cuenta, billetera, participación y datos técnicos, con las finalidades necesarias allí descritas: crear y administrar mi cuenta, verificar mi identidad y edad, operar mi billetera y participaciones, adjudicarme Experiencias, prevenir el fraude, atender mis solicitudes y cumplir las obligaciones legales de Fandi en juego, prevención de lavado de activos y tributación."
+      ],
+      [
+        "Bloque opcional (puedes usar Fandi sin otorgarlo; se activa o desactiva en «Privacidad y mis datos»)☐ Autorizo comunicaciones comerciales y novedades por correo, notificaciones, SMS o mensajería.☐ Autorizo entregar mi nombre, correo y teléfono a [RAZÓN SOCIAL DEL ALIADO], como responsable independiente, para que me contacte sobre sus eventos y sus análisis estadísticos anonimizados, conforme a su política en [enlace].☐ Autorizo captar y usar mi imagen y voz durante la Experiencia adjudicada, en los canales de Fandi, por [] años y en el ámbito de [].☐ Autorizo analizar mis preferencias para personalizar el contenido que me recomienda la Plataforma.Nota de implementación: los campos entre corchetes de este bloque se completan dinámicamente en la Aplicación con la razón social del Aliado del Evento correspondiente y el enlace a su política de tratamiento. La casilla no se presenta al Usuario si no hay un Aliado identificado."
+      ]
+    ]
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Datos sensibles. La imagen y la voz son datos sensibles; no estás obligado a autorizar su tratamiento y tu negativa no afecta tu participación. Tus derechos: conocer, actualizar, rectificar, suprimir, solicitar prueba de la autorización, revocarla y presentar quejas ante la SIC, escribiendo a hola@fandi.app o desde «Privacidad y mis datos»."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Anexo 2. Aviso de Privacidad"
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "Resumen de la información esencial. La versión completa está en la Política, disponible en www.fandi.app/privacidad."
+  },
+  {
+    "t": "table",
+    "rows": [
+      [
+        "Aspecto",
+        "Detalle"
+      ],
+      [
+        "Responsable",
+        "Fandi Holding S.A.S., NIT 902.070.820-4, Carrera 84F #3C-39, Medellín. Contacto: hola@fandi.app."
+      ],
+      [
+        "Restricción de edad",
+        "Uso exclusivo de mayores de 18 años. Fandi no recolecta datos de menores."
+      ],
+      [
+        "Datos que tratamos",
+        "Identificación y contacto; cuenta y autenticación; recargas, saldo y movimientos; participación y resultados; datos técnicos; y, con autorización específica, imagen y voz."
+      ],
+      [
+        "Para qué",
+        "Crear y administrar tu cuenta; verificar identidad y edad; operar billetera y participaciones; adjudicarte Experiencias; atender solicitudes; prevenir fraude; y cumplir obligaciones de juego, prevención de lavado de activos, tributación y atención de autoridades."
+      ],
+      [
+        "Opcionales",
+        "Comunicaciones comerciales; entrega de contacto a un aliado identificado; uso de imagen y voz; personalización. Se autorizan por separado y se revocan cuando quieras."
+      ],
+      [
+        "Con quién compartimos",
+        "Proveedores que actúan por cuenta de Fandi bajo contrato de transmisión; aliados solo si lo autorizas; y autoridades cuando la ley lo exige."
+      ],
+      [
+        "Internacional",
+        "Parte de la infraestructura opera fuera de Colombia, en países con nivel adecuado reconocido por la SIC."
+      ],
+      [
+        "Conservación",
+        "El tiempo necesario y los plazos legales, en especial los de juego y prevención de lavado de activos."
+      ],
+      [
+        "Tus derechos",
+        "Conocer, actualizar, rectificar y suprimir; prueba de la autorización; información sobre el uso; revocar; oponerte al mercadeo; portabilidad; revisión humana de decisiones automatizadas; y quejas ante la SIC."
+      ],
+      [
+        "Cómo ejercerlos",
+        "hola@fandi.app o «Privacidad y mis datos». Consultas: 10 días hábiles. Reclamos: 15 días hábiles, prorrogables por ley."
+      ]
+    ]
+  }
+]
