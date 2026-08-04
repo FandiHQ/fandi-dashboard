@@ -76,17 +76,21 @@ export function Cta({
     );
 
     if (href) {
-        // mailto: and external links open in a new context. Some browsers
-        // silently ignore a same-tab mailto navigation; handing it to a new
-        // context makes the OS mail handler fire reliably.
-        const isExternal = /^(mailto:|https?:)/i.test(href);
+        // Only http(s) links open in a new tab. `mailto:` must NOT —
+        // target="_blank" makes the browser open a real blank tab and
+        // *then* hand off to the OS mail handler, so anyone without a
+        // registered handler just gets a stranded empty window. A same-tab
+        // mailto is handed straight to the OS and leaves the page alone.
+        // (If nothing happens at all, no default mail app is configured —
+        // that is an OS setting, not something the page can fix.)
+        const isNewTab = /^https?:/i.test(href);
         return (
             <a
                 href={href}
                 className={cls}
                 onMouseMove={onMove}
                 onMouseLeave={onLeave}
-                {...(isExternal
+                {...(isNewTab
                     ? { target: '_blank', rel: 'noopener noreferrer' }
                     : {})}
             >

@@ -171,9 +171,7 @@ export default function EliminarCuentaPage() {
                         Pide la devolución escribiendo a{' '}
                         <a
                             href="mailto:hola@fandi.app?subject=Devoluci%C3%B3n%20de%20saldo"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#CCFF00] underline underline-offset-4"
+                                                        className="text-[#CCFF00] underline underline-offset-4"
                         >
                             hola@fandi.app
                         </a>

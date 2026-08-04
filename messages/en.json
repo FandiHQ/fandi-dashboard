@@ -684,7 +684,7 @@
             "categorias": "Categories",
             "subastas": "Auctions",
             "idolos": "Idols",
-            "signIn": "Sign in",
+            "signIn": "Log in (idols)",
             "download": "Download",
             "idol": "I'm an Idol",
             "lang": "Language"
@@ -785,7 +785,7 @@
         },
         "footer": {
             "tagline": "We turn your idol into your friend.",
-            "signIn": "Sign in",
+            "signIn": "Log in (idols)",
             "idolCta": "I'm an Idol · Write to us",
             "linksLabel": "Links",
             "terms": "Terms & Conditions",

@@ -181,9 +181,7 @@ export default function LegalDoc({
                         ))}
                         <a
                             href="mailto:hola@fandi.app"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-[#CCFF00]"
+                                                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-[#CCFF00]"
                         >
                             hola@fandi.app
                         </a>

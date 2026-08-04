@@ -146,7 +146,11 @@ export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
                         </p>
                     </div>
 
-                    {/* Both doors: fans sign in, ídolos write to us. */}
+                    {/* Both doors are for ídolos, not fans: this sign-in
+                        opens the organizer dashboard, and fans only ever
+                        exist in the mobile app. Hence the "(ídolos)"
+                        qualifier on the label — an unqualified "Ingresar"
+                        sends fans to a login they can never complete. */}
                     <div className="flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
                         <Cta onClick={onSignIn} variant="ghost">
                             {t('signIn')}
@@ -190,9 +194,7 @@ export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
                     </a>
                     <a
                         href="mailto:hola@fandi.app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                                                className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
                     >
                         hola@fandi.app
                     </a>

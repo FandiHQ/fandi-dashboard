@@ -711,7 +711,7 @@
             "categorias": "Categorías",
             "subastas": "Subastas",
             "idolos": "Ídolos",
-            "signIn": "Ingresar",
+            "signIn": "Ingresar (ídolos)",
             "download": "Descargar",
             "idol": "Soy Ídolo",
             "lang": "Idioma"
@@ -812,7 +812,7 @@
         },
         "footer": {
             "tagline": "Convertimos a tu ídolo en tu amigo.",
-            "signIn": "Ingresar",
+            "signIn": "Ingresar (ídolos)",
             "idolCta": "Soy Ídolo · Escríbenos",
             "linksLabel": "Enlaces",
             "terms": "Términos y Condiciones",
