@@ -42,7 +42,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Esta operación implica tratamiento intensivo de datos: verificación de identidad y de edad, billetera digital con recargas y saldos, trazabilidad de cada participación, prevención de fraude y cumplimiento de las obligaciones de juego, de prevención de lavado de activos y de protección al consumidor. Este documento es el manual interno exigido por el literal k) del artículo 17 de la Ley 1581 de 2012 y el artículo 2.2.2.25.3.1 del Decreto 1074 de 2015, y aplica a todo tratamiento que Fandi realice, por sí o a través de terceros, sobre las bases de datos de la Sección 5."
+    "text": "Esta operación implica tratamiento intensivo de datos: verificación del número de teléfono y control de la edad declarada, billetera digital con recargas y saldos, trazabilidad de cada participación, prevención de fraude y cumplimiento de las obligaciones de juego, de prevención de lavado de activos y de protección al consumidor. Este documento es el manual interno de tratamiento exigido por el literal k) del artículo 17 de la Ley 1581 de 2012."
   },
   {
     "t": "p",
@@ -261,27 +261,27 @@
   {
     "t": "p",
     "level": 0,
-    "text": "7.1. Verificación de edad (en capas, no una simple casilla)"
+    "text": "7.1. Controles de edad vigentes"
   },
   {
     "t": "li",
     "level": 0,
-    "text": "Registro: se exige fecha de nacimiento y documento; el sistema bloquea el registro si la edad es inferior a 18 años."
+    "text": "Registro: se verifica el número de teléfono mediante código de un solo uso y se exige la fecha de nacimiento; el sistema bloquea el registro cuando la edad declarada es inferior a 18 años."
   },
   {
     "t": "li",
     "level": 0,
-    "text": "Verificación de identidad: antes de habilitar la billetera y cualquier recarga, se valida la correspondencia entre identidad declarada y documento. Hasta completarla, la cuenta permanece no verificada y sin capacidad de participar."
+    "text": "Recarga: la pasarela de pagos contratada solicita el nombre completo, el tipo y el número de documento del Titular y confirma la operación mediante un código enviado por mensajería. Fandi no realiza, a la fecha de esta versión, validación de la identidad declarada contra fuentes oficiales ni verificación documental automatizada."
   },
   {
     "t": "li",
     "level": 0,
-    "text": "Antifraude: controles de consistencia entre fecha de nacimiento, documento, medio de pago y señales del dispositivo, para detectar intentos de elusión."
+    "text": "Antifraude: revisión de señales de uso anómalo, multicuenta y comportamiento inconsistente, con suspensión preventiva cuando se detectan indicios de participación de un menor o de suplantación."
   },
   {
     "t": "li",
     "level": 0,
-    "text": "Revalidación y presencial: revalidación ante indicios de uso por un menor, con suspensión preventiva; y en eventos, exigencia del documento de identidad del Usuario Verificado."
+    "text": "Revalidación: ante indicios de uso por un menor o de suplantación, Fandi suspende preventivamente la cuenta y puede exigir acreditación documental antes de restablecerla."
   },
   {
     "t": "p",
@@ -336,7 +336,7 @@
   {
     "t": "li",
     "level": 0,
-    "text": "Crear, verificar, administrar y dar de baja la cuenta; verificar identidad y mayoría de edad (Sección 7)."
+    "text": "Crear, administrar y dar de baja la cuenta; verificar el número de teléfono y confirmar la mayoría de edad declarada (Sección 7)."
   },
   {
     "t": "li",

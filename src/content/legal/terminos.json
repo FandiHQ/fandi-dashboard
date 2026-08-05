@@ -268,7 +268,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Para utilizar la Aplicación, el Usuario declara y garantiza que: es mayor de 18 años; tiene capacidad legal para obligarse; los datos que suministra son veraces y corresponden a su identidad; y no se encuentra en una jurisdicción donde el uso de la Aplicación esté prohibido. Fandi verifica la mayoría de edad y la identidad conforme a la Sección 5 y a su Política de Tratamiento de Datos, y bloquea el acceso cuando la edad declarada o verificada sea inferior a 18 años."
+    "text": "Para utilizar la Aplicación, el Usuario declara y garantiza que: es mayor de 18 años; tiene capacidad legal para obligarse; los datos que suministra son veraces y corresponden a su identidad; y no se encuentra en una jurisdicción donde el uso de la Aplicación esté prohibido. Fandi verifica el número de teléfono mediante código de un solo uso y bloquea el registro cuando la fecha de nacimiento declarada corresponde a un menor de 18 años. La declaración de edad es responsabilidad del Usuario y su falsedad constituye incumplimiento de estos Términos."
   },
   {
     "t": "p",
@@ -283,7 +283,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "El uso de la Aplicación requiere crear una cuenta y completar la verificación de identidad y edad antes de habilitar la Billetera y cualquier participación. El Usuario se obliga a suministrar información veraz y a mantenerla actualizada."
+    "text": "El uso de la Aplicación requiere crear una cuenta mediante verificación del número de teléfono con código de un solo uso y declaración de la fecha de nacimiento. Al realizar una recarga, la pasarela de pagos solicita adicionalmente el nombre completo, el tipo y número de documento del Usuario y confirma la operación mediante un código enviado por mensajería. El Usuario se obliga a suministrar información veraz y a mantenerla actualizada."
   },
   {
     "t": "li",
@@ -298,7 +298,7 @@
   {
     "t": "li",
     "level": 0,
-    "text": "Fandi podrá exigir una nueva verificación de identidad cuando existan indicios de suplantación, fraude, multicuenta o uso por un tercero, y suspender preventivamente la cuenta mientras se resuelve."
+    "text": "Fandi podrá exigir verificación adicional de identidad, incluida la acreditación documental, cuando existan indicios de suplantación, fraude, multicuenta, participación de un menor o uso por un tercero, y suspender preventivamente la cuenta mientras se resuelve."
   },
   {
     "t": "li",
@@ -407,7 +407,7 @@
   {
     "t": "li",
     "level": 0,
-    "text": "Solicitud expresa por correo. El reintegro debe solicitarse de forma expresa por el Usuario mediante correo electrónico a hola@fandi.app, desde el medio de contacto registrado en su cuenta, acreditando la titularidad a través de los mecanismos de verificación de identidad que Fandi disponga. Fandi confirma la recepción y puede requerir información adicional para validar la identidad del solicitante."
+    "text": "Solicitud expresa por correo. El reintegro debe solicitarse de forma expresa por el Usuario mediante correo electrónico a hola@fandi.app, desde el medio de contacto registrado en su cuenta. Fandi confirma la recepción y puede requerir información adicional para acreditar la titularidad antes de procesar la devolución."
   },
   {
     "t": "li",

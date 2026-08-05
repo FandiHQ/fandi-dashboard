@@ -88,7 +88,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Verificamos tu edad al registrarte y validamos tu identidad antes de habilitar tu billetera. Si detectamos que una cuenta pertenece a un menor, la suspendemos de inmediato, bloqueamos la billetera, suprimimos sus datos dentro de los quince (15) días hábiles siguientes y devolvemos el dinero recargado a su padre, madre o representante legal."
+    "text": "Al registrarte verificamos tu número de teléfono con un código de un solo uso y te pedimos tu fecha de nacimiento; el sistema bloquea el registro si eres menor de 18 años. Cuando recargas, la pasarela de pagos te pide tu nombre completo y tu documento y confirma la operación con un código. Si detectamos que una cuenta pertenece a un menor, la suspendemos de inmediato, bloqueamos la billetera, suprimimos sus datos dentro de los quince (15) días hábiles siguientes y devolvemos el dinero recargado a su padre, madre o representante legal."
   },
   {
     "t": "p",
