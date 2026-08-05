@@ -277,7 +277,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Suprimir tus datos, salvo aquellos que debamos conservar por obligación legal."
+    "text": "Suprimir tus datos. Como toda la información que tenemos es necesaria para prestarte el servicio o para cumplir la ley, este derecho se ejerce eliminando tu cuenta: no hay datos prescindibles que podamos borrar por separado."
   },
   {
     "t": "p",
@@ -328,6 +328,11 @@
     "t": "p",
     "level": 0,
     "text": "La eliminación de tu cuenta se hace desde la aplicación móvil, en Perfil › Configuración › Eliminar mi cuenta, sin escribirnos ni justificar nada. Antes de ejecutarla te mostramos el saldo que tengas sin comprometer, para que puedas solicitar su reintegro."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "No ofrecemos borrado parcial de datos sin eliminar la cuenta, porque todos los datos que conservamos son necesarios para operar tu billetera, adjudicar experiencias y cumplir la regulación que nos aplica. Eliminar tu cuenta es la vía para que dejemos de tratarlos."
   },
   {
     "t": "p",
