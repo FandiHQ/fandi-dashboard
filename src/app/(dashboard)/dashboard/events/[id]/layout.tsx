@@ -399,8 +399,15 @@ function GoLiveButton({
         }
     };
 
+    // Mirrors the API gate in events.service.updateStatus: the event needs
+    // at least one thing for a fan to DO, an Oportunidad or a Subasta,
+    // either one. Requiring an experience specifically left auction-only
+    // events permanently un-launchable.
+    const hasContent = stats
+        ? stats.experienceCount + stats.auctionCount > 0
+        : false;
     const allPassed = stats
-        ? stats.experienceCount > 0 &&
+        ? hasContent &&
           stats.experiencesReady &&
           stats.isPublished &&
           stats.badgesReady
@@ -432,8 +439,11 @@ function GoLiveButton({
                 ) : stats ? (
                     <div className="scanlines relative flex flex-col gap-4">
                         <ChecklistItem
-                            label={`${t('checkExperiences')} (${stats.experienceCount})`}
-                            passed={stats.experienceCount > 0 && stats.experiencesReady}
+                            label={t('checkContent', {
+                                experiences: stats.experienceCount,
+                                auctions: stats.auctionCount,
+                            })}
+                            passed={hasContent && stats.experiencesReady}
                         />
                         <ChecklistItem
                             label={t('checkPublished')}

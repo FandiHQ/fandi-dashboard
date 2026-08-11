@@ -214,7 +214,6 @@
         "confirmGoLive": "Go live? Experiences and auctions will be activated.",
         "confirmEnd": "End the event? This action cannot be undone.",
         "preLiveChecklist": "Pre-event checklist",
-        "checkExperiences": "At least 1 experience created",
         "checkExperiencesReady": "Experiences configured correctly",
         "checkPublished": "Event published",
         "checkBadges": "Badges configured",
@@ -233,7 +232,8 @@
         "typeToConfirm": "Type the event name to confirm",
         "viewLiveDashboard": "View Live Dashboard →",
         "totalRaised": "Total Raised",
-        "participants": "Participants"
+        "participants": "Participants",
+        "checkContent": "At least 1 opportunity or auction created ({experiences} opportunities · {auctions} auctions)"
     },
     "experiences": {
         "title": "Experiences",

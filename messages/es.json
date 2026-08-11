@@ -224,7 +224,6 @@
         "confirmGoLive": "¿Ir en vivo? Las experiencias y subastas se activarán.",
         "confirmEnd": "¿Terminar el evento? Esta acción no se puede deshacer.",
         "preLiveChecklist": "Verificación pre-evento",
-        "checkExperiences": "Al menos 1 oportunidad creada",
         "checkExperiencesReady": "Oportunidades configuradas correctamente",
         "checkPublished": "Evento publicado",
         "checkBadges": "Insignias configuradas",
@@ -243,7 +242,8 @@
         "typeToConfirm": "Escribe el nombre del evento para confirmar",
         "viewLiveDashboard": "Ver Dashboard en Vivo →",
         "totalRaised": "Total Recaudado",
-        "participants": "Participantes"
+        "participants": "Participantes",
+        "checkContent": "Al menos 1 oportunidad o subasta creada ({experiences} oportunidades · {auctions} subastas)"
     },
     "experiences": {
         "title": "Oportunidades",
