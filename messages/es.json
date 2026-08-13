@@ -667,7 +667,7 @@
             "idol": "Escríbenos",
             "founderA": "Los que hicimos Fandi somos fans.",
             "founderB": "Conocemos esta frustración de memoria.",
-            "forFans": "Para fans · la app móvil",
+            "forFans": "Para fans",
             "forIdols": "Para ídolos y equipos"
         },
         "frustracion": {
@@ -822,7 +822,11 @@
             "dataPolicy": "Tratamiento de Datos",
             "deleteAccount": "Eliminar mi cuenta"
         },
-        "scrollCue": "Sigue bajando"
+        "scrollCue": "Sigue bajando",
+        "cta": {
+            "openApp": "Abrir Fandi",
+            "enter": "Entrar"
+        }
     },
     "footer": {
         "terms": "Términos y Condiciones",
