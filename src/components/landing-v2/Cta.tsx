@@ -15,6 +15,18 @@ import { useTranslations } from 'next-intl';
 const IOS_URL = process.env.NEXT_PUBLIC_IOS_APP_URL ?? '';
 const ANDROID_URL = process.env.NEXT_PUBLIC_ANDROID_APP_URL ?? '';
 
+/**
+ * The mobile-web app. With the stores unapproved this is how a fan
+ * actually gets in, so it is the landing's primary CTA.
+ *
+ * It opens in the SAME TAB on purpose: this is a handoff into the app,
+ * not a reference link. A new tab would leave the marketing page behind
+ * the app the fan is now using, break the back button as a way out, and
+ * on iOS Safari cost them the tab they had.
+ */
+export const WEB_APP_URL =
+    process.env.NEXT_PUBLIC_WEB_APP_URL ?? 'http://localhost:8081';
+
 type Variant = 'primary' | 'ghost' | 'acid';
 
 const VARIANTS: Record<Variant, string> = {
@@ -31,12 +43,19 @@ export function Cta({
     onClick,
     variant = 'primary',
     className = '',
+    newTab,
 }: {
     children: ReactNode;
     href?: string;
     onClick?: () => void;
     variant?: Variant;
     className?: string;
+    /**
+     * Override the default target. Omit to keep the existing rule
+     * (http(s) opens a new tab); pass `false` for a handoff that should
+     * replace the current page, such as entering the web app.
+     */
+    newTab?: boolean;
 }) {
     const ref = useRef<HTMLSpanElement>(null);
 
@@ -83,7 +102,7 @@ export function Cta({
         // mailto is handed straight to the OS and leaves the page alone.
         // (If nothing happens at all, no default mail app is configured —
         // that is an OS setting, not something the page can fix.)
-        const isNewTab = /^https?:/i.test(href);
+        const isNewTab = newTab ?? /^https?:/i.test(href);
         return (
             <a
                 href={href}

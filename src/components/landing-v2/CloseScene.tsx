@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Cta, StoreButtons } from './Cta';
+import { Cta, WEB_APP_URL } from './Cta';
 
 /**
  * The close: download → objections → footer.
@@ -18,6 +18,7 @@ const FAQ_ITEMS = [1, 2, 3, 4, 5] as const;
 
 export function DownloadScene() {
     const t = useTranslations('landingV2.descargar');
+    const tCta = useTranslations('landingV2.cta');
     const reduceMotion = useReducedMotion();
 
     return (
@@ -56,7 +57,11 @@ export function DownloadScene() {
                     {t('body')}
                 </p>
 
-                <StoreButtons className="mt-2 justify-center" />
+                {/* Same-tab handoff into the web app — the stores are
+                    unapproved, so this is how a fan actually gets in. */}
+                <Cta href={WEB_APP_URL} newTab={false} variant="acid">
+                    {tCta('openApp')}
+                </Cta>
 
                 <div className="mt-2 flex flex-col items-center gap-3">
                     <span className="font-space-mono text-[11px] uppercase tracking-[3px] text-[#6B6B6B]">

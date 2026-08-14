@@ -19,7 +19,7 @@ import AuctionScene from './AuctionScene';
 import KeepScene from './KeepScene';
 import IdolsScene from './IdolsScene';
 import { DownloadScene, FaqScene, FooterV2 } from './CloseScene';
-import { Cta, StoreButtons } from './Cta';
+import { Cta, WEB_APP_URL } from './Cta';
 import { ScrollProgress, ScrollCue } from './ScrollAffordance';
 import LazyImageSequence from './LazyImageSequence';
 
@@ -150,13 +150,23 @@ export default function LandingV2() {
                                 </p>
 
                                 {/* Two audiences, explicitly labelled. Fans
-                                    download the app; "Ingresar" is the
+                                    open the web app; "Ingresar" is the
                                     dashboard login and belongs to ídolos, not
                                     to fans — unlabelled it read as a fan
-                                    action. */}
+                                    action.
+
+                                    The stores have not approved yet, so the
+                                    web app IS the product for launch. This is
+                                    a same-tab handoff, not a download. */}
                                 <div className="mt-8 flex flex-col items-center gap-3.5">
                                     <GroupLabel>{t('hero.forFans')}</GroupLabel>
-                                    <StoreButtons className="justify-center" />
+                                    <Cta
+                                        href={WEB_APP_URL}
+                                        newTab={false}
+                                        variant="acid"
+                                    >
+                                        {t('cta.openApp')}
+                                    </Cta>
                                 </div>
 
                                 <div className="mt-7 flex flex-col items-center gap-3.5">
