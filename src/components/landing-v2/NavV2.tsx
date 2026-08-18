@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Cta } from './Cta';
+import { Cta, WEB_APP_URL } from './Cta';
 
 /**
  * Persistent nav + mobile sticky CTA bar.
@@ -23,8 +23,14 @@ const LINKS = [
     { key: 'idolos', href: '#idolos' },
 ] as const;
 
+function switchLocale(locale: string) {
+    document.cookie = `locale=${locale};path=/;max-age=31536000`;
+    window.location.reload();
+}
+
 export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     const t = useTranslations('landingV2.nav');
+    const tCta = useTranslations('landingV2.cta');
     const locale = useLocale();
     const { scrollYProgress } = useScroll();
     const [past, setPast] = useState(false);
@@ -36,11 +42,6 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     useMotionValueEvent(scrollYProgress, 'change', (v) => {
         setPast(v > 0.035);
     });
-
-    const switchLocale = (loc: string) => {
-        document.cookie = `locale=${loc};path=/;max-age=31536000`;
-        window.location.reload();
-    };
 
     return (
         <>
@@ -118,8 +119,13 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                         >
                             {t('signIn')}
                         </button>
-                        <Cta href="#descargar" variant="acid" className="!px-5 !py-2.5">
-                            {t('download')}
+                        <Cta
+                            href={WEB_APP_URL}
+                            newTab={false}
+                            variant="acid"
+                            className="!px-5 !py-2.5"
+                        >
+                            {tCta('enter')}
                         </Cta>
                     </div>
                 </div>
@@ -134,8 +140,13 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                 <Cta onClick={onSignIn} variant="ghost" className="flex-1 !px-4">
                     {t('idol')}
                 </Cta>
-                <Cta href="#descargar" variant="acid" className="flex-1 !px-4">
-                    {t('download')}
+                <Cta
+                    href={WEB_APP_URL}
+                    newTab={false}
+                    variant="acid"
+                    className="flex-1 !px-4"
+                >
+                    {tCta('enter')}
                 </Cta>
             </div>
         </>

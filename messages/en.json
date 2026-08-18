@@ -640,7 +640,7 @@
             "idol": "Write to us",
             "founderA": "The people who built Fandi are fans.",
             "founderB": "We know this frustration by heart.",
-            "forFans": "For fans · the mobile app",
+            "forFans": "For fans",
             "forIdols": "For idols and teams"
         },
         "frustracion": {
@@ -795,7 +795,11 @@
             "dataPolicy": "Data Policy",
             "deleteAccount": "Delete my account"
         },
-        "scrollCue": "Keep scrolling"
+        "scrollCue": "Keep scrolling",
+        "cta": {
+            "openApp": "Open Fandi",
+            "enter": "Enter"
+        }
     },
     "footer": {
         "terms": "Terms & Conditions",
