@@ -8,7 +8,6 @@ import { ChevronDown } from 'lucide-react';
 
 import ImageSequenceCanvas from '@/components/landing/ImageSequenceCanvas';
 import LandingLoader from '@/components/landing/LandingLoader';
-import SignInModal from '@/components/landing/SignInModal';
 
 import NavV2 from './NavV2';
 import FrustrationScene from './FrustrationScene';
@@ -19,7 +18,7 @@ import AuctionScene from './AuctionScene';
 import KeepScene from './KeepScene';
 import IdolsScene from './IdolsScene';
 import { DownloadScene, FaqScene, FooterV2 } from './CloseScene';
-import { Cta, WEB_APP_URL } from './Cta';
+import { Cta, DASHBOARD_URL, WEB_APP_URL } from './Cta';
 import { ScrollProgress, ScrollCue } from './ScrollAffordance';
 import LazyImageSequence from './LazyImageSequence';
 
@@ -64,7 +63,6 @@ export default function LandingV2() {
         target: heroRef,
         offset: ['start start', 'end end'],
     });
-    const [signInOpen, setSignInOpen] = useState(false);
     const [loadProgress, setLoadProgress] = useState(0);
     const [loaded, setLoaded] = useState(false);
 
@@ -103,8 +101,7 @@ export default function LandingV2() {
             <LandingLoader progress={loadProgress} loaded={loaded} />
             {/* "There is more" — global, always on. */}
             <ScrollProgress />
-            <NavV2 onSignIn={() => setSignInOpen(true)} />
-            <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
+            <NavV2 />
 
             {/* pb on mobile clears the sticky action bar */}
             <main id="main-content" className="bg-black pb-24 md:pb-0">
@@ -173,7 +170,8 @@ export default function LandingV2() {
                                     <GroupLabel>{t('hero.forIdols')}</GroupLabel>
                                     <div className="flex flex-col items-center gap-3 sm:flex-row">
                                         <Cta
-                                            onClick={() => setSignInOpen(true)}
+                                            href={DASHBOARD_URL}
+                                            newTab={false}
                                             variant="ghost"
                                             className="!px-7 !py-3"
                                         >
@@ -268,7 +266,7 @@ export default function LandingV2() {
                 {/* ═══ CIERRE ═══ */}
                 <DownloadScene />
                 <FaqScene />
-                <FooterV2 onSignIn={() => setSignInOpen(true)} />
+                <FooterV2 />
             </main>
         </>
     );

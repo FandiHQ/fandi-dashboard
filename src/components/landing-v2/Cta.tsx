@@ -27,6 +27,13 @@ const ANDROID_URL = process.env.NEXT_PUBLIC_ANDROID_APP_URL ?? '';
 export const WEB_APP_URL =
     process.env.NEXT_PUBLIC_WEB_APP_URL ?? 'http://localhost:8081';
 
+/**
+ * Organizer dashboard. Kept environment-specific so staging and production
+ * can promote the same source without crossing their authentication flows.
+ */
+export const DASHBOARD_URL =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'http://localhost:3000/dashboard';
+
 type Variant = 'primary' | 'ghost' | 'acid';
 
 const VARIANTS: Record<Variant, string> = {

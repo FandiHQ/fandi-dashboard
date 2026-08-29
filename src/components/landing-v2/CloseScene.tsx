@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Cta, WEB_APP_URL } from './Cta';
+import { Cta, DASHBOARD_URL, WEB_APP_URL } from './Cta';
 
 /**
  * The close: download → objections → footer.
@@ -126,7 +126,7 @@ export function FaqScene() {
     );
 }
 
-export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
+export function FooterV2() {
     const t = useTranslations('landingV2.footer');
 
     return (
@@ -167,7 +167,7 @@ export function FooterV2({ onSignIn }: { onSignIn: () => void }) {
                         qualifier on the label — an unqualified "Ingresar"
                         sends fans to a login they can never complete. */}
                     <div className="flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
-                        <Cta onClick={onSignIn} variant="ghost">
+                        <Cta href={DASHBOARD_URL} newTab={false} variant="ghost">
                             {t('signIn')}
                         </Cta>
                         <Cta
