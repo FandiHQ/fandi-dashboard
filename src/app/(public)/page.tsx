@@ -1,4 +1,6 @@
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import LandingV2 from '@/components/landing-v2/LandingV2';
 
 const SITE = 'https://fandi.app';
@@ -18,6 +20,14 @@ const FAQ_IDS = [1, 2, 3, 4, 5] as const;
  * be at the stadium).
  */
 export default async function HomePage() {
+    const host = (await headers()).get('host')?.split(':')[0].toLowerCase();
+
+    // One service answers both staging hostnames: the public host renders
+    // this landing, while the dashboard host opens the staff login.
+    if (host === 'staging.dashboard.fandi.app') {
+        redirect('/login');
+    }
+
     const t = await getTranslations('landingV2');
 
     const jsonLd = {

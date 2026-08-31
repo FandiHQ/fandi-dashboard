@@ -32,7 +32,7 @@ export const WEB_APP_URL =
  * can promote the same source without crossing their authentication flows.
  */
 export const DASHBOARD_URL =
-    process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'http://localhost:3000/dashboard';
+    process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'http://localhost:3000/login';
 
 type Variant = 'primary' | 'ghost' | 'acid';
 
