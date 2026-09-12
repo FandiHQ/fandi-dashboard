@@ -23,6 +23,11 @@ const LINKS = [
     { key: 'idolos', href: '#idolos' },
 ] as const;
 
+function switchLocale(locale: string) {
+    document.cookie = `locale=${locale};path=/;max-age=31536000`;
+    window.location.reload();
+}
+
 export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     const t = useTranslations('landingV2.nav');
     const tCta = useTranslations('landingV2.cta');
@@ -37,11 +42,6 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     useMotionValueEvent(scrollYProgress, 'change', (v) => {
         setPast(v > 0.035);
     });
-
-    const switchLocale = (loc: string) => {
-        document.cookie = `locale=${loc};path=/;max-age=31536000`;
-        window.location.reload();
-    };
 
     return (
         <>
