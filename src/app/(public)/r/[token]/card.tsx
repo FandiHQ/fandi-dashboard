@@ -28,7 +28,7 @@ const MUTED = '#A0A0A0';
  * a card in the fallback sans is worlds better than a broken image in a
  * WhatsApp thread, so a missing font must never fail the response.
  */
-async function loadAnton(): Promise<ArrayBuffer | null> {
+export async function loadAnton(): Promise<ArrayBuffer | null> {
     try {
         const file = await readFile(
             join(process.cwd(), 'assets', 'Anton-Regular.ttf'),
