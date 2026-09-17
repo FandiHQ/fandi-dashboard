@@ -1,5 +1,10 @@
 # syntax=docker/dockerfile:1.7
-FROM node:24-alpine AS build
+# Pin the Node release as well as the base digest; Node bundles its own OpenSSL.
+FROM node:24.21.0-alpine3.24@sha256:be80f76cf40ec8e42b9bec49f60a55e0660f30af58d3e5a25530785b30ea67e2 AS base
+RUN apk upgrade --no-cache \
+    && apk add --no-cache 'libcrypto3>=3.5.8-r0' 'libssl3>=3.5.8-r0'
+
+FROM base AS build
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 RUN corepack enable && corepack prepare pnpm@11.13.1 --activate
@@ -21,7 +26,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
 RUN pnpm lint
 RUN pnpm build
 
-FROM node:24-alpine AS runtime
+FROM base AS runtime
 ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
 WORKDIR /app
 RUN apk add --no-cache ca-certificates
