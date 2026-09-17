@@ -39,7 +39,9 @@ export default function ImageSequenceCanvas({
      * down and re-run the loader — releasing and re-decoding every frame.
      */
     const onLoadProgressRef = useRef(onLoadProgress);
-    onLoadProgressRef.current = onLoadProgress;
+    useEffect(() => {
+        onLoadProgressRef.current = onLoadProgress;
+    }, [onLoadProgress]);
     const [loadProgress, setLoadProgress] = useState(0);
 
     const drawFrame = useCallback((index: number) => {

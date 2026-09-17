@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Camera, Trash2, Save, Loader2, Shield, Building2, Clock } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
@@ -21,14 +21,16 @@ export default function SettingsPage() {
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Sync form when user changes (e.g., after refreshUser)
-    useEffect(() => {
+    // Adjust this form before rendering stale values after refreshUser.
+    const [syncedUser, setSyncedUser] = useState(user);
+    if (user !== syncedUser) {
+        setSyncedUser(user);
         if (user) {
             setDisplayName(user.displayName || '');
             setPhone(user.phone || '');
             setAvatarUrl(user.avatarUrl || '');
         }
-    }, [user]);
+    }
 
     // ── Avatar upload ──
     const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

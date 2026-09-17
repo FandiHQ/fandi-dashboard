@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Camera, Save, Loader2, Eye, EyeOff, Image as ImageIcon } from 'lucide-react';
@@ -23,22 +23,25 @@ export function ArtistProfileCard() {
     });
 
     // ── Form state ──
-    const [description, setDescription] = useState('');
-    const [avatarUrl, setAvatarUrl] = useState('');
-    const [coverUrl, setCoverUrl] = useState('');
-    const [isPublic, setIsPublic] = useState(true);
+    const [description, setDescription] = useState(org?.description || '');
+    const [avatarUrl, setAvatarUrl] = useState(org?.avatarUrl || '');
+    const [coverUrl, setCoverUrl] = useState(org?.coverUrl || '');
+    const [isPublic, setIsPublic] = useState(org?.isPublic ?? true);
     const [uploading, setUploading] = useState<'avatar' | 'cover' | null>(null);
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const coverInputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
+    // Refresh drafts only when the query publishes a new organization object.
+    const [syncedOrg, setSyncedOrg] = useState(org);
+    if (org !== syncedOrg) {
+        setSyncedOrg(org);
         if (org) {
             setDescription(org.description || '');
             setAvatarUrl(org.avatarUrl || '');
             setCoverUrl(org.coverUrl || '');
             setIsPublic(org.isPublic);
         }
-    }, [org]);
+    }
 
     const saveMutation = useMutation({
         mutationFn: () =>

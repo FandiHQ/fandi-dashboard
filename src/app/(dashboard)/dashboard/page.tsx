@@ -61,17 +61,14 @@ export default function DashboardHomePage() {
 
     const isWriteRole = memberRole === 'owner' || memberRole === 'admin';
 
-    const fetchEvents = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const data = await eventsApi.list();
-            setEvents(data.items);
-        } catch {
-            setError(t('errorLoading'));
-        } finally {
-            setLoading(false);
-        }
+    const fetchEvents = useCallback(() => {
+        return eventsApi.list()
+            .then((data) => {
+                setError(null);
+                setEvents(data.items);
+            })
+            .catch(() => setError(t('errorLoading')))
+            .finally(() => setLoading(false));
     }, [t]);
 
     useEffect(() => {
@@ -152,7 +149,11 @@ export default function DashboardHomePage() {
                     <AlertCircle size={32} className="text-[#FF3366]" />
                     <p className="font-sora text-sm text-[#A0A0A0]">{error}</p>
                     <button
-                        onClick={fetchEvents}
+                        onClick={() => {
+                            setLoading(true);
+                            setError(null);
+                            void fetchEvents();
+                        }}
                         className="cursor-pointer rounded-none border border-[#2A2A2A] bg-transparent px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-colors duration-150 hover:bg-[#1A1A1A]"
                     >
                         {t('retry')}
