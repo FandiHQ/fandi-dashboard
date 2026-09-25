@@ -22,6 +22,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
 // ── Helpers ──
+// Phase 2 floors — mirror of the api's SOFT_CLOSE_FLOOR_SECONDS /
+// EXTENSION_FLOOR_SECONDS (auctions.dto.ts). The api clamps anyway.
+const SOFT_CLOSE_FLOOR_SECONDS = 60;
+const EXTENSION_FLOOR_SECONDS = 60;
+
 const FANDI_RATE = 5_000;
 
 function isFandiAligned(cop: number): boolean {
@@ -352,6 +357,12 @@ function AuctionFormDialog({
     const [description, setDescription] = useState(existing?.description ?? '');
     const [startingPrice, setStartingPrice] = useState<number>(existing?.startingPrice ?? 10000);
     const [durationMinutes, setDurationMinutes] = useState<number>(existing?.durationMinutes ?? 15);
+    // Phase 2 — bidding rules. 60 s is a hard floor on the api (values
+    // under it are raised, not rejected); the form mirrors it so the
+    // organizer sees the real rule before saving.
+    const [minIncrementFandies, setMinIncrementFandies] = useState<number>(existing?.minIncrementFandies ?? 5);
+    const [softCloseSeconds, setSoftCloseSeconds] = useState<number>(existing?.softCloseSeconds ?? 60);
+    const [extensionSeconds, setExtensionSeconds] = useState<number>(existing?.extensionSeconds ?? 60);
     const initialScheduledStart = toLocalScheduledParts(existing?.scheduledStart);
     const [scheduledDate, setScheduledDate] = useState(initialScheduledStart.date);
     const [scheduledTime, setScheduledTime] = useState(initialScheduledStart.time);
@@ -409,6 +420,9 @@ function AuctionFormDialog({
         Boolean(name.trim()) &&
         startingPrice >= 10000 &&
         durationMinutes >= 1 &&
+        minIncrementFandies >= 1 &&
+        softCloseSeconds >= SOFT_CLOSE_FLOOR_SECONDS &&
+        extensionSeconds >= EXTENSION_FLOOR_SECONDS &&
         isFandiAligned(startingPrice) &&
         !isPending;
 
@@ -422,6 +436,9 @@ function AuctionFormDialog({
             ...(description && { description }),
             startingPrice,
             durationMinutes,
+            minIncrementFandies,
+            softCloseSeconds,
+            extensionSeconds,
             ...(scheduledStart && { scheduledStart }),
             ...(redemptionInstructions && { redemptionInstructions }),
             tagIds,
@@ -528,6 +545,62 @@ function AuctionFormDialog({
                                     className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
                                 />
                             </div>
+
+                            {/* Phase 2 — bidding rules */}
+                            <div className="flex flex-col gap-2">
+                                <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                    {t('form.minIncrement')} *
+                                </label>
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    value={minIncrementFandies}
+                                    onChange={(e) => setMinIncrementFandies(Number(e.target.value))}
+                                    className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
+                                />
+                                <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                    {t('form.minIncrementHelp', { fandis: formatFandis(minIncrementFandies * FANDI_RATE) })}
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="flex flex-col gap-2">
+                                    <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                        {t('form.softClose')} *
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        min={SOFT_CLOSE_FLOOR_SECONDS}
+                                        value={softCloseSeconds}
+                                        onChange={(e) => setSoftCloseSeconds(Number(e.target.value))}
+                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
+                                    />
+                                    {softCloseSeconds < SOFT_CLOSE_FLOOR_SECONDS && (
+                                        <p className="font-space-mono text-[10px] text-[#FF9900]">
+                                            {t('form.softCloseFloor', { seconds: SOFT_CLOSE_FLOOR_SECONDS })}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                        {t('form.extension')} *
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        min={EXTENSION_FLOOR_SECONDS}
+                                        value={extensionSeconds}
+                                        onChange={(e) => setExtensionSeconds(Number(e.target.value))}
+                                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
+                                    />
+                                    {extensionSeconds < EXTENSION_FLOOR_SECONDS && (
+                                        <p className="font-space-mono text-[10px] text-[#FF9900]">
+                                            {t('form.extensionFloor', { seconds: EXTENSION_FLOOR_SECONDS })}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                            <p className="font-space-mono text-[10px] text-[#4A4A4A]">
+                                {t('form.softCloseRule', { softClose: softCloseSeconds, extension: extensionSeconds })}
+                            </p>
 
                             {/* Scheduled Start */}
                             <div className="flex flex-col gap-2">
@@ -752,7 +825,7 @@ function AuctionCard({
                     </span>
                     <div className="flex items-center gap-2">
                         <span className="font-space-mono text-base text-white">
-                            {auction.durationMinutes} m
+                            {auction.durationMinutes} m · +{formatFandis(auction.minIncrementFandies * FANDI_RATE)} F
                         </span>
                         <SoftCloseInfo
                             softCloseSeconds={auction.softCloseSeconds}

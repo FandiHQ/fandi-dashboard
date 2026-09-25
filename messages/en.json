@@ -256,7 +256,32 @@
             "4": "VIP Box"
         },
         "customNames": "Customize escuadra names",
-        "distribution": "Distribution: 50% / 30% / 15% / 5%"
+        "distribution": "Distribution: 50% / 30% / 15% / 5%",
+        "addImpacto": "Create Impacto",
+        "editImpacto": "Edit Impacto",
+        "impactoTag": "Impacto",
+        "impactoCreated": "Impacto created",
+        "impactoUpdated": "Impacto updated",
+        "causeTitle": "Cause",
+        "causeTitlePlaceholder": "E.g. Instruments for the Bello music school",
+        "causeDescription": "Cause description",
+        "goal": "Goal (Fandis)",
+        "goalHelp": "Optional. Fans see progress towards the goal.",
+        "beneficiary": "Beneficiary",
+        "beneficiaryPlaceholder": "E.g. Fundación Sonido",
+        "impactoExplainer": "An Impacto is an Oportunidad without a draw: fans fandean for a cause your artist backs. No winners or prizes — recognition: escuadra position, Impactores wall and a badge.",
+        "progress": "Progress",
+        "raisedOf": "{raised} of {goal} F",
+        "raised": "{raised} F raised",
+        "goalReached": "Goal reached",
+        "impactores": "Impactores",
+        "noImpactores": "No Impactores yet.",
+        "privateFan": "Private profile",
+        "closeImpactoConfirm": "Close this Impacto? Fans will no longer be able to contribute.",
+        "impactoClosed": "Impacto closed",
+        "filterAll": "All",
+        "filterOportunidades": "Oportunidades",
+        "filterImpactos": "Impactos"
     },
     "franjas": {
         "title": "Slots",
@@ -342,7 +367,14 @@
             "descriptionPlaceholder": "E.g.: Imagine winning the cap I'll be wearing during the concert!",
             "startingPrice": "Starting price (COP)",
             "durationMinutes": "Duration (minutes)",
-            "scheduledStart": "Scheduled start"
+            "scheduledStart": "Scheduled start",
+            "minIncrement": "Minimum increment (Fandies)",
+            "minIncrementHelp": "Every bid must beat the previous one by at least {fandis} Fandies.",
+            "softClose": "Soft close (s)",
+            "extension": "Extension (s)",
+            "softCloseFloor": "Minimum {seconds} s: fans need time to respond.",
+            "extensionFloor": "Minimum {seconds} s.",
+            "softCloseRule": "Rule: a valid bid in the last {softClose} s extends the close {extension} s from that bid, as many times as needed."
         }
     },
     "team": {

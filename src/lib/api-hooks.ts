@@ -4,7 +4,7 @@ import type {
     Event, CreateEventDto, UpdateEventDto, EventStatus,
     PaginatedEventsResponse,
     PreLiveStatsResponse,
-    Experience, CreateExperienceDto,
+    Experience, CreateExperienceDto, Impactor,
     ExperienceSlot, CreateSlotDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
     Organization, UpdateOrganizationDto, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
@@ -97,6 +97,9 @@ export const experiencesApi = {
         unwrap(api.post<Experience>(`/dashboard/experiences/${id}/reveal`)),
     getWinners: (id: string) =>
         unwrap(api.get<WinnersListItem[]>(`/dashboard/experiences/${id}/winners`)),
+    // Phase 6 — Impactores wall: names by privacy, positions only, NO amounts.
+    impactores: (id: string) =>
+        unwrap(api.get<Impactor[]>(`/dashboard/experiences/${id}/impactores`)),
 };
 
 // ── Opportunity slots (Franjas) — Step 6.2 ──

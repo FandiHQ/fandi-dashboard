@@ -9,6 +9,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Crown,
+    ExternalLink,
     Loader2,
     Lock,
     MapPin,
@@ -368,6 +369,19 @@ export default function TopFansPage() {
                                     </p>
                                 ) : (
                                     <>
+                                        {/* Phase 4 — read-only; the api only
+                                            sends it for public fans. */}
+                                        {detailQuery.data.instagramHandle ? (
+                                            <a
+                                                href={`https://instagram.com/${detailQuery.data.instagramHandle}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 self-start font-space-mono text-xs text-[#A0A0A0] underline underline-offset-2 hover:text-white"
+                                                data-testid="fan-detail-instagram">
+                                                <ExternalLink size={12} />
+                                                @{detailQuery.data.instagramHandle}
+                                            </a>
+                                        ) : null}
                                         {detailQuery.data.superlatives && (
                                             <div className="grid grid-cols-3 gap-2">
                                                 <MiniStat

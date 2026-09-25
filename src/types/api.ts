@@ -131,6 +131,8 @@ export interface FanPublicProfile {
     userId: string;
     firstName: string | null;
     avatarSeed: string | null;
+    /** Phase 4 — canonical handle without "@"; null when private/unset. */
+    instagramHandle: string | null;
     isPrivate: boolean;
     isSelf: boolean;
     rank: {
@@ -241,10 +243,34 @@ export interface EscuadraInfo {
     userCount: number;
 }
 
+export type ExperienceKind = 'oportunidad' | 'impacto';
+
+/** Phase 6 — the cause's total vs. its goal. Never a fan's spend. */
+export interface ImpactoProgress {
+    goalCop: number | null;
+    raisedCop: number;
+}
+
+/** Phase 6 — one row of the Impactores wall. Positions only. */
+export interface Impactor {
+    userId: string;
+    firstName: string | null;
+    isPrivate: boolean;
+    escuadraLevel: number;
+    position: number;
+}
+
 export interface Experience {
     id: string;
     eventId: string;
     name: string;
+    // Phase 6 — 'impacto' = a cause without a draw. Older api builds omit it.
+    kind?: ExperienceKind;
+    causeTitle?: string | null;
+    causeDescription?: string | null;
+    beneficiaryName?: string | null;
+    goalReachedAt?: string | null;
+    progress?: ImpactoProgress | null;
     description: string | null;
     imageUrl: string | null;
     winnersPerEscuadra: number;
@@ -303,7 +329,8 @@ export interface EscuadraThresholds {
 export interface CreateExperienceDto {
     name: string;
     description?: string;
-    winnersPerEscuadra: number;
+    /** Oportunidades only; the api ignores it for impactos. */
+    winnersPerEscuadra?: number;
     escuadraNames?: Record<string, string>;
     surpriseReveal?: string;
     redemptionInstructions?: string;
@@ -311,6 +338,12 @@ export interface CreateExperienceDto {
     slotId?: string | null;
     // Lineup tag ids (Step 6.4).
     tagIds?: string[];
+    // Phase 6 — Impactos (kind is immutable after creation).
+    kind?: ExperienceKind;
+    causeTitle?: string;
+    causeDescription?: string;
+    goalCop?: number | null;
+    beneficiaryName?: string;
 }
 
 export interface UserPosition {
@@ -339,6 +372,8 @@ export interface Auction {
     durationMinutes: number;
     softCloseSeconds: number;
     extensionSeconds: number;
+    /** Minimum step over the current price, in Fandies (Phase 2). */
+    minIncrementFandies: number;
     scheduledStart: string | null;
     startedAt: string | null;
     endsAt: string | null;
@@ -365,12 +400,14 @@ export interface CreateAuctionDto {
     redemptionInstructions?: string;
     // Lineup tag ids (Step 6.4).
     tagIds?: string[];
-}
-
-export interface UpdateAuctionDto extends Partial<CreateAuctionDto> {
+    // Phase 2 bidding rules. The api clamps soft close / extension to a
+    // 60 s floor; the form enforces the same minimum up front.
+    minIncrementFandies?: number;
     softCloseSeconds?: number;
     extensionSeconds?: number;
 }
+
+export type UpdateAuctionDto = Partial<CreateAuctionDto>;
 
 export interface BidListItem {
     id: string;

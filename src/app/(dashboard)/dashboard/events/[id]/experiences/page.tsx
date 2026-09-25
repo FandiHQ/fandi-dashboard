@@ -8,12 +8,13 @@ import { toast } from 'sonner';
 import {
     Plus, Loader2, Users, Trophy, Eye, EyeOff,
     Lock, ChevronDown, ChevronUp, Gift,
-    Pencil, Trash2, Info, X, Clock,
+    Pencil, Trash2, Info, X, Clock, HeartHandshake,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { experiencesApi, eventsApi, slotsApi } from '@/lib/api-hooks';
+import { filterByKind, goalReached, impactoPercent, isImpacto, type KindFilter } from '@/lib/impacto';
 import { FranjasSection } from './FranjasSection';
-import type { Experience, CreateExperienceDto, EscuadraInfo, ExperienceStatus, LineupEntry } from '@/types/api';
+import type { Experience, CreateExperienceDto, EscuadraInfo, ExperienceKind, ExperienceStatus, LineupEntry } from '@/types/api';
 import { ArtistMultiSelect } from '@/components/events/ArtistMultiSelect';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -143,6 +144,18 @@ function OpportunityCard({
     // trigger the public reveal (`onReveal`/`surpriseRevealedAt`).
     const [showSurprise, setShowSurprise] = useState(false);
     const escuadras = exp.escuadras || [];
+    // Phase 6 — Impacto: progress instead of winners, Impactores wall
+    // (positions only) instead of prizes.
+    const impacto = isImpacto(exp);
+    const raisedCop = exp.progress?.raisedCop ?? 0;
+    const goalCop = exp.progress?.goalCop ?? null;
+    const percent = impactoPercent(raisedCop, goalCop);
+    const reached = goalReached(raisedCop, goalCop);
+    const impactoresQuery = useQuery({
+        queryKey: ['experiences', exp.id, 'impactores'],
+        queryFn: () => experiencesApi.impactores(exp.id),
+        enabled: impacto && expanded,
+    });
 
     return (
         <motion.div 
@@ -155,10 +168,28 @@ function OpportunityCard({
             <div className="flex items-start justify-between p-5">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <Gift size={18} className="text-[#2D00F7]" />
+                        {impacto ? (
+                            <HeartHandshake size={18} className="text-[#2D00F7]" />
+                        ) : (
+                            <Gift size={18} className="text-[#2D00F7]" />
+                        )}
                         <h3 className="font-sora text-xl font-bold text-white">{exp.name}</h3>
                     </div>
-                    <StatusBadge status={exp.status} />
+                    <div className="flex items-center gap-2">
+                        <StatusBadge status={exp.status} />
+                        {impacto && (
+                            <span
+                                className="border border-[#2D00F7] bg-[#2D00F715] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[2px] text-[#B3A8FF]"
+                                data-testid="impacto-tag">
+                                {t('impactoTag')}
+                            </span>
+                        )}
+                        {impacto && reached && (
+                            <span className="border border-[#00FF88] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[2px] text-[#00FF88]">
+                                {t('goalReached')}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -225,12 +256,33 @@ function OpportunityCard({
                         {exp.contributorCount || 0} {t('contributors')}
                     </span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Trophy size={14} className="text-[#4A4A4A]" />
-                    <span className="font-space-mono text-[12px] text-[#A0A0A0]">
-                        {exp.winnersPerEscuadra}× por escuadra
-                    </span>
-                </div>
+                {impacto ? (
+                    <div className="flex min-w-0 flex-1 flex-col gap-1.5" data-testid="impacto-progress">
+                        <div className="flex items-center justify-between font-space-mono text-[12px] text-[#A0A0A0]">
+                            <span>
+                                {goalCop
+                                    ? t('raisedOf', { raised: formatFandis(raisedCop), goal: formatFandis(goalCop) })
+                                    : t('raised', { raised: formatFandis(raisedCop) })}
+                            </span>
+                            {percent !== null && <span className="text-[#B3A8FF]">{percent}%</span>}
+                        </div>
+                        {percent !== null && (
+                            <div className="h-1.5 w-full bg-[#1E1E1E]">
+                                <div
+                                    className="h-1.5 bg-[#2D00F7] shadow-[0_0_10px_rgba(45,0,247,0.5)] transition-all"
+                                    style={{ width: `${percent}%` }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-2">
+                        <Trophy size={14} className="text-[#4A4A4A]" />
+                        <span className="font-space-mono text-[12px] text-[#A0A0A0]">
+                            {exp.winnersPerEscuadra}× por escuadra
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Franja + Artistas chips (Step 6.4) */}
@@ -270,8 +322,56 @@ function OpportunityCard({
             {/* Expanded details */}
             {expanded && (
                 <div className="flex flex-col gap-3 border-t border-[#141414] px-5 py-4">
+                    {impacto && (
+                        <div className="flex flex-col gap-1" data-testid="impacto-cause">
+                            <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
+                                {t('causeTitle')}
+                            </span>
+                            <p className="font-sora text-base font-semibold text-white">{exp.causeTitle}</p>
+                            {exp.causeDescription && (
+                                <p className="font-sora text-sm leading-relaxed text-[#A0A0A0]">{exp.causeDescription}</p>
+                            )}
+                            {exp.beneficiaryName && (
+                                <p className="font-space-mono text-[11px] text-[#737373]">
+                                    {t('beneficiary')}: {exp.beneficiaryName}
+                                </p>
+                            )}
+                        </div>
+                    )}
                     {exp.description && (
                         <p className="font-sora text-sm leading-relaxed text-[#737373]">{exp.description}</p>
+                    )}
+                    {impacto && (
+                        <div className="flex flex-col gap-2" data-testid="impactores-list">
+                            <span className="font-space-mono text-[10px] uppercase tracking-[1px] text-[#4A4A4A]">
+                                {t('impactores')}
+                            </span>
+                            {impactoresQuery.isLoading && (
+                                <Loader2 size={14} className="animate-spin text-[#737373]" />
+                            )}
+                            {impactoresQuery.data && impactoresQuery.data.length === 0 && (
+                                <span className="font-space-mono text-[11px] text-[#4A4A4A]">{t('noImpactores')}</span>
+                            )}
+                            {impactoresQuery.data && impactoresQuery.data.length > 0 && (
+                                <ol className="flex flex-col gap-1">
+                                    {/* Positions and names only — never a per-fan amount. */}
+                                    {impactoresQuery.data.map((row) => (
+                                        <li
+                                            key={row.userId}
+                                            className="flex items-center gap-3 font-sora text-sm text-[#E0E0E0]">
+                                            <span className="w-8 font-space-mono text-[11px] text-[#B3A8FF]">#{row.position}</span>
+                                            {row.isPrivate ? (
+                                                <span className="flex items-center gap-1.5 italic text-[#737373]">
+                                                    <Lock size={11} /> {t('privateFan')}
+                                                </span>
+                                            ) : (
+                                                <span>{row.firstName ?? '—'}</span>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ol>
+                            )}
+                        </div>
                     )}
                     {exp.surpriseReveal && (
                         <div className="flex items-center gap-2">
@@ -312,16 +412,29 @@ function OpportunityFormDialog({
     eventId,
     existing,
     lineup,
+    kind,
     onClose,
 }: {
     eventId: string;
     existing?: Experience | null;
     lineup: LineupEntry[];
+    /** Phase 6 — immutable after creation; the form shape follows it. */
+    kind: ExperienceKind;
     onClose: () => void;
 }) {
     const t = useTranslations('experiences');
     const queryClient = useQueryClient();
     const isEditing = !!existing;
+    const impacto = kind === 'impacto';
+
+    // Phase 6 — cause fields (impactos only). Goal is typed in Fandis and
+    // sent as COP (FANDI_RATE); formatFandis everywhere on the way back.
+    const [causeTitle, setCauseTitle] = useState(existing?.causeTitle ?? '');
+    const [causeDescription, setCauseDescription] = useState(existing?.causeDescription ?? '');
+    const [goalFandis, setGoalFandis] = useState<string>(
+        existing?.progress?.goalCop ? String(existing.progress.goalCop / FANDI_RATE) : '',
+    );
+    const [beneficiaryName, setBeneficiaryName] = useState(existing?.beneficiaryName ?? '');
 
     const [name, setName] = useState(existing?.name || '');
     const [description, setDescription] = useState(existing?.description || '');
@@ -348,7 +461,7 @@ function OpportunityFormDialog({
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
-            toast.success(t('created'));
+            toast.success(impacto ? t('impactoCreated') : t('created'));
             onClose();
         },
         onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : 'Error'); },
@@ -359,7 +472,7 @@ function OpportunityFormDialog({
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
-            toast.success(t('updated'));
+            toast.success(impacto ? t('impactoUpdated') : t('updated'));
             onClose();
         },
         onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : 'Error'); },
@@ -367,9 +480,36 @@ function OpportunityFormDialog({
 
     const isPending = isCreating || isUpdating;
 
+    const goalFandisNumber = goalFandis.trim() === '' ? null : Number(goalFandis);
+    const goalValid =
+        goalFandisNumber === null ||
+        (Number.isInteger(goalFandisNumber) && goalFandisNumber > 0);
+    const impactoValid = !impacto || (causeTitle.trim().length > 0 && goalValid);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim()) return;
+
+        // Phase 6 — an Impacto never sends prize/slot fields.
+        if (impacto) {
+            if (!impactoValid) return;
+            const dto: CreateExperienceDto = {
+                name: name.trim(),
+                ...(description && { description }),
+                kind: 'impacto',
+                causeTitle: causeTitle.trim(),
+                ...(causeDescription.trim() && { causeDescription: causeDescription.trim() }),
+                goalCop: goalFandisNumber === null ? null : goalFandisNumber * FANDI_RATE,
+                ...(beneficiaryName.trim() && { beneficiaryName: beneficiaryName.trim() }),
+                tagIds,
+            };
+            if (isEditing) {
+                update(dto);
+            } else {
+                create(dto);
+            }
+            return;
+        }
 
         // Only include escuadra names that have values
         const names: Record<string, string> = {};
@@ -408,7 +548,9 @@ function OpportunityFormDialog({
                 <div className="flex shrink-0 items-center gap-2 border-b border-[#1E1E1E] px-6 py-4">
                     <div className="h-3 w-1 bg-[#2D00F7]" />
                     <h2 className="font-space-mono text-[14px] uppercase tracking-[2px] text-white">
-                        {isEditing ? 'Editar Oportunidad' : t('add')}
+                        {impacto
+                            ? (isEditing ? t('editImpacto') : t('addImpacto'))
+                            : (isEditing ? 'Editar Oportunidad' : t('add'))}
                     </h2>
                     <div className="ml-auto h-3 w-1 bg-[#2D00F7]" />
                 </div>
@@ -441,6 +583,67 @@ function OpportunityFormDialog({
                                 />
                             </div>
 
+                            {/* Phase 6 — Impacto: cause, goal, beneficiary */}
+                            {impacto && (
+                                <>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                            {t('causeTitle')} *
+                                        </label>
+                                        <Input
+                                            value={causeTitle}
+                                            onChange={(e) => setCauseTitle(e.target.value)}
+                                            maxLength={120}
+                                            placeholder={t('causeTitlePlaceholder')}
+                                            className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                            data-testid="impacto-cause-title"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                            {t('causeDescription')}
+                                        </label>
+                                        <Textarea
+                                            value={causeDescription}
+                                            onChange={(e) => setCauseDescription(e.target.value)}
+                                            rows={3}
+                                            className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                                {t('goal')}
+                                            </label>
+                                            <Input
+                                                type="number"
+                                                min={1}
+                                                step={1}
+                                                value={goalFandis}
+                                                onChange={(e) => setGoalFandis(e.target.value)}
+                                                placeholder="1000"
+                                                className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:ring-0"
+                                                data-testid="impacto-goal"
+                                            />
+                                            <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('goalHelp')}</p>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                                                {t('beneficiary')}
+                                            </label>
+                                            <Input
+                                                value={beneficiaryName}
+                                                onChange={(e) => setBeneficiaryName(e.target.value)}
+                                                maxLength={120}
+                                                placeholder={t('beneficiaryPlaceholder')}
+                                                className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {!impacto && (
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
                                     {t('winnersPerEscuadra')}
@@ -455,8 +658,11 @@ function OpportunityFormDialog({
                                 />
                                 <p className="font-space-mono text-[10px] text-[#4A4A4A]">{t('distribution')}</p>
                             </div>
+                            )}
 
-                            {/* Franja (slot) — Step 6.2 */}
+                            {/* Franja (slot) — Step 6.2. Impactos open with the
+                                event's Fandi window: no franja. */}
+                            {!impacto && (
                             <div className="flex flex-col gap-2">
                                 <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
                                     {t('franja')}
@@ -474,6 +680,7 @@ function OpportunityFormDialog({
                                     ))}
                                 </select>
                             </div>
+                            )}
 
                             {/* Artistas (lineup tags) — Step 6.4 */}
                             <div className="flex flex-col gap-2">
@@ -488,7 +695,9 @@ function OpportunityFormDialog({
                                 />
                             </div>
 
-                            {/* Escuadra Names */}
+                            {/* Escuadra Names + surprise + redemption — Oportunidades only */}
+                            {!impacto && (
+                            <>
                             <div className="mt-4 flex flex-col gap-4 border border-[#2A2A2A] bg-[#0A0A0A] p-5 shadow-inner transition-colors duration-300 hover:border-[#4A4A4A]">
                                 <div className="flex items-center gap-2">
                                     <label className="font-space-mono text-[13px] uppercase tracking-[2px] text-white">
@@ -562,6 +771,8 @@ function OpportunityFormDialog({
                                     className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:ring-0"
                                 />
                             </div>
+                            </>
+                            )}
                         </div>
                     </div>
 
@@ -570,11 +781,11 @@ function OpportunityFormDialog({
                         <div className="flex gap-3">
                             <button
                                 type="submit"
-                                disabled={!name.trim() || isPending}
+                                disabled={!name.trim() || !impactoValid || isPending}
                                 className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] px-6 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isPending && <Loader2 size={14} className="animate-spin" />}
-                                {isEditing ? 'Guardar' : t('add')}
+                                {isEditing ? 'Guardar' : impacto ? t('addImpacto') : t('add')}
                             </button>
                             <button
                                 type="button"
@@ -603,6 +814,9 @@ export default function OportunidadesPage() {
     const [showForm, setShowForm] = useState(false);
     const [editingExp, setEditingExp] = useState<Experience | null>(null);
     const [showBanner, setShowBanner] = useState(true);
+    // Phase 6 — which shape the dialog takes, and the list filter.
+    const [formKind, setFormKind] = useState<ExperienceKind>('oportunidad');
+    const [kindFilter, setKindFilter] = useState<KindFilter>('all');
 
     const { data: experiences, isLoading } = useQuery({
         queryKey: ['experiences', eventId],
@@ -625,9 +839,10 @@ export default function OportunidadesPage() {
 
     const closeMutation = useMutation({
         mutationFn: (id: string) => experiencesApi.close(id),
-        onSuccess: () => {
+        onSuccess: (_data, id) => {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
-            toast.success(t('closed'));
+            const closedExp = experiences?.find((e) => e.id === id);
+            toast.success(closedExp && isImpacto(closedExp) ? t('impactoClosed') : t('closed'));
         },
         onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
     });
@@ -645,10 +860,13 @@ export default function OportunidadesPage() {
         if (confirm(t('revealConfirm'))) revealMutation.mutate(id);
     };
     const handleClose = (id: string) => {
-        if (confirm(t('closeConfirm'))) closeMutation.mutate(id);
+        const target = experiences?.find((e) => e.id === id);
+        const message = target && isImpacto(target) ? t('closeImpactoConfirm') : t('closeConfirm');
+        if (confirm(message)) closeMutation.mutate(id);
     };
     const handleEdit = (exp: Experience) => {
         setEditingExp(exp);
+        setFormKind(isImpacto(exp) ? 'impacto' : 'oportunidad');
         setShowForm(true);
     };
     const handleDelete = (id: string) => {
@@ -661,9 +879,11 @@ export default function OportunidadesPage() {
         setEditingExp(null);
     };
 
-    const pending = experiences?.filter((e) => e.status === 'pending') || [];
-    const active = experiences?.filter((e) => e.status === 'active') || [];
-    const closed = experiences?.filter((e) => e.status === 'closed') || [];
+    const visible = filterByKind(experiences ?? [], kindFilter);
+    const pending = visible.filter((e) => e.status === 'pending');
+    const active = visible.filter((e) => e.status === 'active');
+    const closed = visible.filter((e) => e.status === 'closed');
+    const impactoCount = (experiences ?? []).filter(isImpacto).length;
 
     return (
         <div className="flex flex-col gap-8 p-8">
@@ -701,15 +921,47 @@ export default function OportunidadesPage() {
                 </div>
 
                 {isWrite && (
-                    <button
-                        onClick={() => { setEditingExp(null); setShowForm(true); }}
-                        className="flex cursor-pointer items-center gap-2 bg-[#2D00F7] px-5 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)]"
-                    >
-                        <Plus size={16} />
-                        {t('add')}
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => { setEditingExp(null); setFormKind('oportunidad'); setShowForm(true); }}
+                            className="flex cursor-pointer items-center gap-2 bg-[#2D00F7] px-5 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] hover:shadow-[0_0_24px_rgba(45,0,247,0.5)]"
+                        >
+                            <Plus size={16} />
+                            {t('add')}
+                        </button>
+                        {/* Phase 6 — a cause without a draw */}
+                        <button
+                            onClick={() => { setEditingExp(null); setFormKind('impacto'); setShowForm(true); }}
+                            title={t('impactoExplainer')}
+                            className="flex cursor-pointer items-center gap-2 border border-[#2D00F7] bg-transparent px-5 py-3 font-space-mono text-[13px] uppercase tracking-[1px] text-[#B3A8FF] transition-all hover:bg-[#2D00F715] hover:text-white"
+                            data-testid="add-impacto"
+                        >
+                            <HeartHandshake size={16} />
+                            {t('addImpacto')}
+                        </button>
+                    </div>
                 )}
             </div>
+
+            {/* ── Kind filter (Phase 6) — shown once there is at least one Impacto ── */}
+            {impactoCount > 0 && (
+                <div className="flex items-center gap-2" data-testid="kind-filter">
+                    {(['all', 'oportunidad', 'impacto'] as KindFilter[]).map((k) => (
+                        <button
+                            key={k}
+                            type="button"
+                            onClick={() => setKindFilter(k)}
+                            className={`cursor-pointer border px-3 py-1.5 font-space-mono text-[11px] uppercase tracking-[1px] transition-colors ${
+                                kindFilter === k
+                                    ? 'border-[#2D00F7] text-white'
+                                    : 'border-[#2A2A2A] text-[#737373] hover:text-white'
+                            }`}
+                        >
+                            {k === 'all' ? t('filterAll') : k === 'impacto' ? t('filterImpactos') : t('filterOportunidades')}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {/* ── Franjas (slots) — Step 6.2 ── */}
             {isWrite && <FranjasSection eventId={eventId} />}
@@ -813,6 +1065,7 @@ export default function OportunidadesPage() {
                     eventId={eventId}
                     existing={editingExp}
                     lineup={event?.lineup ?? []}
+                    kind={formKind}
                     onClose={handleCloseForm}
                 />
             )}

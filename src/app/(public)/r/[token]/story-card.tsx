@@ -13,8 +13,17 @@
  * that call itself — it renders exactly what the token permits.
  */
 import { ImageResponse } from 'next/og';
-import { decodeShareCard, topPercent, TIER_LABEL } from '@/lib/share-card';
-import { loadAnton } from './card';
+import {
+    decodeShareCard,
+    impactoresLine,
+    isImpactoCard,
+    ofFansLine,
+    showsTopPercent,
+    topPercent,
+    TIER_LABEL,
+} from '@/lib/share-card';
+import { fetchArtistImage } from '@/lib/artist-image';
+import { ArtistBadge, loadAnton } from './card';
 
 export const STORY_SIZE = { width: 1080, height: 1920 };
 
@@ -99,7 +108,11 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
         process.env.SHARE_CARD_SECRET ?? '',
     );
 
-    const anton = await loadAnton();
+    const [anton, artistImage] = await Promise.all([
+        loadAnton(),
+        // v2 only; best-effort — a failure keeps the pre-Phase-5 layout.
+        payload ? fetchArtistImage(payload.o ?? null) : Promise.resolve(null),
+    ]);
     const antonFont = anton
         ? [
               {
@@ -140,10 +153,17 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
 
     const pct = topPercent(payload.r, payload.t);
     const tier = payload.ti ? (TIER_LABEL[payload.ti] ?? null) : null;
-    const rankText = `#${payload.r}`;
+    // Phase 6 — the Impacto story: the cause is the hero, no rank; the
+    // wall position only rides along for a public fan.
+    const impacto = isImpactoCard(payload);
+    const rankText = impacto ? '' : `#${payload.r}`;
     // Whatever the token permits. A private fan carries neither field, so
     // this renders anonymous without deciding anything here.
     const hasIdentity = Boolean(payload.n || payload.av);
+    const accent = showsTopPercent(payload.t)
+        ? `TOP ${pct}%`
+        : ofFansLine(payload.t);
+    const handle = payload.ig ? `@${payload.ig}` : null;
 
     return new ImageResponse(
         (
@@ -184,6 +204,15 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                     >
                         FANDI
                     </div>
+                    {/* Phase 5 — artist image above the rank, the fan's
+                        avatar overlapping it; name + handle under. */}
+                    {artistImage ? (
+                        <ArtistBadge
+                            artistImage={artistImage}
+                            fanAvatar={payload.av}
+                            size={260}
+                        />
+                    ) : null}
                     {hasIdentity ? (
                         <div
                             style={{
@@ -193,7 +222,7 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                                 gap: 18,
                             }}
                         >
-                            {payload.av ? (
+                            {payload.av && !artistImage ? (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     src={payload.av}
@@ -222,6 +251,18 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                                     {payload.n}
                                 </div>
                             ) : null}
+                            {handle ? (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        fontSize: 32,
+                                        color: MUTED,
+                                        letterSpacing: 2,
+                                    }}
+                                >
+                                    {handle}
+                                </div>
+                            ) : null}
                         </div>
                     ) : null}
                 </div>
@@ -235,7 +276,41 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                         gap: 30,
                     }}
                 >
-                    {tier ? (
+                    {impacto ? (
+                        <>
+                            <div style={{ display: 'flex', background: BLUE, color: WHITE, fontSize: 34, letterSpacing: 6, padding: '10px 28px' }}>
+                                IMPACTO
+                            </div>
+                            <div style={{ display: 'flex', fontSize: 48, color: MUTED, letterSpacing: 6 }}>APOYÉ</div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    textAlign: 'center',
+                                    fontSize: artistFontSize(payload.ev ?? '') + 40,
+                                    color: WHITE,
+                                    lineHeight: 1.05,
+                                    letterSpacing: 2,
+                                    textTransform: 'uppercase',
+                                    maxWidth: STORY_SIZE.width - GUTTER_X * 2,
+                                }}
+                            >
+                                {payload.ev}
+                            </div>
+                            <div style={{ display: 'flex', fontSize: 56, color: ACID, letterSpacing: 4, textTransform: 'uppercase', textAlign: 'center', maxWidth: STORY_SIZE.width - GUTTER_X * 2 }}>
+                                CON {payload.a}
+                            </div>
+                            {payload.n ? (
+                                <div style={{ display: 'flex', fontSize: 40, color: MUTED, letterSpacing: 4 }}>
+                                    IMPACTOR #{payload.r} · {impactoresLine(payload.t).toUpperCase()}
+                                </div>
+                            ) : (
+                                <div style={{ display: 'flex', fontSize: 40, color: MUTED, letterSpacing: 4 }}>
+                                    {impactoresLine(payload.t).toUpperCase()}
+                                </div>
+                            )}
+                        </>
+                    ) : null}
+                    {!impacto && tier ? (
                         <div
                             style={{
                                 display: 'flex',
@@ -250,6 +325,7 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                         </div>
                     ) : null}
 
+                    {!impacto ? (
                     <div
                         style={{
                             display: 'flex',
@@ -272,7 +348,9 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                         </div>
                         <Bracket side="br" />
                     </div>
+                    ) : null}
 
+                    {!impacto ? (
                     <div
                         style={{
                             display: 'flex',
@@ -281,9 +359,11 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                             letterSpacing: 4,
                         }}
                     >
-                        TOP {pct}%
+                        {accent}
                     </div>
+                    ) : null}
 
+                    {!impacto ? (
                     <div
                         style={{
                             display: 'flex',
@@ -297,6 +377,22 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                     >
                         DE {payload.a}
                     </div>
+                    ) : null}
+                    {!impacto && payload.ev ? (
+                        <div
+                            style={{
+                                display: 'flex',
+                                textAlign: 'center',
+                                fontSize: 34,
+                                color: MUTED,
+                                letterSpacing: 3,
+                                textTransform: 'uppercase',
+                                maxWidth: STORY_SIZE.width - GUTTER_X * 2,
+                            }}
+                        >
+                            EN {payload.ev}
+                        </div>
+                    ) : null}
                 </div>
 
                 {/* ── Foot: the growth loop. Legible, never competing. ── */}
