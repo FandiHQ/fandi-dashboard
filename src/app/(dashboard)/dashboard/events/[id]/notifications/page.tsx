@@ -26,7 +26,6 @@ import { useQuery } from '@tanstack/react-query';
 
 import { eventsApi, notificationsApi } from '@/lib/api-hooks';
 import { useAuth } from '@/contexts/auth-context';
-import { textColors } from '@/lib/chart-colors';
 import { NotificationCard } from './_components/notification-card';
 
 /**
@@ -73,11 +72,8 @@ export default function NotificationsPage() {
     if (event?.status === 'draft') {
         return (
             <div className="flex flex-col items-center justify-center py-24">
-                <div className="hud-card hud-brackets px-8 py-6">
-                    <p
-                        className="font-space-mono text-sm uppercase tracking-[1px]"
-                        style={{ color: textColors.secondary }}
-                    >
+                <div className="block-white px-8 py-6">
+                    <p className="label-mono text-muted-white">
                         {t('unavailableOnDraft')}
                     </p>
                 </div>
@@ -90,22 +86,17 @@ export default function NotificationsPage() {
     const showNextEventCard = event?.status === 'ended';
 
     return (
-        <div className="flex flex-col gap-6 py-6">
-            <header className="flex flex-col gap-2">
-                <h1 className="font-sora text-3xl font-bold tracking-[-0.5px] text-white">
+        <div className="flex flex-col gap-5">
+            <header className="flex flex-col gap-1.5">
+                <h2 className="font-display text-[28px] text-white">
                     {t('title')}
-                </h1>
-                <p
-                    className="font-space-mono text-sm"
-                    style={{ color: textColors.muted }}
-                >
+                </h2>
+                <p className="text-sm font-semibold text-lilac">
                     {t('subtitle')}
                 </p>
             </header>
 
-            {/* Section frame — `.hud-brackets` wraps the launch
-                cards so they read as a single weapons-rack. */}
-            <section className="hud-brackets flex flex-col gap-4 p-1">
+            <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
                 {showPreEventCards && (
                     <>
                         <NotificationCard
@@ -145,11 +136,8 @@ export default function NotificationsPage() {
                     the organizer a hint about why instead of a
                     silent empty pane. */}
                 {!showPreEventCards && !showNextEventCard && (
-                    <div className="hud-card flex items-center justify-center px-6 py-8">
-                        <span
-                            className="font-space-mono text-sm"
-                            style={{ color: textColors.muted }}
-                        >
+                    <div className="block-white flex items-center justify-center px-6 py-8 xl:col-span-2">
+                        <span className="text-sm font-semibold text-muted-white">
                             {t('noTriggersForStatus')}
                         </span>
                     </div>

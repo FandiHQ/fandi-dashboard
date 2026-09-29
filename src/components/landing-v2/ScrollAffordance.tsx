@@ -24,7 +24,7 @@ import {
  *                     that scene has been fully scrolled)
  */
 
-/** Hairline progress bar pinned to the very top of the viewport. */
+/** Solid progress bar pinned to the very top of the viewport. */
 export function ScrollProgress() {
     const { scrollYProgress } = useScroll();
     const reduceMotion = useReducedMotion();
@@ -38,7 +38,7 @@ export function ScrollProgress() {
     return (
         <motion.div
             style={{ scaleX: reduceMotion ? scrollYProgress : scaleX }}
-            className="fixed inset-x-0 top-0 z-[60] h-[2px] origin-left bg-gradient-to-r from-[#2D00F7] via-[#00E5FF] to-[#CCFF00]"
+            className="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left bg-white"
             aria-hidden="true"
         />
     );
@@ -77,7 +77,7 @@ export function ScrollCue({
             aria-hidden="true"
         >
             {label ? (
-                <span className="font-space-mono text-[9px] uppercase tracking-[4px] text-white/45">
+                <span className="label-mono rounded-full border-2 border-ink bg-ink px-3 py-1 text-[9px] text-white">
                     {label}
                 </span>
             ) : null}
@@ -85,7 +85,7 @@ export function ScrollCue({
                 life of the page, and framer-motion would drive each one from
                 the main thread. .animate-scroll-cue already no-ops under
                 prefers-reduced-motion. */}
-            <span className="animate-scroll-cue block h-6 w-px bg-gradient-to-b from-transparent via-white/50 to-[#CCFF00]" />
+            <span className="animate-scroll-cue block h-6 w-[3px] rounded-full border border-ink bg-white" />
         </motion.div>
     );
 }

@@ -18,6 +18,8 @@ import {
     eventDurationParts,
 } from '@/lib/event-datetime';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/status-badge';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageUpload } from '@/components/ui/image-upload';
 import { CityAutocomplete, type CityAutocompleteValue } from '@/components/places/CityAutocomplete';
@@ -203,252 +205,270 @@ export default function CreateEventPage() {
     if (memberRole && !isWriteRole) return null;
 
     return (
-        <div className="flex flex-col gap-8 p-14">
+        <div className="flex flex-col gap-6">
             {/* ── Header ── */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
                 <button
                     onClick={() => router.push('/dashboard/events')}
-                    className="flex cursor-pointer items-center gap-2 self-start font-space-mono text-xs uppercase tracking-[1px] text-[#737373] transition-colors duration-150 hover:text-white"
+                    className="label-mono flex cursor-pointer items-center gap-2 self-start text-[11px] text-lilac transition-colors duration-150 hover:text-white"
                 >
                     <ArrowLeft size={14} />
                     {t('backToEvents')}
                 </button>
-                <h1 className="font-sora text-[64px] font-extrabold leading-none tracking-[-2px] text-white">
-                    {t('create').toUpperCase()}
-                </h1>
+                <div>
+                    <h1 className="font-hero text-[40px] leading-none text-white md:text-[48px]">
+                        {t('create')}
+                    </h1>
+                    <p className="label-mono mt-2 text-[11px] text-lilac">{t('form.createSubtitle')}</p>
+                </div>
             </div>
 
             {/* ── Two-column: Form + Preview ── */}
-            <div className="grid grid-cols-1 gap-12 xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_400px]">
                 {/* ── Left: Form ── */}
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="flex flex-col gap-7"
+                    className="flex min-w-0 flex-col gap-6"
                 >
-                    {/* Name */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('name')} *
-                        </label>
-                        <Input
-                            {...register('name')}
-                            placeholder={t('name')}
-                            className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0"
-                        />
-                        {errors.name && (
-                            <span className="font-space-mono text-base text-[#FF3366]">
-                                {errors.name.message}
-                            </span>
-                        )}
-                    </div>
+                    {/* ── Block: event details ── */}
+                    <section className="block-white overflow-hidden">
+                        <div className="flex items-center gap-2.5 border-b-2 border-ink px-5 py-3.5">
+                            <Tag size={16} className="text-ink" />
+                            <h2 className="font-display text-[17px]">{t('form.detailsSection')}</h2>
+                        </div>
+                        <div className="flex flex-col gap-5 p-5">
+                            {/* Name */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="label-mono text-muted-white">
+                                    {t('name')} *
+                                </label>
+                                <Input
+                                    {...register('name')}
+                                    placeholder={t('name')}
+                                    className="h-12 text-base"
+                                />
+                                {errors.name && (
+                                    <span className="font-space-mono text-[11px] text-alert-white">
+                                        {errors.name.message}
+                                    </span>
+                                )}
+                            </div>
 
-                    {/* Event Type */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('eventType')}
-                        </label>
-                        <Select onValueChange={(val) => setValue('eventType', val as 'football' | 'concert' | 'other')}>
-                            <SelectTrigger className="h-14 cursor-pointer rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white">
-                                <SelectValue placeholder={t('eventType')} />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-none border-[#1E1E1E] bg-[#121212]">
-                                <SelectItem value="football" className="cursor-pointer py-3 font-sora text-lg text-white hover:bg-[#1A1A1A]">
-                                    {t('typeFootball')}
-                                </SelectItem>
-                                <SelectItem value="concert" className="cursor-pointer py-3 font-sora text-lg text-white hover:bg-[#1A1A1A]">
-                                    {t('typeConcert')}
-                                </SelectItem>
-                                <SelectItem value="other" className="cursor-pointer py-3 font-sora text-lg text-white hover:bg-[#1A1A1A]">
-                                    {t('typeOther')}
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                {/* Event Type */}
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="label-mono text-muted-white">
+                                        {t('eventType')}
+                                    </label>
+                                    <Select onValueChange={(val) => setValue('eventType', val as 'football' | 'concert' | 'other')}>
+                                        <SelectTrigger className="w-full cursor-pointer text-base data-[size=default]:h-12">
+                                            <SelectValue placeholder={t('eventType')} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="football" className="cursor-pointer py-2.5">
+                                                {t('typeFootball')}
+                                            </SelectItem>
+                                            <SelectItem value="concert" className="cursor-pointer py-2.5">
+                                                {t('typeConcert')}
+                                            </SelectItem>
+                                            <SelectItem value="other" className="cursor-pointer py-2.5">
+                                                {t('typeOther')}
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
-                    {/* Venue */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('venue')} *
-                        </label>
-                        <Input
-                            {...register('venue')}
-                            placeholder={t('venue')}
-                            className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0"
-                        />
-                        {errors.venue && (
-                            <span className="font-space-mono text-base text-[#FF3366]">
-                                {errors.venue.message}
-                            </span>
-                        )}
-                    </div>
+                                {/* Venue */}
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="label-mono text-muted-white">
+                                        {t('venue')} *
+                                    </label>
+                                    <Input
+                                        {...register('venue')}
+                                        placeholder={t('venue')}
+                                        className="h-12 text-base"
+                                    />
+                                    {errors.venue && (
+                                        <span className="font-space-mono text-[11px] text-alert-white">
+                                            {errors.venue.message}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
 
-                    {/* City */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('form.city')}
-                        </label>
-                        <CityAutocomplete
-                            value={selectedCity}
-                            onChange={(city) => {
-                                setSelectedCity(city);
-                                setValue('cityId', city?.id ?? null, {
-                                    shouldDirty: true,
-                                    shouldValidate: true,
-                                });
-                            }}
-                            error={formatFieldError(errors.cityId?.message)}
-                        />
-                    </div>
+                            {/* City */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="label-mono text-muted-white">
+                                    {t('form.city')}
+                                </label>
+                                <CityAutocomplete
+                                    value={selectedCity}
+                                    onChange={(city) => {
+                                        setSelectedCity(city);
+                                        setValue('cityId', city?.id ?? null, {
+                                            shouldDirty: true,
+                                            shouldValidate: true,
+                                        });
+                                    }}
+                                    error={formatFieldError(errors.cityId?.message)}
+                                />
+                            </div>
 
-                    {/* Description */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('description')}
-                        </label>
-                        <Textarea
-                            {...register('description')}
-                            rows={4}
-                            placeholder={t('description')}
-                            className="rounded-none border-[#2A2A2A] bg-[#141414] p-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0"
-                        />
-                    </div>
+                            {/* Description */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="label-mono text-muted-white">
+                                    {t('description')}
+                                </label>
+                                <Textarea
+                                    {...register('description')}
+                                    rows={4}
+                                    placeholder={t('description')}
+                                    className="p-3 text-base"
+                                />
+                            </div>
+                        </div>
+                    </section>
 
                     {/* ── RELOJ INFORMATIVO (Boletas) — full datetimes ── */}
-                    <div className="mt-2 border-t border-[#1E1E1E] pt-6">
-                        <div className="mb-4 flex items-center gap-3">
-                            <Clock size={18} className="text-[#737373]" />
-                            <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
-                                {t('infoTimezoneSection')}
-                            </span>
+                    <section className="block-white overflow-hidden">
+                        <div className="flex items-center gap-2.5 border-b-2 border-ink px-5 py-3.5">
+                            <Clock size={16} className="text-muted-white" />
+                            <h2 className="font-display text-[17px]">{t('infoTimezoneSection')}</h2>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    {t('eventStart')} *
-                                </label>
-                                <Input
-                                    type="datetime-local"
-                                    {...register('eventDate')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
-                                />
-                                {errors.eventDate && (
-                                    <span className="font-space-mono text-xs text-[#FF3366]">
-                                        {formatFieldError(errors.eventDate.message)}
-                                    </span>
-                                )}
+                        <div className="p-5">
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="label-mono text-muted-white">
+                                        {t('eventStart')} *
+                                    </label>
+                                    <Input
+                                        type="datetime-local"
+                                        {...register('eventDate')}
+                                        className="h-12 font-space-mono text-sm"
+                                    />
+                                    {errors.eventDate && (
+                                        <span className="font-space-mono text-[11px] text-alert-white">
+                                            {formatFieldError(errors.eventDate.message)}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="label-mono text-muted-white">
+                                        {t('eventEnd')}
+                                    </label>
+                                    <Input
+                                        type="datetime-local"
+                                        {...register('eventEndDate')}
+                                        className="h-12 font-space-mono text-sm"
+                                    />
+                                    {errors.eventEndDate && (
+                                        <span className="font-space-mono text-[11px] text-alert-white">
+                                            {formatFieldError(errors.eventEndDate.message)}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                                    {t('eventEnd')}
-                                </label>
-                                <Input
-                                    type="datetime-local"
-                                    {...register('eventEndDate')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
-                                />
-                                {errors.eventEndDate && (
-                                    <span className="font-space-mono text-xs text-[#FF3366]">
-                                        {formatFieldError(errors.eventEndDate.message)}
-                                    </span>
-                                )}
-                            </div>
+                            {durationText && (
+                                <p className="label-mono mt-4 inline-flex rounded-full bg-line-white px-2.5 py-1 font-bold text-ink">
+                                    {durationText}
+                                </p>
+                            )}
                         </div>
-                        {durationText && (
-                            <p className="mt-3 font-space-mono text-[12px] uppercase tracking-[1px] text-[#737373]">
-                                {durationText}
-                            </p>
-                        )}
-                    </div>
+                    </section>
 
                     {/* ── RELOJ FANDI (Dinámicas) — full datetimes ── */}
-                    <div className="border-t border-[#1E1E1E] pt-6">
-                        <div className="mb-4 flex items-center gap-3">
-                            <Zap size={18} className="text-[#2D00F7]" />
-                            <span className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#2D00F7]">
-                                {t('fandiTimezoneSection')}
-                            </span>
+                    <section className="block-white overflow-hidden">
+                        <div className="flex items-center gap-2.5 border-b-2 border-ink px-5 py-3.5">
+                            <Zap size={16} className="text-blue" />
+                            <h2 className="font-display text-[17px]">{t('fandiTimezoneSection')}</h2>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
+                        <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="label-mono text-blue">
                                     {t('fandiOpensAt')}
                                 </label>
                                 <Input
                                     type="datetime-local"
                                     {...register('fandiOpensAt')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                    className="h-12 font-space-mono text-sm"
                                 />
                                 {errors.fandiOpensAt && (
-                                    <span className="font-space-mono text-xs text-[#FF3366]">
+                                    <span className="font-space-mono text-[11px] text-alert-white">
                                         {formatFieldError(errors.fandiOpensAt.message)}
                                     </span>
                                 )}
-                                <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
+                                <p className="font-space-mono text-[10px] leading-relaxed text-muted-white">
                                     {t('fandiOpensHint')}
                                 </p>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#2D00F7]">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="label-mono text-blue">
                                     {t('fandiClosesAt')}
                                 </label>
                                 <Input
                                     type="datetime-local"
                                     {...register('fandiClosesAt')}
-                                    className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-lg text-white focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0 [color-scheme:dark]"
+                                    className="h-12 font-space-mono text-sm"
                                 />
                                 {errors.fandiClosesAt && (
-                                    <span className="font-space-mono text-xs text-[#FF3366]">
+                                    <span className="font-space-mono text-[11px] text-alert-white">
                                         {formatFieldError(errors.fandiClosesAt.message)}
                                     </span>
                                 )}
-                                <p className="mt-1 font-space-mono text-[11px] leading-relaxed text-[#737373]">
+                                <p className="font-space-mono text-[10px] leading-relaxed text-muted-white">
                                     {t('fandiClosesHint')}
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
                     {/* Cover Image */}
-                    <div className="flex flex-col gap-2 border-t border-[#1E1E1E] pt-6">
-                        <label className="font-space-mono text-[15px] uppercase tracking-[2px] text-[#A0A0A0]">
-                            {t('coverImage')}
-                        </label>
-                        <ImageUpload
-                            value={coverImageUrl || null}
-                            onChange={(url) => setValue('coverImageUrl', url || '')}
-                            folder="events"
-                            disabled={isPending}
-                            aspect="landscape"
-                        />
-                    </div>
+                    <section className="block-white overflow-hidden">
+                        <div className="flex items-center gap-2.5 border-b-2 border-ink px-5 py-3.5">
+                            <Calendar size={16} className="text-ink" />
+                            <h2 className="font-display text-[17px]">{t('coverImage')}</h2>
+                        </div>
+                        <div className="p-5">
+                            <ImageUpload
+                                value={coverImageUrl || null}
+                                onChange={(url) => setValue('coverImageUrl', url || '')}
+                                folder="events"
+                                disabled={isPending}
+                                aspect="landscape"
+                            />
+                        </div>
+                    </section>
 
-                    {/* Submit */}
-                    <button
-                        type="submit"
-                        disabled={!isValid || isPending}
-                        className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] px-8 font-space-mono text-[16px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        {isPending ? (
-                            <>
-                                <Loader2 size={16} className="animate-spin" />
-                                {t('creating')}
-                            </>
-                        ) : (
-                            t('form.saveDraft')
-                        )}
-                    </button>
+                    {/* ── Sticky footer: the lime save CTA ── */}
+                    <div className="block-ink sticky bottom-4 z-10 flex items-center justify-end gap-3 px-5 py-3.5">
+                        <Button
+                            type="submit"
+                            size="lg"
+                            disabled={!isValid || isPending}
+                            className="border-0 shadow-ext-cta"
+                        >
+                            {isPending ? (
+                                <>
+                                    <Loader2 size={16} className="animate-spin" />
+                                    {t('creating')}
+                                </>
+                            ) : (
+                                t('form.saveDraft')
+                            )}
+                        </Button>
+                    </div>
                 </form>
 
                 {/* ── Right: Live Preview ── */}
                 <div className="hidden xl:block">
-                    <div className="sticky top-8 flex flex-col gap-6">
-                        <h2 className="font-space-mono text-xs uppercase tracking-[2px] text-[#737373]">
-                            Vista previa
+                    <div className="sticky top-8 flex flex-col gap-3">
+                        <h2 className="label-mono text-[11px] text-lilac">
+                            {t('form.fanPreview')}
                         </h2>
 
-                        <div className="flex flex-col overflow-hidden rounded-none border border-[#1E1E1E] bg-[#0A0A0A] shadow-[0_0_40px_rgba(45,0,247,0.08)]">
+                        <div className="block-ink flex flex-col overflow-hidden shadow-ext-lg">
                             {/* Preview cover image */}
-                            <div className="relative aspect-[16/9] w-full bg-[#141414]">
+                            <div className="relative aspect-[16/9] w-full bg-chip-ink">
                                 {coverImageUrl ? (
                                     <Image
                                         src={coverImageUrl}
@@ -459,40 +479,40 @@ export default function CreateEventPage() {
                                     />
                                 ) : (
                                     <div className="flex h-full items-center justify-center">
-                                        <Calendar size={48} className="text-[#1E1E1E]" />
+                                        <Calendar size={40} className="text-dash-ink" />
                                     </div>
                                 )}
                             </div>
 
                             {/* Preview content */}
-                            <div className="flex flex-col gap-4 p-6">
+                            <div className="flex flex-col gap-4 p-5">
                                 {/* Event name */}
-                                <h3 className="font-sora text-3xl font-bold text-white">
+                                <h3 className="font-hero break-words text-[28px] text-white">
                                     {watchAll.name || t('name')}
                                 </h3>
 
                                 {/* Meta row */}
-                                <div className="flex flex-wrap items-center gap-4">
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                                     {watchAll.eventType && (
-                                        <div className="flex items-center gap-2">
-                                            <Tag size={16} className="text-[#2D00F7]" />
-                                            <span className="font-space-mono text-base text-[#A0A0A0]">
+                                        <div className="flex items-center gap-1.5">
+                                            <Tag size={14} className="text-lilac" />
+                                            <span className="font-space-mono text-[11px] uppercase text-muted-ink">
                                                 {eventTypeLabels[watchAll.eventType] || watchAll.eventType}
                                             </span>
                                         </div>
                                     )}
                                     {watchAll.venue && (
-                                        <div className="flex items-center gap-2">
-                                            <MapPin size={16} className="text-[#2D00F7]" />
-                                            <span className="font-space-mono text-base text-[#A0A0A0]">
+                                        <div className="flex items-center gap-1.5">
+                                            <MapPin size={14} className="text-lilac" />
+                                            <span className="font-space-mono text-[11px] uppercase text-muted-ink">
                                                 {watchAll.venue}
                                             </span>
                                         </div>
                                     )}
                                     {watchAll.eventDate && (
-                                        <div className="flex items-center gap-2">
-                                            <Calendar size={16} className="text-[#2D00F7]" />
-                                            <span className="font-space-mono text-base text-[#A0A0A0]">
+                                        <div className="flex items-center gap-1.5">
+                                            <Calendar size={14} className="text-lilac" />
+                                            <span className="font-space-mono text-[11px] uppercase text-muted-ink">
                                                 {formatDateTime(watchAll.eventDate)}
                                                 {watchAll.eventEndDate && ` → ${formatDateTime(watchAll.eventEndDate)}`}
                                             </span>
@@ -502,20 +522,20 @@ export default function CreateEventPage() {
 
                                 {/* Time previews */}
                                 {durationText && (
-                                    <div className="flex items-center gap-2 border-t border-[#1E1E1E] pt-3">
-                                        <Clock size={14} className="text-[#737373]" />
-                                        <span className="font-sora text-sm text-[#A0A0A0]">
+                                    <div className="flex items-center gap-2 border-t border-line-ink pt-3">
+                                        <Clock size={14} className="text-muted-ink" />
+                                        <span className="font-space-mono text-[11px] uppercase text-muted-ink">
                                             {durationText}
                                         </span>
                                     </div>
                                 )}
                                 {(watchAll.fandiOpensAt || watchAll.fandiClosesAt) && (
                                     <div className="flex items-center gap-2">
-                                        <Zap size={14} className="text-[#2D00F7]" />
-                                        <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#2D00F7]">
-                                            Fandi:
+                                        <Zap size={14} className="text-lilac" />
+                                        <span className="label-mono font-bold text-lilac">
+                                            Fandi
                                         </span>
-                                        <span className="font-sora text-sm text-[#A0A0A0]">
+                                        <span className="font-space-mono text-[11px] uppercase text-muted-ink">
                                             {formatDateTime(watchAll.fandiOpensAt || '')}
                                             {watchAll.fandiClosesAt && ` → ${formatDateTime(watchAll.fandiClosesAt)}`}
                                         </span>
@@ -524,16 +544,14 @@ export default function CreateEventPage() {
 
                                 {/* Description */}
                                 {watchAll.description && (
-                                    <p className="font-sora text-lg leading-relaxed text-[#737373]">
+                                    <p className="text-[15px] leading-relaxed text-muted-ink">
                                         {watchAll.description}
                                     </p>
                                 )}
 
                                 {/* Status badge */}
-                                <div className="mt-2 flex items-center gap-2">
-                                    <span className="inline-flex rounded-none bg-[#73737320] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#737373]">
-                                        Borrador
-                                    </span>
+                                <div className="mt-1 flex items-center gap-2">
+                                    <StatusBadge status="draft" />
                                 </div>
                             </div>
                         </div>

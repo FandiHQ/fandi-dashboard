@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     Table, TableBody, TableCell, TableHead,
@@ -22,6 +23,7 @@ import {
 export default function EventsListPage() {
     const router = useRouter();
     const t = useTranslations('events');
+    const tCommon = useTranslations('common');
     const { memberRole } = useAuth();
     const isWriteRole = memberRole === 'owner' || memberRole === 'admin';
     const queryClient = useQueryClient();
@@ -58,7 +60,7 @@ export default function EventsListPage() {
             other: t('typeOther'),
         };
         return (
-            <span className="inline-flex rounded-none bg-[#1E1E1E] px-2 py-0.5 font-space-mono text-[11px] text-[#737373]">
+            <span className="label-mono inline-flex rounded-full bg-line-white px-2 py-0.5 text-[9px] font-bold text-ink">
                 {labelMap[type] || type}
             </span>
         );
@@ -67,105 +69,97 @@ export default function EventsListPage() {
     // ── Error ──
     if (error) {
         return (
-            <div className="flex flex-col gap-8 p-14">
+            <div className="flex flex-col gap-6">
                 <PageHeader title={t('title')} isWriteRole={isWriteRole} router={router} />
-                <div className="flex flex-col items-center justify-center gap-4 rounded-none border border-[#1E1E1E] bg-[#141414] p-8">
-                    <AlertCircle size={32} className="text-[#FF3366]" />
-                    <p className="font-sora text-sm text-[#A0A0A0]">
+                <div className="block-white flex flex-col items-center justify-center gap-4 p-8">
+                    <AlertCircle size={32} className="text-alert-white" />
+                    <p className="text-sm font-semibold text-ink">
                         {(error as Error).message || t('empty')}
                     </p>
-                    <button
-                        onClick={() => refetch()}
-                        className="cursor-pointer rounded-none border border-[#2A2A2A] bg-transparent px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-colors duration-150 hover:bg-[#1A1A1A]"
-                    >
-                        {t('validation.required') ? 'REINTENTAR' : 'RETRY'}
-                    </button>
+                    <Button variant="secondary" onClick={() => refetch()}>
+                        {tCommon('retry')}
+                    </Button>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-8 p-14">
+        <div className="flex flex-col gap-6">
             <PageHeader title={t('title')} isWriteRole={isWriteRole} router={router} />
 
-            {/* ── Filter Row ── */}
-            <div className="flex items-center gap-4">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[180px] cursor-pointer rounded-none border-[#1E1E1E] bg-[#141414] font-space-mono text-xs text-white">
-                        <SelectValue placeholder={t('allStatuses')} />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-none border-[#1E1E1E] bg-[#121212]">
-                        <SelectItem value="all" className="cursor-pointer font-space-mono text-xs text-white hover:bg-[#1A1A1A]">
-                            {t('allStatuses')}
-                        </SelectItem>
-                        <SelectItem value="draft" className="cursor-pointer font-space-mono text-xs text-white hover:bg-[#1A1A1A]">
-                            {t('status.draft')}
-                        </SelectItem>
-                        <SelectItem value="published" className="cursor-pointer font-space-mono text-xs text-white hover:bg-[#1A1A1A]">
-                            {t('status.published')}
-                        </SelectItem>
-                        <SelectItem value="live" className="cursor-pointer font-space-mono text-xs text-white hover:bg-[#1A1A1A]">
-                            {t('status.live')}
-                        </SelectItem>
-                        <SelectItem value="ended" className="cursor-pointer font-space-mono text-xs text-white hover:bg-[#1A1A1A]">
-                            {t('status.ended')}
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
             {/* ── Data Table ── */}
-            <div className="hud-card hud-brackets hud-brackets-hover overflow-hidden rounded-none p-1">
+            <div className="block-white overflow-hidden">
+                {/* ── Header row: title + status filter ── */}
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink px-5 py-3.5">
+                    <span className="font-display text-[17px]">
+                        {t('title')}
+                        {!isLoading && (
+                            <span className="ml-2 font-space-mono text-[11px] font-normal text-muted-white">
+                                {events.length}
+                            </span>
+                        )}
+                    </span>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger size="sm" className="w-[180px] cursor-pointer font-space-mono text-xs uppercase">
+                            <SelectValue placeholder={t('allStatuses')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all" className="cursor-pointer font-space-mono text-xs uppercase">
+                                {t('allStatuses')}
+                            </SelectItem>
+                            <SelectItem value="draft" className="cursor-pointer font-space-mono text-xs uppercase">
+                                {t('status.draft')}
+                            </SelectItem>
+                            <SelectItem value="published" className="cursor-pointer font-space-mono text-xs uppercase">
+                                {t('status.published')}
+                            </SelectItem>
+                            <SelectItem value="live" className="cursor-pointer font-space-mono text-xs uppercase">
+                                {t('status.live')}
+                            </SelectItem>
+                            <SelectItem value="ended" className="cursor-pointer font-space-mono text-xs uppercase">
+                                {t('status.ended')}
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-b border-[#1E1E1E] bg-[#141414] hover:bg-[#141414]">
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('statusLabel')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('name')}
-                            </TableHead>
-                            <TableHead className="hidden font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373] md:table-cell">
-                                {t('eventType')}
-                            </TableHead>
-                            <TableHead className="hidden font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373] lg:table-cell">
-                                {t('venue')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('date')}
-                            </TableHead>
+                        <TableRow>
+                            <TableHead>{t('statusLabel')}</TableHead>
+                            <TableHead>{t('name')}</TableHead>
+                            <TableHead className="hidden md:table-cell">{t('eventType')}</TableHead>
+                            <TableHead className="hidden lg:table-cell">{t('venue')}</TableHead>
+                            <TableHead>{t('date')}</TableHead>
                             <TableHead className="w-10" />
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
                             Array.from({ length: 6 }).map((_, i) => (
-                                <TableRow key={i} className="border-b border-[#1E1E1E]">
-                                    <TableCell><Skeleton className="h-5 w-20 rounded-none bg-[#1E1E1E]" /></TableCell>
-                                    <TableCell><Skeleton className="h-5 w-40 rounded-none bg-[#1E1E1E]" /></TableCell>
-                                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-20 rounded-none bg-[#1E1E1E]" /></TableCell>
-                                    <TableCell className="hidden lg:table-cell"><Skeleton className="h-5 w-32 rounded-none bg-[#1E1E1E]" /></TableCell>
-                                    <TableCell><Skeleton className="h-5 w-24 rounded-none bg-[#1E1E1E]" /></TableCell>
-                                    <TableCell><Skeleton className="h-5 w-4 rounded-none bg-[#1E1E1E]" /></TableCell>
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-5 w-20 bg-line-white" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-40 bg-line-white" /></TableCell>
+                                    <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-20 bg-line-white" /></TableCell>
+                                    <TableCell className="hidden lg:table-cell"><Skeleton className="h-5 w-32 bg-line-white" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-24 bg-line-white" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-4 bg-line-white" /></TableCell>
                                 </TableRow>
                             ))
                         ) : events.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={6}>
                                     <div className="flex flex-col items-center justify-center gap-4 py-16">
-                                        <Calendar size={48} className="text-[#2A2A2A]" />
-                                        <p className="font-sora text-[18px] text-[#737373]">
+                                        <Calendar size={40} className="text-muted-white" />
+                                        <p className="text-[17px] font-semibold text-muted-white">
                                             {t('empty')}
                                         </p>
                                         {isWriteRole && (
-                                            <button
-                                                onClick={() => router.push('/dashboard/events/new')}
-                                                className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-6 py-3 font-space-mono text-[11px] font-bold uppercase tracking-[2px]"
-                                            >
-                                                <Plus size={16} />
+                                            <Button onClick={() => router.push('/dashboard/events/new')}>
+                                                <Plus />
                                                 {t('create')}
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                 </TableCell>
@@ -175,21 +169,21 @@ export default function EventsListPage() {
                                 <TableRow
                                     key={event.id}
                                     onClick={() => router.push(`/dashboard/events/${event.id}`)}
-                                    className="group cursor-pointer border-b border-[#1A1A1A] border-l-4 border-l-transparent transition-all duration-200 hover:border-l-[var(--color-tactical-acid)] hover:bg-[rgba(204,255,0,0.05)]"
+                                    className="group cursor-pointer"
                                 >
                                     <TableCell>
                                         <StatusBadge status={event.status} />
                                     </TableCell>
-                                    <TableCell className="font-sora text-[16px] font-extrabold uppercase tracking-[-0.5px] text-white">
+                                    <TableCell className="max-w-[320px] truncate font-display text-[15px]">
                                         {event.name}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell">
                                         {eventTypeBadge(event.eventType)}
                                     </TableCell>
-                                    <TableCell className="hidden font-sora text-[15px] text-[#A0A0A0] lg:table-cell">
+                                    <TableCell className="hidden text-[13px] text-muted-white lg:table-cell">
                                         {event.venue || '—'}
                                     </TableCell>
-                                    <TableCell className="font-space-mono text-[13px] text-[#737373]">
+                                    <TableCell className="font-space-mono text-[11px] uppercase text-muted-white">
                                         {formatDate(event.eventDate)}
                                     </TableCell>
                                     <TableCell>
@@ -203,7 +197,7 @@ export default function EventsListPage() {
                                                     }}
                                                 />
                                             )}
-                                            <ChevronRight size={16} className="text-[#4A4A4A]" />
+                                            <ChevronRight size={16} className="text-muted-white transition-transform group-hover:translate-x-0.5" />
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -246,7 +240,7 @@ function DuplicateButton({
                 e.stopPropagation();
                 mutate();
             }}
-            className="flex cursor-pointer items-center justify-center rounded-none border border-transparent p-1.5 text-[#737373] transition-all duration-150 hover:border-[#2D00F7] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex size-8 cursor-pointer items-center justify-center rounded-[10px] border-2 border-transparent text-muted-white transition-colors duration-150 hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
         >
             {isPending ? (
                 <Loader2 size={15} className="animate-spin" />
@@ -270,20 +264,23 @@ function PageHeader({
 }) {
     const t = useTranslations('events');
     return (
-        <div className="flex items-end justify-between">
-            <div className="flex flex-col gap-1">
-                <h1 className="animate-glitch font-sora text-[80px] font-black leading-[0.85] tracking-[-4px] text-white">
-                    {title.toUpperCase()}
+        <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h1 className="font-hero text-[40px] leading-none text-white md:text-[48px]">
+                    {title}
                 </h1>
+                <p className="label-mono mt-2 text-[11px] text-lilac">{t('listSubtitle')}</p>
             </div>
             {isWriteRole && (
-                <button
+                <Button
+                    variant="secondary"
+                    size="lg"
                     onClick={() => router.push('/dashboard/events/new')}
-                    className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-6 py-3 font-space-mono text-[11px] font-bold uppercase tracking-[2px]"
+                    className="shadow-ext-md"
                 >
-                    <Plus size={16} />
+                    <Plus />
                     {t('create')}
-                </button>
+                </Button>
             )}
         </div>
     );

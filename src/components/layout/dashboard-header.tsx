@@ -1,5 +1,12 @@
 'use client';
 
+/**
+ * Top bar — Azul Bloque web layout (DESIGN_GUIDELINES §7): the workspace
+ * chip on the left (white, 2px ink, 3px extrusion: "[JB] J Balvin"), the
+ * user + role on the right (role in lilac mono, never orange), a 2px ink
+ * rule underneath. Below lg the rail collapses into a left sheet with
+ * text labels.
+ */
 import { useState } from 'react';
 import { Menu, LogOut } from 'lucide-react';
 import Link from 'next/link';
@@ -8,34 +15,26 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
-    AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { isNavActive, getVisibleItems } from './nav-config';
+import { LogoutDialog } from './logout-dialog';
 
-function RoleBadge({ role }: { role: string }) {
+function initials(name: string | null | undefined): string {
+    const parts = (name ?? '').trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'F';
+    return (parts[0]!.charAt(0) + (parts[1]?.charAt(0) ?? '')).toUpperCase();
+}
+
+function RoleLabel({ role }: { role: string }) {
     const tTeam = useTranslations('team');
-    const colors: Record<string, { text: string; bg: string }> = {
-        owner: { text: '#F59E0B', bg: '#F59E0B20' },
-        admin: { text: '#2D00F7', bg: '#2D00F720' },
-        viewer: { text: '#A0A0A0', bg: '#A0A0A020' },
-        staff: { text: '#22C55E', bg: '#22C55E20' },
-    };
-    const c = colors[role] || colors.viewer;
     return (
-        <span
-            className="font-space-mono text-[10px] uppercase tracking-[1px] px-2 py-0.5"
-            style={{ color: c.text, backgroundColor: c.bg }}
-        >
+        <span className="font-space-mono text-[9px] uppercase tracking-[0.14em] text-tier-vip">
             {tTeam(`roles.${role}`)}
         </span>
     );
 }
 
 export function DashboardHeader() {
-    const { user, organization, memberRole, logout } = useAuth();
+    const { user, organization, memberRole } = useAuth();
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
@@ -43,74 +42,36 @@ export function DashboardHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
-        <header className="flex h-20 items-center justify-between border-b border-[#2A2A2A] bg-black/50 px-5 backdrop-blur-md lg:px-14">
-            {/* Left: mobile menu trigger + org info */}
-            <div className="flex items-center gap-3">
-                {/* Mobile hamburger — hidden on desktop */}
+        <header className="flex h-[74px] items-center justify-between gap-4 border-b-2 border-ink px-5 lg:px-9">
+            <div className="flex min-w-0 items-center gap-3">
                 <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                     <SheetTrigger asChild>
                         <button
-                            className="flex h-12 w-12 items-center justify-center text-white lg:hidden"
+                            className="flex size-11 items-center justify-center rounded-[10px] border-2 border-ink bg-white text-ink shadow-ext-sm lg:hidden"
                             aria-label="Open navigation menu"
                         >
                             <Menu size={20} />
                         </button>
                     </SheetTrigger>
 
-                    <SheetContent
-                        side="left"
-                        className="w-[280px] rounded-none border-r border-[#1A1A1A] bg-black p-0"
-                    >
+                    <SheetContent side="left" showCloseButton={false} className="surface-ink w-[280px] border-r-0 bg-ink p-0 text-white">
                         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-
-                        {/* Mobile nav — WITH text labels */}
-                        <div className="flex h-full flex-col justify-between p-6">
+                        <div className="flex h-full flex-col justify-between p-5">
                             <div className="space-y-6">
-                                {/* Logo */}
                                 <Image
-                                    src="/fandi-logo.png"
+                                    src="/fandi-tile.png"
                                     alt="Fandi"
-                                    width={120}
-                                    height={40}
+                                    width={46}
+                                    height={46}
                                     unoptimized
-                                    className="h-8 w-auto object-contain"
+                                    className="size-[46px] rounded-[12px]"
                                 />
-
-                                {/* Org name */}
-                                <div>
-                                    <p className="font-sora text-base font-semibold text-white">
-                                        {organization?.name}
-                                    </p>
+                                <div className="space-y-1">
+                                    <p className="font-display text-lg text-white">{organization?.name}</p>
+                                    <p className="text-sm font-bold text-white">{user?.displayName}</p>
+                                    {memberRole && <RoleLabel role={memberRole} />}
                                 </div>
-
-                                {/* User + role */}
-                                <div className="flex items-center gap-2">
-                                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden bg-[#121212]">
-                                        {user?.avatarUrl ? (
-                                            <Image
-                                                src={user.avatarUrl}
-                                                alt={user.displayName || 'User'}
-                                                width={32}
-                                                height={32}
-                                                className="h-8 w-8 object-cover"
-                                                unoptimized
-                                            />
-                                        ) : (
-                                            <span className="font-sora text-sm font-bold text-white">
-                                                {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="font-space-mono text-xs text-[#A0A0A0]">
-                                            {user?.displayName}
-                                        </span>
-                                        {memberRole && <RoleBadge role={memberRole} />}
-                                    </div>
-                                </div>
-
-                                {/* Nav items with text */}
-                                <nav className="flex flex-col gap-1">
+                                <nav className="flex flex-col gap-1.5">
                                     {visibleItems.map((item) => {
                                         const active = isNavActive(item, pathname);
                                         const Icon = item.icon;
@@ -119,10 +80,9 @@ export function DashboardHeader() {
                                                 key={item.href}
                                                 href={item.href}
                                                 onClick={() => setMobileOpen(false)}
-                                                className={`flex items-center gap-3 px-3 py-3 font-sora text-sm transition-colors duration-150 ${
-                                                    active
-                                                        ? 'bg-[#2D00F710] text-[#2D00F7]'
-                                                        : 'text-[#A0A0A0] hover:bg-[#121212] hover:text-white'
+                                                aria-current={active ? 'page' : undefined}
+                                                className={`flex items-center gap-3 rounded-[12px] px-3 py-3 text-sm font-extrabold uppercase [font-stretch:108%] transition-colors duration-100 ${
+                                                    active ? 'bg-lime text-ink' : 'text-muted-ink hover:bg-chip-ink hover:text-white'
                                                 }`}
                                             >
                                                 <Icon size={20} />
@@ -133,78 +93,49 @@ export function DashboardHeader() {
                                 </nav>
                             </div>
 
-                            {/* Bottom: logout */}
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <button className="flex cursor-pointer items-center gap-3 px-3 py-3 font-sora text-sm text-[#4A4A4A] transition-colors duration-150 hover:text-[#FF3366]">
-                                        <LogOut size={20} />
-                                        <span>{tAuth('logout')}</span>
-                                    </button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle className="font-sora text-white">
-                                            {tAuth('logoutConfirm')}
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription className="font-space-mono text-[#A0A0A0]">
-                                            {tAuth('logoutWarning')}
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
-                                            {tAuth('cancel')}
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => {
-                                                logout();
-                                                setMobileOpen(false);
-                                            }}
-                                            className="rounded-none bg-[#FF3366] font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
-                                        >
-                                            {tAuth('logout')}
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                            <LogoutDialog onLoggedOut={() => setMobileOpen(false)}>
+                                <button className="flex cursor-pointer items-center gap-3 rounded-[12px] px-3 py-3 text-sm font-extrabold uppercase text-nav-inactive transition-colors duration-100 hover:text-alert">
+                                    <LogOut size={20} />
+                                    <span>{tAuth('logout')}</span>
+                                </button>
+                            </LogoutDialog>
                         </div>
                     </SheetContent>
                 </Sheet>
 
-                {/* Org name — always visible */}
-                <div className="flex flex-col">
-                    <span className="font-sora text-base font-semibold text-white tracking-wide">
-                        {organization?.name || 'Fandi'}
+                {/* Workspace chip */}
+                <span className="flex min-w-0 items-center gap-2.5 rounded-[10px] border-2 border-ink bg-white px-3 py-1.5 text-[15px] font-black text-ink shadow-ext-sm [font-stretch:110%]">
+                    <span className="flex size-[22px] flex-none items-center justify-center rounded-[6px] bg-ink text-[11px] text-lime">
+                        {initials(organization?.name)}
                     </span>
-                </div>
+                    <span className="truncate">{organization?.name || 'Fandi'}</span>
+                </span>
             </div>
 
-            {/* Right: user info + role badge (desktop only) */}
-            <Link 
+            <Link
                 href="/dashboard/settings"
-                className="group ml-auto hidden cursor-pointer items-center gap-4 transition-all duration-300 lg:flex"
+                className="group hidden items-center gap-3 rounded-[12px] focus-visible:ring-2 focus-visible:ring-lime lg:flex"
             >
-                <div className="flex flex-col items-end transition-colors duration-300 group-hover:text-[var(--color-tactical-acid)]">
-                    <span className="font-space-mono text-sm text-[#E0E0E0] transition-colors duration-300 group-hover:text-white">
+                <div className="text-right">
+                    <div className="text-sm font-extrabold text-white group-hover:underline group-hover:decoration-lime group-hover:decoration-2">
                         {user?.displayName}
-                    </span>
-                    {memberRole && <RoleBadge role={memberRole} />}
+                    </div>
+                    {memberRole && <RoleLabel role={memberRole} />}
                 </div>
-                <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-none border border-[#2A2A2A] bg-[#121212] transition-all duration-300 group-hover:border-[var(--color-tactical-acid)] group-hover:shadow-[0_0_15px_rgba(204,255,0,0.3)]">
+                <span className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-ink bg-tier-vip text-sm font-black text-ink">
                     {user?.avatarUrl ? (
                         <Image
                             src={user.avatarUrl}
                             alt={user.displayName || 'User'}
-                            width={48}
-                            height={48}
-                            className="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
+                            width={40}
+                            height={40}
+                            className="h-full w-full object-cover"
                             unoptimized
                         />
                     ) : (
-                        <span className="font-sora text-base font-bold text-white transition-colors duration-300 group-hover:text-[var(--color-tactical-acid)]">
-                            {user?.displayName?.charAt(0)?.toUpperCase() || '?'}
-                        </span>
+                        initials(user?.displayName)
                     )}
-                </div>
+                </span>
             </Link>
         </header>
     );

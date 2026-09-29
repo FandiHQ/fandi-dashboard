@@ -9,10 +9,16 @@
  * Renders ONLY from a verified payload, and never renders money — the
  * ranking surfaces expose position, never spend, and a public image is
  * the last place to break that.
+ *
+ * Azul Bloque: flat blue canvas, the claim as the ONE tilted white block
+ * (2px ink border + hard ink extrusion, drawn as an offset ink slab since
+ * the extrusion must never blur), lime only for the fan's standing, and
+ * Space Mono for labels.
  */
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { ImageResponse } from 'next/og';
+import type { ReactNode } from 'react';
 import {
     decodeShareCard,
     impactoresLine,
@@ -28,26 +34,240 @@ import { fetchArtistImage } from '@/lib/artist-image';
 
 export const CARD_SIZE = { width: 1200, height: 630 };
 
-const BLACK = '#000000';
-const ACID = '#CCFF00';
-const BLUE = '#2D00F7';
-const WHITE = '#FFFFFF';
-const MUTED = '#A0A0A0';
+// Azul Bloque tokens (design-tokens.css). Satori takes inline styles
+// only, so the palette is repeated here as plain strings.
+export const BLUE = '#2D00F7';
+export const INK = '#0B0B0F';
+export const WHITE = '#FFFFFF';
+export const LIME = '#C6FF3D';
+export const LILAC = '#D9D3FF';
+export const MUTED_ON_WHITE = '#55555E';
+
+/** Average advance of an Archivo SemiExpanded Black digit, in em. */
+const DIGIT_EM = 0.74;
+/** Average advance of an uppercase Archivo SemiExpanded Black letter. */
+const CAPS_EM = 0.78;
 
 /**
- * Anton is the display face across the app. Loading it is best-effort:
- * a card in the fallback sans is worlds better than a broken image in a
- * WhatsApp thread, so a missing font must never fail the response.
+ * Largest size at which `text` fits `width` in at most `lines` lines,
+ * capped at `max`. Satori handles text-overflow poorly, so the display
+ * lines shrink by length instead of running off the canvas.
  */
-export async function loadAnton(): Promise<ArrayBuffer | null> {
+export function fitFontSize(
+    text: string,
+    width: number,
+    max: number,
+    { em = CAPS_EM, lines = 1, min = 24 }: { em?: number; lines?: number; min?: number } = {},
+): number {
+    const len = Math.max(1, text.length);
+    return Math.max(min, Math.min(max, Math.floor((width * lines) / (len * em))));
+}
+
+/** Rank "#7" … "#1247" sized to fill the block without overflowing it. */
+export function rankSize(rankText: string, width: number, max: number): number {
+    return fitFontSize(rankText, width, max, { em: DIGIT_EM, min: 60 });
+}
+
+// ── Assets ───────────────────────────────────────────────────────
+
+async function readAsset(path: Promise<Buffer>): Promise<ArrayBuffer | null> {
     try {
-        const file = await readFile(
-            join(process.cwd(), 'assets', 'Anton-Regular.ttf'),
-        );
-        return Uint8Array.from(file).buffer;
+        return Uint8Array.from(await path).buffer;
     } catch {
         return null;
     }
+}
+
+type CardFont = {
+    name: string;
+    data: ArrayBuffer;
+    style: 'normal';
+    weight: 700 | 900;
+};
+
+export interface CardFonts {
+    /** Undefined when nothing loaded — Satori then uses its own default. */
+    fonts: CardFont[] | undefined;
+    display: string;
+    mono: string;
+}
+
+/**
+ * Archivo (static SemiExpanded Black ≈ the 112% stretch of the display
+ * face) and Space Mono Bold for labels. Loading is best-effort: a card
+ * in a fallback face is worlds better than a broken image in a WhatsApp
+ * thread, so a missing font must never fail the response.
+ *
+ * Literal paths on purpose — the standalone build traces them.
+ */
+export async function loadCardFonts(): Promise<CardFonts> {
+    const [archivo, mono] = await Promise.all([
+        readAsset(
+            readFile(join(process.cwd(), 'assets', 'Archivo-SemiExpandedBlack.ttf')),
+        ),
+        readAsset(readFile(join(process.cwd(), 'assets', 'SpaceMono-Bold.ttf'))),
+    ]);
+    const fonts: CardFont[] = [];
+    if (archivo) {
+        fonts.push({ name: 'Archivo', data: archivo, style: 'normal', weight: 900 });
+    }
+    if (mono) {
+        fonts.push({ name: 'Space Mono', data: mono, style: 'normal', weight: 700 });
+    }
+    const display = archivo ? 'Archivo' : mono ? 'Space Mono' : 'sans-serif';
+    return {
+        fonts: fonts.length ? fonts : undefined,
+        display,
+        mono: mono ? 'Space Mono' : display,
+    };
+}
+
+/** The FANDI tile (public/fandi-tile.png) as a data URI, best-effort. */
+export async function loadTileLogo(): Promise<string | null> {
+    const data = await readAsset(
+        readFile(join(process.cwd(), 'public', 'fandi-tile.png')),
+    );
+    return data ? `data:image/png;base64,${Buffer.from(data).toString('base64')}` : null;
+}
+
+// ── Shared pieces (also used by the Stories card) ────────────────
+
+/** FANDI tile + wordmark, sitting on the blue canvas. */
+export function Logo({
+    tile,
+    size,
+    display,
+}: {
+    tile: string | null;
+    size: number;
+    display: string;
+}) {
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: Math.round(size * 0.3) }}>
+            {tile ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                    src={tile}
+                    alt=""
+                    width={size}
+                    height={size}
+                    style={{
+                        width: size,
+                        height: size,
+                        borderRadius: Math.round(size * 0.24),
+                        border: `3px solid ${INK}`,
+                        boxShadow: `3px 3px 0 ${INK}`,
+                    }}
+                />
+            ) : null}
+            <div
+                style={{
+                    display: 'flex',
+                    fontFamily: display,
+                    fontWeight: 900,
+                    fontSize: Math.round(size * 0.52),
+                    color: WHITE,
+                    letterSpacing: 1,
+                }}
+            >
+                FANDI
+            </div>
+        </div>
+    );
+}
+
+/**
+ * The ONE tilted white block: 2px-scale ink border and a hard ink
+ * extrusion drawn as an offset slab behind it (no blur, ever).
+ */
+export function TiltedBlock({
+    children,
+    width,
+    extrusion,
+    radius,
+    border,
+    padding,
+}: {
+    children: ReactNode;
+    width: number;
+    extrusion: number;
+    radius: number;
+    border: number;
+    padding: string;
+}) {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                position: 'relative',
+                width,
+                transform: 'rotate(-1.5deg)',
+            }}
+        >
+            <div
+                style={{
+                    position: 'absolute',
+                    top: extrusion,
+                    left: extrusion,
+                    right: -extrusion,
+                    bottom: -extrusion,
+                    background: INK,
+                    borderRadius: radius,
+                }}
+            />
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                    background: WHITE,
+                    border: `${border}px solid ${INK}`,
+                    borderRadius: radius,
+                    padding,
+                }}
+            >
+                {children}
+            </div>
+        </div>
+    );
+}
+
+/** Ink pill/strip on white. Lime text = the fan's standing only. */
+export function InkStrip({
+    text,
+    color,
+    fontFamily,
+    fontSize,
+    padding,
+    radius,
+}: {
+    text: string;
+    color: string;
+    fontFamily: string;
+    fontSize: number;
+    padding: string;
+    radius: number;
+}) {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alignSelf: 'flex-start',
+                background: INK,
+                color,
+                fontFamily,
+                fontWeight: 900,
+                fontSize,
+                letterSpacing: 1,
+                textTransform: 'uppercase',
+                padding,
+                borderRadius: radius,
+                lineHeight: 1,
+            }}
+        >
+            {text}
+        </div>
+    );
 }
 
 /**
@@ -64,6 +284,7 @@ export function ArtistBadge({
     size: number;
 }) {
     const fanSize = Math.round(size * 0.42);
+    const edge = Math.max(4, Math.round(size / 40));
     return (
         <div
             style={{
@@ -84,7 +305,8 @@ export function ArtistBadge({
                     height: size,
                     borderRadius: size / 2,
                     objectFit: 'cover',
-                    border: `6px solid ${ACID}`,
+                    border: `${edge}px solid ${INK}`,
+                    boxShadow: `${edge}px ${edge}px 0 ${INK}`,
                 }}
             />
             {fanAvatar ? (
@@ -102,10 +324,191 @@ export function ArtistBadge({
                         height: fanSize,
                         borderRadius: fanSize / 2,
                         objectFit: 'cover',
-                        border: `4px solid ${BLACK}`,
+                        border: `${edge}px solid ${WHITE}`,
                     }}
                 />
             ) : null}
+        </div>
+    );
+}
+
+/** A plain branded canvas — the answer to a forged or expired token. */
+export function WordmarkCanvas({
+    tile,
+    display,
+    size,
+}: {
+    tile: string | null;
+    display: string;
+    size: number;
+}) {
+    return (
+        <div
+            style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: BLUE,
+            }}
+        >
+            <Logo tile={tile} size={size} display={display} />
+        </div>
+    );
+}
+
+// ── The landscape card ───────────────────────────────────────────
+
+const PAD = 60;
+const BLOCK_WIDTH = 580;
+const BLOCK_PAD_X = 40;
+const BLOCK_INNER = BLOCK_WIDTH - BLOCK_PAD_X * 2 - 8;
+const LEFT_WIDTH = CARD_SIZE.width - PAD * 2 - BLOCK_WIDTH - 40;
+
+/** The left column: logo on top, identity in the middle, meta at the foot. */
+function LeftColumn({
+    payload,
+    artistImage,
+    tile,
+    f,
+    foot,
+}: {
+    payload: ShareCardPayload;
+    artistImage: string | null;
+    tile: string | null;
+    f: CardFonts;
+    foot: string;
+}) {
+    const handle = payload.ig ? `@${payload.ig}` : null;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                width: LEFT_WIDTH,
+                height: '100%',
+            }}
+        >
+            <Logo tile={tile} size={60} display={f.display} />
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+                {artistImage ? (
+                    <ArtistBadge artistImage={artistImage} fanAvatar={payload.av} size={150} />
+                ) : payload.av ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                        src={payload.av}
+                        alt=""
+                        width={110}
+                        height={110}
+                        style={{
+                            width: 110,
+                            height: 110,
+                            borderRadius: 55,
+                            objectFit: 'cover',
+                            border: `4px solid ${INK}`,
+                        }}
+                    />
+                ) : null}
+                {payload.n ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                fontFamily: f.display,
+                                fontWeight: 900,
+                                fontSize: fitFontSize(payload.n, LEFT_WIDTH, 48),
+                                color: WHITE,
+                                textTransform: 'uppercase',
+                                lineHeight: 0.95,
+                            }}
+                        >
+                            {payload.n}
+                        </div>
+                        {handle ? (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    fontFamily: f.mono,
+                                    fontWeight: 700,
+                                    fontSize: 22,
+                                    color: LILAC,
+                                    letterSpacing: 1,
+                                }}
+                            >
+                                {handle}
+                            </div>
+                        ) : null}
+                    </div>
+                ) : null}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        fontFamily: f.mono,
+                        fontWeight: 700,
+                        fontSize: 16,
+                        color: LILAC,
+                        letterSpacing: 2,
+                        textTransform: 'uppercase',
+                    }}
+                >
+                    {foot}
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        fontFamily: f.mono,
+                        fontWeight: 700,
+                        fontSize: 22,
+                        color: WHITE,
+                        letterSpacing: 2,
+                    }}
+                >
+                    fandi.app
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function Canvas({ children, f }: { children: ReactNode; f: CardFonts }) {
+    return (
+        <div
+            style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: BLUE,
+                padding: PAD,
+                fontFamily: f.display,
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
+function MonoLabel({ text, f, size = 16 }: { text: string; f: CardFonts; size?: number }) {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                fontFamily: f.mono,
+                fontWeight: 700,
+                fontSize: size,
+                color: MUTED_ON_WHITE,
+                letterSpacing: 3,
+                textTransform: 'uppercase',
+            }}
+        >
+            {text}
         </div>
     );
 }
@@ -117,81 +520,84 @@ export function ArtistBadge({
  */
 function renderImpactoCard(
     payload: ShareCardPayload,
-    anton: ArrayBuffer | null,
+    f: CardFonts,
+    tile: string | null,
     artistImage: string | null,
     issued: string,
 ): ImageResponse {
     const cause = payload.ev ?? '';
-    const handle = payload.ig ? `@${payload.ig}` : null;
-    const causeSize = cause.length <= 24 ? 96 : cause.length <= 40 ? 72 : 56;
     return new ImageResponse(
         (
-            <div
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    background: BLACK,
-                    padding: 72,
-                    fontFamily: anton ? 'Anton' : 'sans-serif',
-                    position: 'relative',
-                }}
-            >
-                <div style={{ position: 'absolute', top: 32, right: 32, width: 96, height: 96, borderTop: `6px solid ${BLUE}`, borderRight: `6px solid ${BLUE}` }} />
-                <div style={{ position: 'absolute', bottom: 32, left: 32, width: 96, height: 96, borderBottom: `6px solid ${BLUE}`, borderLeft: `6px solid ${BLUE}` }} />
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-                        {payload.av && !artistImage ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={payload.av} alt="" width={96} height={96} style={{ width: 96, height: 96, borderRadius: 48, objectFit: 'cover' }} />
-                        ) : null}
-                        {payload.n ? (
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ display: 'flex', fontSize: 44, color: WHITE, letterSpacing: 2, textTransform: 'uppercase' }}>{payload.n}</div>
-                                {handle ? <div style={{ display: 'flex', fontSize: 26, color: MUTED, letterSpacing: 1 }}>{handle}</div> : null}
-                            </div>
-                        ) : null}
+            <Canvas f={f}>
+                <LeftColumn
+                    payload={payload}
+                    artistImage={artistImage}
+                    tile={tile}
+                    f={f}
+                    foot={`${impactoresLine(payload.t)} · ${issued}`}
+                />
+                <TiltedBlock
+                    width={BLOCK_WIDTH}
+                    extrusion={10}
+                    radius={22}
+                    border={4}
+                    padding={`36px ${BLOCK_PAD_X}px`}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <MonoLabel text="Apoyé" f={f} size={18} />
+                        <InkStrip
+                            text="IMPACTO"
+                            color={WHITE}
+                            fontFamily={f.display}
+                            fontSize={20}
+                            padding="10px 16px"
+                            radius={999}
+                        />
                     </div>
-                    <div style={{ display: 'flex', fontSize: 32, color: BLUE, letterSpacing: 6 }}>FANDI</div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 40 }}>
-                    {artistImage ? (
-                        <ArtistBadge artistImage={artistImage} fanAvatar={payload.av} size={176} />
+                    <div
+                        style={{
+                            display: 'flex',
+                            marginTop: 18,
+                            fontFamily: f.display,
+                            fontWeight: 900,
+                            fontSize: fitFontSize(cause, BLOCK_INNER, 64, { lines: 3, min: 28 }),
+                            color: BLUE,
+                            lineHeight: 0.95,
+                            textTransform: 'uppercase',
+                        }}
+                    >
+                        {cause}
+                    </div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            marginTop: 18,
+                            fontFamily: f.display,
+                            fontWeight: 900,
+                            fontSize: fitFontSize(`CON ${payload.a}`, BLOCK_INNER, 36, { lines: 2 }),
+                            color: INK,
+                            lineHeight: 0.95,
+                            textTransform: 'uppercase',
+                        }}
+                    >
+                        CON {payload.a}
+                    </div>
+                    {payload.n ? (
+                        <div style={{ display: 'flex', marginTop: 22 }}>
+                            <InkStrip
+                                text={`IMPACTOR #${payload.r}`}
+                                color={LIME}
+                                fontFamily={f.display}
+                                fontSize={30}
+                                padding="12px 18px"
+                                radius={12}
+                            />
+                        </div>
                     ) : null}
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ display: 'flex', alignSelf: 'flex-start', background: BLUE, color: WHITE, fontSize: 28, letterSpacing: 4, padding: '8px 20px', marginBottom: 20 }}>
-                            IMPACTO
-                        </div>
-                        <div style={{ display: 'flex', fontSize: 40, color: MUTED, letterSpacing: 4 }}>APOYÉ</div>
-                        <div style={{ display: 'flex', fontSize: causeSize, color: WHITE, lineHeight: 1.05, letterSpacing: 1, textTransform: 'uppercase', maxWidth: 900 }}>
-                            {cause}
-                        </div>
-                        <div style={{ display: 'flex', fontSize: 40, color: ACID, letterSpacing: 2, textTransform: 'uppercase', marginTop: 12 }}>
-                            CON {payload.a}
-                        </div>
-                        {payload.n ? (
-                            <div style={{ display: 'flex', fontSize: 28, color: MUTED, letterSpacing: 2, marginTop: 8 }}>
-                                IMPACTOR #{payload.r}
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: `4px solid ${BLUE}`, paddingTop: 24 }}>
-                    <div style={{ display: 'flex', fontSize: 28, color: MUTED, letterSpacing: 2, textTransform: 'uppercase' }}>
-                        {impactoresLine(payload.t)} · {issued}
-                    </div>
-                    <div style={{ display: 'flex', fontSize: 28, color: WHITE, letterSpacing: 2 }}>fandi.app</div>
-                </div>
-            </div>
+                </TiltedBlock>
+            </Canvas>
         ),
-        {
-            ...CARD_SIZE,
-            fonts: anton ? [{ name: 'Anton', data: anton, style: 'normal', weight: 400 }] : undefined,
-        },
+        { ...CARD_SIZE, fonts: f.fonts },
     );
 }
 
@@ -205,32 +611,18 @@ export async function renderShareCard(token: string): Promise<ImageResponse> {
     // Silently rendering "#1" from a forged payload is the one outcome
     // worth guarding against.
     if (!payload) {
+        const [f, tile] = await Promise.all([loadCardFonts(), loadTileLogo()]);
         return new ImageResponse(
-            (
-                <div
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: BLACK,
-                        color: WHITE,
-                        fontSize: 64,
-                        letterSpacing: 4,
-                    }}
-                >
-                    FANDI
-                </div>
-            ),
-            CARD_SIZE,
+            <WordmarkCanvas tile={tile} display={f.display} size={120} />,
+            { ...CARD_SIZE, fonts: f.fonts },
         );
     }
 
     // Best-effort, v2 only (v1 tokens carry no org id): failure → the
     // pre-Phase-5 layout, never a failed image.
-    const [anton, artistImage] = await Promise.all([
-        loadAnton(),
+    const [f, tile, artistImage] = await Promise.all([
+        loadCardFonts(),
+        loadTileLogo(),
         fetchArtistImage(payload.o ?? null),
     ]);
     const pct = topPercent(payload.r, payload.t);
@@ -242,262 +634,90 @@ export async function renderShareCard(token: string): Promise<ImageResponse> {
     });
     // Phase 6 — the Impacto card: "Apoyé {cause} con {ídolo}". No rank.
     if (isImpactoCard(payload)) {
-        return renderImpactoCard(payload, anton, artistImage, issued);
+        return renderImpactoCard(payload, f, tile, artistImage, issued);
     }
     const accent = showsTopPercent(payload.t)
         ? `TOP ${pct}%`
         : ofFansLine(payload.t);
-    const handle = payload.ig ? `@${payload.ig}` : null;
+    const rankText = `#${payload.r}`;
+    const artistLine = `DE ${payload.a}`;
 
     return new ImageResponse(
         (
-            <div
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    background: BLACK,
-                    padding: 72,
-                    fontFamily: anton ? 'Anton' : 'sans-serif',
-                    position: 'relative',
-                }}
-            >
-                {/* HudBrackets, the same frame the app draws around a
-                    live card. Also stops the right half of a 1200x630
-                    canvas reading as dead space. */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: 32,
-                        right: 32,
-                        width: 96,
-                        height: 96,
-                        borderTop: `6px solid ${ACID}`,
-                        borderRight: `6px solid ${ACID}`,
-                    }}
+            <Canvas f={f}>
+                <LeftColumn
+                    payload={payload}
+                    artistImage={artistImage}
+                    tile={tile}
+                    f={f}
+                    foot={`${payload.t} ${pluralFans(payload.t, true)} · ${issued}`}
                 />
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: 32,
-                        left: 32,
-                        width: 96,
-                        height: 96,
-                        borderBottom: `6px solid ${ACID}`,
-                        borderLeft: `6px solid ${ACID}`,
-                    }}
-                />
-                {/* Acid rule, echoing the HUD brackets in the app. */}
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                    }}
+                <TiltedBlock
+                    width={BLOCK_WIDTH}
+                    extrusion={10}
+                    radius={22}
+                    border={4}
+                    padding={`34px ${BLOCK_PAD_X}px`}
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 20,
-                        }}
-                    >
-                        {payload.av && !artistImage ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                                src={payload.av}
-                                alt=""
-                                width={96}
-                                height={96}
-                                style={{
-                                    width: 96,
-                                    height: 96,
-                                    borderRadius: 48,
-                                    objectFit: 'cover',
-                                }}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <MonoLabel text="Ranking de fans" f={f} size={18} />
+                        {tier ? (
+                            <InkStrip
+                                text={tier}
+                                color={WHITE}
+                                fontFamily={f.display}
+                                fontSize={20}
+                                padding="10px 16px"
+                                radius={999}
                             />
                         ) : null}
-                        {payload.n ? (
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        fontSize: 44,
-                                        color: WHITE,
-                                        letterSpacing: 2,
-                                        textTransform: 'uppercase',
-                                    }}
-                                >
-                                    {payload.n}
-                                </div>
-                                {handle ? (
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            fontSize: 26,
-                                            color: MUTED,
-                                            letterSpacing: 1,
-                                        }}
-                                    >
-                                        {handle}
-                                    </div>
-                                ) : null}
-                            </div>
-                        ) : null}
                     </div>
                     <div
                         style={{
                             display: 'flex',
-                            fontSize: 32,
-                            color: ACID,
-                            letterSpacing: 6,
+                            marginTop: 10,
+                            fontFamily: f.display,
+                            fontWeight: 900,
+                            fontSize: rankSize(rankText, BLOCK_INNER, 176),
+                            color: BLUE,
+                            lineHeight: 0.9,
+                            letterSpacing: -2,
                         }}
                     >
-                        FANDI
+                        {rankText}
                     </div>
-                </div>
-
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 40,
-                    }}
-                >
-                    {/* Phase 5 — artist image; the landscape canvas puts
-                        it beside the rank (the Story puts it above). */}
-                    {artistImage ? (
-                        <ArtistBadge
-                            artistImage={artistImage}
-                            fanAvatar={payload.av}
-                            size={176}
+                    <div style={{ display: 'flex', marginTop: 16 }}>
+                        <InkStrip
+                            text={accent}
+                            color={LIME}
+                            fontFamily={f.display}
+                            fontSize={38}
+                            padding="12px 18px"
+                            radius={12}
                         />
-                    ) : null}
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}
-                >
-                    {tier ? (
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignSelf: 'flex-start',
-                                background: ACID,
-                                color: BLACK,
-                                fontSize: 28,
-                                letterSpacing: 4,
-                                padding: '8px 20px',
-                                marginBottom: 20,
-                            }}
-                        >
-                            {tier}
-                        </div>
-                    ) : null}
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'baseline',
-                            gap: 24,
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: 'flex',
-                                fontSize: 200,
-                                color: WHITE,
-                                lineHeight: 1,
-                                letterSpacing: -4,
-                            }}
-                        >
-                            #{payload.r}
-                        </div>
-                        <div
-                            style={{
-                                display: 'flex',
-                                fontSize: 56,
-                                color: ACID,
-                                letterSpacing: 2,
-                            }}
-                        >
-                            {accent}
-                        </div>
                     </div>
                     <div
                         style={{
                             display: 'flex',
-                            fontSize: 48,
-                            color: WHITE,
-                            letterSpacing: 2,
+                            marginTop: 20,
+                            fontFamily: f.display,
+                            fontWeight: 900,
+                            fontSize: fitFontSize(artistLine, BLOCK_INNER, 40, { lines: 2 }),
+                            color: INK,
+                            lineHeight: 0.95,
                             textTransform: 'uppercase',
-                            marginTop: 12,
                         }}
                     >
-                        DE {payload.a}
+                        {artistLine}
                     </div>
                     {payload.ev ? (
-                        <div
-                            style={{
-                                display: 'flex',
-                                fontSize: 28,
-                                color: MUTED,
-                                letterSpacing: 2,
-                                textTransform: 'uppercase',
-                                marginTop: 8,
-                            }}
-                        >
-                            EN {payload.ev}
+                        <div style={{ display: 'flex', marginTop: 10 }}>
+                            <MonoLabel text={`EN ${payload.ev}`} f={f} size={18} />
                         </div>
                     ) : null}
-                </div>
-                </div>
-
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        borderTop: `4px solid ${BLUE}`,
-                        paddingTop: 24,
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            fontSize: 28,
-                            color: MUTED,
-                            letterSpacing: 2,
-                        }}
-                    >
-                        {payload.t} {pluralFans(payload.t, true)} · {issued}
-                    </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            fontSize: 28,
-                            color: WHITE,
-                            letterSpacing: 2,
-                        }}
-                    >
-                        fandi.app
-                    </div>
-                </div>
-            </div>
+                </TiltedBlock>
+            </Canvas>
         ),
-        {
-            ...CARD_SIZE,
-            fonts: anton
-                ? [{ name: 'Anton', data: anton, style: 'normal', weight: 400 }]
-                : undefined,
-        },
+        { ...CARD_SIZE, fonts: f.fonts },
     );
 }

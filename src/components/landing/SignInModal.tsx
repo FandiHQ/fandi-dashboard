@@ -40,8 +40,8 @@ export default function SignInModal({ open, onClose }: Props) {
                     aria-modal="true"
                     aria-label="Sign in to Fandi"
                 >
-                    {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    {/* Backdrop — flat 45% ink scrim, no blur (Azul Bloque §1). */}
+                    <div className="absolute inset-0 bg-ink/45" aria-hidden="true" />
 
                     {/* Modal Card */}
                     <motion.div
@@ -51,13 +51,12 @@ export default function SignInModal({ open, onClose }: Props) {
                         exit={{ scale: 0.95, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="hud-card hud-brackets hud-brackets-hover relative w-[90vw] max-w-md p-8 md:p-10
-                            shadow-[0_0_40px_rgba(204,255,0,0.1)]"
+                        className="block-white relative w-[90vw] max-w-md p-8 md:p-10"
                     >
                         {/* Close button */}
                         <button
                             onClick={onClose}
-                            className="absolute top-4 right-4 text-[#6B6B6B] hover:text-white transition-colors cursor-pointer"
+                            className="absolute top-4 right-4 grid size-9 cursor-pointer place-items-center rounded-[10px] text-muted-white transition-colors hover:bg-line-white hover:text-ink"
                             aria-label="Close sign-in modal"
                         >
                             <X size={20} />

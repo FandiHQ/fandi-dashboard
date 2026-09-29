@@ -9,9 +9,9 @@ import { Cta, WEB_APP_URL } from './Cta';
 /**
  * Persistent nav + mobile sticky CTA bar.
  *
- * Hidden over the hero (nothing competes with the mic), then solid — not
- * translucent — once the visitor is past it, so section content never
- * bleeds through the bar and makes the links unreadable.
+ * Hidden over the hero (nothing competes with the mic), then a solid ink
+ * bar — never translucent or blurred — once the visitor is past it, so
+ * section content never bleeds through and makes the links unreadable.
  *
  * Locale switch writes the same `locale` cookie the app already reads in
  * src/i18n/request.ts (which defaults to 'es') and reloads.
@@ -46,7 +46,7 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     return (
         <>
             <header
-                className={`fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#050506]/95 backdrop-blur-xl transition-opacity duration-300 ${
+                className={`fixed inset-x-0 top-0 z-50 border-b-2 border-ink bg-ink transition-opacity duration-300 ${
                     past
                         ? 'pointer-events-auto opacity-100'
                         : 'pointer-events-none opacity-0'
@@ -75,7 +75,7 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                             <a
                                 key={l.key}
                                 href={l.href}
-                                className="font-space-mono text-[11px] uppercase tracking-[3px] text-[#A0A0A0] transition-colors hover:text-white"
+                                className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
                             >
                                 {t(l.key)}
                             </a>
@@ -92,7 +92,7 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                             {(['es', 'en'] as const).map((loc, i) => (
                                 <span key={loc} className="flex items-center gap-1.5">
                                     {i === 1 && (
-                                        <span className="text-[#3A3A42]" aria-hidden="true">
+                                        <span className="text-nav-inactive" aria-hidden="true">
                                             |
                                         </span>
                                     )}
@@ -100,10 +100,10 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                                         type="button"
                                         onClick={() => switchLocale(loc)}
                                         aria-pressed={locale === loc}
-                                        className={`cursor-pointer font-space-mono text-[11px] uppercase tracking-[2px] transition-colors ${
+                                        className={`label-mono cursor-pointer text-[11px] transition-colors ${
                                             locale === loc
                                                 ? 'text-white'
-                                                : 'text-[#6B6B6B] hover:text-white'
+                                                : 'text-muted-ink hover:text-white'
                                         }`}
                                     >
                                         {loc.toUpperCase()}
@@ -115,7 +115,7 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                         <button
                             type="button"
                             onClick={onSignIn}
-                            className="hidden px-3 py-2 font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white sm:block"
+                            className="label-mono hidden px-3 py-2 text-[11px] text-muted-ink transition-colors hover:text-white sm:block"
                         >
                             {t('signIn')}
                         </button>
@@ -123,7 +123,8 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                             href={WEB_APP_URL}
                             newTab={false}
                             variant="acid"
-                            className="!px-5 !py-2.5"
+                            onInk
+                            className="!px-5 !py-2.5 !text-[13px]"
                         >
                             {tCta('enter')}
                         </Cta>
@@ -133,18 +134,19 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
 
             {/* Mobile sticky action bar */}
             <div
-                className={`fixed inset-x-0 bottom-0 z-50 flex gap-3 border-t border-white/10 bg-[#050506]/95 p-3 backdrop-blur-xl transition-transform duration-300 md:hidden ${
+                className={`fixed inset-x-0 bottom-0 z-50 flex gap-3 border-t-2 border-ink bg-ink p-3 transition-transform duration-300 md:hidden ${
                     past ? 'translate-y-0' : 'translate-y-full'
                 }`}
             >
-                <Cta onClick={onSignIn} variant="ghost" className="flex-1 !px-4">
+                <Cta onClick={onSignIn} variant="ghost" className="flex-1 !px-4 !py-3 !text-[13px]">
                     {t('idol')}
                 </Cta>
                 <Cta
                     href={WEB_APP_URL}
                     newTab={false}
                     variant="acid"
-                    className="flex-1 !px-4"
+                    onInk
+                    className="flex-1 !px-4 !py-3 !text-[13px]"
                 >
                     {tCta('enter')}
                 </Cta>

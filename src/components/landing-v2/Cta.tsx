@@ -1,13 +1,13 @@
 'use client';
 
-import { useRef, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 
 /**
- * Shared CTA system for landing v2.
+ * Shared CTA system for the landing (Azul Bloque).
  *
- * `Cta` is the button: a magnetic hover (the label leans toward the
- * cursor) plus a sheen sweep, in the tactical language. `StoreButtons`
+ * `Cta` is the button: a solid block with a 2px ink border and a hard
+ * extrusion that the `press` utility pushes in on :active. `StoreButtons`
  * are the real download targets, driven by env so they go live the
  * moment the store URLs exist and never render as dead links before.
  */
@@ -27,14 +27,25 @@ const ANDROID_URL = process.env.NEXT_PUBLIC_ANDROID_APP_URL ?? '';
 export const WEB_APP_URL =
     process.env.NEXT_PUBLIC_WEB_APP_URL ?? 'http://localhost:8081';
 
+/**
+ * acid    — lime, THE action (entering the app). One per view.
+ * primary — white extruded block (secondary actions: "Escríbenos").
+ * ghost   — white outline, no fill (quiet doors: "Ingresar (ídolos)").
+ */
 type Variant = 'primary' | 'ghost' | 'acid';
 
 const VARIANTS: Record<Variant, string> = {
+    acid: 'bg-lime text-ink border-2 border-ink shadow-ext-md hover:brightness-105',
     primary:
-        'bg-[#2D00F7] text-white hover:bg-[#2400C5] hover:shadow-[0_0_40px_rgba(45,0,247,0.75)]',
-    acid: 'bg-[#CCFF00] text-black hover:shadow-[0_0_40px_rgba(204,255,0,0.55)]',
-    ghost:
-        'border border-white/15 bg-white/[0.03] text-white backdrop-blur-md hover:border-[#CCFF00] hover:bg-[#CCFF00]/[0.06] hover:shadow-[0_0_28px_rgba(204,255,0,0.2)]',
+        'bg-white text-ink border-2 border-ink shadow-ext-sm hover:bg-line-white',
+    ghost: 'bg-transparent text-white border-2 border-white hover:bg-white hover:text-ink',
+};
+
+/** Inside an ink surface the ink extrusion disappears; use the blue one (§2). */
+const ON_INK_SHADOW: Record<Variant, string> = {
+    acid: 'bg-lime text-ink border-2 border-ink shadow-ext-cta hover:brightness-105',
+    primary: VARIANTS.primary,
+    ghost: VARIANTS.ghost,
 };
 
 export function Cta({
@@ -44,6 +55,7 @@ export function Cta({
     variant = 'primary',
     className = '',
     newTab,
+    onInk = false,
 }: {
     children: ReactNode;
     href?: string;
@@ -56,43 +68,14 @@ export function Cta({
      * replace the current page, such as entering the web app.
      */
     newTab?: boolean;
+    /** Rendered inside an ink bar/block: swaps the extrusion colour. */
+    onInk?: boolean;
 }) {
-    const ref = useRef<HTMLSpanElement>(null);
-
-    // Magnetic label — cheap, transform-only, no re-render.
-    const onMove = (e: React.MouseEvent<HTMLElement>) => {
-        const el = ref.current;
-        if (!el) return;
-        const r = e.currentTarget.getBoundingClientRect();
-        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
-        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
-        el.style.transform = `translate(${dx * 10}px, ${dy * 6}px)`;
-    };
-    const onLeave = () => {
-        const el = ref.current;
-        if (el) el.style.transform = 'translate(0,0)';
-    };
-
     const cls =
-        `group relative inline-flex items-center justify-center overflow-hidden px-9 py-4 ` +
-        `font-space-mono text-[12px] font-bold uppercase tracking-[2px] transition-all duration-300 ` +
-        `active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00E5FF] ` +
-        `${VARIANTS[variant]} ${className}`;
-
-    const inner = (
-        <>
-            <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 -left-full w-1/2 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-all duration-500 group-hover:left-[150%]"
-            />
-            <span
-                ref={ref}
-                className="relative transition-transform duration-200 ease-out"
-            >
-                {children}
-            </span>
-        </>
-    );
+        `press inline-flex items-center justify-center rounded-[14px] px-8 py-4 ` +
+        `font-display text-[15px] tracking-[0.01em] transition-colors duration-150 ` +
+        `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ` +
+        `${(onInk ? ON_INK_SHADOW : VARIANTS)[variant]} ${className}`;
 
     if (href) {
         // Only http(s) links open in a new tab. `mailto:` must NOT —
@@ -107,25 +90,17 @@ export function Cta({
             <a
                 href={href}
                 className={cls}
-                onMouseMove={onMove}
-                onMouseLeave={onLeave}
                 {...(isNewTab
                     ? { target: '_blank', rel: 'noopener noreferrer' }
                     : {})}
             >
-                {inner}
+                {children}
             </a>
         );
     }
     return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={cls}
-            onMouseMove={onMove}
-            onMouseLeave={onLeave}
-        >
-            {inner}
+        <button type="button" onClick={onClick} className={cls}>
+            {children}
         </button>
     );
 }
@@ -138,13 +113,15 @@ function AppleGlyph() {
     );
 }
 
+/** Monochrome (currentColor): the brand palette has no room for the
+ *  four-colour Play mark. */
 function PlayGlyph() {
     return (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden="true">
-            <path d="M3.6 2.1c-.24.25-.38.63-.38 1.13v17.54c0 .5.14.88.38 1.13l.06.06 9.83-9.83v-.23L3.66 2.05l-.06.05z" fill="#00E5FF" />
-            <path d="M16.77 16.4l-3.28-3.28v-.23l3.28-3.28.08.04 3.88 2.2c1.11.63 1.11 1.66 0 2.29l-3.88 2.2-.08.06z" fill="#CCFF00" />
-            <path d="M16.85 16.34l-3.36-3.36-9.89 9.89c.37.39.97.44 1.65.06l11.6-6.59z" fill="#FF0055" />
-            <path d="M16.85 7.62L5.25 1.03C4.57.65 3.97.7 3.6 1.09l9.89 9.89 3.36-3.36z" fill="#22C55E" />
+        <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" fill="currentColor" aria-hidden="true">
+            <path d="M3.6 2.1c-.24.25-.38.63-.38 1.13v17.54c0 .5.14.88.38 1.13l.06.06 9.83-9.83v-.23L3.66 2.05l-.06.05z" />
+            <path d="M16.77 16.4l-3.28-3.28v-.23l3.28-3.28.08.04 3.88 2.2c1.11.63 1.11 1.66 0 2.29l-3.88 2.2-.08.06z" />
+            <path d="M16.85 16.34l-3.36-3.36-9.89 9.89c.37.39.97.44 1.65.06l11.6-6.59z" />
+            <path d="M16.85 7.62L5.25 1.03C4.57.65 3.97.7 3.6 1.09l9.89 9.89 3.36-3.36z" />
         </svg>
     );
 }
@@ -163,21 +140,19 @@ function StoreButton({
     soon: string;
 }) {
     const base =
-        'flex min-w-[196px] items-center gap-3 border px-5 py-3 text-left transition-all';
+        'flex min-w-[196px] items-center gap-3 rounded-[14px] border-2 px-5 py-3 text-left';
 
     if (!href) {
         return (
             <div
-                className={`${base} cursor-default border-white/10 bg-white/[0.02] text-[#6B6B6B]`}
+                className={`${base} block-quiet cursor-default border-transparent text-lilac`}
                 aria-disabled="true"
             >
                 {glyph}
                 <span className="flex flex-col leading-tight">
-                    <span className="font-space-mono text-[9px] uppercase tracking-[2px]">{line1}</span>
-                    <span className="font-sora text-base font-bold text-[#9A9AA6]">{line2}</span>
-                    <span className="font-space-mono text-[9px] uppercase tracking-[2px] text-[#CCFF00]">
-                        {soon}
-                    </span>
+                    <span className="label-mono text-[9px]">{line1}</span>
+                    <span className="font-display text-base">{line2}</span>
+                    <span className="label-mono text-[9px] text-white">{soon}</span>
                 </span>
             </div>
         );
@@ -188,14 +163,12 @@ function StoreButton({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`${base} border-white/15 bg-white/[0.03] text-white backdrop-blur-md hover:border-[#CCFF00] hover:bg-[#CCFF00]/[0.06] hover:shadow-[0_0_24px_rgba(204,255,0,0.22)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00E5FF] active:scale-95`}
+            className={`${base} press border-ink bg-white text-ink shadow-ext-sm hover:bg-line-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white`}
         >
             {glyph}
             <span className="flex flex-col leading-tight">
-                <span className="font-space-mono text-[9px] uppercase tracking-[2px] text-[#A0A0A0]">
-                    {line1}
-                </span>
-                <span className="font-sora text-base font-bold">{line2}</span>
+                <span className="label-mono text-[9px] text-muted-white">{line1}</span>
+                <span className="font-display text-base">{line2}</span>
             </span>
         </a>
     );

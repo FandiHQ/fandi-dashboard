@@ -41,32 +41,22 @@ export default function FrustrationScene() {
     // Colour drains out of the crowd as the frustration builds.
     const saturate = useTransform(scrollYProgress, [0, 0.6, 1], [0.9, 0.5, 0.25]);
     const filter = useTransform(saturate, (s) => `saturate(${s}) contrast(1.1)`);
-    // Vignette closes in.
-    const vignette = useTransform(scrollYProgress, [0, 1], [0.55, 0.92]);
+    // A flat ink cover closes in (no vignette gradient).
+    const vignette = useTransform(scrollYProgress, [0, 1], [0.45, 0.8]);
 
     // The slam line arrives last and stays.
     const slamOpacity = useTransform(scrollYProgress, [0.7, 0.82], [0, 1]);
     const slamY = useTransform(scrollYProgress, [0.7, 0.82], [40, 0]);
-    const slamBlur = useTransform(scrollYProgress, [0.7, 0.82], [12, 0]);
-    const slamFilter = useTransform(slamBlur, (b) => `blur(${b}px)`);
 
     return (
         <section
             ref={ref}
             aria-label="La frustración del fan"
-            className="relative h-[320vh] bg-black"
+            className="relative h-[320vh] bg-ink"
         >
             <div className="sticky top-0 h-screen w-full overflow-hidden">
-                {/* Crowd plate. Gradient sits underneath so the scene still
-                    reads if the photo hasn't been added yet. */}
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background:
-                            'radial-gradient(70% 50% at 50% 12%, #1a2740 0%, #070709 60%, #000 100%)',
-                    }}
-                    aria-hidden="true"
-                />
+                {/* Crowd plate over flat ink, so the scene still reads if the
+                    photo hasn't loaded yet. */}
                 <motion.div
                     className="absolute inset-0"
                     style={
@@ -93,14 +83,10 @@ export default function FrustrationScene() {
                     />
                 </motion.div>
 
-                {/* Closing vignette */}
+                {/* Closing ink cover — flat, not a vignette */}
                 <motion.div
-                    className="pointer-events-none absolute inset-0"
-                    style={{
-                        opacity: reduceMotion ? 0.7 : vignette,
-                        background:
-                            'radial-gradient(ellipse at 50% 30%, transparent 20%, rgba(0,0,0,0.75) 65%, #000 100%)',
-                    }}
+                    className="pointer-events-none absolute inset-0 bg-ink"
+                    style={{ opacity: reduceMotion ? 0.7 : vignette }}
                     aria-hidden="true"
                 />
 
@@ -125,17 +111,12 @@ export default function FrustrationScene() {
                         style={
                             reduceMotion
                                 ? undefined
-                                : { opacity: slamOpacity, y: slamY, filter: slamFilter }
+                                : { opacity: slamOpacity, y: slamY }
                         }
-                        className="mt-8 max-w-5xl font-sora text-[34px] font-extrabold uppercase leading-[0.95] tracking-tighter text-white md:mt-12 md:text-[86px]"
+                        className="font-hero mt-8 max-w-5xl text-[34px] text-white md:mt-12 md:text-[86px]"
                     >
                         {t('slamA')}{' '}
-                        <span
-                            className="text-[#FF0055]"
-                            style={{ textShadow: '0 0 48px rgba(255,0,85,0.55)' }}
-                        >
-                            {t('slamB')}
-                        </span>
+                        <span className="text-alert">{t('slamB')}</span>
                     </motion.p>
                 </div>
 
@@ -171,7 +152,7 @@ function Line({
     return (
         <motion.p
             style={reduceMotion ? undefined : { opacity, y }}
-            className="font-space-mono text-base uppercase tracking-[6px] text-[#C8C8D0] md:text-xl md:tracking-[10px]"
+            className="font-space-mono text-base uppercase tracking-[0.2em] text-white md:text-xl"
         >
             {text}
         </motion.p>

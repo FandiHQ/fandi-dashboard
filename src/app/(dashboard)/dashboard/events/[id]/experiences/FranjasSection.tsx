@@ -69,11 +69,11 @@ export function FranjasSection({ eventId }: { eventId: string }) {
     };
 
     return (
-        <section className="flex flex-col gap-4 border-b border-[#1E1E1E] pb-8">
+        <section className="flex flex-col gap-4 border-b-2 border-ink pb-8">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <Clock size={18} className="text-[#2D00F7]" />
-                    <h2 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#A0A0A0]">
+                    <Clock size={18} className="text-lime" />
+                    <h2 className="font-display text-[17px] text-white">
                         {t('title')} ({slots.length})
                     </h2>
                 </div>
@@ -82,14 +82,14 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                         setEditing(null);
                         setShowForm(true);
                     }}
-                    className="flex cursor-pointer items-center gap-2 bg-[#2D00F7] px-4 py-2 font-space-mono text-[12px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5]"
+                    className="press flex cursor-pointer items-center gap-2 rounded-[10px] border-2 border-ink bg-white px-4 py-2 text-[13px] font-black uppercase text-ink shadow-ext-sm [font-stretch:108%]"
                 >
                     <Plus size={14} />
                     {t('add')}
                 </button>
             </div>
 
-            <p className="font-space-mono text-[12px] leading-relaxed text-[#737373]">
+            <p className="max-w-[720px] text-sm leading-relaxed text-lilac">
                 {t('help')}
             </p>
 
@@ -102,16 +102,16 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                         return (
                         <div
                             key={slot.id}
-                            className="flex items-start justify-between border border-[#1E1E1E] bg-[#0A0A0A] p-4"
+                            className="block-ink flex items-start justify-between p-4"
                         >
                             <div className="flex flex-col gap-1">
-                                <span className="font-sora text-lg font-bold text-white">
+                                <span className="font-display text-lg text-white">
                                     {slot.label}
                                 </span>
-                                <span className="font-space-mono text-[12px] text-[#A0A0A0]">
+                                <span className="font-space-mono text-[12px] text-lime">
                                     {fmt(slot.opensAt)} → {fmt(slot.closesAt)}
                                 </span>
-                                <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
+                                <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-muted-ink">
                                     {t('opportunityCount', { count: members.length })}
                                 </span>
                                 {members.length > 0 && (
@@ -119,9 +119,9 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                                         {members.map((e) => (
                                             <li
                                                 key={e.id}
-                                                className="font-sora text-[13px] text-[#A0A0A0]"
+                                                className="text-[13px] text-muted-ink"
                                             >
-                                                • {e.name}
+                                                · {e.name}
                                             </li>
                                         ))}
                                     </ul>
@@ -134,7 +134,7 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                                         setShowForm(true);
                                     }}
                                     aria-label={t('edit')}
-                                    className="cursor-pointer border border-[#2A2A2A] p-2 text-[#A0A0A0] transition-colors hover:border-[#2D00F7] hover:text-white"
+                                    className="cursor-pointer rounded-[8px] border-2 border-dash-ink p-2 text-muted-ink transition-colors hover:border-white hover:text-white"
                                 >
                                     <Pencil size={13} />
                                 </button>
@@ -145,7 +145,7 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                     })}
                 </div>
             ) : (
-                <p className="border border-dashed border-[#2A2A2A] bg-[#121212] p-4 text-center font-space-mono text-[12px] text-[#4A4A4A]">
+                <p className="rounded-2xl border-2 border-dashed border-lilac/45 p-4 text-center font-space-mono text-[12px] text-lilac">
                     {t('empty')}
                 </p>
             )}
@@ -200,7 +200,7 @@ function DeleteSlotButton({
             }}
             disabled={isPending}
             aria-label={t('delete')}
-            className="cursor-pointer border border-[#2A2A2A] p-2 text-[#FF3366] transition-colors hover:border-[#FF3366] disabled:opacity-50"
+            className="cursor-pointer rounded-[8px] border-2 border-alert p-2 text-alert transition-colors hover:bg-alert/10 disabled:opacity-50"
         >
             {isPending ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
         </button>
@@ -261,51 +261,51 @@ function SlotFormDialog({
     });
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-            <div className="flex w-full max-w-md flex-col gap-5 border border-[#2D00F7] bg-[#0A0A0A] p-6 shadow-[0_0_30px_rgba(45,0,247,0.2)]">
-                <h3 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#2D00F7]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/45 p-4">
+            <div className="surface-white flex w-full max-w-md flex-col gap-5 rounded-2xl border-2 border-ink bg-white p-6 text-ink shadow-ext-lg">
+                <h3 className="font-display text-2xl text-ink">
                     {isEditing ? t('editTitle') : t('createTitle')}
                 </h3>
 
                 <div className="flex flex-col gap-2">
-                    <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                    <label className="label-mono font-bold text-muted-white">
                         {t('label')} *
                     </label>
                     <Input
                         value={label}
                         onChange={(e) => setLabel(e.target.value)}
                         placeholder={t('labelPlaceholder')}
-                        className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white focus:border-[#2D00F7] focus:ring-0"
+                        className="h-12 px-4 text-base"
                     />
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                        <label className="label-mono font-bold text-muted-white">
                             {t('opensAt')} *
                         </label>
                         <Input
                             type="datetime-local"
                             value={opens}
                             onChange={(e) => setOpens(e.target.value)}
-                            className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white focus:border-[#2D00F7] focus:ring-0 [color-scheme:dark]"
+                            className="h-12 px-4 text-base"
                         />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                        <label className="label-mono font-bold text-muted-white">
                             {t('closesAt')} *
                         </label>
                         <Input
                             type="datetime-local"
                             value={closes}
                             onChange={(e) => setCloses(e.target.value)}
-                            className="h-12 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white focus:border-[#2D00F7] focus:ring-0 [color-scheme:dark]"
+                            className="h-12 px-4 text-base"
                         />
                     </div>
                 </div>
 
                 {violation && (
-                    <span className="font-space-mono text-xs text-[#FF3366]">
+                    <span className="font-space-mono text-xs text-alert-white">
                         {t(`validation.${violation}`)}
                     </span>
                 )}
@@ -314,14 +314,14 @@ function SlotFormDialog({
                     <button
                         onClick={() => save.mutate()}
                         disabled={!canSave || save.isPending}
-                        className="flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 bg-[#2D00F7] font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="press flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] border-2 border-ink bg-lime text-[14px] font-black uppercase text-ink shadow-ext-md [font-stretch:108%] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {save.isPending && <Loader2 size={14} className="animate-spin" />}
                         {t('save')}
                     </button>
                     <button
                         onClick={onClose}
-                        className="h-12 cursor-pointer border border-[#2A2A2A] px-6 font-space-mono text-[13px] uppercase tracking-[1px] text-[#A0A0A0] transition-colors hover:text-white"
+                        className="h-12 cursor-pointer rounded-[12px] border-2 border-ink px-6 text-[14px] font-black uppercase text-ink [font-stretch:108%] hover:bg-line-white"
                     >
                         {t('cancel')}
                     </button>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#0B0B0F; }
+  a { color:#C6FF3D; text-decoration:none; }
+  a:hover { color:#E4FF9C; }
+  @keyframes fandiPulse { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:.3; transform:scale(.75) } }
+</style>
+</helmet>
+
+<section id="3a" style="background:#0B0B0F;padding:56px 56px 96px;font-family:Archivo,sans-serif;color:#FFFFFF">
+  <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:12px">
+    <span style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;color:#0B0B0F;background:#C6FF3D;padding:5px 9px;border-radius:5px">3A</span>
+    <div>
+      <div style="font-size:34px;font-weight:900;font-stretch:115%;text-transform:uppercase;line-height:1">Fandi · App del fan</div>
+      <div style="font-family:'Space Mono',monospace;font-size:12px;color:#9A9AA8;letter-spacing:.06em;margin-top:10px">SISTEMA AZUL BLOQUE · iOS · 11 PANTALLAS</div>
+    </div>
+  </div>
+  <div style="max-width:880px;font-size:14px;line-height:1.55;color:#B9B9C4;margin:0 0 44px 58px;text-wrap:pretty">Una sola regla visual para todo: el azul es el mundo, los bloques tienen la extrusión negra del logo, solo el protagonista de cada pantalla se inclina, y el lima significa "en vivo / tu acción".</div>
+
+  <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:#6E6E7A;margin-bottom:18px">01 — NAVEGACIÓN PRINCIPAL</div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;margin-bottom:72px">
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">INICIO + BILLETERA</div>
+      <div data-screen-label="Inicio" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:41</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="flex:1;overflow:hidden;padding:10px 20px 0;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:12px">
+              <img src="assets/fandi-logo.png" alt="Fandi" style="width:44px;height:44px;border-radius:12px;display:block">
+              <div><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;color:#C6FF3D">HOLA,</div><div style="font-size:24px;font-weight:900;font-stretch:115%;line-height:1;text-transform:uppercase">Juan</div></div>
+            </div>
+            <span style="width:40px;height:40px;border-radius:12px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg></span>
+          </div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;color:#55555E">TUS FANDIS</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;color:#2D00F7">HISTORIAL ›</span></div>
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:58px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:.9">1.578</span><span style="font-size:32px;font-weight:900;color:#2D00F7">F</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <span style="font-size:13px;color:#3A3A44;line-height:1.3">Te alcanza para<br><span style="white-space:nowrap">26 aportes de 60 F</span></span>
+              <span style="background:#C6FF3D;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:11px 16px;font-weight:900;font-stretch:110%;font-size:14px;white-space:nowrap">+ RECARGAR</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#C6FF3D;display:block;animation:fandiPulse 1.6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em;color:#C6FF3D">EN VIVO AHORA</span></div>
+          <div style="background:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #C6FF3D;padding:16px;display:flex;flex-direction:column;gap:12px;margin-top:-8px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#9A9AA8">OMERTA TOUR · YALÍ</span><span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#C6FF3D">CIERRA 04:12</span></div>
+            <div style="font-size:23px;font-weight:900;font-stretch:108%;line-height:1;text-transform:uppercase">Cena con J Balvin y artista sorpresa</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end">
+              <div><div style="font-size:30px;font-weight:900;font-stretch:110%;color:#C6FF3D;line-height:1">2.847</div><div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;color:#9A9AA8;margin-top:4px">FANS PARTICIPANDO</div></div>
+              <span style="background:#C6FF3D;color:#0B0B0F;border-radius:10px;padding:12px 18px;font-weight:900;font-stretch:110%;font-size:14px">ENTRAR →</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:-4px">
+            <sc-for list="{{ moreLive }}" as="l" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#0B0B0F">
+                <span style="width:7px;height:7px;border-radius:50%;background:#C6FF3D;display:block;flex:none"></span>
+                <span style="flex:1;font-size:13px;font-weight:800;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.t }}</span>
+                <span style="font-family:'Space Mono',monospace;font-size:10px;color:#C6FF3D">{{ l.time }}</span>
+                <span style="font-size:14px;font-weight:900;color:#9A9AA8">›</span>
+              </div>
+            </sc-for>
+            <span style="text-align:center;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:#C6FF3D;padding:4px 0">VER LAS 3 EN VIVO</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em">PRÓXIMAMENTE</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C6FF3D">VER TODO</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:-8px">
+            <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:rgba(11,11,15,.3)">
+                <div style="text-align:center;min-width:36px"><div style="font-size:20px;font-weight:900;line-height:1">{{ u.day }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#D9D3FF">{{ u.mon }}</div></div>
+                <div style="flex:1"><div style="font-size:15px;font-weight:700">{{ u.title }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#D9D3FF;margin-top:3px">{{ u.meta }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:12px 12px 26px;background:#0B0B0F">
+          <sc-for list="{{ navHome }}" as="n" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;color:{{ n.c }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.d }}"></path></svg><span style="font-size:10px;font-weight:800;font-stretch:110%">{{ n.label }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">DETALLE DEL EVENTO</div>
+      <div data-screen-label="Evento" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:38</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.578 <span style="color:#2D00F7">F</span> <span style="color:#2D00F7;margin-left:4px">+</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:14px">
+          <div style="height:176px;flex:none;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;overflow:hidden;background:#0B0B0F"><img src="assets/poster-omerta.png" alt="Omerta Tour" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block"></div>
+          <div>
+            <div style="font-size:30px;font-weight:900;font-stretch:115%;line-height:.95;text-transform:uppercase">Omerta Tour · Yalí</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;color:#D9D3FF;margin-top:8px">HOY · 21:00 · MOVISTAR ARENA, BOGOTÁ</div>
+          </div>
+          <div style="display:flex;gap:6px;background:#0B0B0F;padding:4px;border-radius:12px">
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:9px;background:#FFFFFF;color:#0B0B0F;font-weight:900;font-stretch:110%;font-size:13px">OPORTUNIDADES · 3</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:9px;color:#9A9AA8;font-weight:900;font-stretch:110%;font-size:13px">SUBASTAS · 1</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="background:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:5px 5px 0 #C6FF3D;padding:13px 14px;display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#C6FF3D;display:block;animation:fandiPulse 1.6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;color:#C6FF3D">EN VIVO</span></span><span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#C6FF3D">CIERRA 04:12</span></div>
+              <div style="font-size:18px;font-weight:900;font-stretch:108%;line-height:1;text-transform:uppercase">Cena con J Balvin y artista sorpresa</div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;color:#9A9AA8">2.847 FANS · 20 GANADORES</span><span style="background:#C6FF3D;color:#0B0B0F;border-radius:9px;padding:8px 14px;font-weight:900;font-size:13px">ENTRAR →</span></div>
+            </div>
+            <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:5px 5px 0 #0B0B0F;padding:13px 14px;display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;color:#55555E">PROGRAMADA</span><span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700">ABRE 22:10</span></div>
+              <div style="font-size:18px;font-weight:900;font-stretch:108%;line-height:1;text-transform:uppercase">Soundcheck privado antes del show</div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;color:#55555E">10 GANADORES</span><span style="border:2px solid #0B0B0F;border-radius:9px;padding:6px 12px;font-weight:900;font-size:13px">AVÍSAME</span></div>
+            </div>
+            <div style="background:rgba(11,11,15,.35);border-radius:16px;padding:13px 14px;display:flex;justify-content:space-between;align-items:center">
+              <div><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;color:#B9B2F0">CERRADA</div><div style="font-size:16px;font-weight:900;font-stretch:108%;text-transform:uppercase;margin-top:4px;color:#D9D3FF">Meet &amp; greet backstage</div></div>
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:#C6FF3D">RESULTADO ›</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex:none;height:26px"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">BILLETERA</div>
+      <div data-screen-label="Billetera" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:42</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="flex:1;overflow:hidden;padding:10px 20px 0;display:flex;flex-direction:column;gap:16px">
+          <div style="font-size:28px;font-weight:900;font-stretch:115%;text-transform:uppercase;line-height:1">Billetera</div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;transform:rotate(-1.5deg);padding:16px 18px;margin:2px 4px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;color:#55555E">TUS FANDIS</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-top:6px"><span style="font-size:64px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:.9">1.578</span><span style="font-size:34px;font-weight:900;color:#2D00F7">F</span></div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#55555E;margin-top:8px">≈ $ 7.890.000 · NO VENCEN</div>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em">RECARGAR</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:-6px">
+            <sc-for list="{{ packs }}" as="p" hint-placeholder-count="4">
+              <div style="position:relative;background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:14px;box-shadow:{{ p.shadow }};padding:12px 14px">
+                <div style="font-size:24px;font-weight:900;font-stretch:112%;line-height:1">{{ p.f }} <span style="color:#2D00F7">F</span></div>
+                <div style="font-family:'Space Mono',monospace;font-size:10px;color:#55555E;margin-top:6px">{{ p.cop }}</div>
+                <sc-if value="{{ p.popular }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-10px;right:10px;background:#C6FF3D;border:2px solid #0B0B0F;border-radius:999px;padding:1px 8px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700">POPULAR</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <span style="display:block;text-align:center;padding:13px 0;border-radius:12px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;box-shadow:4px 4px 0 #0B0B0F;font-weight:900;font-stretch:112%;font-size:15px">OTRO MONTO</span>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em">MOVIMIENTOS</span><span style="font-family:'Space Mono',monospace;font-size:10px;color:#C6FF3D">VER TODO</span></div>
+          <div style="background:#0B0B0F;border-radius:14px;padding:4px 14px;margin-top:-6px">
+            <sc-for list="{{ moves }}" as="m" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:{{ m.sep }}">
+                <div><div style="font-size:14px;font-weight:700">{{ m.t }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:3px">{{ m.meta }}</div></div>
+                <span style="font-size:15px;font-weight:900;color:{{ m.c }}">{{ m.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:12px 12px 26px;background:#0B0B0F">
+          <sc-for list="{{ navWallet }}" as="n" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;color:{{ n.c }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.d }}"></path></svg><span style="font-size:10px;font-weight:800;font-stretch:110%">{{ n.label }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">PERFIL · MIS INSIGNIAS</div>
+      <div data-screen-label="Perfil" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:43</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="flex:1;overflow:hidden;padding:14px 20px 0;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:center;gap:16px">
+            <span style="width:76px;height:76px;border-radius:50%;background:#C6FF3D;border:3px solid #0B0B0F;box-shadow:4px 4px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F;font-size:34px;font-weight:900;flex:none">J</span>
+            <div>
+              <div style="font-size:26px;font-weight:900;font-stretch:112%;text-transform:uppercase;line-height:1">Juan Restrepo</div>
+              <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#D9D3FF;margin-top:6px">FAN DESDE 2025 · MEDELLÍN</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:14px;box-shadow:4px 4px 0 #0B0B0F;padding:12px"><div style="font-size:28px;font-weight:900;line-height:1">12</div><div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:#55555E;margin-top:5px">PARTICIPACIONES</div></div>
+            <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:14px;box-shadow:4px 4px 0 #0B0B0F;padding:12px"><div style="font-size:28px;font-weight:900;line-height:1">4</div><div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:#55555E;margin-top:5px">INSIGNIAS</div></div>
+            <div style="background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:14px;box-shadow:4px 4px 0 #0B0B0F;padding:12px"><div style="font-size:28px;font-weight:900;line-height:1">1</div><div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.08em;margin-top:5px">EXPERIENCIA</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:17px;font-weight:900;font-stretch:112%">MIS INSIGNIAS</span><span style="font-family:'Space Mono',monospace;font-size:10px;color:#C6FF3D">4 DE 6</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-6px">
+            <sc-for list="{{ badges }}" as="b" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="aspect-ratio:3/4;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;overflow:hidden;background:#0B0B0F"><img src="{{ b.src }}" alt="{{ b.name }}" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+                <div style="font-size:11px;font-weight:800;line-height:1.15">{{ b.name }}</div>
+              </div>
+            </sc-for>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:3/4;border:2px dashed rgba(255,255,255,.45);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:#D9D3FF;text-align:center;padding:6px">POR<br>DESBLOQUEAR</div><div style="font-size:11px;font-weight:800;color:#D9D3FF">Soundcheck</div></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:3/4;border:2px dashed rgba(255,255,255,.45);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:#D9D3FF;text-align:center;padding:6px">POR<br>DESBLOQUEAR</div><div style="font-size:11px;font-weight:800;color:#D9D3FF">Gira Norte</div></div>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:12px 12px 26px;background:#0B0B0F">
+          <sc-for list="{{ navProfile }}" as="n" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;color:{{ n.c }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.d }}"></path></svg><span style="font-size:10px;font-weight:800;font-stretch:110%">{{ n.label }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">SUBASTA EN VIVO</div>
+      <div data-screen-label="Subasta" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>22:31</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.518 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0F;display:block;animation:fandiPulse 1.6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">SUBASTA</span></span>
+            <span style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;color:#D9D3FF">CIERRA EN</span><span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700">00:01:48</span></span>
+          </div>
+          <div>
+            <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;text-wrap:balance">Salir en el video de una próxima canción</h1>
+            <p style="margin:8px 0 0;font-size:13px;color:#D9D3FF">Un solo ganador: la puja más alta al cierre.</p>
+          </div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;transform:rotate(-1.5deg);padding:12px 18px 14px;text-align:center;margin:4px 4px 6px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:#55555E">PUJA MÁS ALTA</div>
+            <div style="font-size:66px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:1;color:#2D00F7">206 F</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#3A3A44;margin-top:4px">≈ $ 1.030.000 · 15 PUJAS</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#0B0B0F;border-radius:12px;padding:11px 14px">
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#FF4FA3;display:block"></span><span style="font-size:14px;font-weight:900;font-stretch:110%">TE SUPERARON</span></span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:#9A9AA8">TU PUJA 201 F</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-family:'Space Mono',monospace;font-size:9.5px;line-height:1.5;letter-spacing:.04em;color:#D9D3FF"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:#D9D3FF;margin-top:5px;display:block"></span><span>SI ALGUIEN PUJA EN EL ÚLTIMO MINUTO, SE SUMAN 2 MINUTOS. NADIE GANA POR UN SEGUNDO.</span></div>
+          <div style="background:rgba(11,11,15,.35);border-radius:14px;padding:4px 14px">
+            <sc-for list="{{ bids }}" as="b" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:{{ b.sep }}"><span style="font-size:14px;font-weight:700">{{ b.who }}</span><span style="display:flex;gap:12px;align-items:baseline"><span style="font-family:'Space Mono',monospace;font-size:9px;color:#D9D3FF">{{ b.ago }}</span><span style="font-size:15px;font-weight:900">{{ b.v }}</span></span></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:14px 20px 24px;display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:50px;height:48px;border-radius:10px;background:#1A1A22;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">−</span>
+            <div style="flex:1;text-align:center"><div style="font-size:26px;font-weight:900;font-stretch:112%;line-height:1">211 F</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:3px">MÍNIMO +5 F</div></div>
+            <span style="width:50px;height:48px;border-radius:10px;background:#1A1A22;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">+</span>
+          </div>
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:#C6FF3D;color:#0B0B0F;box-shadow:4px 4px 0 #2D00F7;font-weight:900;font-stretch:115%;font-size:17px">PUJAR 211 F</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:#8A8A96">SOLO SE DESCUENTA SI GANAS</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:#6E6E7A;margin-bottom:18px">02 — OPORTUNIDAD EN VIVO · 6 ESTADOS</div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px">
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">A · ANTES DE ABRIR</div>
+      <div data-screen-label="Oportunidad A · Antes" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>20:57</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.578 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;border:2px solid #FFFFFF;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#FFFFFF;display:block"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">PROGRAMADA</span></span>
+            <span style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;color:#D9D3FF">ABRE EN</span><span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700">00:13:40</span></span>
+          </div>
+          <div>
+            <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;text-wrap:balance">Cena con J Balvin y artista sorpresa</h1>
+            <p style="margin:8px 0 0;font-size:13px;color:#D9D3FF">20 fans cenan con la banda hoy a las 11:30 PM.</p>
+          </div>
+          <div style="border:2px dashed rgba(255,255,255,.55);border-radius:16px;padding:8px 18px 10px;text-align:center;margin:2px 0 4px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:#D9D3FF">FANS PARTICIPANDO</div>
+            <div style="font-size:58px;font-weight:900;font-stretch:112%;line-height:1;color:rgba(255,255,255,.35)">—</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#D9D3FF;margin-top:4px">EL CONTEO EMPIEZA A LAS 21:10</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#D9D3FF"><span style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);display:block"></span><span>AÚN NO PARTICIPAS</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:900;font-stretch:112%">CATEGORÍAS</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C6FF3D">VER REGLAS</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ tiersPre }}" as="t" hint-placeholder-count="4">
+              <div style="position:relative;display:flex;align-items:center;padding:6px 14px 6px 20px;border-radius:12px;background:#0B0B0F;border:2px solid {{ t.border }};box-shadow:{{ t.shadow }};overflow:hidden;opacity:{{ t.op }}">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:6px;background:{{ t.bar }}"></span>
+                <div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px;font-weight:900;font-stretch:112%">{{ t.name }}</span><sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:{{ t.bar }};border:1px solid {{ t.bar }};border-radius:999px;padding:1px 7px">ESTÁS AQUÍ</span></sc-if></div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:2px">{{ t.sub }}</div></div>
+                <div style="text-align:right"><div style="font-size:16px;font-weight:800">{{ t.fans }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8">FANS</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:12px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-radius:12px;background:#1A1A22">
+            <div><div style="font-size:14px;font-weight:800">Avísame cuando abra</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:2px">NOTIFICACIÓN A LAS 21:10</div></div>
+            <span style="width:46px;height:28px;border-radius:999px;background:#C6FF3D;position:relative;display:block"><span style="position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#0B0B0F;display:block"></span></span>
+          </div>
+          <span style="display:block;text-align:center;padding:15px 0;border-radius:14px;background:#1A1A22;color:#6E6E7A;font-weight:900;font-stretch:115%;font-size:17px">APORTAR</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:#8A8A96">SE HABILITA AL ABRIR</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#C6FF3D">EN VIVO · ESTADO PRINCIPAL</div>
+      <div data-screen-label="Oportunidad · En vivo" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:41</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.578 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0F;display:block;animation:fandiPulse 1.6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">EN VIVO</span></span>
+            <span style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;color:#D9D3FF">CIERRA EN</span><span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700">00:04:12</span></span>
+          </div>
+          <div>
+            <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;text-wrap:balance">Cena con J Balvin y artista sorpresa</h1>
+            <p style="margin:8px 0 0;font-size:13px;color:#D9D3FF">20 fans cenan con la banda hoy a las 11:30 PM.</p>
+          </div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;transform:rotate(-1.5deg);padding:8px 18px 10px;text-align:center;margin:2px 4px 4px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:#55555E">FANS PARTICIPANDO</div>
+            <div style="font-size:58px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:1;color:#2D00F7">{{ liveCount }}</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-top:4px"><span style="width:6px;height:6px;border-radius:50%;background:#0B0B0F;display:block;animation:fandiPulse 1.1s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;color:#3A3A44">+12 EN LOS ÚLTIMOS 10 S</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#D9D3FF"><span style="width:6px;height:6px;border-radius:50%;background:#5CE1FF;display:block"></span><span style="white-space:nowrap;letter-spacing:0">TU APORTE 60 F · <b style="color:#5CE1FF">ALTA</b> · <span style="color:#C6FF3D">+60 F → VIP</span></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:900;font-stretch:112%">CATEGORÍAS</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C6FF3D">VER REGLAS</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ tiersLive }}" as="t" hint-placeholder-count="4">
+              <div style="position:relative;display:flex;align-items:center;padding:6px 14px 6px 20px;border-radius:12px;background:#0B0B0F;border:2px solid {{ t.border }};box-shadow:{{ t.shadow }};overflow:hidden;opacity:{{ t.op }}">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:6px;background:{{ t.bar }}"></span>
+                <div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px;font-weight:900;font-stretch:112%">{{ t.name }}</span><sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:{{ t.bar }};border:1px solid {{ t.bar }};border-radius:999px;padding:1px 7px">ESTÁS AQUÍ</span></sc-if></div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:2px">{{ t.sub }}</div></div>
+                <div style="text-align:right"><div style="font-size:16px;font-weight:800">{{ t.fans }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8">FANS</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:12px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+              <span onClick="{{ c.pick }}" style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid {{ c.border }};font-weight:800;font-size:14px;color:{{ c.color }};cursor:pointer">{{ c.label }}</span>
+            </sc-for>
+          </div>
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:#C6FF3D;color:#0B0B0F;box-shadow:4px 4px 0 #2D00F7;font-weight:900;font-stretch:115%;font-size:17px">{{ ctaLabel }}</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:#8A8A96">{{ remainLabel }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">B · ÚLTIMOS 30 SEGUNDOS</div>
+      <div data-screen-label="Oportunidad B · Urgencia" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:45</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.578 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0F;display:block;animation:fandiPulse .6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">ÚLTIMOS SEGUNDOS</span></span>
+            <span style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;color:#D9D3FF">CIERRA EN</span><span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:#C6FF3D">00:00:23</span></span>
+          </div>
+          <div>
+            <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;text-wrap:balance">Cena con J Balvin y artista sorpresa</h1>
+            <p style="margin:8px 0 0;font-size:13px;color:#D9D3FF">20 fans cenan con la banda hoy a las 11:30 PM.</p>
+          </div>
+          <div style="background:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #C6FF3D;transform:rotate(-1.5deg);padding:8px 18px 10px;text-align:center;margin:2px 4px 4px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:#9A9AA8">FANS PARTICIPANDO</div>
+            <div style="font-size:58px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:1;color:#C6FF3D">3.106</div>
+            <div style="height:6px;border-radius:99px;background:#1A1A22;overflow:hidden;margin-top:6px"><div style="width:23%;height:100%;background:#C6FF3D"></div></div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#C6FF3D;margin-top:4px">+54 EN LOS ÚLTIMOS 10 S</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#D9D3FF"><span style="width:6px;height:6px;border-radius:50%;background:#5CE1FF;display:block"></span><span style="white-space:nowrap;letter-spacing:0">TU APORTE 60 F · <b style="color:#5CE1FF">ALTA</b> · <span style="color:#C6FF3D">+80 F → VIP</span></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:900;font-stretch:112%">CATEGORÍAS</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C6FF3D">VER REGLAS</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ tiersUrgent }}" as="t" hint-placeholder-count="4">
+              <div style="position:relative;display:flex;align-items:center;padding:6px 14px 6px 20px;border-radius:12px;background:#0B0B0F;border:2px solid {{ t.border }};box-shadow:{{ t.shadow }};overflow:hidden;opacity:{{ t.op }}">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:6px;background:{{ t.bar }}"></span>
+                <div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px;font-weight:900;font-stretch:112%">{{ t.name }}</span><sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:{{ t.bar }};border:1px solid {{ t.bar }};border-radius:999px;padding:1px 7px">ESTÁS AQUÍ</span></sc-if></div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:2px">{{ t.sub }}</div></div>
+                <div style="text-align:right"><div style="font-size:16px;font-weight:800">{{ t.fans }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8">FANS</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:12px 20px 22px;display:flex;flex-direction:column;gap:10px;box-shadow:0 -3px 0 #C6FF3D">
+          <div style="display:flex;gap:8px">
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #1A1A22;font-weight:800;font-size:14px;color:#D0D0D8">20 F</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #C6FF3D;font-weight:800;font-size:14px;color:#C6FF3D">60 F</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #1A1A22;font-weight:800;font-size:14px;color:#D0D0D8">200 F</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #1A1A22;font-weight:800;font-size:13px;color:#9A9AA8">OTRO</span>
+          </div>
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:#C6FF3D;color:#0B0B0F;box-shadow:4px 4px 0 #2D00F7;font-weight:900;font-stretch:115%;font-size:17px">APORTAR 60 F ANTES DEL CIERRE</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:#8A8A96">UN TOQUE · SIN CONFIRMACIONES EXTRA</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">C · CERRADA, ESPERANDO RESULTADO</div>
+      <div data-screen-label="Oportunidad C · Cerrada" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:46</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.518 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;background:#0B0B0F;border-radius:999px;padding:5px 12px"><span style="width:7px;height:7px;border-radius:2px;background:#FFFFFF;display:block"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">CERRADA</span></span>
+            <span style="font-family:'Space Mono',monospace;font-size:11px;color:#D9D3FF">21:45:00</span>
+          </div>
+          <div>
+            <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;text-wrap:balance">Cena con J Balvin y artista sorpresa</h1>
+            <p style="margin:8px 0 0;font-size:13px;color:#D9D3FF">Tu aporte quedó registrado. Ya no se aceptan más.</p>
+          </div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;padding:12px 18px 14px;text-align:center;margin:4px 4px 6px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:#55555E">CONTEO FINAL</div>
+            <div style="font-size:66px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:1">3.142</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#55555E;margin-top:4px">FANS PARTICIPARON</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#D9D3FF"><span style="width:6px;height:6px;border-radius:50%;background:#5CE1FF;display:block"></span><span>TU APORTE 60 F · CATEGORÍA ALTA</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:900;font-stretch:112%">CATEGORÍAS</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C6FF3D">VER REGLAS</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ tiersClosed }}" as="t" hint-placeholder-count="4">
+              <div style="position:relative;display:flex;align-items:center;padding:8px 14px 8px 20px;border-radius:12px;background:#0B0B0F;border:2px solid {{ t.border }};box-shadow:{{ t.shadow }};overflow:hidden;opacity:{{ t.op }}">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:6px;background:{{ t.bar }}"></span>
+                <div style="flex:1"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px;font-weight:900;font-stretch:112%">{{ t.name }}</span><sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:{{ t.bar }};border:1px solid {{ t.bar }};border-radius:999px;padding:1px 7px">ESTÁS AQUÍ</span></sc-if></div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:2px">{{ t.sub }}</div></div>
+                <div style="text-align:right"><div style="font-size:16px;font-weight:800">{{ t.fans }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8">FANS</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:16px 20px 26px;display:flex;flex-direction:column;gap:8px;margin-top:10px">
+          <div style="font-size:17px;font-weight:900;font-stretch:115%">SELECCIONANDO GANADORES</div>
+          <div style="font-size:13px;color:#B9B9C4;line-height:1.4">Sorteamos cada categoría por separado. Te avisamos aquí y por notificación. Puedes cerrar la app.</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:#6E6E7A;margin-top:4px">REGISTRO #0294-A · 21:43:18</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">D · RESULTADO · NO SELECCIONADO</div>
+      <div data-screen-label="Oportunidad D · No seleccionado" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:52</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.518 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:flex-start;display:flex;align-items:center;gap:6px;border:2px solid #FFFFFF;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#FFFFFF;display:block"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">RESULTADO PUBLICADO</span></span>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#D9D3FF">CENA CON J BALVIN Y ARTISTA SORPRESA</div>
+            <h1 style="margin:8px 0 0;font-size:34px;font-weight:900;font-stretch:112%;line-height:.92;text-transform:uppercase">Esta vez no salió tu nombre</h1>
+            <p style="margin:10px 0 0;font-size:14px;line-height:1.4;color:#E4E0FF">Se sortearon 20 ganadores, cada categoría por separado. Tu insignia y tu registro ya son tuyos.</p>
+          </div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;transform:rotate(-1.5deg);padding:12px;display:flex;gap:14px;align-items:center;margin:4px 4px 6px">
+            <div style="width:92px;height:122px;flex:none;border:2px solid #0B0B0F;border-radius:10px;overflow:hidden"><img src="assets/badge-fan-leal.png" alt="Insignia Fan leal" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="align-self:flex-start;background:#B7A8FF;border:2px solid #0B0B0F;border-radius:999px;padding:1px 8px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.08em">INSIGNIA NUEVA</span>
+              <div style="font-size:20px;font-weight:900;font-stretch:110%;line-height:1">Fan leal · Omerta Tour</div>
+              <div style="font-family:'Space Mono',monospace;font-size:9px;color:#55555E;line-height:1.5">PARTICIPANTE VERIFICADO<br>26 SEP 2026 · #0294-A</div>
+            </div>
+          </div>
+          <div style="background:#0B0B0F;border-radius:14px;padding:4px 14px">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1E1E26"><span style="font-size:13px;color:#B9B9C4">Tu categoría</span><span style="font-size:14px;font-weight:900;color:#5CE1FF">ALTA</span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1E1E26"><span style="font-size:13px;color:#B9B9C4">Fans junto a ti</span><span style="font-size:14px;font-weight:900">3.142</span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="font-size:13px;color:#B9B9C4">Tus participaciones</span><span style="font-size:14px;font-weight:900">12</span></div>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:14px 20px 24px;display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:#C6FF3D;color:#0B0B0F;box-shadow:4px 4px 0 #2D00F7;font-weight:900;font-stretch:115%;font-size:16px">SIGUIENTE OPORTUNIDAD · 22:10</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;color:#C6FF3D">VER LOS 20 GANADORES</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#C6FF3D">E · RESULTADO · SELECCIONADO</div>
+      <div data-screen-label="Oportunidad E · Seleccionado" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:52</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">1.518 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:flex-start;display:flex;align-items:center;gap:6px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0F;display:block"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">RESULTADO PUBLICADO</span></span>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:7px 7px 0 #C6FF3D;transform:rotate(-1.5deg);padding:16px 18px;margin:4px 6px 6px 2px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#55555E">CENA CON J BALVIN Y ARTISTA SORPRESA</div>
+            <div style="font-size:50px;font-weight:900;font-stretch:115%;line-height:.88;text-transform:uppercase;color:#2D00F7;margin-top:8px">Saliste<br>elegido</div>
+            <div style="font-size:14px;line-height:1.35;color:#3A3A44;margin-top:10px">Eres uno de los 3 ganadores de la categoría <b style="color:#0B0B0F">ALTA</b>. Nos vemos esta noche.</div>
+          </div>
+          <div style="background:#0B0B0F;border-radius:14px;padding:14px;text-align:center">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;color:#9A9AA8">CÓDIGO DE ACCESO</div>
+            <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;letter-spacing:.06em;color:#C6FF3D;margin-top:6px">FND-4471-KX</div>
+          </div>
+          <div style="background:rgba(11,11,15,.35);border-radius:14px;padding:4px 14px">
+            <sc-for list="{{ winRows }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:{{ r.sep }}"><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#D9D3FF">{{ r.k }}</span><span style="font-size:14px;font-weight:800">{{ r.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:53px;flex:none;border:2px solid #0B0B0F;border-radius:6px;overflow:hidden;box-shadow:2px 2px 0 #0B0B0F"><img src="assets/badge-ganador-vip.png" alt="Insignia ganador" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;line-height:1.5;color:#E4E0FF">INSIGNIA GANADOR · OMERTA TOUR<br>YA ESTÁ EN TU PERFIL</span>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:14px 20px 24px;display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:#C6FF3D;color:#0B0B0F;box-shadow:4px 4px 0 #2D00F7;font-weight:900;font-stretch:115%;font-size:17px">CÓMO LLEGAR AL PUNTO</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;color:#C6FF3D">AGREGAR AL CALENDARIO</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:#6E6E7A;margin:72px 0 18px">03 — RECARGA Y SALDO INSUFICIENTE</div>
+  <div id="fan-recarga" style="display:flex;flex-wrap:wrap;gap:40px">
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">RECARGAR · INTERACTIVO</div>
+      <div data-screen-label="Recargar" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:44</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-size:17px;font-weight:900;font-stretch:115%">RECARGAR</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">12 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;transform:rotate(-1.5deg);padding:20px 18px 22px;margin:10px 4px 10px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;color:#55555E">¿CUÁNTO?</span>
+              <div style="display:flex;gap:2px;border:2px solid #0B0B0F;border-radius:999px;padding:2px">
+                <sc-for list="{{ unitTabs }}" as="u" hint-placeholder-count="2"><span onClick="{{ u.pick }}" style="padding:3px 10px;border-radius:999px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;background:{{ u.bg }};color:{{ u.c }};cursor:pointer">{{ u.label }}</span></sc-for>
+              </div>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;border-bottom:3px solid #2D00F7;padding-bottom:4px">
+              <span style="font-size:40px;font-weight:900;color:#55555E">{{ rcPrefix }}</span>
+              <input value="{{ rcInput }}" onChange="{{ onRcInput }}" inputMode="numeric" style="flex:1;min-width:0;width:100%;border:none;outline:none;background:transparent;font-family:Archivo,sans-serif;font-size:52px;font-weight:900;font-stretch:112%;letter-spacing:-.02em;color:#0B0B0F;padding:0">
+              <span style="font-size:40px;font-weight:900;color:#2D00F7">{{ rcSuffix }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:22px;font-weight:900;font-stretch:112%;color:#2D00F7">{{ rcConv }}</span>
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:#55555E">{{ rateLabel }}</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <sc-for list="{{ rcPacks }}" as="p" hint-placeholder-count="4">
+              <div onClick="{{ p.pick }}" style="cursor:pointer;text-align:center;padding:8px 0;border-radius:10px;background:{{ p.bg }};color:#0B0B0F;border:2px solid #0B0B0F;box-shadow:{{ p.shadow }}"><div style="font-size:13px;font-weight:900">{{ p.label }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#3A3A44;margin-top:2px">{{ p.sub }}</div></div>
+            </sc-for>
+          </div>
+          <div style="background:#0B0B0F;border-radius:14px;padding:4px 16px 6px;margin-top:auto">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;color:#9A9AA8;padding:12px 0 6px">CON ESTA RECARGA</div>
+            <sc-for list="{{ rcCan }}" as="c" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #1E1E26"><span style="flex:1;min-width:0;font-size:14px;color:#D0D0D8">{{ c.k }}</span><span style="flex:none;font-size:16px;font-weight:900;color:{{ c.c }}">{{ c.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#D9D3FF;margin-bottom:14px"><span style="width:6px;height:6px;border-radius:50%;background:#C6FF3D;display:block"></span><span>{{ rcAfter }}</span></div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:14px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:{{ payBg }};color:{{ payFg }};box-shadow:{{ payShadow }};font-weight:900;font-stretch:112%;font-size:16px">{{ ctaPay }}</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:#8A8A96">{{ payNote }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">1 · NO TE ALCANZA (EN VIVO)</div>
+      <div data-screen-label="Saldo insuficiente" style="width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:41</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none">
+          <span style="width:38px;height:38px;border-radius:10px;background:#FFFFFF;border:2px solid #0B0B0F;box-shadow:3px 3px 0 #0B0B0F;display:flex;align-items:center;justify-content:center;color:#0B0B0F"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:#D9D3FF">OMERTA TOUR · YALÍ</span>
+          <span style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:10px;box-shadow:3px 3px 0 #0B0B0F;padding:8px 11px;font-weight:900;font-stretch:110%;font-size:14px">12 <span style="color:#2D00F7">F</span></span>
+        </div>
+        <div style="flex:1;overflow:hidden;padding:0 20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0F;display:block;animation:fandiPulse 1.6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">EN VIVO</span></span>
+            <span style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;color:#D9D3FF">CIERRA EN</span><span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700">00:04:12</span></span>
+          </div>
+          <div>
+            <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;text-wrap:balance">Cena con J Balvin y artista sorpresa</h1>
+            <p style="margin:8px 0 0;font-size:13px;color:#D9D3FF">20 fans cenan con la banda hoy a las 11:30 PM.</p>
+          </div>
+          <div style="background:#FFFFFF;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:16px;box-shadow:6px 6px 0 #0B0B0F;transform:rotate(-1.5deg);padding:8px 18px 10px;text-align:center;margin:2px 4px 4px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:#55555E">FANS PARTICIPANDO</div>
+            <div style="font-size:58px;font-weight:900;font-stretch:112%;letter-spacing:-.03em;line-height:1;color:#2D00F7">2.847</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#3A3A44;margin-top:4px">+12 EN LOS ÚLTIMOS 10 S</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#D9D3FF"><span style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);display:block"></span><span>AÚN NO PARTICIPAS · CON 20 F YA ENTRAS</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:900;font-stretch:112%">CATEGORÍAS</span><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#C6FF3D">VER REGLAS</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <sc-for list="{{ tiersNoPart }}" as="t" hint-placeholder-count="4">
+              <div style="position:relative;display:flex;align-items:center;padding:6px 14px 6px 20px;border-radius:12px;background:#0B0B0F;border:2px solid #0B0B0F;overflow:hidden">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:6px;background:{{ t.bar }}"></span>
+                <div style="flex:1"><div style="font-size:16px;font-weight:900;font-stretch:112%">{{ t.name }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8;margin-top:2px">{{ t.sub }}</div></div>
+                <div style="text-align:right"><div style="font-size:16px;font-weight:800">{{ t.fans }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#9A9AA8">FANS</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;background:#0B0B0F;border-radius:22px 22px 0 0;padding:12px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px">
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #C6FF3D;font-weight:800;font-size:14px;color:#C6FF3D">20 F</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #1A1A22;font-weight:800;font-size:14px;color:#D0D0D8">60 F</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #1A1A22;font-weight:800;font-size:14px;color:#D0D0D8">200 F</span>
+            <span style="flex:1;text-align:center;padding:9px 0;border-radius:10px;background:#1A1A22;border:2px solid #1A1A22;font-weight:800;font-size:13px;color:#9A9AA8">OTRO</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#FF4FA3;display:block"></span><span style="font-size:13px;font-weight:700">Te faltan <b>8 F</b> · tienes 12 F</span></div>
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:#C6FF3D;color:#0B0B0F;box-shadow:4px 4px 0 #2D00F7;font-weight:900;font-stretch:115%;font-size:17px">RECARGAR Y APORTAR 20 F</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:#9A9AA8">2 · RECARGA RÁPIDA SIN SALIR DEL VIVO</div>
+      <div data-screen-label="Recarga rápida" style="position:relative;width:390px;height:844px;border-radius:46px;background:#2D00F7;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:Archivo,sans-serif;color:#FFFFFF">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex:none"><span>21:41</span><span style="width:18px;height:10px;border:1.5px solid currentColor;border-radius:3px;display:block"></span></div>
+        <div style="padding:10px 20px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:6px;background:#C6FF3D;color:#0B0B0F;border:2px solid #0B0B0F;border-radius:999px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0F;display:block;animation:fandiPulse 1.6s ease-in-out infinite"></span><span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em">EN VIVO</span></span>
+            <span style="position:relative;z-index:1;display:flex;align-items:baseline;gap:8px;background:#0B0B0F;border-radius:8px;padding:4px 8px"><span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;color:#D9D3FF">CIERRA EN</span><span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:#C6FF3D">00:03:51</span></span>
+          </div>
+          <h1 style="margin:0;font-size:27px;font-weight:900;font-stretch:112%;line-height:.95;text-transform:uppercase;opacity:.55">Cena con J Balvin y artista sorpresa</h1>
+        </div>
+        <div style="position:absolute;inset:0;background:rgba(11,11,15,.55)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#FFFFFF;color:#0B0B0F;border-top:3px solid #0B0B0F;border-radius:26px 26px 0 0;padding:10px 20px 26px;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:center;width:44px;height:5px;border-radius:99px;background:#C9C9D2;display:block"></span>
+          <div>
+            <div style="font-size:32px;font-weight:900;font-stretch:115%;line-height:1;text-transform:uppercase">Te faltan 8 F</div>
+            <div style="font-size:14px;color:#55555E;margin-top:6px">Para aportar 20 F en la Cena con J Balvin.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ quickPacks }}" as="q" hint-placeholder-count="3">
+              <div onClick="{{ q.pick }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:2px solid #0B0B0F;background:{{ q.bg }};box-shadow:{{ q.shadow }}">
+                <span style="width:20px;height:20px;border-radius:50%;border:2px solid #0B0B0F;display:flex;align-items:center;justify-content:center;flex:none"><span style="width:10px;height:10px;border-radius:50%;background:{{ q.dot }};display:block"></span></span>
+                <div style="flex:1"><div style="font-size:17px;font-weight:900">{{ q.cop }}</div><div style="font-family:'Space Mono',monospace;font-size:9px;color:#3A3A44;margin-top:2px">{{ q.note }}</div></div>
+                <span style="font-size:17px;font-weight:900;color:#2D00F7">{{ q.f }}</span>
+              </div>
+            </sc-for>
+            <div onClick="{{ qCustomPick }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:9px 14px;border-radius:12px;border:2px solid #0B0B0F;background:{{ qCustomBg }};box-shadow:{{ qCustomShadow }}">
+              <span style="width:20px;height:20px;border-radius:50%;border:2px solid #0B0B0F;display:flex;align-items:center;justify-content:center;flex:none"><span style="width:10px;height:10px;border-radius:50%;background:{{ qCustomDot }};display:block"></span></span>
+              <div style="flex:1;min-width:0"><div style="display:flex;align-items:baseline;gap:4px"><span style="font-size:17px;font-weight:900;color:#55555E">$</span><input value="{{ qCustomInput }}" onChange="{{ onQCustom }}" onFocus="{{ qCustomPick }}" placeholder="Otro monto" inputMode="numeric" style="flex:1;min-width:0;width:100%;border:none;outline:none;background:transparent;font-family:Archivo,sans-serif;font-size:17px;font-weight:900;color:#0B0B0F;padding:0"></div><div style="font-family:'Space Mono',monospace;font-size:9px;color:{{ qCustomNoteC }};margin-top:2px">{{ qCustomNote }}</div></div>
+              <span style="font-size:17px;font-weight:900;color:#2D00F7">{{ qCustomF }}</span>
+            </div>
+          </div>
+          <span style="display:block;text-align:center;padding:16px 0;border-radius:14px;background:{{ qCtaBg }};color:{{ qCtaFg }};border:2px solid #0B0B0F;box-shadow:{{ qCtaShadow }};font-weight:900;font-stretch:112%;font-size:16px">{{ qCta }}</span>
+          <span style="text-align:center;font-family:'Space Mono',monospace;font-size:9px;line-height:1.5;color:#55555E">EN EL SIGUIENTE PASO ELIGES NEQUI, PSE O TARJETA.<br>SI CIERRA ANTES DE PAGAR, LOS FANDIS QUEDAN EN TU SALDO</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;liveTicker&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Comportamiento&quot;},&quot;copPerFandi&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:5000,&quot;min&quot;:100,&quot;max&quot;:20000,&quot;step&quot;:100,&quot;unit&quot;:&quot;COP&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Economía&quot;}}">
+class Component extends DCLogic {
+  state = { amount: 60, live: 2847, rc: 50000, unit: 'COP', qSel: 0, qCustom: 60000 };
+  rechargeVals(fmt) {
+    const rate = this.props.copPerFandi ?? 5000;
+    const { rc, unit, qSel, qCustom } = this.state;
+    const f = Math.floor(rc / rate);
+    const MIN = 20000, NEED = 8, BAL = 12;
+    const ok = rc >= MIN;
+    const qOpts = [NEED, 10, 20];
+    const qF = qSel === 'custom' ? Math.floor(qCustom / rate) : qOpts[qSel];
+    const qOk = qF >= NEED && qF * rate >= MIN;
+    const cF = Math.floor(qCustom / rate);
+    const on = qSel === 'custom';
+    return {
+      rateLabel: `1 F = $ ${fmt(rate)}`,
+      unitTabs: [['COP', 'PESOS'], ['F', 'FANDIS']].map(([u, label]) => ({ label, bg: u === unit ? '#0B0B0F' : 'transparent', c: u === unit ? '#FFFFFF' : '#55555E', pick: () => this.setState({ unit: u }) })),
+      rcPrefix: unit === 'COP' ? '$' : '',
+      rcSuffix: unit === 'F' ? 'F' : '',
+      rcInput: unit === 'COP' ? fmt(rc) : String(f),
+      onRcInput: e => { const n = parseInt(String(e.target.value).replace(/\D/g, ''), 10) || 0; this.setState({ rc: Math.min(unit === 'COP' ? n : n * rate, 99999999) }); },
+      rcConv: unit === 'COP' ? `= ${fmt(f)} F` : `= $ ${fmt(f * rate)}`,
+      rcPacks: [20000, 50000, 100000, 200000].map(v => ({ label: `$${v / 1000} mil`, sub: `${Math.floor(v / rate)} F`, bg: v === rc ? '#C6FF3D' : '#FFFFFF', shadow: v === rc ? '3px 3px 0 #0B0B0F' : 'none', pick: () => this.setState({ rc: v }) })),
+      rcCan: [
+        { k: 'Tu saldo quedará en', v: `${fmt(BAL + f)} F`, c: '#FFFFFF' },
+        { k: 'Entradas a BASE (10 F)', v: `${Math.floor((BAL + f) / 10)}`, c: '#C6FF3D' },
+        { k: 'Vencimiento', v: 'Nunca', c: '#FFFFFF' }
+      ],
+      rcAfter: ok ? 'LOS FANDIS NO VENCEN · SE USAN EN CUALQUIER EVENTO' : `EL MÍNIMO ES $ ${fmt(MIN)}`,
+      ctaPay: ok ? `PAGAR $ ${fmt(rc)}` : 'ESCRIBE UN MONTO',
+      payBg: ok ? '#C6FF3D' : '#1A1A22', payFg: ok ? '#0B0B0F' : '#6E6E7A', payShadow: ok ? '4px 4px 0 #2D00F7' : 'none',
+      payNote: 'EN EL SIGUIENTE PASO ELIGES NEQUI, PSE O TARJETA',
+      quickPacks: [
+        { f: NEED, note: 'LO JUSTO PARA ESTE APORTE' },
+        { f: 10, note: 'TE QUEDAN 2 F DE SALDO' },
+        { f: 20, note: 'TE QUEDAN 12 F DE SALDO' }
+      ].map((q, i) => { const sel = qSel === i; return { cop: `$ ${fmt(q.f * rate)}`, f: `${q.f} F`, note: q.note, bg: sel ? '#C6FF3D' : '#FFFFFF', shadow: sel ? '3px 3px 0 #0B0B0F' : 'none', dot: sel ? '#0B0B0F' : 'transparent', pick: () => this.setState({ qSel: i }) }; }),
+      qCustomPick: () => this.setState({ qSel: 'custom' }),
+      qCustomInput: fmt(qCustom),
+      onQCustom: e => { const n = parseInt(String(e.target.value).replace(/\D/g, ''), 10) || 0; this.setState({ qCustom: Math.min(n, 99999999), qSel: 'custom' }); },
+      qCustomF: `${fmt(cF)} F`,
+      qCustomNote: cF < NEED ? `MÍNIMO ${NEED} F ($ ${fmt(NEED * rate)})` : `TE QUEDAN ${fmt(BAL + cF - 20)} F DE SALDO`,
+      qCustomNoteC: on && cF < NEED ? '#D6006F' : '#3A3A44',
+      qCustomBg: on ? '#C6FF3D' : '#FFFFFF', qCustomShadow: on ? '3px 3px 0 #0B0B0F' : 'none', qCustomDot: on ? '#0B0B0F' : 'transparent',
+      qCta: qOk ? `PAGAR $ ${fmt(qF * rate)} Y APORTAR 20 F` : `TE FALTAN AL MENOS ${NEED} F`,
+      qCtaBg: qOk ? '#C6FF3D' : '#EAEAF0', qCtaFg: qOk ? '#0B0B0F' : '#55555E', qCtaShadow: qOk ? '4px 4px 0 #0B0B0F' : 'none'
+    };
+  }
+  componentDidMount() {
+    if (this.props.liveTicker === false) return;
+    this.t = setInterval(() => this.setState(s => ({ live: s.live + 1 + Math.floor(Math.random() * 3) })), 2200);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  renderVals() {
+    const TC = { VIP: '#B7A8FF', ALTA: '#5CE1FF', MEDIA: '#C6FF3D', BASE: '#FFFFFF' };
+    const W = [2, 3, 5, 10];
+    const tiers = (fans, o = {}) => ['VIP', 'ALTA', 'MEDIA', 'BASE'].map((n, i) => {
+      const act = n === 'ALTA' && !o.none;
+      return { name: n, bar: TC[n], fans: fans[i], active: act,
+        sub: o.subs ? `${W[i]} GANADORES · ${o.subs[i]}` : o.from ? `${W[i]} GANADORES · DESDE ${o.from[i]} F` : `${W[i]} GANADORES`,
+        border: act ? '#FFFFFF' : '#0B0B0F', shadow: act ? '4px 4px 0 #0B0B0F' : 'none', op: o.dim ? 0.6 : 1 };
+    });
+    const fmt = n => n.toLocaleString('es-CO');
+    const icons = {
+      home: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z',
+      disc: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM15.5 8.5l-2 5-5 2 2-5z',
+      wal: 'M3 6h18v14H3zM3 10h18M16 15h2',
+      prof: 'M12 4a4 4 0 1 0 0 8a4 4 0 1 0 0-8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6'
+    };
+    const nav = a => [['INICIO', 'home'], ['DESCUBRE', 'disc'], ['BILLETERA', 'wal'], ['PERFIL', 'prof']]
+      .map(([label, k], i) => ({ label, d: icons[k], c: i === a ? '#C6FF3D' : '#6E6E7A' }));
+    const amt = this.state.amount;
+    const sep = (i, n) => i < n - 1 ? '1px solid rgba(255,255,255,.1)' : 'none';
+    const moves = [
+      { t: 'Aporte · Cena con J Balvin', meta: 'HOY 21:39', v: '−60 F', c: '#FFFFFF' },
+      { t: 'Recarga · Nequi', meta: '12 SEP', v: '+600 F', c: '#C6FF3D' },
+      { t: 'Insignia · Fan leal', meta: '30 AGO · SIN COSTO', v: '0 F', c: '#9A9AA8' }
+    ].map((m, i, a) => ({ ...m, sep: sep(i, a.length) }));
+    return {
+      ...this.rechargeVals(fmt),
+      moreLive: [
+        { t: 'Soundcheck privado', time: '07:40' },
+        { t: 'Subasta · Salir en el video', time: '01:48' }
+      ],
+      tiersNoPart: tiers(['184', '412', '906', '1.345'], { none: true, from: [120, 50, 20, 10] }),
+      liveCount: fmt(this.state.live),
+      navHome: nav(0), navWallet: nav(2), navProfile: nav(3),
+      upcoming: [
+        { day: '02', mon: 'OCT', title: 'Millonarios vs. Nacional', meta: 'EL CAMPÍN · 2 OPORTUNIDADES' }
+      ],
+      packs: [
+        { f: '4', cop: '$ 20.000', shadow: '4px 4px 0 #0B0B0F' },
+        { f: '10', cop: '$ 50.000', shadow: '4px 4px 0 #C6FF3D', popular: true },
+        { f: '20', cop: '$ 100.000', shadow: '4px 4px 0 #0B0B0F' },
+        { f: '40', cop: '$ 200.000', shadow: '4px 4px 0 #0B0B0F' }
+      ],
+      moves,
+      badges: [
+        { src: 'assets/badge-fan-leal.png', name: 'Fan leal · Cali' },
+        { src: 'assets/badge-participante-subasta.png', name: 'Fan muy leal' },
+        { src: 'assets/badge-ganador-vip.png', name: 'Ganador VIP' },
+        { src: 'assets/badge-ganador-subasta.png', name: 'Ganador subasta' }
+      ],
+      bids: [
+        { who: 'Laura M.', ago: 'HACE 4 S', v: '206 F' },
+        { who: 'Tú', ago: 'HACE 31 S', v: '201 F' },
+        { who: 'Andrés P.', ago: 'HACE 1 MIN', v: '196 F' }
+      ].map((b, i, a) => ({ ...b, sep: sep(i, a.length) })),
+      winRows: [
+        { k: 'HORA', v: '11:30 PM' }, { k: 'PUNTO', v: 'Puerta 4 · Movistar Arena' }, { k: 'LLEVA', v: 'Documento de identidad' }
+      ].map((r, i, a) => ({ ...r, sep: sep(i, a.length) })),
+      tiersPre: tiers(['—', '—', '—', '—'], { none: true, dim: true }),
+      tiersLive: tiers(['184', '412', '906', '1.345'], { from: [120, 50, 20, 10] }),
+      tiersUrgent: tiers(['201', '455', '987', '1.463'], { from: [140, 55, 20, 10] }),
+      tiersClosed: tiers(['203', '461', '998', '1.480'], { subs: ['LISTO', 'LISTO', 'SORTEANDO', 'EN COLA'] }),
+      chips: [20, 60, 200, 'OTRO'].map(v => {
+        const on = v === amt;
+        return { label: typeof v === 'number' ? `${v} F` : v, border: on ? '#C6FF3D' : '#1A1A22', color: on ? '#C6FF3D' : '#D0D0D8',
+          pick: () => typeof v === 'number' && this.setState({ amount: v }) };
+      }),
+      ctaLabel: `APORTAR ${amt} F`,
+      remainLabel: `TE QUEDAN ${fmt(1578 - amt)} F`
+    };
+  }
+}
+</script>
+</body>
+</html>

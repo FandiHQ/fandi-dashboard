@@ -11,6 +11,8 @@ import { ApiError } from '@/lib/api';
 import { eventDateViolations, isoToDatetimeLocal } from '@/lib/event-datetime';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
     AlertDialog, AlertDialogAction, AlertDialogCancel,
@@ -39,6 +41,7 @@ type TabDef = {
 const TABS: readonly TabDef[] = [
     { key: 'resumen', path: '', label: 'tabs.overview' },
     { key: 'oportunidades', path: '/experiences', label: 'tabs.experiences' },
+    { key: 'impactos', path: '/impactos', label: 'tabs.impactos' },
     { key: 'subastas', path: '/auctions', label: 'tabs.auctions' },
     { key: 'insignias', path: '/badges', label: 'tabs.badges' },
     { key: 'ganadores', path: '/winners', label: 'tabs.winners' },
@@ -150,14 +153,22 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         }
     };
 
+    // ── Sala en vivo ──
+    // The live route renders its own full-width ink control-room bar
+    // (event name, clock, countdown, Salir), so the per-event header,
+    // section tabs and EndsInCountdown are not rendered there.
+    if (pathname.endsWith('/live')) {
+        return <>{children}</>;
+    }
+
     // ── Loading ──
     if (isLoading) {
         return (
-            <div className="flex flex-col gap-6 p-14">
-                <Skeleton className="h-4 w-24 rounded-none bg-[#1E1E1E]" />
-                <Skeleton className="h-12 w-96 rounded-none bg-[#1E1E1E]" />
-                <Skeleton className="h-10 w-full rounded-none bg-[#1E1E1E]" />
-                <Skeleton className="h-64 w-full rounded-none bg-[#1E1E1E]" />
+            <div className="flex flex-col gap-5">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-12 w-96 max-w-full" />
+                <Skeleton className="h-11 w-[560px] max-w-full" />
+                <Skeleton className="h-64 w-full" />
             </div>
         );
     }
@@ -165,17 +176,14 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
     // ── Error ──
     if (error || !event) {
         return (
-            <div className="flex flex-col gap-6 p-14">
-                <button
+            <div className="flex flex-col gap-5">
+                <BackToEvents
+                    label={t('backToEvents')}
                     onClick={() => router.push('/dashboard/events')}
-                    className="flex cursor-pointer items-center gap-2 self-start font-space-mono text-xs uppercase tracking-[1px] text-[#737373] transition-colors duration-150 hover:text-white"
-                >
-                    <ArrowLeft size={14} />
-                    {t('backToEvents')}
-                </button>
-                <div className="flex flex-col items-center justify-center gap-4 rounded-none border border-[#1E1E1E] bg-[#141414] p-8">
-                    <AlertCircle size={32} className="text-[#FF3366]" />
-                    <p className="font-sora text-base text-[#A0A0A0]">
+                />
+                <div className="block-ink flex flex-col items-center justify-center gap-4 p-8">
+                    <AlertCircle size={32} className="text-alert" />
+                    <p className="text-base font-semibold text-muted-ink">
                         {(error as Error)?.message || 'Event not found'}
                     </p>
                 </div>
@@ -200,24 +208,31 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             : null;
     const canPublish = publishBlockReason === null;
 
+    // Mono meta line under the title: date · time · venue, city.
+    const place = event.venue
+        ? event.city
+            ? `${event.venue}, ${event.city}`
+            : event.venue
+        : event.city;
+    const metaLine = [formatMetaDate(event.eventDate), place]
+        .filter(Boolean)
+        .join(' · ');
+
     return (
-        <div className="flex flex-col gap-6 p-14">
+        <div className="flex flex-col gap-5">
             {/* ── Back ── */}
-            <button
+            <BackToEvents
+                label={t('backToEvents')}
                 onClick={() => router.push('/dashboard/events')}
-                className="flex cursor-pointer items-center gap-2 self-start font-space-mono text-xs uppercase tracking-[1px] text-[#737373] transition-colors duration-150 hover:text-white"
-            >
-                <ArrowLeft size={14} />
-                {t('backToEvents')}
-            </button>
+            />
 
             {/* ── Header ── */}
-            <div className="flex items-start justify-between gap-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="font-sora text-[50px] font-bold leading-none tracking-[-1px] text-white">
-                        {event.name}
-                    </h1>
-                    <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+                <div className="flex min-w-0 flex-col gap-2.5">
+                    <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2">
+                        <h1 className="font-hero min-w-0 break-words text-[36px] text-white lg:text-[44px]">
+                            {event.name}
+                        </h1>
                         <StatusBadge status={event.status} />
                         {event.status === 'live' && event.fandiClosesAt && (
                             <EndsInCountdown
@@ -226,48 +241,48 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                             />
                         )}
                     </div>
+                    {metaLine && (
+                        <p className="font-space-mono text-[11px] uppercase tracking-[0.14em] text-lilac">{metaLine}</p>
+                    )}
                 </div>
 
                 {/* ── Action Buttons ── */}
                 {isWriteRole && (
-                    <div className="flex shrink-0 items-center gap-3">
+                    <div className="flex shrink-0 flex-wrap items-start gap-3">
                         {/* Edit — only for draft or published */}
                         {(event.status === 'draft' || event.status === 'published') && (
-                            <button
+                            <Button
+                                variant="secondary"
                                 onClick={() => router.push(`/dashboard/events/edit/${eventId}`)}
-                                className="flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-6 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-[#A0A0A0] transition-all duration-150 hover:border-[#2D00F7] hover:text-white hover:shadow-[0_0_20px_rgba(45,0,247,0.3)]"
                             >
                                 <Pencil size={15} />
                                 {t('editEvent')}
-                            </button>
+                            </Button>
                         )}
 
                         {/* Delete — draft only */}
                         {event.status === 'draft' && (
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <button
-                                        disabled={isDeleting}
-                                        className="flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-6 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-[#FF3366] transition-all duration-150 hover:border-[#FF3366] hover:shadow-[0_0_20px_rgba(255,51,102,0.3)] disabled:opacity-50"
-                                    >
+                                    <Button variant="destructive" disabled={isDeleting}>
                                         <Trash2 size={15} />
                                         {isDeleting ? <Loader2 size={14} className="animate-spin" /> : t('deleteEvent')}
-                                    </button>
+                                    </Button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
+                                <AlertDialogContent className="surface-white">
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle className="font-sora text-xl text-white">{t('deleteEvent')}</AlertDialogTitle>
-                                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                                        <AlertDialogTitle className="font-display text-[22px]">{t('deleteEvent')}</AlertDialogTitle>
+                                        <AlertDialogDescription>
                                             {t('confirmDelete')}
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                                        <AlertDialogCancel>
                                             Cancelar
                                         </AlertDialogCancel>
                                         <AlertDialogAction
+                                            variant="destructive"
                                             onClick={() => deleteEvent()}
-                                            className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
                                         >
                                             {t('deleteEvent')}
                                         </AlertDialogAction>
@@ -281,29 +296,25 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                             <div className="flex flex-col items-end gap-2">
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <button
-                                            disabled={isUpdatingStatus || !canPublish}
-                                            className="flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
-                                        >
+                                        <Button disabled={isUpdatingStatus || !canPublish}>
                                             {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                             {t('publish')}
-                                        </button>
+                                        </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
+                                    <AlertDialogContent className="surface-white">
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle className="font-sora text-xl text-white">{t('publish')}</AlertDialogTitle>
-                                            <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                                            <AlertDialogTitle className="font-display text-[22px]">{t('publish')}</AlertDialogTitle>
+                                            <AlertDialogDescription>
                                                 {t('confirmPublish')}
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                                            <AlertDialogCancel>
                                                 Cancelar
                                             </AlertDialogCancel>
                                             <AlertDialogAction
                                                 onClick={() => updateStatus('published')}
                                                 disabled={!canPublish}
-                                                className="rounded-none bg-[#2D00F7] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-50"
                                             >
                                                 {t('publish')}
                                             </AlertDialogAction>
@@ -311,7 +322,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                     </AlertDialogContent>
                                 </AlertDialog>
                                 {!canPublish && publishBlockReason && (
-                                    <span className="max-w-64 text-right font-space-mono text-xs text-[#FF3366]">
+                                    <span className="max-w-64 rounded-[10px] bg-ink px-3 py-1.5 text-right font-space-mono text-[11px] text-alert">
                                         {publishBlockReason}
                                     </span>
                                 )}
@@ -332,14 +343,14 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                         )}
 
                         {event.status === 'ended' && (
-                            <button
+                            <Button
+                                variant="secondary"
                                 onClick={() => retryBadges()}
                                 disabled={isRetrying}
-                                className="flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-6 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-[#A0A0A0] transition-all duration-150 hover:border-[#2D00F7] hover:text-white hover:shadow-[0_0_20px_rgba(45,0,247,0.3)] disabled:opacity-50"
                             >
                                 {isRetrying ? <Loader2 size={14} className="animate-spin" /> : <Award size={15} />}
                                 {t('retryBadges')}
-                            </button>
+                            </Button>
                         )}
                     </div>
                 )}
@@ -350,14 +361,14 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 <FandiCountdown fandiOpensAt={event.fandiOpensAt} />
             )}
 
-            {/* ── Tabs ── */}
+            {/* ── Tabs (ink segmented bar, §7) ── */}
             <Tabs value={activeTab} onValueChange={handleTabChange}>
-                <TabsList className="w-full justify-start gap-0 rounded-none border-b border-[#1E1E1E] bg-transparent">
+                <TabsList className="max-w-full justify-start overflow-x-auto">
                     {visibleTabs.map((tab) => (
                         <TabsTrigger
                             key={tab.key}
                             value={tab.key}
-                            className="cursor-pointer rounded-none border-b-2 border-transparent px-5 py-3 font-space-mono text-sm uppercase tracking-[1px] text-[#737373] hover:text-[#A0A0A0] data-[state=active]:border-[#2D00F7] data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-[0_2px_12px_rgba(45,0,247,0.3)]"
+                            className="flex-none cursor-pointer px-3.5"
                         >
                             {t(tab.label)}
                         </TabsTrigger>
@@ -369,6 +380,43 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             <div>{children}</div>
         </div>
     );
+}
+
+// ── Header helpers ──
+
+function BackToEvents({ label, onClick }: { label: string; onClick: () => void }) {
+    return (
+        <button
+            onClick={onClick}
+            className="flex cursor-pointer items-center gap-1.5 self-start font-space-mono text-[11px] uppercase tracking-[0.14em] text-lilac transition-colors duration-150 hover:text-white"
+        >
+            <ArrowLeft size={13} />
+            {label}
+        </button>
+    );
+}
+
+/** "sáb 26 sep 2026 · 21:00" (rendered uppercase by the meta line). */
+function formatMetaDate(iso: string | null | undefined): string | null {
+    if (!iso) return null;
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return null;
+    const date = new Intl.DateTimeFormat('es-CO', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    })
+        .format(d)
+        .replace(/\./g, '')
+        .replace(/,/g, '')
+        .replace(/ de /g, ' ');
+    const time = d.toLocaleTimeString('es-CO', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    });
+    return `${date} · ${time}`;
 }
 
 // ── Go Live Button with Pre-live Checklist Dialog ──
@@ -416,28 +464,27 @@ function GoLiveButton({
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button
+                <Button
                     onClick={handleOpen}
                     disabled={isUpdatingStatus}
-                    className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none bg-[var(--color-tactical-magenta)] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(255,0,85,0.8)] disabled:opacity-50"
                 >
                     {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                     {t('goLive')}
-                </button>
+                </Button>
             </DialogTrigger>
-            <DialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
+            <DialogContent className="surface-white">
                 <DialogHeader>
-                    <DialogTitle className="font-sora text-xl text-white">
+                    <DialogTitle className="font-display text-[22px]">
                         {t('preLiveChecklist')}
                     </DialogTitle>
                 </DialogHeader>
 
                 {loadingStats ? (
                     <div className="flex items-center justify-center py-8">
-                        <Loader2 size={24} className="animate-spin text-[var(--color-tactical-magenta)]" />
+                        <Loader2 size={24} className="animate-spin text-blue" />
                     </div>
                 ) : stats ? (
-                    <div className="scanlines relative flex flex-col gap-4">
+                    <div className="flex flex-col gap-2.5">
                         <ChecklistItem
                             label={t('checkContent', {
                                 experiences: stats.experienceCount,
@@ -465,14 +512,14 @@ function GoLiveButton({
                             optional
                         />
                         <div className="mt-4 flex justify-end gap-3">
-                            <button
+                            <Button
+                                size="lg"
                                 onClick={() => updateStatus('live')}
                                 disabled={!allPassed || isUpdatingStatus}
-                                className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none bg-[var(--color-tactical-magenta)] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(255,0,85,0.8)] disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                                 {t('goLive')}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 ) : null}
@@ -505,41 +552,38 @@ function EndEventDialog({
     return (
         <AlertDialog open={open} onOpenChange={handleOpenChange}>
             <AlertDialogTrigger asChild>
-                <button
-                    disabled={isUpdatingStatus}
-                    className="flex cursor-pointer items-center gap-2 rounded-none bg-[#FF3366] px-7 py-3.5 font-space-mono text-[15px] uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#CC2952] hover:shadow-[0_0_30px_rgba(255,51,102,0.4)] disabled:opacity-50"
-                >
+                <Button variant="destructive" disabled={isUpdatingStatus}>
                     {isUpdatingStatus && <Loader2 size={14} className="animate-spin" />}
                     {t('endEvent')}
-                </button>
+                </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-none border border-[var(--color-tactical-magenta)] bg-[#121212] shadow-[0_0_20px_rgba(255,0,85,0.2)]">
+            <AlertDialogContent className="surface-white">
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="font-sora text-xl text-white">{t('endEvent')}</AlertDialogTitle>
-                    <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                    <AlertDialogTitle className="font-display text-[22px]">{t('endEvent')}</AlertDialogTitle>
+                    <AlertDialogDescription>
                         {t('confirmEnd')}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex flex-col gap-2">
-                    <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                    <label className="label-mono text-muted-white">
                         {t('typeToConfirm')}
                     </label>
-                    <input
+                    <Input
                         type="text"
                         value={confirmName}
                         onChange={(e) => setConfirmName(e.target.value)}
                         placeholder={`Escribe "${eventName}" para confirmar`}
-                        className="h-12 w-full rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-magenta)] focus:outline-none focus:ring-0"
+                        className="h-12"
                     />
                 </div>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                    <AlertDialogCancel>
                         Cancelar
                     </AlertDialogCancel>
                     <AlertDialogAction
+                        variant="destructive"
                         onClick={() => updateStatus('ended')}
                         disabled={confirmName !== eventName}
-                        className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {t('endEvent')}
                     </AlertDialogAction>
@@ -551,18 +595,22 @@ function EndEventDialog({
 
 function ChecklistItem({ label, passed, optional }: { label: string; passed: boolean; optional?: boolean }) {
     return (
-        <div className="flex items-center gap-3 rounded-none border border-[#1E1E1E] bg-[#141414] px-4 py-3">
+        <div className="flex items-center gap-3 rounded-[12px] border-2 border-line-white bg-white px-4 py-3">
             {passed ? (
-                <Check size={16} className="text-[#22C55E]" />
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-[8px] border-2 border-ink bg-lime text-ink">
+                    <Check size={14} strokeWidth={3} />
+                </span>
             ) : optional ? (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-[#4A4A4A]" />
+                <span className="size-6 shrink-0 rounded-[8px] border-2 border-dashed border-muted-ink" />
             ) : (
-                <XIcon size={16} className="text-[#FF3366]" />
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-[8px] border-2 border-alert-white text-alert-white">
+                    <XIcon size={14} strokeWidth={3} />
+                </span>
             )}
-            <span className={`font-space-mono text-sm ${passed ? 'text-white' : optional ? 'text-[#4A4A4A]' : 'text-[#737373]'}`}>
+            <span className={`text-sm font-bold ${passed ? 'text-ink' : optional ? 'text-muted-white' : 'text-body-white'}`}>
                 {label}
                 {optional && !passed && (
-                    <span className="ml-2 text-[11px] text-[#4A4A4A]">(opcional)</span>
+                    <span className="label-mono ml-2 text-muted-white">(opcional)</span>
                 )}
             </span>
         </div>
@@ -604,12 +652,12 @@ function EndsInCountdown({
 
     if (!left) return null;
     return (
-        <div className="flex items-center gap-2 border border-[#FF3366] bg-[#FF336610] px-3 py-1">
-            <Timer size={13} className="text-[#FF3366]" />
-            <span className="font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
+        <div className="flex items-center gap-2 rounded-full bg-ink px-3 py-1">
+            <Timer size={13} className="text-alert" />
+            <span className="label-mono text-muted-ink">
                 {label}
             </span>
-            <span className="font-space-mono text-[13px] tabular-nums text-white">
+            <span className="tabular font-space-mono text-[13px] font-bold text-white">
                 {left}
             </span>
         </div>
@@ -619,6 +667,7 @@ function EndsInCountdown({
 // ── Fandi Countdown Timer ──
 
 function FandiCountdown({ fandiOpensAt }: { fandiOpensAt: string | Date }) {
+    const t = useTranslations('events');
     const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
     const [isPast, setIsPast] = useState(false);
 
@@ -649,10 +698,10 @@ function FandiCountdown({ fandiOpensAt }: { fandiOpensAt: string | Date }) {
 
     if (isPast) {
         return (
-            <div className="flex items-center gap-3 border border-[#2D00F7] bg-[#2D00F710] px-5 py-3">
-                <Zap size={16} className="text-[#2D00F7]" />
-                <span className="font-space-mono text-[12px] uppercase tracking-[2px] text-[#2D00F7]">
-                    Dinámicas Fandi listas para activar
+            <div className="block-ink flex items-center gap-3 self-start px-5 py-3">
+                <Zap size={16} className="text-lime" />
+                <span className="font-space-mono text-[11px] uppercase tracking-[0.14em] text-white">
+                    {t('fandiReady')}
                 </span>
             </div>
         );
@@ -668,22 +717,22 @@ function FandiCountdown({ fandiOpensAt }: { fandiOpensAt: string | Date }) {
     ];
 
     return (
-        <div className="flex items-center gap-4 border border-[#1E1E1E] bg-[#0A0A0A] px-5 py-3">
+        <div className="block-ink flex items-center gap-4 self-start px-5 py-3">
             <div className="flex items-center gap-2">
-                <Timer size={16} className="text-[#2D00F7]" />
-                <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                    Fandi abre en
+                <Timer size={16} className="text-lime" />
+                <span className="label-mono text-muted-ink">
+                    {t('fandiOpensIn')}
                 </span>
             </div>
             <div className="flex items-center gap-1">
                 {units.map((u) => (
                     <div key={u.label} className="flex items-baseline gap-0.5">
-                        <span className="min-w-[28px] text-center font-sora text-[22px] font-bold tabular-nums text-white">
+                        <span className="tabular min-w-[28px] text-center font-space-mono text-[22px] font-bold text-lime">
                             {String(u.value).padStart(2, '0')}
                         </span>
-                        <span className="font-space-mono text-[9px] text-[#4A4A4A]">{u.label}</span>
+                        <span className="font-space-mono text-[9px] text-muted-ink">{u.label}</span>
                         {u.label !== 'S' && (
-                            <span className="mx-0.5 font-sora text-[18px] font-light text-[#2A2A2A]">:</span>
+                            <span className="mx-0.5 font-space-mono text-[18px] text-dash-ink">:</span>
                         )}
                     </div>
                 ))}

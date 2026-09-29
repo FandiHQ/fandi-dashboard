@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { orgApi } from '@/lib/api-hooks';
+import { Button } from '@/components/ui/button';
 import type { FanTier, RichTopFanRow } from '@/types/api';
 
 const PAGE_SIZE = 50;
@@ -31,14 +32,19 @@ const TIER_KEYS: (FanTier | 'none')[] = [
     'none',
 ];
 
+// Loyalty tiers borrow the four category colours: equal visual weight,
+// ink text + ink outline on every surface (BASE white keeps its outline).
 const tierStyle: Record<FanTier, string> = {
-    leyenda:
-        'border-[var(--color-tactical-magenta)] text-[var(--color-tactical-magenta)]',
-    elite: 'border-[#6C63FF] text-[#6C63FF]',
-    superfan:
-        'border-[var(--color-tactical-acid)] text-[var(--color-tactical-acid)]',
-    fan_real: 'border-white text-white',
+    leyenda: 'bg-tier-vip',
+    elite: 'bg-tier-alta',
+    superfan: 'bg-tier-media',
+    fan_real: 'bg-tier-base',
 };
+const TIER_PILL =
+    'label-mono inline-flex shrink-0 items-center rounded-full border-2 border-ink px-2.5 py-0.5 font-bold text-ink';
+const FILTER_SELECT =
+    'h-10 cursor-pointer rounded-[10px] border-2 border-ink bg-white px-3 text-sm font-semibold normal-case tracking-normal text-ink shadow-ext-sm outline-none focus-visible:ring-2 focus-visible:ring-lime';
+const numberFmt = new Intl.NumberFormat('es-CO');
 
 /**
  * Step 7.5.3 — Top Fans CRM. The artist's reward surface, upgraded:
@@ -103,43 +109,40 @@ export default function TopFansPage() {
             : null;
 
     return (
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-7">
             {/* ── Page Header ── */}
             <div className="flex flex-col gap-2">
-                <h1 className="animate-glitch font-sora text-[64px] font-black leading-none tracking-[-3px] text-white">
+                <h1 className="font-hero text-[44px] text-white lg:text-[48px]">
                     {t('title')}
                 </h1>
-                <p className="font-space-mono text-sm uppercase tracking-[2px] text-[#737373]">
+                <p className="label-mono text-[11px] text-lilac">
                     {t('subtitle')}
                 </p>
             </div>
 
             {/* ── Aggregate cards ── */}
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 <StatCard
-                    icon={<Users size={16} className="text-[var(--color-tactical-acid)]" />}
+                    icon={<Users size={14} />}
                     label={t('stats.totalFans')}
-                    value={analytics ? String(analytics.totalRankedFans) : '—'}
+                    value={analytics ? numberFmt.format(analytics.totalRankedFans) : '—'}
                     testId="stat-total"
                 />
                 <StatCard
-                    icon={<Trophy size={16} className="text-[var(--color-tactical-acid)]" />}
+                    icon={<Trophy size={14} />}
                     label={t('stats.newThisMonth')}
-                    value={analytics ? `+${analytics.newFansThisMonth}` : '—'}
+                    value={analytics ? `+${numberFmt.format(analytics.newFansThisMonth)}` : '—'}
                     testId="stat-new"
                 />
                 <StatCard
-                    icon={<MapPin size={16} className="text-[var(--color-tactical-acid)]" />}
+                    icon={<MapPin size={14} />}
                     label={t('stats.topCity')}
-                    value={
-                        topCity
-                            ? `${topCity.cityName ?? topCity.cityId} (${topCity.fanCount})`
-                            : '—'
-                    }
+                    value={topCity ? `${topCity.cityName ?? topCity.cityId}` : '—'}
+                    sub={topCity ? t('topCityFans', { count: topCity.fanCount }) : undefined}
                     testId="stat-city"
                 />
-                <div className="hud-card hud-brackets flex flex-col gap-2 rounded-none p-5">
-                    <span className="font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
+                <div className="block-white flex flex-col gap-3 px-5 py-4">
+                    <span className="label-mono text-muted-white">
                         {t('stats.tierDistribution')}
                     </span>
                     <div className="flex flex-wrap gap-2">
@@ -154,23 +157,24 @@ export default function TopFansPage() {
                               ).map(([key, count]) => (
                                   <span
                                       key={key}
-                                      className={`rounded-none border px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] ${tierStyle[key]}`}>
-                                      {tTiers(key)} {count}
+                                      className={`${TIER_PILL} gap-1.5 ${tierStyle[key]}`}>
+                                      {tTiers(key)}
+                                      <span className="tabular">{numberFmt.format(count)}</span>
                                   </span>
                               ))
-                            : '—'}
+                            : <span className="font-display text-[36px] text-ink">—</span>}
                     </div>
                 </div>
             </div>
 
             {/* ── Insights strip ── */}
             {(mostDevoted || topCity) && (
-                <div className="flex flex-wrap gap-6 border border-[#1E1E1E] bg-[#0A0A0A] px-6 py-4">
+                <div className="block-ink flex flex-wrap gap-x-8 gap-y-3 px-5 py-4">
                     {mostDevoted ? (
-                        <span className="flex items-center gap-2 font-space-mono text-xs text-[#A0A0A0]">
-                            <Crown size={14} className="text-[var(--color-tactical-magenta)]" />
+                        <span className="label-mono flex items-center gap-2 text-[11px] text-muted-ink">
+                            <Crown size={14} className="text-lilac" />
                             {t('stats.mostDevoted')}:{' '}
-                            <span className="text-white">
+                            <span className="font-bold text-white">
                                 {mostDevoted.isPrivate
                                     ? t('privateFan')
                                     : (mostDevoted.firstName ?? t('anonymousFan'))}
@@ -178,10 +182,10 @@ export default function TopFansPage() {
                         </span>
                     ) : null}
                     {topCity ? (
-                        <span className="flex items-center gap-2 font-space-mono text-xs text-[#A0A0A0]">
-                            <MapPin size={14} className="text-[var(--color-tactical-acid)]" />
+                        <span className="label-mono flex items-center gap-2 text-[11px] text-muted-ink">
+                            <MapPin size={14} className="text-lilac" />
                             {t('stats.topCity')}:{' '}
-                            <span className="text-white">
+                            <span className="font-bold text-white">
                                 {topCity.cityName ?? topCity.cityId}
                             </span>
                         </span>
@@ -190,13 +194,13 @@ export default function TopFansPage() {
             )}
 
             {/* ── Filters ── */}
-            <div className="flex flex-wrap items-center gap-4">
-                <label className="flex items-center gap-2 font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
+            <div className="flex flex-wrap items-center gap-5">
+                <label className="label-mono flex items-center gap-2.5 text-[11px] text-lilac">
                     {t('filters.city')}
                     <select
                         value={cityId}
                         onChange={(e) => setFilter(() => setCityId(e.target.value))}
-                        className="rounded-none border border-[#2A2A2A] bg-[#0A0A0A] px-3 py-2 font-space-mono text-xs text-white outline-none focus:border-[var(--color-tactical-acid)]"
+                        className={FILTER_SELECT}
                         data-testid="filter-city">
                         <option value="">{t('filters.allCities')}</option>
                         {(analytics?.topCities ?? []).map((city) => (
@@ -206,12 +210,12 @@ export default function TopFansPage() {
                         ))}
                     </select>
                 </label>
-                <label className="flex items-center gap-2 font-space-mono text-[11px] uppercase tracking-[1px] text-[#737373]">
+                <label className="label-mono flex items-center gap-2.5 text-[11px] text-lilac">
                     {t('filters.tier')}
                     <select
                         value={tier}
                         onChange={(e) => setFilter(() => setTier(e.target.value))}
-                        className="rounded-none border border-[#2A2A2A] bg-[#0A0A0A] px-3 py-2 font-space-mono text-xs text-white outline-none focus:border-[var(--color-tactical-acid)]"
+                        className={FILTER_SELECT}
                         data-testid="filter-tier">
                         <option value="">{t('filters.allTiers')}</option>
                         {TIER_KEYS.map((key) => (
@@ -223,28 +227,28 @@ export default function TopFansPage() {
                 </label>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+            <div className="grid items-start gap-6 lg:grid-cols-[1fr_360px]">
                 {/* ── Ranked rows ── */}
-                <div className="hud-card hud-brackets rounded-none">
-                    <div className="flex items-center gap-4 border-b border-[#2A2A2A] px-6 py-4">
-                        <Trophy size={16} className="text-[var(--color-tactical-acid)]" />
-                        <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                <div className="block-white overflow-hidden">
+                    <div className="flex items-center justify-between gap-4 border-b-2 border-ink px-5 py-3.5">
+                        <span className="font-display text-[17px]">{t('leaderboardTitle')}</span>
+                        <span className="font-space-mono text-[10px] uppercase text-muted-white">
                             {t('rankedFans', { count: data?.total ?? 0 })}
                         </span>
                     </div>
 
                     {fansQuery.isLoading && (
                         <div className="flex items-center justify-center py-16">
-                            <Loader2 size={24} className="animate-spin text-[#737373]" />
+                            <Loader2 size={22} className="animate-spin text-muted-white" />
                         </div>
                     )}
                     {fansQuery.isError && (
-                        <p className="px-6 py-16 text-center font-space-mono text-sm text-[#FF3366]">
+                        <p className="label-mono px-6 py-16 text-center text-[11px] text-alert-white">
                             {t('errorLoading')}
                         </p>
                     )}
                     {data && data.entries.length === 0 && !fansQuery.isLoading && (
-                        <p className="px-6 py-16 text-center font-space-mono text-sm text-[#4A4A4A]">
+                        <p className="px-6 py-16 text-center text-sm text-muted-white">
                             {t('empty')}
                         </p>
                     )}
@@ -253,27 +257,27 @@ export default function TopFansPage() {
                         <button
                             key={entry.userId}
                             onClick={() => setSelectedFan(entry)}
-                            className={`flex w-full cursor-pointer items-center gap-4 border-b border-[#1E1E1E] px-6 py-4 text-left transition-colors hover:bg-[#141414] ${
+                            className={`flex w-full cursor-pointer items-center gap-4 border-b border-line-white px-5 py-[11px] text-left transition-colors last:border-0 hover:bg-line-white ${
                                 selectedFan?.userId === entry.userId
-                                    ? 'bg-[#141414]'
+                                    ? 'bg-line-white shadow-[inset_4px_0_0_var(--color-blue)]'
                                     : ''
                             }`}
                             data-testid={`fan-row-${entry.rank}`}>
-                            <span className="w-14 font-space-mono text-sm font-bold text-[var(--color-tactical-acid)]">
-                                #{entry.rank}
+                            <span className="font-display w-14 shrink-0 text-[20px] text-blue tabular">
+                                {entry.rank}
                             </span>
                             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                 {entry.isPrivate ? (
-                                    <span className="flex items-center gap-2 font-sora text-sm text-[#737373]">
+                                    <span className="flex items-center gap-2 text-sm font-semibold text-muted-white">
                                         <Lock size={12} />
                                         {t('privateFan')}
                                     </span>
                                 ) : (
                                     <>
-                                        <span className="truncate font-sora text-sm font-semibold text-white">
+                                        <span className="truncate text-sm font-extrabold text-ink">
                                             {entry.firstName ?? t('anonymousFan')}
                                         </span>
-                                        <span className="font-space-mono text-[10px] text-[#737373]">
+                                        <span className="font-space-mono text-[10px] uppercase text-muted-white">
                                             {t('rowMeta', {
                                                 badges: entry.badgesCount ?? 0,
                                                 events: entry.eventsParticipated ?? 0,
@@ -286,8 +290,7 @@ export default function TopFansPage() {
                                 )}
                             </div>
                             {entry.tier && (
-                                <span
-                                    className={`rounded-none border px-3 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] ${tierStyle[entry.tier]}`}>
+                                <span className={`${TIER_PILL} ${tierStyle[entry.tier]}`}>
                                     {tTiers(entry.tier)}
                                 </span>
                             )}
@@ -296,27 +299,29 @@ export default function TopFansPage() {
 
                     {/* Pagination */}
                     {data && data.total > PAGE_SIZE && (
-                        <div className="flex items-center justify-between px-6 py-4">
-                            <button
+                        <div className="flex items-center justify-between border-t-2 border-line-white px-5 py-3.5">
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                                disabled={page === 1}
-                                className="flex cursor-pointer items-center gap-1 rounded-none border border-[#2A2A2A] px-4 py-2 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-30">
+                                disabled={page === 1}>
                                 <ChevronLeft size={12} />
                                 {t('previous')}
-                            </button>
-                            <span className="font-space-mono text-[11px] text-[#737373]">
+                            </Button>
+                            <span className="font-space-mono text-[11px] uppercase text-muted-white">
                                 {t('pageOf', {
                                     page,
                                     pages: Math.max(1, Math.ceil(data.total / PAGE_SIZE)),
                                 })}
                             </span>
-                            <button
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() => setPage((p) => p + 1)}
-                                disabled={!data.hasMore}
-                                className="flex cursor-pointer items-center gap-1 rounded-none border border-[#2A2A2A] px-4 py-2 font-space-mono text-[11px] uppercase tracking-[1px] text-white transition-colors hover:bg-[#1A1A1A] disabled:opacity-30">
+                                disabled={!data.hasMore}>
                                 {t('next')}
                                 <ChevronRight size={12} />
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>
@@ -324,47 +329,48 @@ export default function TopFansPage() {
                 {/* ── Drill-down panel ── */}
                 {selectedFan && (
                     <div
-                        className="hud-card hud-brackets h-fit rounded-none p-6"
+                        className="block-ink h-fit p-5"
                         data-testid="fan-detail-panel">
                         <div className="mb-4 flex items-center justify-between">
-                            <h3 className="font-space-mono text-[13px] uppercase tracking-[2px] text-[#737373]">
+                            <h3 className="label-mono text-[11px] text-muted-ink">
                                 {t('fanDetail.title')}
                             </h3>
                             <button
                                 onClick={() => setSelectedFan(null)}
-                                className="cursor-pointer text-[#737373] hover:text-white"
+                                aria-label={t('fanDetail.close')}
+                                className="inline-flex size-9 cursor-pointer items-center justify-center rounded-[10px] border-2 border-dash-ink text-muted-ink transition-colors hover:border-white hover:text-white"
                                 data-testid="fan-detail-close">
                                 <X size={16} />
                             </button>
                         </div>
 
                         {detailQuery.isLoading && (
-                            <Loader2 size={20} className="animate-spin text-[#737373]" />
+                            <Loader2 size={20} className="animate-spin text-muted-ink" />
                         )}
 
                         {detailQuery.data && (
                             <div className="flex flex-col gap-5">
-                                <div className="flex items-center gap-3">
-                                    <span className="font-sora text-xl font-black text-white">
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <span className="font-display text-[26px] text-white">
                                         {detailQuery.data.isPrivate
                                             ? t('privateFan')
                                             : (detailQuery.data.firstName ?? t('anonymousFan'))}
                                     </span>
                                     {detailQuery.data.rank.tier && (
-                                        <span
-                                            className={`rounded-none border px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] ${tierStyle[detailQuery.data.rank.tier]}`}>
+                                        <span className={`${TIER_PILL} ${tierStyle[detailQuery.data.rank.tier]}`}>
                                             {tTiers(detailQuery.data.rank.tier)}
                                         </span>
                                     )}
                                 </div>
                                 {detailQuery.data.rank.rank !== null && (
-                                    <p className="font-space-mono text-xs text-[#A0A0A0]">
-                                        #{detailQuery.data.rank.rank} / {detailQuery.data.rank.total}
+                                    <p className="font-space-mono text-[11px] text-muted-ink tabular">
+                                        <span className="font-display text-[20px] text-lilac">#{detailQuery.data.rank.rank}</span>
+                                        {' '}/ {numberFmt.format(detailQuery.data.rank.total)}
                                     </p>
                                 )}
 
                                 {detailQuery.data.isPrivate ? (
-                                    <p className="font-space-mono text-xs text-[#737373]">
+                                    <p className="text-sm text-muted-ink">
                                         {t('fanDetail.privateBody')}
                                     </p>
                                 ) : (
@@ -376,7 +382,7 @@ export default function TopFansPage() {
                                                 href={`https://instagram.com/${detailQuery.data.instagramHandle}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-1 self-start font-space-mono text-xs text-[#A0A0A0] underline underline-offset-2 hover:text-white"
+                                                className="inline-flex items-center gap-1.5 self-start font-space-mono text-xs text-lilac underline decoration-2 underline-offset-4 hover:text-white"
                                                 data-testid="fan-detail-instagram">
                                                 <ExternalLink size={12} />
                                                 @{detailQuery.data.instagramHandle}
@@ -402,7 +408,7 @@ export default function TopFansPage() {
                                             </div>
                                         )}
                                         {detailQuery.data.superlatives?.fanSince ? (
-                                            <p className="font-space-mono text-[11px] text-[#737373]">
+                                            <p className="label-mono text-[11px] text-muted-ink">
                                                 {t('fanDetail.fanSince', {
                                                     year: detailQuery.data.superlatives.fanSince,
                                                 })}
@@ -410,11 +416,11 @@ export default function TopFansPage() {
                                         ) : null}
 
                                         <div className="flex flex-col gap-2">
-                                            <span className="font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
+                                            <span className="label-mono text-muted-ink">
                                                 {t('fanDetail.badges')}
                                             </span>
                                             {detailQuery.data.badges.length === 0 ? (
-                                                <span className="font-space-mono text-[11px] text-[#4A4A4A]">
+                                                <span className="text-[13px] text-muted-ink">
                                                     {t('fanDetail.noBadges')}
                                                 </span>
                                             ) : (
@@ -422,7 +428,7 @@ export default function TopFansPage() {
                                                     {detailQuery.data.badges.map((badge) => (
                                                         <span
                                                             key={badge.id}
-                                                            className="rounded-none border border-[#2A2A2A] px-2 py-1 font-space-mono text-[10px] text-[#A0A0A0]">
+                                                            className="rounded-[10px] border-2 border-dash-ink bg-chip-ink px-2.5 py-1 text-[12px] font-bold text-white">
                                                             {badge.name}
                                                         </span>
                                                     ))}
@@ -444,22 +450,27 @@ function StatCard({
     icon,
     label,
     value,
+    sub,
     testId,
 }: {
     icon: React.ReactNode;
     label: string;
     value: string;
+    sub?: string;
     testId?: string;
 }) {
     return (
         <div
-            className="hud-card hud-brackets flex flex-col gap-2 rounded-none p-5"
+            className="block-white flex min-w-0 flex-col px-5 py-4"
             data-testid={testId}>
-            <span className="flex items-center gap-2 font-space-mono text-[10px] uppercase tracking-[2px] text-[#737373]">
+            <span className="label-mono flex items-center gap-2 text-muted-white">
                 {icon}
                 {label}
             </span>
-            <span className="font-sora text-2xl font-black text-white">{value}</span>
+            <span className="font-display mt-2 truncate text-[36px] text-ink tabular">{value}</span>
+            {sub ? (
+                <span className="mt-1.5 font-space-mono text-[10px] uppercase text-muted-white">{sub}</span>
+            ) : null}
         </div>
     );
 }
@@ -474,11 +485,11 @@ function MiniStat({
     label: string;
 }) {
     return (
-        <div className="flex flex-col items-center gap-1 border border-[#1E1E1E] bg-[#0A0A0A] px-2 py-3">
-            <span className="flex items-center gap-1 font-sora text-lg font-black text-white">
+        <div className="flex flex-col items-center gap-1 rounded-[12px] bg-chip-ink px-2 py-3">
+            <span className="font-display flex items-center gap-1 text-[22px] text-white tabular">
                 {value}
             </span>
-            <span className="flex items-center gap-1 text-center font-space-mono text-[9px] uppercase tracking-[1px] text-[#737373]">
+            <span className="flex items-center gap-1 text-center font-space-mono text-[9px] uppercase tracking-[0.1em] text-muted-ink">
                 {icon}
                 {label}
             </span>

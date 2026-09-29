@@ -6,12 +6,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { orgApi, eventsApi } from '@/lib/api-hooks';
 import { useAuth } from '@/contexts/auth-context';
 import { Loader2, MoreHorizontal, UserPlus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '@/components/ui/table';
 import { toast } from 'sonner';
 import type { OrganizationMember, OrgRole, InviteMemberDto, UpdateMemberRoleDto } from '@/types/api';
 
 import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
-} from '@/components/ui/dialog';
+    Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,
+} from '@/components/ui/sheet';
 import {
     AlertDialog, AlertDialogAction, AlertDialogCancel,
     AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -23,24 +28,20 @@ import {
 
 // ── Helpers ──
 
-const ROLE_COLORS: Record<OrgRole, { bg: string; text: string; border: string }> = {
-    owner: { bg: 'bg-[#8B5CF620]', text: 'text-[#8B5CF6]', border: 'border-[#8B5CF640]' },
-    admin: { bg: 'bg-[#2D00F720]', text: 'text-[#2D00F7]', border: 'border-[#2D00F740]' },
-    viewer: { bg: 'bg-[#73737320]', text: 'text-[#737373]', border: 'border-[#73737340]' },
-    staff: { bg: 'bg-[#22C55E20]', text: 'text-[#22C55E]', border: 'border-[#22C55E40]' },
-};
+// Avatar circles cycle the four category colours (equal visual weight,
+// no colour ranks above another). BASE white carries the ink outline.
+const AVATAR_COLORS = ['bg-tier-vip', 'bg-tier-alta', 'bg-tier-media', 'bg-tier-base'] as const;
 
-const ROLE_LABELS: Record<OrgRole, string> = {
-    owner: 'OWNER',
-    admin: 'ADMIN',
-    viewer: 'VIEWER',
-    staff: 'STAFF',
-};
+function initialsOf(name: string | null | undefined, email: string | null | undefined): string {
+    const source = (name || email || '?').trim();
+    const parts = source.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return source.slice(0, 2).toUpperCase();
+}
 
-const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-    pending: { bg: 'bg-[#F59E0B20]', text: 'text-[#F59E0B]', border: 'border-[#F59E0B40]' },
-    active: { bg: 'bg-[#22C55E20]', text: 'text-[#22C55E]', border: 'border-[#22C55E40]' },
-};
+// Shared field look for native selects inside the white side panel.
+const SELECT_CLASS = 'h-12 w-full cursor-pointer rounded-[10px] border-2 border-ink bg-white px-3 text-sm font-semibold text-ink outline-none focus-visible:shadow-ext-sm';
+const FIELD_LABEL_CLASS = 'label-mono text-[11px] text-muted-white';
 
 function relativeTime(dateStr: string): string {
     const now = Date.now();
@@ -76,19 +77,19 @@ export default function TeamPage() {
 
     if (isLoading) return <TeamSkeleton />;
     if (error) return (
-        <div className="flex flex-col items-center justify-center gap-4 py-20">
-            <p className="font-space-mono text-sm text-[#737373]">{t('error')}</p>
+        <div className="block-white flex flex-col items-center justify-center gap-4 px-6 py-16">
+            <p className="label-mono text-[11px] text-alert-white">{t('error')}</p>
         </div>
     );
 
     return (
-        <div className="flex flex-col gap-8 px-8 py-10">
+        <div className="flex flex-col gap-7">
             {/* Header */}
-            <div className="flex items-end justify-between">
+            <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <h1 className="font-sora text-[50px] font-bold leading-none text-white">{t('title')}</h1>
+                    <h1 className="font-hero text-[44px] text-white lg:text-[48px]">{t('title')}</h1>
                     {organization && (
-                        <p className="mt-2 font-space-mono text-sm text-[#737373]">{organization.name}</p>
+                        <p className="label-mono mt-2 text-[11px] text-lilac">{organization.name}</p>
                     )}
                 </div>
                 {canInvite && <InviteMemberDialog t={t} isOwner={isOwner} />}
@@ -96,36 +97,41 @@ export default function TeamPage() {
 
             {/* Table */}
             {!members || members.length === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-4 rounded-none border border-[#1E1E1E] bg-[#0A0A0A] py-20">
-                    <p className="font-space-mono text-sm text-[#737373]">{t('empty')}</p>
+                <div className="block-white flex flex-col items-center justify-center gap-4 px-6 py-16">
+                    <p className="text-sm text-muted-white">{t('empty')}</p>
                 </div>
             ) : (
-                <div className="overflow-x-auto rounded-none border border-[#1E1E1E] bg-[#0A0A0A]">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-[#1E1E1E]">
-                                <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('name')}</th>
-                                <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('email')}</th>
-                                <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('role')}</th>
-                                <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('eventAccess')}</th>
-                                <th className="px-5 py-4 text-left font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('status')}</th>
+                <div className="block-white overflow-hidden">
+                    <div className="flex items-center justify-between border-b-2 border-ink px-5 py-3.5">
+                        <span className="font-display text-[17px]">{t('membersTitle')}</span>
+                        <span className="font-space-mono text-[10px] text-muted-white tabular">{members.length}</span>
+                    </div>
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="hover:bg-transparent">
+                                <TableHead className="pl-5">{t('name')}</TableHead>
+                                <TableHead>{t('email')}</TableHead>
+                                <TableHead>{t('role')}</TableHead>
+                                <TableHead>{t('eventAccess')}</TableHead>
+                                <TableHead>{t('status')}</TableHead>
                                 {canInvite && (
-                                    <th className="px-5 py-4 text-right font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('actions')}</th>
+                                    <TableHead className="pr-5 text-right">{t('actions')}</TableHead>
                                 )}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {members.map((member) => (
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {members.map((member, index) => (
                                 <MemberRow
                                     key={member.userId}
                                     member={member}
+                                    index={index}
                                     isOwner={isOwner}
                                     canInvite={canInvite}
                                     t={t}
                                 />
                             ))}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
             )}
         </div>
@@ -136,22 +142,24 @@ export default function TeamPage() {
 
 function MemberRow({
     member,
+    index,
     isOwner,
     canInvite,
     t,
 }: {
     member: OrganizationMember;
+    index: number;
     isOwner: boolean;
     canInvite: boolean;
     t: ReturnType<typeof useTranslations>;
 }) {
-    const rc = ROLE_COLORS[member.role];
     const canModify = isOwner && member.role !== 'owner';
+    const isPending = member.status === 'pending';
 
     // Event access display logic
     const renderEventAccess = () => {
         if (member.role === 'owner' || member.role === 'admin') {
-            return <span className="text-[var(--color-tactical-acid)]">{t('allEvents')}</span>;
+            return <span className="font-bold text-blue">{t('allEvents')}</span>;
         }
         // staff / viewer
         if (member.eventNames && member.eventNames.length > 0) {
@@ -167,43 +175,59 @@ function MemberRow({
             // Fallback if names aren't resolved
             return `${member.eventIds.length} evento${member.eventIds.length > 1 ? 's' : ''}`;
         }
-        return <span className="text-[var(--color-tactical-acid)]">{t('allEvents')}</span>;
+        return <span className="font-bold text-blue">{t('allEvents')}</span>;
     };
 
+    const avatarColor = AVATAR_COLORS[index % AVATAR_COLORS.length];
+
     return (
-        <tr className="border-b border-[#1E1E1E] bg-[#0D0D0D] transition-colors hover:bg-[#141414]">
-            <td className="px-5 py-4 font-space-mono text-[13px] text-white">
-                {member.displayName || '—'}
-            </td>
-            <td className="px-5 py-4 font-space-mono text-[13px] text-[#A3A3A3]">
+        <TableRow>
+            <TableCell className="pl-5">
+                <div className="flex items-center gap-3">
+                    <span
+                        aria-hidden="true"
+                        className={`flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-ink text-[12px] font-black text-ink ${avatarColor}`}
+                    >
+                        {initialsOf(member.displayName, member.email)}
+                    </span>
+                    <span className="text-sm font-extrabold text-ink">{member.displayName || '—'}</span>
+                </div>
+            </TableCell>
+            <TableCell className="text-[13px] text-muted-white">
                 {member.email || '—'}
-            </td>
-            <td className="px-5 py-4">
-                <span className={`inline-block rounded-none border px-3 py-1 font-space-mono text-[10px] uppercase tracking-[1px] ${rc.bg} ${rc.text} ${rc.border}`}>
-                    {ROLE_LABELS[member.role]}
+            </TableCell>
+            <TableCell>
+                <span className="label-mono inline-flex rounded-full border-2 border-ink bg-lilac px-2.5 py-0.5 font-bold text-ink">
+                    {t(`roles.${member.role}`)}
                 </span>
-            </td>
-            <td className="px-5 py-4 font-space-mono text-[13px] text-[#A3A3A3]">
+            </TableCell>
+            <TableCell className="text-[13px] text-body-white">
                 {renderEventAccess()}
-            </td>
-            <td className="px-5 py-4">
-                <div className="flex flex-col gap-1">
-                    <span className={`inline-block rounded-none border px-3 py-1 font-space-mono text-[10px] uppercase tracking-[1px] ${(STATUS_COLORS[member.status] ?? STATUS_COLORS.active).bg} ${(STATUS_COLORS[member.status] ?? STATUS_COLORS.active).text} ${(STATUS_COLORS[member.status] ?? STATUS_COLORS.active).border}`}>
+            </TableCell>
+            <TableCell>
+                <div className="flex flex-col items-start gap-1">
+                    <span
+                        className={
+                            isPending
+                                ? 'label-mono inline-flex rounded-full border-2 border-dashed border-ink bg-white px-2.5 py-0.5 font-bold text-ink'
+                                : 'label-mono inline-flex rounded-full border-2 border-ink bg-ink px-2.5 py-0.5 font-bold text-white'
+                        }
+                    >
                         {member.status === 'pending' ? t('pending') : t('active')}
                     </span>
-                    <span className="font-space-mono text-[10px] text-[#4A4A4A]">
+                    <span className="font-space-mono text-[10px] text-muted-white">
                         {t('invitedOn')} {relativeTime(member.invitedAt)}
                     </span>
                 </div>
-            </td>
+            </TableCell>
             {canInvite && (
-                <td className="px-5 py-4 text-right">
+                <TableCell className="pr-5 text-right">
                     {canModify ? (
                         <MemberActions member={member} t={t} />
                     ) : null}
-                </td>
+                </TableCell>
             )}
-        </tr>
+        </TableRow>
     );
 }
 
@@ -235,29 +259,33 @@ function MemberActions({
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className="cursor-pointer rounded-none p-2 text-[#737373] transition-colors hover:bg-[#1A1A1A] hover:text-white">
+                    <button
+                        aria-label={t('actions')}
+                        className="inline-flex size-9 cursor-pointer items-center justify-center rounded-[10px] border-2 border-transparent text-ink transition-colors hover:border-ink hover:bg-line-white"
+                    >
                         <MoreHorizontal size={16} />
                     </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="rounded-none border-[#1E1E1E] bg-[#121212]">
+                <DropdownMenuContent align="end">
                     {member.status === 'pending' && (
                         <DropdownMenuItem
                             onClick={() => resend.mutate()}
                             disabled={resend.isPending}
-                            className="cursor-pointer rounded-none font-space-mono text-xs uppercase tracking-[1px] text-[var(--color-tactical-acid)] hover:bg-[#1A1A1A]"
+                            className="label-mono cursor-pointer rounded-[8px] py-2 text-[11px] font-bold text-blue"
                         >
                             {t('resendInvite')}
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuItem
                         onClick={() => setRoleDialogOpen(true)}
-                        className="cursor-pointer rounded-none font-space-mono text-xs uppercase tracking-[1px] text-[#A3A3A3] hover:bg-[#1A1A1A] hover:text-white"
+                        className="label-mono cursor-pointer rounded-[8px] py-2 text-[11px] font-bold text-ink"
                     >
                         {t('changeRole')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                        variant="destructive"
                         onClick={() => setRemoveDialogOpen(true)}
-                        className="cursor-pointer rounded-none font-space-mono text-xs uppercase tracking-[1px] text-[#FF3366] hover:bg-[#1A1A1A]"
+                        className="label-mono cursor-pointer rounded-[8px] py-2 text-[11px] font-bold"
                     >
                         {t('remove')}
                     </DropdownMenuItem>
@@ -339,93 +367,97 @@ function InviteMemberDialog({ t, isOwner }: { t: ReturnType<typeof useTranslatio
     };
 
     return (
-        <Dialog open={open} onOpenChange={(isOpen) => { setOpen(isOpen); if (!isOpen) resetForm(); }}>
-            <DialogTrigger asChild>
-                <button className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-7 py-3.5 font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(45,0,247,0.6)]">
-                    <UserPlus size={15} />
+        <Sheet open={open} onOpenChange={(isOpen) => { setOpen(isOpen); if (!isOpen) resetForm(); }}>
+            <SheetTrigger asChild>
+                <Button variant="secondary" size="lg">
+                    <UserPlus size={16} />
                     {t('inviteMember')}
-                </button>
-            </DialogTrigger>
-            <DialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
-                <DialogHeader>
-                    <DialogTitle className="font-sora text-xl uppercase text-white">{t('inviteMember')}</DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col gap-5">
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="gap-0">
+                <SheetHeader className="border-b-2 border-ink px-6 pb-4 pt-6 pr-16">
+                    <SheetTitle>{t('inviteMember')}</SheetTitle>
+                    <SheetDescription>{t('invitePanelHint')}</SheetDescription>
+                </SheetHeader>
+                <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
                     {/* Display Name (optional) */}
                     <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('displayName')}</label>
-                        <input
+                        <label className={FIELD_LABEL_CLASS}>{t('displayName')}</label>
+                        <Input
                             type="text"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
                             placeholder="María García"
-                            className="h-12 w-full rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
+                            className="h-12"
                         />
                     </div>
 
                     {/* Email */}
                     <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('email')}</label>
-                        <input
+                        <label className={FIELD_LABEL_CLASS}>{t('email')}</label>
+                        <Input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="email@ejemplo.com"
-                            className="h-12 w-full rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
+                            className="h-12"
                         />
                     </div>
 
                     {/* Role Select */}
                     <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('role')}</label>
+                        <label className={FIELD_LABEL_CLASS}>{t('role')}</label>
                         <select
                             value={role}
                             onChange={(e) => { setRole(e.target.value as OrgRole); setSelectedEventIds([]); }}
-                            className="h-12 w-full cursor-pointer rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
+                            className={SELECT_CLASS}
                         >
-                            {isOwner && <option value="admin">Admin</option>}
-                            <option value="viewer">Viewer</option>
-                            <option value="staff">Staff</option>
+                            {isOwner && <option value="admin">{t('roles.admin')}</option>}
+                            <option value="viewer">{t('roles.viewer')}</option>
+                            <option value="staff">{t('roles.staff')}</option>
                         </select>
                     </div>
 
                     {/* Event restriction (staff & viewer) */}
                     {showEventPicker && (
                         <div className="flex flex-col gap-2">
-                            <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('eventRestriction')}</label>
-                            <p className="font-space-mono text-[11px] text-[#4A4A4A]">{t('eventRestrictionHint')}</p>
-                            <div className="flex max-h-40 flex-col gap-1 overflow-y-auto rounded-none border border-[#1A1A1A] bg-[#0A0A0A] p-2">
+                            <label className={FIELD_LABEL_CLASS}>{t('eventRestriction')}</label>
+                            <p className="text-[13px] text-muted-white">{t('eventRestrictionHint')}</p>
+                            <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-[12px] border-2 border-ink bg-white p-2">
                                 {nonDraftEvents.length === 0 ? (
-                                    <p className="px-2 py-3 font-space-mono text-[11px] text-[#4A4A4A]">{t('noEvents')}</p>
+                                    <p className="px-2 py-3 font-space-mono text-[11px] text-muted-white">{t('noEvents')}</p>
                                 ) : (
                                     nonDraftEvents.map(event => (
-                                        <label key={event.id} className="flex cursor-pointer items-center gap-2 rounded-none px-2 py-1.5 transition-colors hover:bg-[#141414]">
+                                        <label key={event.id} className="flex min-h-9 cursor-pointer items-center gap-2.5 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-line-white">
                                             <input
                                                 type="checkbox"
                                                 checked={selectedEventIds.includes(event.id)}
                                                 onChange={() => toggleEvent(event.id)}
-                                                className="accent-[var(--color-tactical-acid)]"
+                                                className="size-4 accent-blue"
                                             />
-                                            <span className="font-space-mono text-xs text-[#A3A3A3]">{event.name}</span>
+                                            <span className="text-sm font-semibold text-ink">{event.name}</span>
                                         </label>
                                     ))
                                 )}
                             </div>
                         </div>
                     )}
+                </div>
 
+                <SheetFooter className="border-t-2 border-ink px-6 py-4">
                     {/* Submit */}
-                    <button
+                    <Button
+                        size="lg"
                         onClick={handleSubmit}
                         disabled={!email.trim() || invite.isPending}
-                        className="btn-tactical flex h-12 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full"
                     >
                         {invite.isPending && <Loader2 size={14} className="animate-spin" />}
                         {t('invite')}
-                    </button>
-                </div>
-            </DialogContent>
-        </Dialog>
+                    </Button>
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
     );
 }
 
@@ -484,63 +516,65 @@ function ChangeRoleDialog({
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="rounded-none border border-[var(--color-tactical-acid)] bg-[#121212] shadow-[0_0_20px_rgba(204,255,0,0.15)]">
-                <DialogHeader>
-                    <DialogTitle className="font-sora text-xl uppercase text-white">{t('changeRole')}</DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col gap-5">
-                    <p className="font-space-mono text-sm text-[#A3A3A3]">
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent side="right" className="gap-0">
+                <SheetHeader className="border-b-2 border-ink px-6 pb-4 pt-6 pr-16">
+                    <SheetTitle>{t('changeRole')}</SheetTitle>
+                    <SheetDescription>
                         {t('changeRoleFor', { name: member.displayName || member.email || '' })}
-                    </p>
-
+                    </SheetDescription>
+                </SheetHeader>
+                <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
                     <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('newRole')}</label>
+                        <label className={FIELD_LABEL_CLASS}>{t('newRole')}</label>
                         <select
                             value={newRole}
                             onChange={(e) => { setNewRole(e.target.value as OrgRole); setSelectedEventIds([]); }}
-                            className="h-12 w-full cursor-pointer rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
+                            className={SELECT_CLASS}
                         >
-                            <option value="admin">Admin</option>
-                            <option value="viewer">Viewer</option>
-                            <option value="staff">Staff</option>
+                            <option value="admin">{t('roles.admin')}</option>
+                            <option value="viewer">{t('roles.viewer')}</option>
+                            <option value="staff">{t('roles.staff')}</option>
                         </select>
                     </div>
 
                     {showEventPicker && (
                         <div className="flex flex-col gap-2">
-                            <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">{t('eventRestriction')}</label>
-                            <div className="flex max-h-40 flex-col gap-1 overflow-y-auto rounded-none border border-[#1A1A1A] bg-[#0A0A0A] p-2">
+                            <label className={FIELD_LABEL_CLASS}>{t('eventRestriction')}</label>
+                            <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-[12px] border-2 border-ink bg-white p-2">
                                 {nonDraftEvents.length === 0 ? (
-                                    <p className="px-2 py-3 font-space-mono text-[11px] text-[#4A4A4A]">{t('noEvents')}</p>
+                                    <p className="px-2 py-3 font-space-mono text-[11px] text-muted-white">{t('noEvents')}</p>
                                 ) : (
                                     nonDraftEvents.map(event => (
-                                        <label key={event.id} className="flex cursor-pointer items-center gap-2 rounded-none px-2 py-1.5 transition-colors hover:bg-[#141414]">
+                                        <label key={event.id} className="flex min-h-9 cursor-pointer items-center gap-2.5 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-line-white">
                                             <input
                                                 type="checkbox"
                                                 checked={selectedEventIds.includes(event.id)}
                                                 onChange={() => toggleEvent(event.id)}
-                                                className="accent-[var(--color-tactical-acid)]"
+                                                className="size-4 accent-blue"
                                             />
-                                            <span className="font-space-mono text-xs text-[#A3A3A3]">{event.name}</span>
+                                            <span className="text-sm font-semibold text-ink">{event.name}</span>
                                         </label>
                                     ))
                                 )}
                             </div>
                         </div>
                     )}
+                </div>
 
-                    <button
+                <SheetFooter className="border-t-2 border-ink px-6 py-4">
+                    <Button
+                        size="lg"
                         onClick={handleSubmit}
                         disabled={update.isPending}
-                        className="btn-tactical flex h-12 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full"
                     >
                         {update.isPending && <Loader2 size={14} className="animate-spin" />}
                         {t('saveChanges')}
-                    </button>
-                </div>
-            </DialogContent>
-        </Dialog>
+                    </Button>
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
     );
 }
 
@@ -574,21 +608,21 @@ function RemoveConfirmDialog({
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent className="rounded-none border border-[var(--color-tactical-magenta)] bg-[#121212] shadow-[0_0_20px_rgba(255,0,85,0.2)]">
+            <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="font-sora text-xl text-white">{t('removeMember')}</AlertDialogTitle>
-                    <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                    <AlertDialogTitle className="font-display text-2xl">{t('removeMember')}</AlertDialogTitle>
+                    <AlertDialogDescription>
                         {t('confirmRemove', { name: member.displayName || member.email || '' })}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
+                    <AlertDialogCancel>
                         {t('cancel')}
                     </AlertDialogCancel>
                     <AlertDialogAction
+                        variant="destructive"
                         onClick={() => remove.mutate()}
                         disabled={remove.isPending}
-                        className="rounded-none bg-[#FF3366] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#CC2952] disabled:opacity-50"
                     >
                         {remove.isPending ? <Loader2 size={14} className="animate-spin" /> : t('remove')}
                     </AlertDialogAction>
@@ -602,22 +636,25 @@ function RemoveConfirmDialog({
 
 function TeamSkeleton() {
     return (
-        <div className="flex flex-col gap-8 px-8 py-10">
+        <div className="flex flex-col gap-7">
             <div className="flex items-end justify-between">
                 <div>
-                    <div className="h-12 w-64 animate-pulse rounded-none bg-[#1A1A1A]" />
-                    <div className="mt-2 h-4 w-40 animate-pulse rounded-none bg-[#1A1A1A]" />
+                    <div className="h-11 w-64 animate-pulse rounded-[12px] bg-white/15" />
+                    <div className="mt-2 h-3.5 w-40 animate-pulse rounded-full bg-white/15" />
                 </div>
-                <div className="h-12 w-48 animate-pulse rounded-none bg-[#1A1A1A]" />
+                <div className="h-12 w-48 animate-pulse rounded-[14px] bg-white/15" />
             </div>
-            <div className="overflow-hidden rounded-none border border-[#1E1E1E] bg-[#0A0A0A]">
+            <div className="block-white overflow-hidden">
+                <div className="border-b-2 border-ink px-5 py-3.5">
+                    <div className="h-4 w-28 animate-pulse rounded-full bg-line-white" />
+                </div>
                 {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="flex gap-6 border-b border-[#1E1E1E] px-5 py-4">
-                        <div className="h-4 w-32 animate-pulse rounded-none bg-[#1A1A1A]" />
-                        <div className="h-4 w-48 animate-pulse rounded-none bg-[#1A1A1A]" />
-                        <div className="h-4 w-16 animate-pulse rounded-none bg-[#1A1A1A]" />
-                        <div className="h-4 w-28 animate-pulse rounded-none bg-[#1A1A1A]" />
-                        <div className="h-4 w-24 animate-pulse rounded-none bg-[#1A1A1A]" />
+                    <div key={i} className="flex items-center gap-6 border-b border-line-white px-5 py-3 last:border-0">
+                        <div className="size-9 animate-pulse rounded-full bg-line-white" />
+                        <div className="h-4 w-32 animate-pulse rounded-full bg-line-white" />
+                        <div className="h-4 w-48 animate-pulse rounded-full bg-line-white" />
+                        <div className="h-4 w-16 animate-pulse rounded-full bg-line-white" />
+                        <div className="h-4 w-24 animate-pulse rounded-full bg-line-white" />
                     </div>
                 ))}
             </div>

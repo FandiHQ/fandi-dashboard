@@ -19,15 +19,16 @@ import { toast } from 'sonner';
 
 import { eventsApi, analyticsApi } from '@/lib/api-hooks';
 import { useAuth } from '@/contexts/auth-context';
-import { formatFandis } from '@/lib/currency';
+import { formatFandis, formatCop } from '@/lib/currency';
 import { slugifyForFilename } from '@/lib/slugify';
 import { triggerBrowserDownload } from '@/lib/download';
 import {
+    escuadraColors,
+    escuadraDefaultNames,
     statusColors,
-    textColors,
     type RedemptionStatus,
 } from '@/lib/chart-colors';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     Table,
@@ -152,11 +153,8 @@ export default function WinnersPage() {
     if (event?.status === 'draft') {
         return (
             <div className="flex flex-col items-center justify-center py-24">
-                <div className="hud-card hud-brackets px-8 py-6">
-                    <p
-                        className="font-space-mono text-sm uppercase tracking-[1px]"
-                        style={{ color: textColors.secondary }}
-                    >
+                <div className="block-white px-8 py-6">
+                    <p className="label-mono text-muted-white">
                         {t('unavailableOnDraft')}
                     </p>
                 </div>
@@ -167,28 +165,25 @@ export default function WinnersPage() {
     // ─── Loading skeleton ────────────────────────────────────
     if (isLoading && !winners) {
         return (
-            <div className="flex flex-col gap-6 py-6">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                    {[0, 1, 2, 3].map((i) => (
-                        <Skeleton key={i} className="h-20 w-full rounded-none bg-[#1E1E1E]" />
+            <div className="flex flex-col gap-5">
+                <div className="grid grid-cols-2 gap-[18px] lg:grid-cols-3 xl:grid-cols-5">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                        <Skeleton key={i} className="h-24 w-full rounded-2xl" />
                     ))}
                 </div>
-                <Skeleton className="h-10 w-full max-w-md rounded-none bg-[#1E1E1E]" />
-                {[0, 1, 2, 3, 4].map((i) => (
-                    <Skeleton key={i} className="h-12 w-full rounded-none bg-[#1E1E1E]" />
-                ))}
+                <Skeleton className="h-10 w-full max-w-md" />
+                <Skeleton className="h-80 w-full rounded-2xl" />
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-6 py-6">
-            {/* ─── Stats bar (4 clickable chips) ─── */}
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="flex flex-col gap-5">
+            {/* ─── Stat blocks (5 clickable filters) ─── */}
+            <div className="grid grid-cols-2 gap-[18px] lg:grid-cols-3 xl:grid-cols-5">
                 <StatChip
                     label={t('total')}
                     value={winners?.total ?? 0}
-                    color={textColors.primary}
                     active={false}
                     onClick={() => setStatus(undefined)}
                 />
@@ -197,7 +192,7 @@ export default function WinnersPage() {
                         key={status}
                         label={t(`status.${status}`)}
                         value={countByStatus[status]}
-                        color={statusColors[status]}
+                        status={status}
                         active={filters.status === status}
                         onClick={() => setStatus(status)}
                     />
@@ -214,7 +209,7 @@ export default function WinnersPage() {
                         setStatus(v === SELECT_ALL ? undefined : (v as RedemptionStatus))
                     }
                 >
-                    <SelectTrigger className="h-10 w-44 rounded-none border-[#1E1E1E] bg-transparent font-space-mono text-sm">
+                    <SelectTrigger className="w-48">
                         <SelectValue placeholder={t('filterByStatus')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -233,7 +228,7 @@ export default function WinnersPage() {
                         setPrizeType(v === SELECT_ALL ? undefined : (v as PrizeType))
                     }
                 >
-                    <SelectTrigger className="h-10 w-44 rounded-none border-[#1E1E1E] bg-transparent font-space-mono text-sm">
+                    <SelectTrigger className="w-48">
                         <SelectValue placeholder={t('filterByType')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -249,10 +244,11 @@ export default function WinnersPage() {
                 {/* CSV export — owner/admin only. Viewer/staff see no
                     button at all (per Step 4.14 spec: hide, don't disable). */}
                 {isWriteRole && (
-                    <button
+                    <Button
+                        variant="secondary"
                         onClick={() => exportMutation.mutate()}
                         disabled={exportMutation.isPending}
-                        className="ml-auto flex cursor-pointer items-center gap-2 rounded-none border border-[#2A2A2A] bg-transparent px-5 py-2.5 font-space-mono text-sm uppercase tracking-[1px] text-[#A0A0A0] transition-all duration-150 hover:border-[#2D00F7] hover:text-white hover:shadow-[0_0_20px_rgba(45,0,247,0.3)] disabled:opacity-50"
+                        className="ml-auto"
                     >
                         {exportMutation.isPending ? (
                             <Loader2 size={14} className="animate-spin" />
@@ -260,114 +256,115 @@ export default function WinnersPage() {
                             <Download size={14} />
                         )}
                         {t('exportCsv')}
-                    </button>
+                    </Button>
                 )}
             </div>
 
-            {/* ─── Table ─── */}
-            {winners && winners.items.length === 0 ? (
-                <div className="flex items-center justify-center py-16">
-                    <p
-                        className="font-space-mono text-sm"
-                        style={{ color: textColors.muted }}
-                    >
-                        {t('empty')}
-                    </p>
+            {/* ─── Table (inside a white block) ─── */}
+            <div className="block-white overflow-hidden">
+                <div className="flex items-center justify-between border-b-2 border-ink px-5 py-3.5">
+                    <span className="font-display text-[17px]">{t('title')}</span>
+                    <span className="tabular font-space-mono text-[10px] uppercase text-muted-white">
+                        {winners?.total ?? 0}
+                    </span>
                 </div>
-            ) : (
-                <Table className="border-collapse">
-                    <TableHeader>
-                        <TableRow className="border-b border-[#1E1E1E] hover:bg-transparent">
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('col.fan')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('col.prize')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('col.escuadra')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('col.amount')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('col.status')}
-                            </TableHead>
-                            <TableHead className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                                {t('col.redeemedAt')}
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {(winners?.items ?? []).map((w) => (
-                            <WinnerRow key={w.winnerId} winner={w} t={t} />
-                        ))}
-                    </TableBody>
-                </Table>
-            )}
+                {winners && winners.items.length === 0 ? (
+                    <div className="flex items-center justify-center py-16">
+                        <p className="text-sm font-semibold text-muted-white">
+                            {t('empty')}
+                        </p>
+                    </div>
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="hover:bg-transparent">
+                                <TableHead className="pl-5">{t('col.fan')}</TableHead>
+                                <TableHead>{t('col.prize')}</TableHead>
+                                <TableHead>{t('col.escuadra')}</TableHead>
+                                <TableHead className="text-right">{t('col.amount')}</TableHead>
+                                <TableHead>{t('col.status')}</TableHead>
+                                <TableHead className="pr-5">{t('col.redeemedAt')}</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {(winners?.items ?? []).map((w) => (
+                                <WinnerRow key={w.winnerId} winner={w} t={t} />
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
+            </div>
 
             {/* ─── Pagination ─── */}
             {winners && winners.total > winners.limit && (
-                <div className="flex items-center justify-end gap-2">
-                    <button
+                <div className="flex items-center justify-end gap-3">
+                    <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => setPage(filters.page - 1)}
                         disabled={filters.page <= 1}
-                        className="cursor-pointer rounded-none border border-[#1E1E1E] bg-transparent px-3 py-1.5 font-space-mono text-xs uppercase tracking-[1px] text-[#A0A0A0] transition-colors hover:border-[#2D00F7] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#1E1E1E] disabled:hover:text-[#A0A0A0]"
                     >
                         ←
-                    </button>
-                    <span
-                        className="font-space-mono text-xs"
-                        style={{ color: textColors.muted }}
-                    >
+                    </Button>
+                    <span className="tabular font-space-mono text-xs text-lilac">
                         {filters.page} / {Math.max(1, Math.ceil(winners.total / winners.limit))}
                     </span>
-                    <button
+                    <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => setPage(filters.page + 1)}
                         disabled={!hasMore}
-                        className="cursor-pointer rounded-none border border-[#1E1E1E] bg-transparent px-3 py-1.5 font-space-mono text-xs uppercase tracking-[1px] text-[#A0A0A0] transition-colors hover:border-[#2D00F7] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#1E1E1E] disabled:hover:text-[#A0A0A0]"
                     >
                         →
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>
     );
 }
 
-// ─── Stat chip ───────────────────────────────────────────────
+// ─── Stat chip (a clickable stat block) ──────────────────────
 
 interface StatChipProps {
     label: string;
     value: number;
-    color: string;
+    /** Redemption status this block filters by; omitted for "Total". */
+    status?: RedemptionStatus;
     active: boolean;
     onClick: () => void;
 }
 
-function StatChip({ label, value, color, active, onClick }: StatChipProps) {
+function StatChip({ label, value, status, active, onClick }: StatChipProps) {
+    // Active = pushed into the extrusion (the selected filter).
     return (
         <button
             onClick={onClick}
-            className="hud-card group flex cursor-pointer flex-col gap-1 px-4 py-3 text-left transition-colors"
-            style={{
-                borderColor: active ? color : 'rgba(255,255,255,0.03)',
-                borderWidth: active ? 2 : 1,
-            }}
+            aria-pressed={active}
+            className="block-white press flex cursor-pointer flex-col items-start px-5 py-4 text-left"
+            style={active ? { transform: 'translate(3px, 3px)', boxShadow: 'none' } : undefined}
         >
-            <span
-                className="font-space-mono text-[10px] uppercase tracking-[2px]"
-                style={{ color: active ? color : textColors.muted }}
-            >
-                {label}
-            </span>
-            <span
-                className="font-sora text-2xl font-bold tabular-nums"
-                style={{ color: active ? color : textColors.primary }}
-            >
-                {value}
+            {status ? (
+                <RedemptionPill status={status} label={label} />
+            ) : (
+                <span className="label-mono text-muted-white">{label}</span>
+            )}
+            <span className="font-display tabular mt-2 text-[36px] text-ink">
+                {new Intl.NumberFormat('es-CO').format(value)}
             </span>
         </button>
+    );
+}
+
+// ─── Redemption status pill (word always shown, §8) ──────────
+
+function RedemptionPill({ status, label }: { status: RedemptionStatus; label: string }) {
+    return (
+        <span
+            className="inline-flex items-center rounded-full border-2 border-ink px-2.5 py-0.5 font-space-mono text-[10px] font-bold uppercase tracking-[0.12em] text-ink"
+            style={{ backgroundColor: statusColors[status] }}
+        >
+            {label}
+        </span>
     );
 }
 
@@ -381,55 +378,53 @@ function WinnerRow({
     t: ReturnType<typeof useTranslations>;
 }) {
     const status = winner.redemptionStatus as RedemptionStatus;
-    const statusColor = statusColors[status];
+    const level = winner.escuadraLevel;
+    const category =
+        level === 1 || level === 2 || level === 3 || level === 4 ? level : null;
 
     return (
-        <TableRow className="border-b border-[#1A1A1A] hover:bg-[#0A0A0A]">
-            <TableCell className="font-sora text-sm text-white">
+        <TableRow>
+            <TableCell className="pl-5 font-bold">
                 {winner.fanName}
             </TableCell>
             <TableCell>
                 <div className="flex items-center gap-2">
-                    <span className="font-sora text-sm text-white">
+                    <span className="font-semibold">
                         {winner.prizeName}
                     </span>
-                    <Badge
-                        variant="outline"
-                        className="rounded-none border-[#2A2A2A] font-space-mono text-[10px] uppercase tracking-[1px] text-[#A0A0A0]"
-                    >
+                    <span className="rounded-full border-2 border-line-white px-2 py-0.5 font-space-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-white">
                         {t(`prizeType.${winner.prizeType}`)}
-                    </Badge>
+                    </span>
                 </div>
             </TableCell>
             <TableCell>
-                {winner.escuadraLevel !== null ? (
-                    <Badge
-                        variant="outline"
-                        className="rounded-none font-space-mono text-[10px] uppercase tracking-[1px]"
-                        style={{
-                            color: textColors.primary,
-                            borderColor: textColors.dim,
-                        }}
-                    >
-                        {t('escuadraLevel', { level: winner.escuadraLevel })}
-                    </Badge>
+                {category !== null ? (
+                    <span className="inline-flex items-center gap-1.5 font-space-mono text-[10px] font-bold uppercase tracking-[0.12em]">
+                        <span
+                            aria-hidden
+                            className="inline-block size-3 rounded-[3px] border-2 border-ink"
+                            style={{ backgroundColor: escuadraColors[category] }}
+                        />
+                        {escuadraDefaultNames[category]}
+                    </span>
                 ) : (
-                    <span style={{ color: textColors.dim }}>—</span>
+                    <span className="text-muted-white">—</span>
                 )}
             </TableCell>
-            <TableCell className="font-sora text-sm tabular-nums text-white">
-                {formatFandis(winner.finalAmount)} F
+            <TableCell className="text-right">
+                <div className="flex flex-col items-end">
+                    <span className="tabular font-black">
+                        {formatFandis(winner.finalAmount)} F
+                    </span>
+                    <span className="tabular font-space-mono text-[10px] text-muted-white">
+                        {formatCop(winner.finalAmount)}
+                    </span>
+                </div>
             </TableCell>
             <TableCell>
-                <Badge
-                    variant="outline"
-                    className="rounded-none font-space-mono text-[10px] uppercase tracking-[1px]"
-                    style={{ color: statusColor, borderColor: statusColor }}
-                >
-                    {t(`status.${status}`)}
-                </Badge>
+                <RedemptionPill status={status} label={t(`status.${status}`)} />
             </TableCell>
-            <TableCell className="font-space-mono text-xs text-[#A0A0A0]">
+            <TableCell className="pr-5 font-space-mono text-xs text-muted-white">
                 {winner.redeemedAt
                     ? format(parseISO(winner.redeemedAt), t('dateFormat'), {
                           locale: esLocale,

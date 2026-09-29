@@ -23,25 +23,25 @@ export default function DashboardLayout({
 
     if (isLoading || !isAuthenticated) {
         return (
-            <div className="flex h-screen items-center justify-center bg-black">
-                <div className="h-8 w-8 animate-spin border-2 border-[#2D00F7] border-t-transparent rounded-full" />
+            <div className="flex h-screen items-center justify-center" aria-busy="true">
+                <span className="live-dot size-3 text-lime" aria-hidden="true" />
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen bg-black scanlines">
-            {/* Desktop sidebar — hidden on mobile, fixed position */}
-            <div className="hidden lg:flex lg:w-20 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
+        <div className="flex min-h-screen bg-blue">
+            {/* Desktop rail (84px ink) — fixed; collapses into the header sheet below lg */}
+            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-[84px] lg:flex-col">
                 <Sidebar />
             </div>
 
-            {/* Main area — offset by sidebar width on desktop */}
-            <div className="flex flex-1 flex-col lg:pl-20">
+            {/* Main area — offset by the rail on desktop */}
+            <div className="flex min-w-0 flex-1 flex-col lg:pl-[84px]">
                 <DashboardHeader />
 
-                {/* Content area — FANDI_DESIGN_WEB spacing */}
-                <main className="flex-1 px-5 py-8 lg:px-14 lg:py-12">
+                {/* Content — Azul Bloque web padding (36px) */}
+                <main className="flex-1 px-5 py-7 lg:px-9">
                     {children}
                 </main>
             </div>

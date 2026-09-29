@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * Sidebar — Azul Bloque web layout (DESIGN_GUIDELINES §7): an 84px ink
+ * rail with the brand tile, icon navigation (the active item is a lime
+ * 50px tile), logout and the workspace tile at the bottom. Labels live in
+ * tooltips; the mobile sheet in DashboardHeader carries them in text.
+ */
 import Image from 'next/image';
 import Link from 'next/link';
 import { LogOut } from 'lucide-react';
@@ -7,38 +13,31 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
-    AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { isNavActive, getVisibleItems } from './nav-config';
+import { LogoutDialog } from './logout-dialog';
 
 export function Sidebar() {
-    const { user, organization, memberRole, logout } = useAuth();
+    const { organization, memberRole } = useAuth();
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
     const visibleItems = getVisibleItems(memberRole);
 
     return (
-        <aside className="flex h-full w-20 flex-col items-center justify-between border-r border-[#1A1A1A] bg-[#020202] py-6 shadow-xl">
-            {/* Top section: logo + nav */}
-            <div className="flex flex-col items-center gap-6">
-                {/* Fandi logo — links to dashboard home */}
-                <Link href="/dashboard" className="mb-2" aria-label="Fandi Dashboard">
+        <aside className="flex h-full w-[84px] flex-col items-center justify-between bg-ink py-5">
+            <div className="flex flex-col items-center gap-2.5">
+                <Link href="/dashboard" className="mb-4 rounded-[12px] focus-visible:ring-2 focus-visible:ring-lime" aria-label="Fandi">
                     <Image
-                        src="/fandi-logo.png"
+                        src="/fandi-tile.png"
                         alt="Fandi"
-                        width={48}
-                        height={48}
+                        width={46}
+                        height={46}
                         unoptimized
-                        className="h-10 w-auto object-contain"
+                        className="size-[46px] rounded-[12px]"
                     />
                 </Link>
 
-                {/* Navigation icons */}
-                <nav className="flex flex-col items-center gap-2" aria-label="Dashboard navigation">
+                <nav className="flex flex-col items-center gap-2.5" aria-label="Dashboard navigation">
                     {visibleItems.map((item) => {
                         const active = isNavActive(item, pathname);
                         const Icon = item.icon;
@@ -49,84 +48,47 @@ export function Sidebar() {
                                         href={item.href}
                                         data-testid={`nav-${item.labelKey}`}
                                         aria-label={t(item.labelKey)}
-                                        className={`flex h-12 w-12 items-center justify-center transition-colors duration-150 ${
-                                            active
-                                                ? 'text-[#2D00F7]'
-                                                : 'text-[#4A4A4A] hover:text-[#A0A0A0]'
+                                        aria-current={active ? 'page' : undefined}
+                                        className={`flex size-[50px] items-center justify-center rounded-[12px] transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-lime ${
+                                            active ? 'bg-lime text-ink' : 'text-nav-inactive hover:bg-chip-ink hover:text-white'
                                         }`}
                                     >
-                                        <Icon size={20} />
+                                        <Icon size={22} strokeWidth={2.2} />
                                     </Link>
                                 </TooltipTrigger>
-                                <TooltipContent side="right" className="rounded-none border-[#1A1A1A] bg-[#121212] font-space-mono text-xs text-white">
-                                    {t(item.labelKey)}
-                                </TooltipContent>
+                                <TooltipContent side="right">{t(item.labelKey)}</TooltipContent>
                             </Tooltip>
                         );
                     })}
                 </nav>
             </div>
 
-            {/* Bottom section: logout + avatar */}
             <div className="flex flex-col items-center gap-3">
-                {/* Logout with confirmation */}
-                <AlertDialog>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <AlertDialogTrigger asChild>
-                                <button
-                                    className="flex h-12 w-12 cursor-pointer items-center justify-center text-[#4A4A4A] transition-colors duration-150 hover:text-[#FF3366]"
-                                    aria-label={tAuth('logout')}
-                                    data-testid="nav-logout"
-                                >
-                                    <LogOut size={20} />
-                                </button>
-                            </AlertDialogTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent side="right" className="rounded-none border-[#1A1A1A] bg-[#121212] font-space-mono text-xs text-white">
-                            {tAuth('logout')}
-                        </TooltipContent>
-                    </Tooltip>
+                <LogoutDialog>
+                    <button
+                        className="flex size-[50px] cursor-pointer items-center justify-center rounded-[12px] text-nav-inactive transition-colors duration-100 hover:bg-chip-ink hover:text-alert focus-visible:ring-2 focus-visible:ring-lime"
+                        aria-label={tAuth('logout')}
+                        data-testid="nav-logout"
+                    >
+                        <LogOut size={20} />
+                    </button>
+                </LogoutDialog>
 
-                    <AlertDialogContent className="rounded-none border-[#1A1A1A] bg-[#121212]">
-                        <AlertDialogHeader>
-                            <AlertDialogTitle className="font-sora text-white">
-                                {tAuth('logoutConfirm')}
-                            </AlertDialogTitle>
-                            <AlertDialogDescription className="font-space-mono text-[#A0A0A0]">
-                                {tAuth('logoutWarning')}
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white">
-                                {tAuth('cancel')}
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={() => logout()}
-                                className="rounded-none bg-[#FF3366] font-space-mono text-xs uppercase tracking-[1px] text-white hover:bg-[#CC2952]"
-                            >
-                                {tAuth('logout')}
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-
-                {/* Org logo */}
                 <div
-                    className="flex h-12 w-12 items-center justify-center overflow-hidden border border-[#2A2A2A] bg-[#121212] transition-colors duration-300 hover:border-[var(--color-tactical-acid)]"
+                    className="flex size-[46px] items-center justify-center overflow-hidden rounded-[12px] border-2 border-dash-ink bg-chip-ink"
                     aria-label={organization?.name || 'Organization'}
                 >
                     {organization?.logoUrl ? (
                         <Image
                             src={organization.logoUrl}
                             alt={organization.name}
-                            width={48}
-                            height={48}
-                            className="h-full w-full object-cover grayscale transition-all duration-300 hover:grayscale-0"
+                            width={46}
+                            height={46}
+                            className="h-full w-full object-cover"
                             unoptimized
                         />
                     ) : (
-                        <span className="font-sora text-lg font-bold uppercase text-[#A0A0A0] transition-colors duration-300 hover:text-[var(--color-tactical-acid)]">
+                        <span className="font-display text-lg text-lime">
                             {organization?.name?.charAt(0) || 'F'}
                         </span>
                     )}

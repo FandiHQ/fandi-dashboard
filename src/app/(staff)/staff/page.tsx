@@ -36,7 +36,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { redemptionsApi } from '@/lib/api-hooks';
-import { formatFandis } from '@/lib/currency';
+import { formatCop, formatFandis } from '@/lib/currency';
 import { escuadraColors, escuadraDefaultNames } from '@/lib/chart-colors';
 import type { ScanResultResponse } from '@/types/api';
 
@@ -193,7 +193,7 @@ export default function StaffScannerPage() {
     const cameraBlocked = cameraError !== null;
 
     return (
-        <div className="flex min-h-screen flex-col gap-4 bg-black px-4 pb-8 pt-4 text-white">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-4 pb-8 text-white">
             {/* Status pills */}
             <div className="flex flex-wrap items-center gap-2">
                 <StatusPill
@@ -213,7 +213,7 @@ export default function StaffScannerPage() {
             {cameraBlocked ? (
                 <CameraDenied message={t('cameraRequest')} />
             ) : (
-                <div className="relative aspect-square w-full overflow-hidden border border-[#1A1A1A] bg-[#0A0A0A]">
+                <div className="relative aspect-square w-full overflow-hidden rounded-[18px] border-2 border-ink bg-ink shadow-ext-lg">
                     <Scanner
                         onScan={handleScan}
                         onError={(err) => setCameraError(err)}
@@ -237,18 +237,20 @@ export default function StaffScannerPage() {
                         }}
                     />
                     <Reticle />
-                    <p className="absolute inset-x-0 bottom-3 text-center font-space-mono text-[12px] uppercase tracking-[1px] text-white/80">
-                        {t('scanHint')}
+                    <p className="absolute inset-x-0 bottom-3 flex justify-center px-3">
+                        <span className="label-mono rounded-full bg-ink px-3 py-1.5 text-center text-[11px] text-white">
+                            {t('scanHint')}
+                        </span>
                     </p>
                 </div>
             )}
 
             {/* Manual entry — always available, primary when camera is blocked */}
             <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 font-space-mono text-[12px] uppercase tracking-[2px] text-[#A0A0A0]">
+                <label className="label-mono flex items-center gap-2 text-[11px] text-lilac">
                     <KeyRound size={14} /> {t('manualEntry')}
                 </label>
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex flex-col gap-3 sm:flex-row">
                     <input
                         value={manualCode}
                         onChange={(e) => setManualCode(e.target.value)}
@@ -258,12 +260,12 @@ export default function StaffScannerPage() {
                         placeholder={t('manualPlaceholder')}
                         inputMode="text"
                         autoCapitalize="characters"
-                        className="h-12 w-full rounded-none border border-[#2A2A2A] bg-[#141414] px-4 text-[18px] text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:outline-none"
+                        className="h-14 w-full rounded-[12px] border-2 border-ink bg-white px-4 font-space-mono text-[18px] font-bold text-ink placeholder:font-sans placeholder:text-[16px] placeholder:font-semibold placeholder:text-muted-white focus-visible:shadow-ext-sm focus-visible:outline-none"
                     />
                     <button
                         onClick={handleManualSubmit}
                         disabled={!manualCode.trim() || scanMutation.isPending}
-                        className="flex h-12 min-w-[120px] items-center justify-center gap-2 rounded-none bg-[#2D00F7] px-6 text-[16px] font-bold uppercase tracking-[1px] text-white transition-all hover:bg-[#2400C5] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="flex h-14 min-w-[140px] items-center justify-center gap-2 rounded-[14px] border-2 border-ink bg-white px-6 text-[16px] font-extrabold uppercase text-ink shadow-ext-md transition-[transform,box-shadow] duration-75 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-45"
                     >
                         {scanMutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -276,7 +278,7 @@ export default function StaffScannerPage() {
 
             {/* Section 5 (stats + recent list) omitted — no staff event
                 source endpoint. Flagged as a backend follow-up. */}
-            <p className="mt-2 text-center font-space-mono text-[11px] text-[#4A4A4A]">
+            <p className="mt-2 text-center font-space-mono text-[11px] text-lilac">
                 {t('statsUnavailable')}
             </p>
 
@@ -294,20 +296,17 @@ export default function StaffScannerPage() {
     );
 }
 
-// ─── Reticle (4-corner HUD targeting brackets) ───────────────
+// ─── Reticle (four corner guides over the camera) ────────────
 
 function Reticle() {
-    const corner =
-        'pointer-events-none absolute h-8 w-8 border-[var(--color-tactical-acid)]';
+    const corner = 'pointer-events-none absolute h-10 w-10 border-white';
     return (
         <div className="pointer-events-none absolute inset-0">
-            {/* Scanning pulse */}
-            <div className="absolute left-1/2 top-1/2 h-[60%] w-[60%] -translate-x-1/2 -translate-y-1/2 animate-pulse border border-[#2D00F7]/30" />
             <div className="absolute inset-[18%]">
-                <div className={`${corner} left-0 top-0 border-l-2 border-t-2`} />
-                <div className={`${corner} right-0 top-0 border-r-2 border-t-2`} />
-                <div className={`${corner} bottom-0 left-0 border-b-2 border-l-2`} />
-                <div className={`${corner} bottom-0 right-0 border-b-2 border-r-2`} />
+                <div className={`${corner} left-0 top-0 rounded-tl-[14px] border-l-4 border-t-4`} />
+                <div className={`${corner} right-0 top-0 rounded-tr-[14px] border-r-4 border-t-4`} />
+                <div className={`${corner} bottom-0 left-0 rounded-bl-[14px] border-b-4 border-l-4`} />
+                <div className={`${corner} bottom-0 right-0 rounded-br-[14px] border-b-4 border-r-4`} />
             </div>
         </div>
     );
@@ -315,9 +314,11 @@ function Reticle() {
 
 function CameraDenied({ message }: { message: string }) {
     return (
-        <div className="flex aspect-square w-full flex-col items-center justify-center gap-4 border border-[#2A2A2A] bg-[#0A0A0A] px-6 text-center">
-            <AlertTriangle size={48} className="text-[#EAB308]" />
-            <p className="font-space-mono text-[14px] leading-relaxed text-[#A0A0A0]">
+        <div className="block-white flex aspect-square w-full flex-col items-center justify-center gap-4 px-6 text-center">
+            <span className="flex size-16 items-center justify-center rounded-full border-2 border-ink bg-alert text-ink">
+                <AlertTriangle size={30} strokeWidth={2.5} />
+            </span>
+            <p className="text-[16px] font-semibold leading-relaxed text-ink">
                 {message}
             </p>
         </div>
@@ -333,17 +334,24 @@ function StatusPill({
     label: string;
     icon?: React.ReactNode;
 }) {
-    const color =
-        tone === 'ok' ? '#22C55E' : tone === 'warn' ? '#EAB308' : '#FF3366';
+    // ok = lime (live camera), warn = ink (offline), error = alert.
+    const toneClass =
+        tone === 'ok'
+            ? 'bg-lime text-ink'
+            : tone === 'warn'
+              ? 'bg-ink text-white'
+              : 'bg-alert text-ink';
     return (
         <div
-            className="flex items-center gap-1.5 border px-2.5 py-1 font-space-mono text-[11px] uppercase tracking-[1px]"
-            style={{ borderColor: color, color }}
+            className={`label-mono flex min-h-8 items-center gap-1.5 rounded-full border-2 border-ink px-3 py-1 text-[11px] font-bold ${toneClass}`}
         >
             {icon ?? (
                 <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ background: color }}
+                    className={
+                        tone === 'ok'
+                            ? 'live-dot'
+                            : 'inline-block h-2 w-2 rounded-[2px] bg-current'
+                    }
                 />
             )}
             {label}
@@ -351,7 +359,7 @@ function StatusPill({
     );
 }
 
-// ─── Result modal (glassmorphic over the camera) ─────────────
+// ─── Result modal (white block over the paused camera) ───────
 
 function ResultModal({
     outcome,
@@ -370,19 +378,16 @@ function ResultModal({
 }) {
     const t = useTranslations('redemption');
 
-    // Error / not-found / network → red.
+    // Error / not-found / network → alert.
     if (outcome.type === 'error') {
         const heading =
             outcome.kind === 'network' ? t('networkError') : t('notFound');
         return (
             <ModalShell onClose={onClose}>
-                <div className="flex flex-col items-center gap-4">
-                    <IconBadge tone="error">
-                        <X size={40} strokeWidth={3} />
-                    </IconBadge>
-                    <h2 className="text-center font-sora text-[24px] font-extrabold text-white">
-                        {heading}
-                    </h2>
+                <ResultBand tone="error" icon={<X size={30} strokeWidth={3} />}>
+                    {heading}
+                </ResultBand>
+                <div className="flex flex-col gap-4 p-5">
                     <FullButton tone="neutral" onClick={onClose}>
                         {t('close')}
                     </FullButton>
@@ -394,23 +399,21 @@ function ResultModal({
     const { data, stale } = outcome;
     const status = data.redemptionStatus;
 
-    // Already redeemed → yellow. No timestamp (ScanResultResponse has
-    // no redeemedAt — flagged as a backend follow-up).
+    // Already redeemed → alert (do not deliver twice). No timestamp
+    // (ScanResultResponse has no redeemedAt — flagged as a backend
+    // follow-up).
     if (status === 'redeemed') {
         return (
             <ModalShell onClose={onClose}>
-                <div className="flex flex-col items-center gap-4">
-                    <IconBadge tone="warn">
-                        <AlertTriangle size={40} strokeWidth={2.5} />
-                    </IconBadge>
-                    <h2 className="text-center font-sora text-[24px] font-extrabold text-[#EAB308]">
-                        {t('alreadyRedeemed')}
-                    </h2>
-                    <div className="w-full border border-[#2A2A2A] bg-[#0A0A0A] p-4 text-center">
-                        <p className="font-sora text-[20px] font-bold text-white">
+                <ResultBand tone="error" icon={<AlertTriangle size={28} strokeWidth={2.5} />}>
+                    {t('alreadyRedeemed')}
+                </ResultBand>
+                <div className="flex flex-col gap-4 p-5">
+                    <div className="rounded-[12px] border-2 border-line-white p-4 text-center">
+                        <p className="font-display text-[22px] text-ink">
                             {data.fanName}
                         </p>
-                        <p className="mt-1 font-space-mono text-[14px] text-[#A0A0A0]">
+                        <p className="mt-1.5 text-[15px] font-semibold text-muted-white">
                             {data.prizeName}
                         </p>
                     </div>
@@ -422,17 +425,14 @@ function ResultModal({
         );
     }
 
-    // Expired / cancelled → red.
+    // Expired / cancelled → alert.
     if (status === 'expired' || status === 'cancelled') {
         return (
             <ModalShell onClose={onClose}>
-                <div className="flex flex-col items-center gap-4">
-                    <IconBadge tone="error">
-                        <X size={40} strokeWidth={3} />
-                    </IconBadge>
-                    <h2 className="text-center font-sora text-[24px] font-extrabold text-white">
-                        {status === 'expired' ? t('expired') : t('cancelled')}
-                    </h2>
+                <ResultBand tone="error" icon={<X size={30} strokeWidth={3} />}>
+                    {status === 'expired' ? t('expired') : t('cancelled')}
+                </ResultBand>
+                <div className="flex flex-col gap-4 p-5">
                     <FullButton tone="neutral" onClick={onClose}>
                         {t('close')}
                     </FullButton>
@@ -441,7 +441,7 @@ function ResultModal({
         );
     }
 
-    // pending → VALID (green) — the deliverable path.
+    // pending → VALID (lime) — the deliverable path.
     const level = data.escuadraLevel;
     const showEscuadra =
         data.prizeType === 'experience' &&
@@ -453,55 +453,53 @@ function ResultModal({
 
     return (
         <ModalShell onClose={onClose}>
-            <div className="flex flex-col items-center gap-4">
-                <IconBadge tone="ok">
-                    <Check size={confirmed ? 48 : 40} strokeWidth={3} />
-                </IconBadge>
-                <h2 className="text-center font-sora text-[24px] font-extrabold text-[#22C55E]">
-                    {confirmed ? t('confirmed') : t('valid')}
-                </h2>
+            <ResultBand tone="ok" icon={<Check size={confirmed ? 34 : 30} strokeWidth={3} />}>
+                {confirmed ? t('confirmed') : t('valid')}
+            </ResultBand>
 
+            <div className="flex flex-col gap-4 p-5">
                 {stale && (
-                    <div className="w-full border border-[#EAB308] bg-[#EAB30815] px-3 py-2 text-center font-space-mono text-[12px] text-[#EAB308]">
+                    <div className="label-mono flex items-center gap-2 rounded-[12px] bg-ink px-3 py-2.5 text-[11px] text-white">
+                        <WifiOff size={14} className="shrink-0" />
                         {t('offlineStale')}
                     </div>
                 )}
 
-                {/* Winner identity card — name (animate-glitch) + phone.
+                {/* Winner identity card — name + phone.
                     fanEmail is intentionally NOT shown (always null for
                     fan winners). Identity = name + phone. */}
-                <div className="w-full border border-[#2A2A2A] bg-[#0A0A0A] p-4">
-                    <p className="animate-glitch font-sora text-[24px] font-extrabold leading-tight text-white">
+                <div className="rounded-[12px] border-2 border-line-white p-4">
+                    <p className="font-display text-[26px] leading-tight text-ink">
                         {data.fanName}
                     </p>
                     {data.fanPhone && (
-                        <p className="mt-1 font-space-mono text-[16px] text-[#A0A0A0]">
+                        <p className="mt-1.5 font-space-mono text-[17px] font-bold text-blue">
                             {data.fanPhone}
                         </p>
                     )}
-                    <p className="mt-3 font-sora text-[20px] font-bold text-white">
+                    <p className="mt-3 text-[19px] font-extrabold text-ink">
                         {data.prizeName}
                     </p>
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                        <span className="border border-[#2A2A2A] px-2 py-0.5 font-space-mono text-[11px] uppercase tracking-[1px] text-[#A0A0A0]">
+                    <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                        <span className="label-mono rounded-full border-2 border-ink px-2.5 py-0.5 text-[11px] font-bold text-ink">
                             {data.prizeType}
                         </span>
                         {showEscuadra && (
                             <span
-                                className="px-2 py-0.5 font-space-mono text-[11px] font-bold uppercase tracking-[1px] text-black"
+                                className="label-mono rounded-full border-2 border-ink px-2.5 py-0.5 text-[11px] font-bold text-ink"
                                 style={{ background: escuadraColors[tier] }}
                             >
                                 {escuadraDefaultNames[tier]}
                             </span>
                         )}
-                        <span className="ml-auto font-space-mono text-[12px] text-[#4A4A4A]">
-                            {formatFandis(data.finalAmount)} F
+                        <span className="ml-auto font-space-mono text-[12px] text-muted-white tabular">
+                            {formatFandis(data.finalAmount)} F · {formatCop(data.finalAmount)}
                         </span>
                     </div>
                 </div>
 
-                {/* Verify-identity warning */}
-                <div className="w-full border-l-4 border-[#EAB308] bg-[#141414] px-3 py-2 font-space-mono text-[13px] text-[#EAB308]">
+                {/* Verify-identity instruction */}
+                <div className="rounded-[12px] border-l-[6px] border-blue bg-line-white px-3 py-2.5 text-[15px] font-bold text-ink">
                     {t('verifyIdentity')}
                 </div>
 
@@ -515,11 +513,14 @@ function ResultModal({
                         {confirming ? (
                             <Loader2 size={20} className="animate-spin" />
                         ) : (
-                            <>✅ {t('confirmDelivery')}</>
+                            <>
+                                <Check size={20} strokeWidth={3} />
+                                {t('confirmDelivery')}
+                            </>
                         )}
                     </FullButton>
                     {(!online || stale) && (
-                        <p className="text-center font-space-mono text-[12px] text-[#EAB308]">
+                        <p className="label-mono text-center text-[11px] font-bold text-alert-white">
                             {t('offlineNoConfirm')}
                         </p>
                     )}
@@ -547,33 +548,42 @@ function ModalShell({
 }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Glass backdrop over the (paused) camera feed. */}
+            {/* Flat ink scrim over the (paused) camera feed. */}
             <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-[24px]"
+                className="absolute inset-0 bg-ink/70"
                 onClick={onClose}
             />
-            <div className="hud-card hud-brackets relative z-10 max-h-[90vh] w-full max-w-md overflow-y-auto p-5">
+            <div className="block-white relative z-10 max-h-[90vh] w-full max-w-md overflow-y-auto shadow-ext-xl">
                 {children}
             </div>
         </div>
     );
 }
 
-function IconBadge({
+// Status band on top of the white result block: the word always carries
+// the state (never colour alone) — lime = deliver, alert = do not.
+function ResultBand({
     tone,
+    icon,
     children,
 }: {
-    tone: 'ok' | 'warn' | 'error';
+    tone: 'ok' | 'error';
+    icon: React.ReactNode;
     children: React.ReactNode;
 }) {
-    const color =
-        tone === 'ok' ? '#22C55E' : tone === 'warn' ? '#EAB308' : '#FF3366';
     return (
         <div
-            className="flex h-20 w-20 items-center justify-center rounded-full border-2"
-            style={{ borderColor: color, color, boxShadow: `0 0 30px ${color}55` }}
+            role="status"
+            className={`flex items-center gap-3 border-b-2 border-ink px-5 py-4 text-ink ${
+                tone === 'ok' ? 'bg-lime' : 'bg-alert'
+            }`}
         >
-            {children}
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white">
+                {icon}
+            </span>
+            <h2 className="font-display text-[26px] leading-none">
+                {children}
+            </h2>
         </div>
     );
 }
@@ -590,11 +600,11 @@ function FullButton({
     disabled?: boolean;
 }) {
     const base =
-        'flex h-14 w-full items-center justify-center gap-2 rounded-none text-[18px] font-bold uppercase tracking-[1px] transition-all disabled:cursor-not-allowed disabled:opacity-40';
+        'flex h-14 w-full items-center justify-center gap-2 rounded-[14px] border-2 border-ink text-[18px] font-extrabold uppercase transition-[transform,box-shadow] duration-75 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-45';
     const toneClass =
         tone === 'ok'
-            ? 'bg-[#22C55E] text-black hover:bg-[#1FB155]'
-            : 'border border-[#2A2A2A] bg-transparent text-white hover:bg-[#1A1A1A]';
+            ? 'bg-lime text-ink shadow-ext-md'
+            : 'bg-white text-ink shadow-ext-sm';
     return (
         <button
             onClick={onClick}

@@ -9,6 +9,8 @@ import { useAuth } from '@/contexts/auth-context';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { UserSyncResponse } from '@/types/api';
 
 const loginSchema = z.object({
@@ -52,10 +54,15 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
         }
     }
 
+    // Surface-agnostic: labels/errors use the re-scoped shadcn vars, so the
+    // form reads correctly on the white login block and on ink modals.
+    const labelClass = 'label-mono block text-[11px] text-muted-foreground';
+    const fieldClass = 'h-[54px] rounded-[12px] px-4 text-base md:text-base focus-visible:border-blue';
+
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
             {showLogo && (
-                <div className="flex justify-center mb-8">
+                <div className="mb-3 flex justify-center">
                     <Image
                         src="/fandi-logo.png"
                         alt="Fandi"
@@ -66,72 +73,71 @@ export function LoginForm({ onSuccess, showLogo = false }: LoginFormProps) {
                 </div>
             )}
 
-            <div className="space-y-4">
-                <div>
-                    <label htmlFor="login-email" className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
-                        {t('email')}
-                    </label>
-                    <input
-                        id="login-email"
-                        type="email"
-                        data-testid="email"
-                        placeholder="tucorreo@ejemplo.com"
-                        autoComplete="email"
-                        className="w-full rounded-none bg-[rgba(18,18,18,0.4)] border border-[rgba(255,255,255,0.05)] text-white font-sora text-base
-                            px-4 py-3 outline-none focus:border-[var(--color-tactical-acid)] focus:bg-[rgba(204,255,0,0.05)] focus:shadow-[0_0_15px_rgba(204,255,0,0.2)] transition-all"
-                        {...form.register('email')}
-                    />
-                    {form.formState.errors.email && (
-                        <p className="text-sm text-red-400 mt-1">
-                            {t('invalidEmail')}
-                        </p>
-                    )}
-                </div>
-
-                <div>
-                    <label htmlFor="login-password" className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] block mb-2">
-                        {t('password')}
-                    </label>
-                    <div className="relative">
-                        <input
-                            id="login-password"
-                            type={showPassword ? 'text' : 'password'}
-                            data-testid="password"
-                            placeholder="••••••••"
-                            autoComplete="current-password"
-                            className="w-full rounded-none bg-[rgba(18,18,18,0.4)] border border-[rgba(255,255,255,0.05)] text-white font-sora text-base
-                                px-4 py-3 pr-12 outline-none focus:border-[var(--color-tactical-acid)] focus:bg-[rgba(204,255,0,0.05)] focus:shadow-[0_0_15px_rgba(204,255,0,0.2)] transition-all"
-                            {...form.register('password')}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-[var(--color-tactical-acid)] transition-colors cursor-pointer"
-                            aria-label={showPassword ? 'Hide password' : 'Show password'}
-                        >
-                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                    </div>
-                    {form.formState.errors.password && (
-                        <p className="text-sm text-red-400 mt-1">
-                            {t('passwordRequired')}
-                        </p>
-                    )}
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={form.formState.isSubmitting}
-                    data-testid="login-button"
-                    className="btn-tactical w-full font-space-mono text-[13px] font-bold uppercase tracking-[2px]
-                        py-4 transition-all cursor-pointer
-                        disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {form.formState.isSubmitting ? t('signingIn') : t('login')}
-                </button>
+            <div className="flex flex-col gap-2">
+                <label htmlFor="login-email" className={labelClass}>
+                    {t('email')}
+                </label>
+                <Input
+                    id="login-email"
+                    type="email"
+                    data-testid="email"
+                    placeholder="tucorreo@ejemplo.com"
+                    autoComplete="email"
+                    aria-invalid={form.formState.errors.email ? true : undefined}
+                    className={fieldClass}
+                    {...form.register('email')}
+                />
+                {form.formState.errors.email && (
+                    <p className="text-sm font-bold text-destructive">
+                        {t('invalidEmail')}
+                    </p>
+                )}
             </div>
 
-            <p className="font-space-mono text-[13px] text-[#6B6B6B] text-center mt-6">
+            <div className="flex flex-col gap-2">
+                <label htmlFor="login-password" className={labelClass}>
+                    {t('password')}
+                </label>
+                <div className="relative">
+                    <Input
+                        id="login-password"
+                        type={showPassword ? 'text' : 'password'}
+                        data-testid="password"
+                        placeholder="••••••••"
+                        autoComplete="current-password"
+                        aria-invalid={form.formState.errors.password ? true : undefined}
+                        className={`${fieldClass} pr-12`}
+                        {...form.register('password')}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2 top-1/2 flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-[10px] text-muted-white transition-colors hover:text-ink"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
+                {form.formState.errors.password && (
+                    <p className="text-sm font-bold text-destructive">
+                        {t('passwordRequired')}
+                    </p>
+                )}
+            </div>
+
+            <Button
+                type="submit"
+                size="lg"
+                disabled={form.formState.isSubmitting}
+                data-testid="login-button"
+                className="mt-1.5 h-[58px] w-full rounded-[14px] text-[18px] font-black [font-stretch:115%] shadow-ext-block"
+            >
+                {form.formState.isSubmitting ? t('signingIn') : t('enterPanel')}
+            </Button>
+
+            <div className="my-1 h-0.5 bg-border" aria-hidden="true" />
+
+            <p className="text-sm leading-relaxed text-muted-foreground">
                 {t('noAccount')}
             </p>
         </form>

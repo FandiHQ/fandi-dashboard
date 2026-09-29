@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 /**
  * Fallback deletion request for people who no longer have the app.
@@ -49,13 +50,13 @@ export function DeleteAccountForm() {
 
     if (status === 'sent') {
         return (
-            <div className="rounded-none border border-[#CCFF00]/40 bg-[#CCFF00]/5 p-5">
-                <p className="font-sora text-base leading-relaxed text-white">
+            <div className="rounded-[12px] border-2 border-ink bg-ink p-5">
+                <p className="text-base leading-relaxed text-white">
                     Recibimos tu solicitud. Si existe una cuenta asociada a ese
                     número, la eliminaremos en un máximo de{' '}
                     <strong>15 días hábiles</strong> y te confirmaremos por SMS.
                 </p>
-                <p className="mt-3 font-sora text-sm leading-relaxed text-[#A8A8B4]">
+                <p className="mt-3 text-sm leading-relaxed text-muted-ink">
                     ¿Necesitas que sea inmediato? Hazlo desde la app, en Perfil ›
                     Configuración › Eliminar mi cuenta.
                 </p>
@@ -67,7 +68,7 @@ export function DeleteAccountForm() {
         <form onSubmit={submit} className="flex flex-col gap-3">
             <label
                 htmlFor="delete-phone"
-                className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0]"
+                className="label-mono text-[11px] text-muted-white"
             >
                 Número de celular registrado
             </label>
@@ -81,24 +82,24 @@ export function DeleteAccountForm() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+573001234567"
                     aria-describedby="delete-phone-hint"
-                    className="flex-1 border border-white/20 bg-black px-4 py-3 font-sora text-base text-white outline-none transition-colors placeholder:text-[#4A4A52] focus:border-[#CCFF00]"
+                    className="h-12 min-w-0 flex-1 rounded-[10px] border-2 border-ink bg-white px-4 text-base text-ink outline-none transition-colors placeholder:text-muted-ink focus:border-blue"
                 />
-                <button
+                <Button
                     type="submit"
+                    size="lg"
                     disabled={!valid || status === 'sending'}
-                    className="border border-[#CCFF00] bg-[#CCFF00] px-6 py-3 font-space-mono text-[12px] uppercase tracking-[2px] text-black transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-35"
                 >
                     {status === 'sending' ? 'Enviando…' : 'Solicitar'}
-                </button>
+                </Button>
             </div>
             <p
                 id="delete-phone-hint"
-                className="font-sora text-sm text-[#8A8A94]"
+                className="text-sm text-muted-white"
             >
                 Formato internacional, empezando por +57.
             </p>
             {status === 'error' && (
-                <p role="alert" className="font-sora text-sm text-[#FF0055]">
+                <p role="alert" className="text-sm font-bold text-alert-white">
                     No pudimos enviar tu solicitud. Intenta de nuevo, o
                     escríbenos a hola@fandi.app.
                 </p>

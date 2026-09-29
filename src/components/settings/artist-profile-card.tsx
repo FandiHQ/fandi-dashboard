@@ -7,6 +7,8 @@ import { Camera, Save, Loader2, Eye, EyeOff, Image as ImageIcon } from 'lucide-r
 import { orgApi } from '@/lib/api-hooks';
 import { uploadImage } from '@/lib/supabase-storage';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 
 /**
  * Step 7.2 — Artist public profile editor (owner only).
@@ -81,19 +83,28 @@ export function ArtistProfileCard() {
 
     if (isLoading || !org) return null;
 
+    const FIELD_LABEL = 'label-mono text-[11px] text-muted-white';
+
     return (
-        <div className="hud-card hud-brackets flex flex-col gap-8 rounded-none p-8">
-            <div className="flex items-center justify-between">
-                <h2 className="font-space-mono text-[16px] uppercase tracking-[2px] text-[#737373]">
-                    {t('title')}
-                </h2>
+        <div className="block-white flex flex-col overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink px-6 py-4">
+                <div className="flex flex-col gap-1">
+                    <h2 className="font-display text-[17px]">
+                        {t('title')}
+                    </h2>
+                    <p className="text-[13px] text-muted-white">
+                        {t('subtitle')}
+                    </p>
+                </div>
                 {/* Visibility toggle */}
                 <button
+                    type="button"
                     onClick={() => setIsPublic(!isPublic)}
-                    className={`flex cursor-pointer items-center gap-2 rounded-none border px-4 py-2 font-space-mono text-[11px] uppercase tracking-[1px] transition-colors duration-150 ${
+                    aria-pressed={isPublic}
+                    className={`label-mono flex min-h-9 cursor-pointer items-center gap-2 rounded-full border-2 px-3.5 py-1.5 text-[11px] font-bold transition-colors duration-150 ${
                         isPublic
-                            ? 'border-[var(--color-tactical-acid)] text-[var(--color-tactical-acid)]'
-                            : 'border-[#737373] text-[#737373]'
+                            ? 'border-ink bg-ink text-white'
+                            : 'border-dashed border-muted-white bg-white text-muted-white'
                     }`}
                 >
                     {isPublic ? <Eye size={13} /> : <EyeOff size={13} />}
@@ -101,117 +112,118 @@ export function ArtistProfileCard() {
                 </button>
             </div>
 
-            <p className="font-space-mono text-[11px] text-[#4A4A4A]">
-                {t('subtitle')}
-            </p>
-
-            {/* ── Cover ── */}
-            <div className="flex flex-col gap-2">
-                <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                    {t('cover')}
-                </label>
-                <div className="group relative h-40 w-full overflow-hidden border border-[#2A2A2A] bg-[#0A0A0A]">
-                    {coverUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={coverUrl} alt={t('cover')} className="h-full w-full object-cover" />
-                    ) : (
-                        <div className="flex h-full w-full items-center justify-center">
-                            <ImageIcon size={24} className="text-[#2A2A2A]" />
-                        </div>
-                    )}
-                    <button
-                        onClick={() => coverInputRef.current?.click()}
-                        disabled={uploading !== null}
-                        className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                    >
-                        {uploading === 'cover' ? (
-                            <Loader2 size={20} className="animate-spin text-white" />
-                        ) : (
-                            <Camera size={20} className="text-white" />
-                        )}
-                    </button>
-                </div>
-                <input
-                    ref={coverInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    onChange={(e) => void handleUpload(e, 'cover')}
-                />
-            </div>
-
-            {/* ── Avatar ── */}
-            <div className="flex items-end gap-6">
+            <div className="flex flex-col gap-6 px-6 py-6">
+                {/* ── Cover ── */}
                 <div className="flex flex-col gap-2">
-                    <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                        {t('avatar')}
+                    <label className={FIELD_LABEL}>
+                        {t('cover')}
                     </label>
-                    <div className="group relative h-24 w-24 overflow-hidden border border-[#2A2A2A] bg-[#0A0A0A]">
-                        {avatarUrl || org.logoUrl ? (
+                    <div className="group relative h-40 w-full overflow-hidden rounded-[12px] border-2 border-ink bg-line-white">
+                        {coverUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                                src={avatarUrl || org.logoUrl || ''}
-                                alt={t('avatar')}
-                                className="h-full w-full object-cover"
-                            />
+                            <img src={coverUrl} alt={t('cover')} className="h-full w-full object-cover" />
                         ) : (
                             <div className="flex h-full w-full items-center justify-center">
-                                <span className="font-sora text-2xl font-black text-white">
-                                    {org.name[0]?.toUpperCase() ?? '?'}
-                                </span>
+                                <ImageIcon size={24} className="text-muted-white" />
                             </div>
                         )}
                         <button
-                            onClick={() => avatarInputRef.current?.click()}
+                            onClick={() => coverInputRef.current?.click()}
                             disabled={uploading !== null}
-                            className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                            aria-label={t('cover')}
+                            className="absolute inset-0 flex cursor-pointer items-center justify-center bg-ink/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
                         >
-                            {uploading === 'avatar' ? (
-                                <Loader2 size={18} className="animate-spin text-white" />
+                            {uploading === 'cover' ? (
+                                <Loader2 size={20} className="animate-spin text-white" />
                             ) : (
-                                <Camera size={18} className="text-white" />
+                                <Camera size={20} className="text-white" />
                             )}
                         </button>
                     </div>
                     <input
-                        ref={avatarInputRef}
+                        ref={coverInputRef}
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                         className="hidden"
-                        onChange={(e) => void handleUpload(e, 'avatar')}
+                        onChange={(e) => void handleUpload(e, 'cover')}
                     />
                 </div>
-                {!avatarUrl && (
-                    <p className="pb-2 font-space-mono text-[11px] text-[#4A4A4A]">
-                        {t('avatarFallbackHint')}
-                    </p>
-                )}
-            </div>
 
-            {/* ── Description ── */}
-            <div className="flex flex-col gap-2">
-                <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                    {t('description')}
-                </label>
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder={t('descriptionPlaceholder')}
-                    maxLength={2000}
-                    rows={4}
-                    className="resize-none rounded-none border border-[#2A2A2A] bg-[#0A0A0A] px-4 py-3 font-sora text-sm text-white outline-none transition-colors duration-150 placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:ring-1 focus:ring-[var(--color-tactical-acid)]"
-                />
-                <span className="self-end font-space-mono text-[10px] text-[#4A4A4A]">
-                    {description.length}/2000
-                </span>
+                {/* ── Avatar ── */}
+                <div className="flex items-end gap-5">
+                    <div className="flex flex-col gap-2">
+                        <label className={FIELD_LABEL}>
+                            {t('avatar')}
+                        </label>
+                        <div className="group relative h-24 w-24 overflow-hidden rounded-full border-2 border-ink bg-tier-vip shadow-ext-sm">
+                            {avatarUrl || org.logoUrl ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={avatarUrl || org.logoUrl || ''}
+                                    alt={t('avatar')}
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : (
+                                <div className="flex h-full w-full items-center justify-center">
+                                    <span className="font-display text-2xl text-ink">
+                                        {org.name[0]?.toUpperCase() ?? '?'}
+                                    </span>
+                                </div>
+                            )}
+                            <button
+                                onClick={() => avatarInputRef.current?.click()}
+                                disabled={uploading !== null}
+                                aria-label={t('avatar')}
+                                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-ink/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
+                            >
+                                {uploading === 'avatar' ? (
+                                    <Loader2 size={18} className="animate-spin text-white" />
+                                ) : (
+                                    <Camera size={18} className="text-white" />
+                                )}
+                            </button>
+                        </div>
+                        <input
+                            ref={avatarInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            className="hidden"
+                            onChange={(e) => void handleUpload(e, 'avatar')}
+                        />
+                    </div>
+                    {!avatarUrl && (
+                        <p className="pb-2 text-[13px] text-muted-white">
+                            {t('avatarFallbackHint')}
+                        </p>
+                    )}
+                </div>
+
+                {/* ── Description ── */}
+                <div className="flex flex-col gap-2">
+                    <label className={FIELD_LABEL}>
+                        {t('description')}
+                    </label>
+                    <Textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder={t('descriptionPlaceholder')}
+                        maxLength={2000}
+                        rows={4}
+                        className="resize-none"
+                    />
+                    <span className="self-end font-space-mono text-[10px] text-muted-white tabular">
+                        {description.length}/2000
+                    </span>
+                </div>
             </div>
 
             {/* ── Save ── */}
-            <div className="flex justify-end border-t border-[#1E1E1E] pt-6">
-                <button
+            <div className="flex justify-end border-t-2 border-line-white px-6 py-4">
+                <Button
+                    size="lg"
+                    variant="secondary"
                     onClick={() => saveMutation.mutate()}
                     disabled={saveMutation.isPending || uploading !== null}
-                    className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-8 py-3 font-space-mono text-xs font-bold uppercase tracking-[2px] disabled:opacity-50"
                 >
                     {saveMutation.isPending ? (
                         <>
@@ -224,7 +236,7 @@ export function ArtistProfileCard() {
                             {t('save')}
                         </>
                     )}
-                </button>
+                </Button>
             </div>
         </div>
     );

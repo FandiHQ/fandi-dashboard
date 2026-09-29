@@ -11,6 +11,10 @@
  * never spend. Privacy is already decided server-side by buildShareCard,
  * which nulls `n` and `av` for a private fan, so this file never makes
  * that call itself — it renders exactly what the token permits.
+ *
+ * Azul Bloque: flat blue canvas (no gradient), the rank as the ONE
+ * tilted white block with a hard ink extrusion, lime only for the fan's
+ * standing.
  */
 import { ImageResponse } from 'next/og';
 import {
@@ -23,15 +27,25 @@ import {
     TIER_LABEL,
 } from '@/lib/share-card';
 import { fetchArtistImage } from '@/lib/artist-image';
-import { ArtistBadge, loadAnton } from './card';
+import {
+    ArtistBadge,
+    BLUE,
+    fitFontSize,
+    INK,
+    InkStrip,
+    LILAC,
+    LIME,
+    loadCardFonts,
+    loadTileLogo,
+    Logo,
+    MUTED_ON_WHITE,
+    rankSize,
+    TiltedBlock,
+    WHITE,
+    WordmarkCanvas,
+} from './card';
 
 export const STORY_SIZE = { width: 1080, height: 1920 };
-
-const BLACK = '#000000';
-const ACID = '#CCFF00';
-const BLUE = '#2D00F7';
-const WHITE = '#FFFFFF';
-const MUTED = '#A0A0A0';
 
 /**
  * Instagram draws its own controls over the top and bottom of the canvas
@@ -42,65 +56,9 @@ const MUTED = '#A0A0A0';
 const SAFE_AREA_Y = 190;
 const GUTTER_X = 72;
 
-/**
- * The rank is the hero and should fill the frame, but "#7" and "#1247"
- * are wildly different widths. Anton is condensed — a digit runs roughly
- * 0.52em — so this scales by character count to stay inside the gutters
- * instead of letting a four-digit rank run off the canvas.
- */
-function rankFontSize(rankText: string): number {
-    switch (rankText.length) {
-        case 2:
-            return 560; // #7
-        case 3:
-            return 470; // #42
-        case 4:
-            return 370; // #428
-        case 5:
-            return 300; // #4281
-        default:
-            return 240;
-    }
-}
-
-/**
- * Artist names run from "Feid" to "Conexión Summit Medellín". Shrinking
- * by length keeps a long one to two lines at most, without reaching for
- * the text-overflow properties Satori handles poorly.
- */
-function artistFontSize(name: string): number {
-    if (name.length <= 14) return 72;
-    if (name.length <= 24) return 56;
-    if (name.length <= 36) return 44;
-    return 36;
-}
-
-/**
- * One corner of the HUD frame, drawn with borders on a flex box.
- *
- * Deliberately not absolutely positioned: these sit in the flex row
- * beside the rank, so they frame it at any font size instead of needing
- * coordinates recalculated per rank width.
- */
-function Bracket({ side }: { side: 'tl' | 'tr' | 'bl' | 'br' }) {
-    const edge = `8px solid ${ACID}`;
-    return (
-        <div
-            style={{
-                display: 'flex',
-                width: 64,
-                // No height: the parent row stretches these to the full
-                // height of the rank, so they read as a frame around it
-                // rather than as two marks floating at its midline.
-                alignSelf: 'stretch',
-                borderTop: side === 'tl' || side === 'tr' ? edge : 'none',
-                borderBottom: side === 'bl' || side === 'br' ? edge : 'none',
-                borderLeft: side === 'tl' || side === 'bl' ? edge : 'none',
-                borderRight: side === 'tr' || side === 'br' ? edge : 'none',
-            }}
-        />
-    );
-}
+const BLOCK_WIDTH = STORY_SIZE.width - GUTTER_X * 2;
+const BLOCK_PAD_X = 60;
+const BLOCK_INNER = BLOCK_WIDTH - BLOCK_PAD_X * 2 - 10;
 
 export async function renderStoryCard(token: string): Promise<ImageResponse> {
     const payload = decodeShareCard(
@@ -108,46 +66,20 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
         process.env.SHARE_CARD_SECRET ?? '',
     );
 
-    const [anton, artistImage] = await Promise.all([
-        loadAnton(),
+    const [f, tile, artistImage] = await Promise.all([
+        loadCardFonts(),
+        loadTileLogo(),
         // v2 only; best-effort — a failure keeps the pre-Phase-5 layout.
         payload ? fetchArtistImage(payload.o ?? null) : Promise.resolve(null),
     ]);
-    const antonFont = anton
-        ? [
-              {
-                  name: 'Anton',
-                  data: anton,
-                  style: 'normal' as const,
-                  weight: 400 as const,
-              },
-          ]
-        : undefined;
 
     // A forged or expired token gets the wordmark and no claim on it.
     // Rendering "#1" from an unverified payload is the one outcome worth
     // guarding against.
     if (!payload) {
         return new ImageResponse(
-            (
-                <div
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: BLACK,
-                        color: ACID,
-                        fontSize: 96,
-                        letterSpacing: 12,
-                        fontFamily: anton ? 'Anton' : 'sans-serif',
-                    }}
-                >
-                    FANDI
-                </div>
-            ),
-            { ...STORY_SIZE, fonts: antonFont },
+            <WordmarkCanvas tile={tile} display={f.display} size={150} />,
+            { ...STORY_SIZE, fonts: f.fonts },
         );
     }
 
@@ -164,6 +96,24 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
         ? `TOP ${pct}%`
         : ofFansLine(payload.t);
     const handle = payload.ig ? `@${payload.ig}` : null;
+    const artistLine = impacto ? `CON ${payload.a}` : `DE ${payload.a}`;
+
+    const monoLabel = (text: string, size: number, color: string, upper = true) => (
+        <div
+            style={{
+                display: 'flex',
+                fontFamily: f.mono,
+                fontWeight: 700,
+                fontSize: size,
+                color,
+                letterSpacing: 4,
+                textTransform: upper ? 'uppercase' : 'none',
+                textAlign: 'center',
+            }}
+        >
+            {text}
+        </div>
+    );
 
     return new ImageResponse(
         (
@@ -175,42 +125,28 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    // A vertical lift so an all-black 9:16 frame has some
-                    // depth. Satori renders linear-gradient reliably;
-                    // blur, blend modes and box-shadow it does not, so the
-                    // depth comes from the gradient alone.
-                    backgroundImage: `linear-gradient(180deg, ${BLACK} 0%, #0B0B0B 45%, ${BLACK} 100%)`,
-                    backgroundColor: BLACK,
+                    background: BLUE,
                     padding: `${SAFE_AREA_Y}px ${GUTTER_X}px`,
-                    fontFamily: anton ? 'Anton' : 'sans-serif',
+                    fontFamily: f.display,
                 }}
             >
-                {/* ── Top: wordmark, plus identity when permitted ── */}
+                {/* ── Top: logo, plus identity when permitted ── */}
                 <div
                     style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        gap: 26,
+                        gap: 30,
                     }}
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            fontSize: 34,
-                            color: ACID,
-                            letterSpacing: 14,
-                        }}
-                    >
-                        FANDI
-                    </div>
+                    <Logo tile={tile} size={84} display={f.display} />
                     {/* Phase 5 — artist image above the rank, the fan's
                         avatar overlapping it; name + handle under. */}
                     {artistImage ? (
                         <ArtistBadge
                             artistImage={artistImage}
                             fanAvatar={payload.av}
-                            size={260}
+                            size={220}
                         />
                     ) : null}
                     {hasIdentity ? (
@@ -219,7 +155,7 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                gap: 18,
+                                gap: 14,
                             }}
                         >
                             {payload.av && !artistImage ? (
@@ -234,7 +170,8 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                                         height: 144,
                                         borderRadius: 72,
                                         objectFit: 'cover',
-                                        border: `4px solid ${WHITE}`,
+                                        border: `5px solid ${INK}`,
+                                        boxShadow: `5px 5px 0 ${INK}`,
                                     }}
                                 />
                             ) : null}
@@ -242,189 +179,142 @@ export async function renderStoryCard(token: string): Promise<ImageResponse> {
                                 <div
                                     style={{
                                         display: 'flex',
-                                        fontSize: 52,
+                                        fontFamily: f.display,
+                                        fontWeight: 900,
+                                        fontSize: fitFontSize(payload.n, BLOCK_WIDTH, 60),
                                         color: WHITE,
-                                        letterSpacing: 3,
                                         textTransform: 'uppercase',
+                                        lineHeight: 0.95,
                                     }}
                                 >
                                     {payload.n}
                                 </div>
                             ) : null}
-                            {handle ? (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        fontSize: 32,
-                                        color: MUTED,
-                                        letterSpacing: 2,
-                                    }}
-                                >
-                                    {handle}
-                                </div>
-                            ) : null}
+                            {handle ? monoLabel(handle, 30, LILAC, false) : null}
                         </div>
                     ) : null}
                 </div>
 
-                {/* ── Middle: the rank is the hero, framed by the HUD ── */}
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 30,
-                    }}
+                {/* ── Middle: the claim is the hero, the ONE tilted block ── */}
+                <TiltedBlock
+                    width={BLOCK_WIDTH}
+                    extrusion={14}
+                    radius={30}
+                    border={5}
+                    padding={`52px ${BLOCK_PAD_X}px`}
                 >
-                    {impacto ? (
-                        <>
-                            <div style={{ display: 'flex', background: BLUE, color: WHITE, fontSize: 34, letterSpacing: 6, padding: '10px 28px' }}>
-                                IMPACTO
-                            </div>
-                            <div style={{ display: 'flex', fontSize: 48, color: MUTED, letterSpacing: 6 }}>APOYÉ</div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    textAlign: 'center',
-                                    fontSize: artistFontSize(payload.ev ?? '') + 40,
-                                    color: WHITE,
-                                    lineHeight: 1.05,
-                                    letterSpacing: 2,
-                                    textTransform: 'uppercase',
-                                    maxWidth: STORY_SIZE.width - GUTTER_X * 2,
-                                }}
-                            >
-                                {payload.ev}
-                            </div>
-                            <div style={{ display: 'flex', fontSize: 56, color: ACID, letterSpacing: 4, textTransform: 'uppercase', textAlign: 'center', maxWidth: STORY_SIZE.width - GUTTER_X * 2 }}>
-                                CON {payload.a}
-                            </div>
-                            {payload.n ? (
-                                <div style={{ display: 'flex', fontSize: 40, color: MUTED, letterSpacing: 4 }}>
-                                    IMPACTOR #{payload.r} · {impactoresLine(payload.t).toUpperCase()}
-                                </div>
-                            ) : (
-                                <div style={{ display: 'flex', fontSize: 40, color: MUTED, letterSpacing: 4 }}>
-                                    {impactoresLine(payload.t).toUpperCase()}
-                                </div>
-                            )}
-                        </>
-                    ) : null}
-                    {!impacto && tier ? (
-                        <div
-                            style={{
-                                display: 'flex',
-                                background: ACID,
-                                color: BLACK,
-                                fontSize: 34,
-                                letterSpacing: 6,
-                                padding: '10px 28px',
-                            }}
-                        >
-                            {tier}
-                        </div>
-                    ) : null}
-
-                    {!impacto ? (
                     <div
                         style={{
                             display: 'flex',
-                            alignItems: 'stretch',
-                            justifyContent: 'center',
-                            gap: 30,
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
                         }}
                     >
-                        <Bracket side="tl" />
+                        {monoLabel(impacto ? 'Apoyé' : 'Ranking de fans', 28, MUTED_ON_WHITE)}
+                        {impacto || tier ? (
+                            <InkStrip
+                                text={impacto ? 'IMPACTO' : (tier ?? '')}
+                                color={WHITE}
+                                fontFamily={f.display}
+                                fontSize={30}
+                                padding="14px 24px"
+                                radius={999}
+                            />
+                        ) : null}
+                    </div>
+
+                    {impacto ? (
                         <div
                             style={{
                                 display: 'flex',
-                                fontSize: rankFontSize(rankText),
-                                color: ACID,
-                                lineHeight: 1,
-                                letterSpacing: -8,
+                                marginTop: 28,
+                                fontFamily: f.display,
+                                fontWeight: 900,
+                                fontSize: fitFontSize(payload.ev ?? '', BLOCK_INNER, 116, {
+                                    lines: 3,
+                                    min: 44,
+                                }),
+                                color: BLUE,
+                                lineHeight: 0.95,
+                                textTransform: 'uppercase',
+                            }}
+                        >
+                            {payload.ev}
+                        </div>
+                    ) : (
+                        <div
+                            style={{
+                                display: 'flex',
+                                marginTop: 16,
+                                fontFamily: f.display,
+                                fontWeight: 900,
+                                fontSize: rankSize(rankText, BLOCK_INNER, 380),
+                                color: BLUE,
+                                lineHeight: 0.9,
+                                letterSpacing: -4,
                             }}
                         >
                             {rankText}
                         </div>
-                        <Bracket side="br" />
-                    </div>
-                    ) : null}
+                    )}
 
                     {!impacto ? (
-                    <div
-                        style={{
-                            display: 'flex',
-                            fontSize: 88,
-                            color: WHITE,
-                            letterSpacing: 4,
-                        }}
-                    >
-                        {accent}
-                    </div>
-                    ) : null}
-
-                    {!impacto ? (
-                    <div
-                        style={{
-                            display: 'flex',
-                            textAlign: 'center',
-                            fontSize: artistFontSize(payload.a),
-                            color: MUTED,
-                            letterSpacing: 4,
-                            textTransform: 'uppercase',
-                            maxWidth: STORY_SIZE.width - GUTTER_X * 2,
-                        }}
-                    >
-                        DE {payload.a}
-                    </div>
-                    ) : null}
-                    {!impacto && payload.ev ? (
-                        <div
-                            style={{
-                                display: 'flex',
-                                textAlign: 'center',
-                                fontSize: 34,
-                                color: MUTED,
-                                letterSpacing: 3,
-                                textTransform: 'uppercase',
-                                maxWidth: STORY_SIZE.width - GUTTER_X * 2,
-                            }}
-                        >
-                            EN {payload.ev}
+                        <div style={{ display: 'flex', marginTop: 28 }}>
+                            <InkStrip
+                                text={accent}
+                                color={LIME}
+                                fontFamily={f.display}
+                                fontSize={68}
+                                padding="18px 28px"
+                                radius={16}
+                            />
                         </div>
                     ) : null}
-                </div>
 
-                {/* ── Foot: the growth loop. Legible, never competing. ── */}
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 20,
-                    }}
-                >
                     <div
                         style={{
                             display: 'flex',
-                            width: 220,
-                            height: 6,
-                            background: BLUE,
-                        }}
-                    />
-                    <div
-                        style={{
-                            display: 'flex',
-                            fontSize: 44,
-                            color: WHITE,
-                            letterSpacing: 6,
+                            marginTop: 32,
+                            fontFamily: f.display,
+                            fontWeight: 900,
+                            fontSize: fitFontSize(artistLine, BLOCK_INNER, 64, { lines: 2 }),
+                            color: INK,
+                            lineHeight: 0.95,
+                            textTransform: 'uppercase',
                         }}
                     >
-                        fandi.app
+                        {artistLine}
                     </div>
-                </div>
+
+                    {!impacto && payload.ev ? (
+                        <div style={{ display: 'flex', marginTop: 18 }}>
+                            {monoLabel(`EN ${payload.ev}`, 28, MUTED_ON_WHITE)}
+                        </div>
+                    ) : null}
+
+                    {impacto && payload.n ? (
+                        <div style={{ display: 'flex', marginTop: 32 }}>
+                            <InkStrip
+                                text={`IMPACTOR #${payload.r}`}
+                                color={LIME}
+                                fontFamily={f.display}
+                                fontSize={52}
+                                padding="16px 26px"
+                                radius={16}
+                            />
+                        </div>
+                    ) : null}
+                    {impacto ? (
+                        <div style={{ display: 'flex', marginTop: 20 }}>
+                            {monoLabel(impactoresLine(payload.t), 28, MUTED_ON_WHITE)}
+                        </div>
+                    ) : null}
+                </TiltedBlock>
+
+                {/* ── Foot: the growth loop. Legible, never competing. ── */}
+                {monoLabel('fandi.app', 40, WHITE, false)}
             </div>
         ),
-        { ...STORY_SIZE, fonts: antonFont },
+        { ...STORY_SIZE, fonts: f.fonts },
     );
 }

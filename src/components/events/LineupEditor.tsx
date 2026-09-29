@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { LineupEntry } from '@/types/api';
 
 interface LineupEditorProps {
@@ -40,7 +42,7 @@ export function LineupEditor({
     return (
         <div className="flex flex-col gap-3">
             <div className="flex gap-2">
-                <input
+                <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => {
@@ -50,30 +52,31 @@ export function LineupEditor({
                         }
                     }}
                     placeholder={placeholder}
-                    className="h-11 flex-1 rounded-none border border-[#2A2A2A] bg-[#141414] px-4 font-sora text-base text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:outline-none"
+                    className="h-11 flex-1 text-base"
                 />
-                <button
+                <Button
                     type="button"
+                    variant="secondary"
                     onClick={add}
-                    className="flex h-11 items-center gap-2 rounded-none border border-[#2D00F7] bg-transparent px-4 font-space-mono text-[12px] uppercase tracking-[1px] text-[#2D00F7] transition-colors hover:bg-[#2D00F710]"
+                    className="h-11"
                 >
                     <Plus size={14} />
                     {addLabel}
-                </button>
+                </Button>
             </div>
             {value.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                     {value.map((entry) => (
                         <span
                             key={entry.id}
-                            className="flex items-center gap-2 rounded-full border border-[#2A2A2A] bg-[#141414] py-1.5 pl-3 pr-2 font-sora text-sm text-white"
+                            className="flex items-center gap-2 rounded-full border-2 border-foreground bg-transparent py-1 pl-3 pr-2 text-[13px] font-extrabold uppercase text-foreground"
                         >
                             {entry.name}
                             <button
                                 type="button"
                                 onClick={() => remove(entry.id)}
                                 aria-label={`Remove ${entry.name}`}
-                                className="text-[#737373] transition-colors hover:text-[#FF3366]"
+                                className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
                             >
                                 <X size={14} />
                             </button>

@@ -2,37 +2,35 @@
 
 import { useTranslations } from 'next-intl';
 
+/**
+ * Event status pill (Azul Bloque §7 tables): the word always carries the
+ * state, colour only reinforces it.
+ *   live      lime + pulsing ink dot ("EN VIVO")
+ *   published white + ink border ("PROGRAMADO")
+ *   draft     white + grey border ("BORRADOR")
+ *   ended/*   grey ("FINALIZADO")
+ */
 export function StatusBadge({ status }: { status: string }) {
     const t = useTranslations('events');
-    
+    const base =
+        'inline-flex items-center gap-1.5 rounded-full border-2 px-2.5 py-0.5 font-space-mono text-[10px] font-bold uppercase tracking-[0.12em]';
+
     if (status === 'live') {
         return (
-            <div className="live-pulse-container inline-flex items-center gap-2 rounded-none bg-[var(--color-tactical-magenta)] px-3 py-1 font-space-mono text-[11px] font-bold uppercase tracking-[2px] text-white">
-                <span className="h-1.5 w-1.5 animate-pulse bg-white" />
-                <span className="animate-glitch-infinite">{t('status.live')}</span>
-            </div>
+            <span className={`${base} border-ink bg-lime text-ink`}>
+                <span className="live-dot text-ink" aria-hidden="true" />
+                {t('status.live')}
+            </span>
         );
     }
-    
+
     if (status === 'published') {
-        return (
-            <div className="inline-flex items-center rounded-none bg-[var(--color-tactical-acid)] px-2 py-0.5 font-space-mono text-[10px] font-bold uppercase tracking-[1px] text-black shadow-[0_0_15px_rgba(204,255,0,0.3)]">
-                {t('status.published')}
-            </div>
-        );
+        return <span className={`${base} border-ink bg-white text-ink`}>{t('status.published')}</span>;
     }
 
     if (status === 'draft') {
-        return (
-            <div className="inline-flex items-center rounded-none border border-dashed border-[#4A4A4A] bg-transparent px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#A0A0A0]">
-                {t('status.draft')}
-            </div>
-        );
+        return <span className={`${base} border-muted-ink bg-white text-muted-white`}>{t('status.draft')}</span>;
     }
 
-    return (
-        <div className="inline-flex items-center rounded-none bg-[#1A1A1A] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#A0A0A0]">
-            {t(`status.${status}`)}
-        </div>
-    );
+    return <span className={`${base} border-transparent bg-muted-ink text-ink`}>{t(`status.${status}`)}</span>;
 }

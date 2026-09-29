@@ -3,7 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
+import Image from 'next/image';
 import { Loader2, Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 /**
  * IMPORTANT: This page uses its OWN Supabase client instance, isolated from
@@ -165,141 +168,164 @@ export default function InviteAcceptPage() {
     // Success state — password has been set
     if (isSuccess) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#050505]">
-                <div className="w-full max-w-md border border-[#22C55E40] bg-[#0A0A0A] p-10">
-                    <div className="text-center">
-                        <div className="mb-4 flex justify-center">
-                            <CheckCircle size={48} className="text-[#22C55E]" />
-                        </div>
-                        <h1 className="font-sora text-2xl font-bold uppercase text-white">
-                            ¡Contraseña Establecida!
-                        </h1>
-                        <p className="mt-4 font-space-mono text-sm text-[#737373]">
-                            Tu contraseña ha sido configurada exitosamente.
-                            Redirigiendo al inicio de sesión...
-                        </p>
-                    </div>
+            <InviteShell>
+                <div className="flex flex-col items-center gap-5 text-center">
+                    <span className="flex size-16 items-center justify-center rounded-full border-2 border-ink bg-lime text-ink shadow-ext-sm">
+                        <CheckCircle size={30} strokeWidth={2.5} />
+                    </span>
+                    <h1 className="font-display text-[30px] text-ink">
+                        Contraseña establecida
+                    </h1>
+                    <p className="text-[15px] leading-relaxed text-muted-white">
+                        Tu contraseña ha sido configurada exitosamente.
+                        Redirigiendo al inicio de sesión...
+                    </p>
                 </div>
-            </div>
+            </InviteShell>
         );
     }
 
     // Expired link state
     if (isExpired) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#050505]">
-                <div className="w-full max-w-md border border-[#FF336640] bg-[#0A0A0A] p-10">
-                    <div className="text-center">
-                        <h1 className="font-sora text-2xl font-bold uppercase text-white">
-                            Enlace Expirado
-                        </h1>
-                        <p className="mt-4 font-space-mono text-sm text-[#737373]">
-                            Este enlace de invitación ha expirado o ya fue utilizado.
-                            Contacta al administrador de tu organización para recibir
-                            una nueva invitación.
-                        </p>
-                        <button
-                            onClick={() => { window.location.href = '/'; }}
-                            className="mt-6 cursor-pointer font-space-mono text-xs uppercase tracking-[1px] text-[#2D00F7] hover:underline"
-                        >
-                            Ir al Inicio de Sesión
-                        </button>
-                    </div>
+            <InviteShell>
+                <div className="flex flex-col items-center gap-5 text-center">
+                    <span className="flex size-16 items-center justify-center rounded-full border-2 border-ink bg-alert text-ink shadow-ext-sm" aria-hidden="true">
+                        <Lock size={26} strokeWidth={2.5} />
+                    </span>
+                    <h1 className="font-display text-[30px] text-ink">
+                        Enlace expirado
+                    </h1>
+                    <p className="text-[15px] leading-relaxed text-muted-white">
+                        Este enlace de invitación ha expirado o ya fue utilizado.
+                        Contacta al administrador de tu organización para recibir
+                        una nueva invitación.
+                    </p>
+                    <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => { window.location.href = '/'; }}
+                        className="w-full"
+                    >
+                        Ir al inicio de sesión
+                    </Button>
                 </div>
-            </div>
+            </InviteShell>
         );
     }
 
     // Loading session state
     if (!isSessionReady) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#050505]">
-                <Loader2 size={32} className="animate-spin text-[var(--color-tactical-acid)]" />
+            <div className="flex min-h-screen items-center justify-center bg-blue text-lime">
+                <span className="live-dot size-3" aria-hidden="true" />
             </div>
         );
     }
 
     // Main form
     return (
-        <div className="flex min-h-screen items-center justify-center bg-[#050505]">
-            <div className="w-full max-w-md border border-[var(--color-tactical-acid)] bg-[#0A0A0A] p-10 shadow-[0_0_30px_rgba(204,255,0,0.1)]">
-                {/* Header */}
-                <div className="mb-8 text-center">
-                    <div className="mb-4 flex justify-center">
-                        <div className="flex h-16 w-16 items-center justify-center bg-[#2D00F7]">
-                            <Lock size={28} className="text-white" />
-                        </div>
-                    </div>
-                    <h1 className="font-sora text-2xl font-bold uppercase text-white">
-                        Bienvenido a Fandi
-                    </h1>
-                    <p className="mt-2 font-space-mono text-sm text-[#737373]">
-                        Establece tu contraseña para acceder al dashboard
-                    </p>
-                </div>
+        <InviteShell>
+            {/* Header */}
+            <div className="mb-7 flex flex-col gap-3">
+                <span className="flex size-12 items-center justify-center rounded-[12px] border-2 border-ink bg-blue text-white shadow-ext-sm">
+                    <Lock size={22} />
+                </span>
+                <h1 className="font-display text-[34px] leading-none text-ink">
+                    Bienvenido a Fandi
+                </h1>
+                <p className="text-[15px] leading-relaxed text-muted-white">
+                    Establece tu contraseña para acceder al panel.
+                </p>
+            </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    {/* Password */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                            Contraseña
-                        </label>
-                        <div className="relative">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Mínimo 8 caracteres"
-                                className="h-12 w-full rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 pr-12 font-space-mono text-sm text-white placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#737373] hover:text-white"
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Confirm Password */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
-                            Confirmar Contraseña
-                        </label>
-                        <input
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                {/* Password */}
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="invite-password" className="label-mono text-[11px] text-muted-white">
+                        Contraseña
+                    </label>
+                    <div className="relative">
+                        <Input
+                            id="invite-password"
                             type={showPassword ? 'text' : 'password'}
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Repite tu contraseña"
-                            className="h-12 w-full rounded-none border border-[#1A1A1A] bg-[#0A0A0A] px-4 font-space-mono text-sm text-white placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:outline-none focus:ring-0"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Mínimo 8 caracteres"
+                            className="h-[54px] rounded-[12px] px-4 pr-12 text-base md:text-base"
                             required
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                            className="absolute right-2 top-1/2 flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-[10px] text-muted-white transition-colors hover:text-ink"
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                     </div>
+                </div>
 
-                    {/* Error */}
-                    {error && (
-                        <p className="font-space-mono text-sm text-[#FF3366]">{error}</p>
+                {/* Confirm Password */}
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="invite-password-confirm" className="label-mono text-[11px] text-muted-white">
+                        Confirmar contraseña
+                    </label>
+                    <Input
+                        id="invite-password-confirm"
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Repite tu contraseña"
+                        className="h-[54px] rounded-[12px] px-4 text-base md:text-base"
+                        required
+                    />
+                </div>
+
+                {/* Error */}
+                {error && (
+                    <p role="alert" className="flex items-center gap-2 text-sm font-bold text-alert-white">
+                        <span className="inline-block size-2 shrink-0 rounded-full bg-alert-white" aria-hidden="true" />
+                        {error}
+                    </p>
+                )}
+
+                {/* Submit */}
+                <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isLoading || !password || !confirmPassword}
+                    className="mt-1 h-[58px] w-full rounded-[14px] text-[18px] [font-stretch:115%] font-black shadow-ext-block"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 size={16} className="animate-spin" />
+                            Configurando...
+                        </>
+                    ) : (
+                        'Establecer contraseña'
                     )}
+                </Button>
+            </form>
+        </InviteShell>
+    );
+}
 
-                    {/* Submit */}
-                    <button
-                        type="submit"
-                        disabled={isLoading || !password || !confirmPassword}
-                        className="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-none bg-[#2D00F7] font-space-mono text-[13px] uppercase tracking-[1px] text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        {isLoading ? (
-                            <>
-                                <Loader2 size={14} className="animate-spin" />
-                                Configurando...
-                            </>
-                        ) : (
-                            'ESTABLECER CONTRASEÑA'
-                        )}
-                    </button>
-                </form>
+/** Blue canvas + the white login-style block (design "01 Login"). */
+function InviteShell({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-blue px-4 py-10 text-white">
+            <Image
+                src="/fandi-tile.png"
+                alt="Fandi"
+                width={64}
+                height={64}
+                unoptimized
+                className="size-16 -rotate-[4deg] rounded-[16px] border-[3px] border-ink shadow-ext-lg"
+            />
+            <div className="w-full max-w-[460px] rounded-[20px] border-2 border-ink bg-white p-8 text-ink shadow-ext-xl sm:p-10">
+                {children}
             </div>
         </div>
     );

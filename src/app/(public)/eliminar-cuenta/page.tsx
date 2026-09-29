@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { DeleteAccountForm } from '@/components/legal/DeleteAccountForm';
+import {
+    LEGAL_NAV_LINK,
+    LegalHeader,
+    LegalTitle,
+} from '@/components/legal/LegalDoc';
 
 /**
  * /eliminar-cuenta — public account deletion.
@@ -51,150 +55,133 @@ const KEPT = [
 
 export default function EliminarCuentaPage() {
     return (
-        <div className="min-h-screen bg-black text-white">
-            <header className="border-b border-white/10">
-                <div className="mx-auto flex h-[72px] max-w-4xl items-center justify-between px-6">
-                    <Link href="/" aria-label="Fandi">
-                        <Image
-                            src="/fandi-logo.png"
-                            alt="Fandi"
-                            width={967}
-                            height={747}
-                            className="h-9 w-auto"
-                        />
-                    </Link>
-                    <Link
-                        href="/"
-                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
-                    >
-                        ← Inicio
-                    </Link>
-                </div>
-            </header>
+        <div className="min-h-screen bg-blue text-white">
+            <LegalHeader />
 
-            <main className="mx-auto max-w-3xl px-6 py-16 md:py-24">
-                <p className="font-space-mono text-[11px] uppercase tracking-[4px] text-[#CCFF00]">
-                    Fandi Holding S.A.S. · NIT 902.070.820-4
-                </p>
-                <h1 className="mt-4 font-sora text-3xl font-extrabold uppercase leading-tight tracking-tight text-white md:text-5xl">
-                    Eliminar mi cuenta
-                </h1>
-                <p className="mt-6 font-sora text-lg leading-relaxed text-[#B8B8C2]">
-                    Puedes eliminar tu cuenta de Fandi cuando quieras, sin dar
-                    explicaciones y sin escribirnos.
-                </p>
+            <main className="mx-auto max-w-[860px] px-4 pb-20 pt-10 sm:px-6 md:pt-16">
+                <LegalTitle
+                    eyebrow="Fandi Holding S.A.S. · NIT 902.070.820-4"
+                    title="Eliminar mi cuenta"
+                >
+                    <p className="mt-6 max-w-[640px] text-[17px] leading-relaxed text-lilac">
+                        Puedes eliminar tu cuenta de Fandi cuando quieras, sin dar
+                        explicaciones y sin escribirnos.
+                    </p>
+                </LegalTitle>
 
-                {/* ── 1. The fast path ── */}
-                <section className="mt-14">
-                    <h2 className="font-sora text-2xl font-bold text-white">
-                        Desde la app (inmediato)
-                    </h2>
-                    <p className="mt-4 font-sora text-base leading-relaxed text-[#B8B8C2]">
-                        Es la forma más rápida y la única que te muestra tu saldo
-                        antes de continuar:
-                    </p>
-                    <p className="mt-5 border-l-2 border-[#CCFF00] py-2 pl-5 font-space-mono text-sm uppercase tracking-[2px] text-white">
-                        Perfil › Configuración › Eliminar mi cuenta
-                    </p>
-                    <p className="mt-5 font-sora text-base leading-relaxed text-[#B8B8C2]">
-                        Se elimina en el momento. No hay lista de espera ni
-                        revisión.
-                    </p>
-                </section>
+                <article className="block-white mt-10 max-w-[760px] px-5 py-8 text-ink sm:px-10 sm:py-12">
+                    {/* ── 1. The fast path ── */}
+                    <section>
+                        <h2 className="font-display text-[22px] text-ink md:text-[26px]">
+                            Desde la app (inmediato)
+                        </h2>
+                        <p className="mt-4 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                            Es la forma más rápida y la única que te muestra tu saldo
+                            antes de continuar:
+                        </p>
+                        <p className="mt-5 rounded-[12px] bg-ink px-5 py-4 font-space-mono text-sm uppercase tracking-[0.1em] text-white">
+                            Perfil › Configuración › Eliminar mi cuenta
+                        </p>
+                        <p className="mt-5 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                            Se elimina en el momento. No hay lista de espera ni
+                            revisión.
+                        </p>
+                    </section>
 
-                {/* ── 2. The fallback, for people without the app ── */}
-                <section className="mt-14">
-                    <h2 className="font-sora text-2xl font-bold text-white">
-                        Desde aquí (si ya desinstalaste la app)
-                    </h2>
-                    <p className="mt-4 font-sora text-base leading-relaxed text-[#B8B8C2]">
-                        Déjanos el número con el que te registraste. Verificamos
-                        que la cuenta es tuya y la eliminamos por ti en un máximo
-                        de <strong className="text-white">15 días hábiles</strong>.
-                    </p>
-                    <div className="mt-6">
-                        <DeleteAccountForm />
-                    </div>
-                </section>
+                    {/* ── 2. The fallback, for people without the app ── */}
+                    <section className="mt-10 border-t-2 border-line-white pt-10">
+                        <h2 className="font-display text-[22px] text-ink md:text-[26px]">
+                            Desde aquí (si ya desinstalaste la app)
+                        </h2>
+                        <p className="mt-4 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                            Déjanos el número con el que te registraste. Verificamos
+                            que la cuenta es tuya y la eliminamos por ti en un máximo
+                            de <strong className="font-extrabold text-ink">15 días hábiles</strong>.
+                        </p>
+                        <div className="mt-6">
+                            <DeleteAccountForm />
+                        </div>
+                    </section>
 
-                {/* ── 3. What Play reviewers look for: the distinction ── */}
-                <section className="mt-16">
-                    <h2 className="font-sora text-2xl font-bold text-white">
-                        Qué se borra
-                    </h2>
-                    <ul className="mt-5 flex flex-col gap-3">
-                        {ERASED.map((item) => (
-                            <li
-                                key={item}
-                                className="flex gap-3 font-sora text-base leading-relaxed text-[#B8B8C2]"
-                            >
-                                <span
-                                    aria-hidden="true"
-                                    className="text-[#CCFF00]"
+                    {/* ── 3. What Play reviewers look for: the distinction ── */}
+                    <section className="mt-10 border-t-2 border-line-white pt-10">
+                        <h2 className="font-display text-[22px] text-ink md:text-[26px]">
+                            Qué se borra
+                        </h2>
+                        <ul className="mt-5 flex flex-col gap-3">
+                            {ERASED.map((item) => (
+                                <li
+                                    key={item}
+                                    className="flex gap-3 text-[16px] leading-[1.65] text-ink md:text-[17px]"
                                 >
-                                    —
-                                </span>
-                                <span>{item}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
+                                    <span
+                                        aria-hidden="true"
+                                        className="font-extrabold text-blue"
+                                    >
+                                        —
+                                    </span>
+                                    <span>{item}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
 
-                <section className="mt-14">
-                    <h2 className="font-sora text-2xl font-bold text-white">
-                        Qué conservamos, y por qué
-                    </h2>
-                    <p className="mt-4 font-sora text-base leading-relaxed text-[#B8B8C2]">
-                        Nada de esto queda asociado a tu nombre. Aparece como
-                        &laquo;Fan eliminado&raquo;.
-                    </p>
-                    <dl className="mt-6 flex flex-col gap-6">
-                        {KEPT.map((item) => (
-                            <div key={item.what}>
-                                <dt className="font-sora text-base font-bold text-white">
-                                    {item.what}
-                                </dt>
-                                <dd className="mt-2 font-sora text-base leading-relaxed text-[#8A8A94]">
-                                    {item.why}
-                                </dd>
-                            </div>
-                        ))}
-                    </dl>
-                </section>
+                    <section className="mt-10 border-t-2 border-line-white pt-10">
+                        <h2 className="font-display text-[22px] text-ink md:text-[26px]">
+                            Qué conservamos, y por qué
+                        </h2>
+                        <p className="mt-4 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                            Nada de esto queda asociado a tu nombre. Aparece como
+                            &laquo;Fan eliminado&raquo;.
+                        </p>
+                        <dl className="mt-6 flex flex-col gap-6">
+                            {KEPT.map((item) => (
+                                <div key={item.what}>
+                                    <dt className="text-[17px] font-extrabold text-ink">
+                                        {item.what}
+                                    </dt>
+                                    <dd className="mt-2 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                                        {item.why}
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </section>
 
-                {/* ── 4. The money. Stated plainly, before anyone deletes. ── */}
-                <section className="mt-14 border border-white/15 p-6">
-                    <h2 className="font-sora text-2xl font-bold text-white">
-                        Si te queda saldo
-                    </h2>
-                    <p className="mt-4 font-sora text-base leading-relaxed text-[#B8B8C2]">
-                        Pide la devolución escribiendo a{' '}
-                        <a
-                            href="mailto:hola@fandi.app?subject=Devoluci%C3%B3n%20de%20saldo"
-                                                        className="text-[#CCFF00] underline underline-offset-4"
-                        >
-                            hola@fandi.app
-                        </a>
-                        . Las devoluciones tienen un costo de $8.000 + IVA y se
-                        hacen al mismo medio de pago que usaste.
-                    </p>
-                    <p className="mt-4 font-sora text-base leading-relaxed text-[#B8B8C2]">
-                        Puedes pedirla también{' '}
-                        <strong className="text-white">
-                            después de eliminar tu cuenta
-                        </strong>
-                        : conservamos el registro de tus movimientos, así que no
-                        tienes que elegir entre tu privacidad y tu dinero.
-                    </p>
-                    <p className="mt-4 font-sora text-sm leading-relaxed text-[#8A8A94]">
-                        El dinero de una puja activa ya está comprometido y no se
-                        puede devolver.
-                    </p>
-                </section>
+                    {/* ── 4. The money. Stated plainly, before anyone deletes. ── */}
+                    <section className="mt-10 rounded-2xl border-2 border-ink p-5 sm:p-7">
+                        <h2 className="font-display text-[22px] text-ink md:text-[26px]">
+                            Si te queda saldo
+                        </h2>
+                        <p className="mt-4 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                            Pide la devolución escribiendo a{' '}
+                            <a
+                                href="mailto:hola@fandi.app?subject=Devoluci%C3%B3n%20de%20saldo"
+                                className="font-bold text-blue underline decoration-2 underline-offset-4"
+                            >
+                                hola@fandi.app
+                            </a>
+                            . Las devoluciones tienen un costo de $8.000 + IVA y se
+                            hacen al mismo medio de pago que usaste.
+                        </p>
+                        <p className="mt-4 text-[16px] leading-[1.65] text-ink md:text-[17px]">
+                            Puedes pedirla también{' '}
+                            <strong className="font-extrabold text-ink">
+                                después de eliminar tu cuenta
+                            </strong>
+                            : conservamos el registro de tus movimientos, así que no
+                            tienes que elegir entre tu privacidad y tu dinero.
+                        </p>
+                        <p className="mt-4 text-[15px] leading-relaxed text-muted-white">
+                            El dinero de una puja activa ya está comprometido y no se
+                            puede devolver.
+                        </p>
+                    </section>
+                </article>
 
                 <nav
                     aria-label="Documentos legales"
-                    className="mt-16 flex flex-wrap gap-x-7 gap-y-3 border-t border-white/10 pt-8"
+                    className="mt-12 flex max-w-[760px] flex-wrap gap-x-7 gap-y-3"
                 >
                     {[
                         { href: '/terminos', label: 'Términos y Condiciones' },
@@ -207,7 +194,7 @@ export default function EliminarCuentaPage() {
                         <Link
                             key={r.href}
                             href={r.href}
-                            className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                            className={LEGAL_NAV_LINK}
                         >
                             {r.label}
                         </Link>

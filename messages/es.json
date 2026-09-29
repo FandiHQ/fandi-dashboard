@@ -22,7 +22,7 @@
         "password": "Contraseña",
         "invalidCredentials": "Credenciales inválidas",
         "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo.",
-        "noAccount": "¿No tienes cuenta? Contacta a tu organizador.",
+        "noAccount": "¿Aún no tienes cuenta? Pídele a tu organizador que te invite a su equipo.",
         "noDashboardAccess": "Esta cuenta no tiene acceso al dashboard.",
         "invalidEmail": "Correo electrónico inválido",
         "passwordRequired": "La contraseña es obligatoria",
@@ -31,7 +31,16 @@
         "networkError": "Error de conexión. Intenta de nuevo.",
         "logoutConfirm": "¿Cerrar sesión?",
         "logoutWarning": "Perderás acceso al dashboard hasta que vuelvas a iniciar sesión.",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "loginTitle": "Iniciar sesión",
+        "enterPanel": "Entrar al panel",
+        "loginHero": {
+            "line1": "Tu show.",
+            "line2": "Tus fans.",
+            "line3": "En vivo.",
+            "body": "Crea oportunidades, controla cada dinámica durante el concierto y premia a quienes estuvieron ahí.",
+            "footer": "Fandi para artistas, equipos y organizadores"
+        }
     },
     "dashboardNav": {
         "home": "Inicio",
@@ -81,8 +90,11 @@
             "auctionsWon": "Subastas",
             "fanSince": "Fan desde {year}",
             "badges": "Insignias",
-            "noBadges": "Aún sin insignias."
-        }
+            "noBadges": "Aún sin insignias.",
+            "close": "Cerrar"
+        },
+        "leaderboardTitle": "Ranking",
+        "topCityFans": "{count} fans"
     },
     "artistProfile": {
         "title": "Perfil de Artista",
@@ -121,10 +133,11 @@
         "errorUploading": "Error al subir la imagen",
         "role": "Rol",
         "organization": "Organización",
-        "memberSince": "Miembro desde"
+        "memberSince": "Miembro desde",
+        "readOnly": "Solo lectura"
     },
     "dashboard": {
-        "welcome": "Bienvenido, {name}",
+        "welcome": "Hola, {name}",
         "totalEvents": "Eventos Totales",
         "totalRaised": "Total Recaudado",
         "activeFans": "Fans Activos",
@@ -136,7 +149,19 @@
         "noEvents": "No hay eventos. ¡Crea el primero!",
         "viewEvent": "Ver evento",
         "errorLoading": "No se pudieron cargar los eventos",
-        "retry": "Reintentar"
+        "retry": "Reintentar",
+        "home": {
+            "today": "Hoy",
+            "fandiOpensIn": "Fandi abre en",
+            "fandiClosesIn": "Fandi cierra en",
+            "startsIn": "El evento empieza en",
+            "openLiveRoom": "Abrir sala en vivo",
+            "totalSub": "{drafts} en borrador · {ended} finalizados",
+            "liveNow": "En vivo ahora",
+            "noneLive": "Ninguno en vivo",
+            "publishedSub": "Programados y visibles para los fans",
+            "viewAll": "Ver los {count}"
+        }
     },
     "events": {
         "title": "Eventos",
@@ -178,14 +203,18 @@
             "badges": "Insignias",
             "winners": "Ganadores",
             "analytics": "Analítica",
-            "notifications": "Notificaciones"
+            "notifications": "Notificaciones",
+            "impactos": "Impactos"
         },
         "validation": {
             "EVENT_END_BEFORE_START": "El evento debe terminar después de comenzar.",
             "FANDI_OPENS_BEFORE_EVENT": "El reloj Fandi no puede abrir antes de que comience el evento.",
             "FANDI_CLOSES_AFTER_EVENT": "El reloj Fandi no puede cerrar después de que termine el evento.",
             "FANDI_WINDOW_INVALID": "El reloj Fandi debe cerrar después de abrir.",
-            "EVENT_END_REQUIRED": "Define la fecha de fin del evento para poder publicarlo."
+            "EVENT_END_REQUIRED": "Define la fecha de fin del evento para poder publicarlo.",
+            "invalidUrl": "URL inválida",
+            "maxLength": "Máximo {max} caracteres",
+            "required": "Este campo es obligatorio"
         },
         "form": {
             "city": "Ciudad",
@@ -194,7 +223,10 @@
             "cityNetworkError": "No se pudo cargar ciudades. Intenta de nuevo.",
             "cityRequired": "Selecciona una ciudad antes de publicar.",
             "saveDraft": "Guardar borrador",
-            "publish": "Publicar"
+            "publish": "Publicar",
+            "createSubtitle": "Se guarda como borrador · lo publicas desde el resumen del evento",
+            "detailsSection": "Datos del evento",
+            "fanPreview": "Vista del fan"
         },
         "eventEndDate": "Fecha de fin del evento",
         "fandiOpensAt": "Apertura Fandi",
@@ -202,8 +234,8 @@
         "fandiOpensHint": "Hora a la que las dinámicas Fandi se activan automáticamente",
         "fandiClosesHint": "Hora a la que las dinámicas Fandi se cierran automáticamente",
         "eventEndHint": "Hora informativa de cierre del evento (para tickets/marketing)",
-        "fandiTimezoneSection": "🕹️ RELOJ FANDI (Dinámicas)",
-        "infoTimezoneSection": "📅 RELOJ INFORMATIVO (Boletas)",
+        "fandiTimezoneSection": "Reloj Fandi (dinámicas)",
+        "infoTimezoneSection": "Reloj informativo (boletas)",
         "eventStart": "Inicio evento",
         "eventEnd": "Fin evento",
         "lineup": "Lineup (Artistas)",
@@ -219,7 +251,7 @@
         "publish": "Publicar Evento",
         "goLive": "Ir en Vivo",
         "endEvent": "Terminar Evento",
-        "retryBadges": "Reintentar Insignias",
+        "retryBadges": "Reenviar insignias",
         "confirmPublish": "¿Publicar este evento? Los fans podrán verlo.",
         "confirmGoLive": "¿Ir en vivo? Las experiencias y subastas se activarán.",
         "confirmEnd": "¿Terminar el evento? Esta acción no se puede deshacer.",
@@ -238,12 +270,24 @@
         "duplicating": "Duplicando...",
         "duplicated": "Evento duplicado",
         "duplicateError": "No pudimos duplicar el evento",
-        "eventLive": "🔴 ¡Evento en vivo!",
+        "eventLive": "Evento en vivo",
         "typeToConfirm": "Escribe el nombre del evento para confirmar",
-        "viewLiveDashboard": "Ver Dashboard en Vivo →",
+        "viewLiveDashboard": "Abrir sala en vivo",
         "totalRaised": "Total Recaudado",
         "participants": "Participantes",
-        "checkContent": "Al menos 1 oportunidad o subasta creada ({experiences} oportunidades · {auctions} subastas)"
+        "checkContent": "Al menos 1 oportunidad o subasta creada ({experiences} oportunidades · {auctions} subastas)",
+        "listSubtitle": "Borradores, programados, en vivo y finalizados",
+        "retry": "Reintentar",
+        "fandiReady": "Dinámicas Fandi listas para activar",
+        "fandiOpensIn": "Fandi abre en",
+        "overview": {
+            "participated": "Participaron",
+            "view": "Ver ›",
+            "schedule": "Horario",
+            "ticketTrack": "Ingreso con boleta",
+            "fandiTrack": "Dinámicas Fandi",
+            "createdAt": "Creado: {date}"
+        }
     },
     "experiences": {
         "title": "Oportunidades",
@@ -253,7 +297,7 @@
         "created": "Oportunidad creada",
         "updated": "Oportunidad actualizada",
         "deleted": "Oportunidad eliminada",
-        "winnersPerEscuadra": "Ganadores por Escuadra",
+        "winnersPerEscuadra": "Ganadores por categoría",
         "redemptionInstructions": "Instrucciones de canje",
         "surpriseReveal": "Texto sorpresa (se revela al abrir)",
         "noOpportunities": "No hay oportunidades. Crea la primera.",
@@ -263,15 +307,15 @@
         "contributors": "Participantes",
         "activate": "Activar",
         "close": "Cerrar",
-        "reveal": "Revelar Sorpresa",
+        "reveal": "Revelar sorpresa",
         "revealConfirm": "¿Revelar la sorpresa? Los fans la verán de inmediato.",
-        "revealed": "¡Sorpresa revelada!",
+        "revealed": "Sorpresa revelada",
         "showSurprise": "Ver sorpresa",
         "hideSurprise": "Ocultar sorpresa",
         "artists": "Artistas",
         "artistsEmpty": "Agrega artistas al lineup del evento para poder etiquetar.",
         "noParticipantsYet": "Sin participantes aún",
-        "closeConfirm": "¿Cerrar esta oportunidad? Se seleccionarán ganadores.",
+        "closeConfirm": "¿Cerrar esta oportunidad? Se seleccionarán los ganadores de cada categoría.",
         "closed": "Oportunidad cerrada y ganadores seleccionados",
         "escuadra": {
             "1": "Base",
@@ -279,7 +323,7 @@
             "3": "Alta",
             "4": "VIP"
         },
-        "customNames": "Personalizar nombres de escuadra",
+        "customNames": "Nombres de las categorías",
         "distribution": "Distribución: 50% / 30% / 15% / 5%",
         "statusPending": "Pendiente",
         "statusActive": "Activa",
@@ -296,7 +340,7 @@
         "goalHelp": "Opcional. Los fans ven el progreso hacia la meta.",
         "beneficiary": "Beneficiario",
         "beneficiaryPlaceholder": "Ej: Fundación Sonido",
-        "impactoExplainer": "Un Impacto es una Oportunidad sin sorteo: los fans fandean por una causa que tu ídolo respalda. Sin ganadores ni premios — reconocimiento: posición en la escuadra, muro de Impactores e insignia.",
+        "impactoExplainer": "Un Impacto es una Oportunidad sin sorteo: los fans aportan a una causa que tu ídolo respalda. Sin ganadores ni premios: el reconocimiento es su posición en la categoría, el muro de Impactores y una insignia.",
         "progress": "Progreso",
         "raisedOf": "{raised} de {goal} F",
         "raised": "{raised} F recaudados",
@@ -308,7 +352,61 @@
         "impactoClosed": "Impacto cerrado",
         "filterAll": "Todas",
         "filterOportunidades": "Oportunidades",
-        "filterImpactos": "Impactos"
+        "filterImpactos": "Impactos",
+        "list": {
+            "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis durante una ventana corta. Quedan en 4 categorías y <hl>cada categoría sortea sus propios ganadores</hl>, así que todo el que aporta tiene una oportunidad real.",
+            "closeBanner": "Cerrar aviso",
+            "emptyTitle": "Aún no hay oportunidades",
+            "emptyBody": "Crea la primera oportunidad para tus fans.",
+            "sectionActive": "Activas ({count})",
+            "sectionPending": "Pendientes ({count})",
+            "sectionClosed": "Cerradas ({count})",
+            "edit": "Editar",
+            "delete": "Eliminar",
+            "deleteConfirm": "¿Eliminar esta oportunidad? Esta acción no se puede deshacer.",
+            "revealedTag": "Revelada",
+            "showDetails": "Ver detalles",
+            "hideDetails": "Ocultar detalles",
+            "statFans": "Fans",
+            "statWinners": "Ganadores",
+            "statRaised": "Recaudado",
+            "winnersPerCategory": "{count} por categoría",
+            "fansCount": "{count, plural, one {fan} other {fans}}",
+            "minAmount": "Desde {amount} F",
+            "surpriseLabel": "Sorpresa"
+        },
+        "panel": {
+            "editTitle": "Editar oportunidad",
+            "save": "Guardar",
+            "cancel": "Cancelar",
+            "totalWinners": "Total {count}",
+            "decrease": "Restar",
+            "increase": "Sumar",
+            "categoryName": "Nombre de la categoría {name}",
+            "rule": {
+                "4": "Top 5%",
+                "3": "Sig. 15%",
+                "2": "Sig. 30%",
+                "1": "Últ. 50%"
+            },
+            "namesOptional": "Nombres opcionales. Deja vacío para usar VIP, Alta, Media y Base.",
+            "fanNeverSees": "El fan nunca ve estos porcentajes",
+            "autoAssigned": "Las categorías se asignan solas al cerrar.",
+            "surprisePlaceholder": "Ej: Pase a backstage incluido",
+            "redemptionPlaceholder": "Ej: Presentarse en la entrada VIP con el QR"
+        },
+        "impactos": {
+            "title": "Impactos",
+            "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis a una causa que tu ídolo respalda. <hl>No hay sorteo ni premios</hl>: el reconocimiento es el muro de Impactores, su insignia y ver la meta cumplirse.",
+            "emptyTitle": "Aún no hay Impactos",
+            "emptyBody": "Crea uno para que los fans apoyen una causa durante el evento.",
+            "form": {
+                "title": "¿Qué van a lograr juntos?",
+                "titlePlaceholder": "Donar una tonelada de cuido",
+                "story": "La historia (opcional)",
+                "storyPlaceholder": "Por qué importa y a quién ayuda. Los fans lo leen antes de aportar."
+            }
+        }
     },
     "franjas": {
         "title": "Franjas",
@@ -358,7 +456,7 @@
         "edit": "Editar",
         "delete": "Eliminar",
         "confirmDelete": "¿Eliminar subasta? Esta acción no se puede deshacer.",
-        "activate": "Iniciar Ahora",
+        "activate": "Abrir ahora",
         "confirmActivate": "¿Iniciar subasta? La cuenta regresiva comenzará.",
         "pause": "Pausar",
         "confirmPause": "Solo para emergencias. Los fans verán la subasta pausada.",
@@ -380,14 +478,14 @@
         "finished": "FINALIZADA",
         "softCloseTooltip": "Anti-sniping: Si alguien puja en los últimos {softClose} segundos, el tiempo se extiende {extension} segundos desde ese momento. Esto evita que alguien gane en el último segundo.",
         "manualStart": "Iniciar manualmente",
-        "scheduledStartHint": "Opcional. Si lo dejas vacío, iniciarás la subasta manualmente con el botón \"Iniciar Ahora\".",
+        "scheduledStartHint": "Opcional. Si lo dejas vacío, abrirás la subasta a mano con \"Abrir ahora\".",
         "scheduledStartLabel": "Abre en",
-        "scheduledStartLaunching": "Iniciando...",
-        "manualStartLabel": "Inicio manual — usa \"Iniciar Ahora\"",
+        "scheduledStartLaunching": "Abriendo…",
+        "manualStartLabel": "Inicio manual: usa \"Abrir ahora\"",
         "redemptionInstructions": "Instrucciones de canje",
         "redemptionTooltip": "Solo los ganadores verán estas instrucciones. Úsalas para indicar cómo y dónde reclamar el premio.",
         "redemptionPlaceholder": "Ej: Mesa VIP, sector A. Presentar QR.",
-        "minPrice": "Mínimo $10,000 COP",
+        "minPrice": "Mínimo $ 10.000",
         "form": {
             "name": "Nombre del artículo",
             "description": "Descripción",
@@ -395,13 +493,31 @@
             "startingPrice": "Precio inicial (COP)",
             "durationMinutes": "Duración (minutos)",
             "scheduledStart": "Inicio programado",
-            "minIncrement": "Incremento mínimo (Fandies)",
-            "minIncrementHelp": "Cada puja debe superar la anterior por al menos {fandis} Fandies.",
+            "minIncrement": "Incremento mínimo (F)",
+            "minIncrementHelp": "Cada puja debe superar la anterior por al menos {fandis} F.",
             "softClose": "Cierre suave (s)",
             "extension": "Extensión (s)",
             "softCloseFloor": "Mínimo {seconds} s: los fans deben poder responder.",
             "extensionFloor": "Mínimo {seconds} s.",
             "softCloseRule": "Regla: una puja válida en los últimos {softClose} s extiende el cierre {extension} s desde esa puja, cuantas veces haga falta."
+        },
+        "card": {
+            "bidsLabel": "Pujas",
+            "incrementLabel": "Incremento",
+            "durationLabel": "Duración",
+            "extensionRule": "Extensión automática: +{extension} s si hay pujas en los últimos {softClose} s",
+            "softCloseInfo": "Cómo funciona la extensión",
+            "howToClaim": "Cómo la reclama",
+            "emptyBody": "Crea la primera subasta para tus fans."
+        },
+        "panel": {
+            "editTitle": "Editar subasta",
+            "save": "Guardar subasta",
+            "cancel": "Cancelar",
+            "decrease": "Restar",
+            "increase": "Sumar",
+            "fandisEquivalent": "= {fandis} F",
+            "mustBeMultiple": "Debe ser múltiplo de $ {amount}"
         }
     },
     "team": {
@@ -442,19 +558,21 @@
             "admin": "Administrador",
             "viewer": "Observador",
             "staff": "Staff"
-        }
+        },
+        "membersTitle": "Miembros",
+        "invitePanelHint": "Le llegará un correo con el enlace para unirse a tu equipo."
     },
     "live": {
-        "title": "Dashboard en Vivo",
-        "totalRaised": "Total Recaudado",
-        "participants": "Participantes",
+        "title": "Sala en vivo",
+        "totalRaised": "Recaudado",
+        "participants": "Fans participando",
         "contributions": "Aportes",
         "bids": "Pujas",
-        "activeExperiences": "Oportunidades Activas",
-        "activeAuctions": "Subastas Activas",
+        "activeExperiences": "Oportunidades activas",
+        "activeAuctions": "Subastas activas",
         "bidsPerMinute": "Pujas/min",
         "contributionsPerMinute": "Aportes/min",
-        "connected": "En vivo",
+        "connected": "Tiempo real",
         "connecting": "Conectando...",
         "reconnecting": "Reconectando...",
         "disconnected": "Sin conexión en tiempo real",
@@ -462,7 +580,7 @@
         "notLive": "El evento no está en vivo",
         "tabContributions": "Aportes",
         "tabBids": "Pujas",
-        "activityFeed": "Actividad en Tiempo Real",
+        "activityFeed": "Actividad",
         "contributionEntry": "{userName} aportó {amount} a {experienceName}",
         "bidEntry": "{userName} pujó {amount} en {auctionName}",
         "noActivity": "Sin actividad aún",
@@ -472,7 +590,25 @@
         "minAmount": "mín.",
         "timeLeft": "Tiempo restante",
         "bidCount": "{count} pujas",
-        "softCloseExtended": "Tiempo extendido (anti-sniping)"
+        "softCloseExtended": "Tiempo extendido (anti-sniping)",
+        "livePill": "En vivo",
+        "fandiClock": "Reloj Fandi",
+        "exit": "Salir",
+        "roomKicker": "{experiences, plural, one {# oportunidad} other {# oportunidades}} · {auctions, plural, one {# subasta} other {# subastas}} en vivo",
+        "closesIn": "Cierra en",
+        "heroTicker": "{contributions} aportes · {bids} pujas",
+        "copApprox": "≈ COP",
+        "experienceKicker": "Oportunidad · {winners, plural, one {# ganador} other {# ganadores}}",
+        "fromAmount": "Desde {amount} F",
+        "queue": "En cola",
+        "queueEmpty": "Nada en cola",
+        "queueExperience": "Oportunidad",
+        "queueAuction": "Subasta",
+        "winnersShort": "{count} gan.",
+        "auctionLiveTag": "Subasta · en vivo",
+        "feedContributions": "{count, plural, one {+# aporte} other {+# aportes}} en {name}",
+        "feedBids": "{count, plural, one {+# puja} other {+# pujas}} en {name}",
+        "loadError": "Error al cargar datos en vivo"
     },
     "analytics": {
         "title": "Analíticas",
@@ -481,7 +617,7 @@
         "revenueBreakdown": "Desglose de Ingresos",
         "contributionRevenue": "Ingresos por aportes",
         "auctionRevenue": "Ingresos por subastas",
-        "experienceBreakdown": "Desglose por Oportunidad",
+        "experienceBreakdown": "Por oportunidad",
         "redemptionRate": "Tasa de Canje",
         "uniqueParticipants": "Participantes únicos",
         "totalRaised": "Total Recaudado",
@@ -498,14 +634,22 @@
             "winners": "Ganadores",
             "contributorsCount": "{count, plural, =0 {sin aportantes} one {# aportante} other {# aportantes}}",
             "winnersCount": "{count, plural, =0 {sin ganadores} one {# ganador} other {# ganadores}}",
-            "escuadraSummary": "Nivel {level} · {count, plural, one {# fan} other {# fans}} · mínimo {min}",
+            "escuadraSummary": "{count, plural, one {# fan} other {# fans}} · mínimo {min}",
             "escuadraEmpty": "Sin participantes",
             "statusLabel": {
                 "pending": "Pendiente",
                 "active": "En vivo",
                 "closed": "Cerrada"
             },
-            "empty": "Sin experiencias configuradas"
+            "empty": "Sin oportunidades configuradas"
+        },
+        "revenueSource": "De dónde vienen los Fandis",
+        "fansByCategory": "Fans por categoría",
+        "stat": {
+            "participantsSub": "Fans únicos",
+            "winners": "Ganadores",
+            "winnersSub": "En {experiences, plural, one {# oportunidad} other {# oportunidades}} · {auctions, plural, one {# subasta} other {# subastas}}",
+            "claimed": "Premios reclamados"
         }
     },
     "winners": {
@@ -530,7 +674,7 @@
         "col": {
             "fan": "Fan",
             "prize": "Premio",
-            "escuadra": "Escuadra",
+            "escuadra": "Categoría",
             "amount": "Monto",
             "status": "Estado",
             "redeemedAt": "Canjeado"
@@ -561,7 +705,7 @@
         "stats": "{redeemed}/{total} canjeados",
         "statsUnavailable": "Estadísticas no disponibles para staff todavía",
         "offline": "Sin conexión",
-        "offlineStale": "⚠️ Verificación sin conexión — datos en caché",
+        "offlineStale": "Verificación sin conexión · datos en caché",
         "offlineNoConfirm": "Reconecta para confirmar la entrega",
         "logout": "Salir"
     },
@@ -608,12 +752,12 @@
         "enVivo": "EN VIVO DESDE LA SALA DE LA CASA O EN EL ESTADIO",
         "fandiesTitle": "Fandies",
         "fandiesRate": "1 Fandi = $5,000 COP",
-        "fandiesDesc": "Compra Fandies, la moneda del evento. Recarga desde $10,000 y empieza a competir por experiencias únicas.",
-        "contributionsTitle": "Escuadras",
+        "fandiesDesc": "Compra Fandies, la moneda del evento. Recarga desde $ 20.000 y participa por experiencias únicas.",
+        "contributionsTitle": "Categorías",
         "contributionsPrice": "Desde 2 Fandies",
-        "contributionsBenefit1": "→ Aporta y sube de Escuadra",
+        "contributionsBenefit1": "→ Aporta y entra a una categoría",
         "contributionsBenefit2": "→ Compite contra fans de tu nivel",
-        "contributionsBenefit3": "→ Ganadores elegidos al azar en cada escuadra",
+        "contributionsBenefit3": "→ Ganadores elegidos al azar en cada categoría",
         "auctionsTitle": "Subastas en Vivo",
         "auctionsDesc": "Puja en tiempo real por experiencias exclusivas. Artículos firmados, backstage passes, y más. El mejor postor gana.",
         "artistsTitle": "PARA ARTISTAS Y EQUIPOS DE FÚTBOL",
@@ -621,7 +765,7 @@
         "artistsPitch2": "EN VIVO, CON BAJA SEÑAL",
         "artistsPitch3": "DASHBOARD EN TIEMPO REAL. ANALÍTICAS AL INSTANTE.",
         "participateTitle": "PARTICIPA DESDE CUALQUIER PARTE",
-        "participateDesc": "Descarga la app, recarga Fandies y empieza a competir en tu próximo evento.",
+        "participateDesc": "Descarga la app, recarga Fandies y participa en tu próximo evento.",
         "ctaFan": "Descargar la App",
         "ctaOrganizer": "Soy Artista / Organizador",
         "heroStatement": "AHORA PUEDES INTERACTUAR DE VERDAD CON TUS ÍDOLOS",
@@ -642,7 +786,7 @@
             "oportunidadesBullet3": "Cenas y conciertos privados",
             "oportunidadesMore": "¡Y MÁS!",
             "oportunidadesBody": "Fandea la moneda del concierto y compite contra fans como tú.",
-            "oportunidadesTagline": "APÚRATE QUE PUEDES COMPETIR CONTRA MÁS O MENOS PERSONAS.",
+            "oportunidadesTagline": "CADA CATEGORÍA SORTEA SUS PROPIOS GANADORES.",
             "insigniasTitle": "INSIGNIAS",
             "insigniasPill": "COLECCIONA",
             "insigniasBody": "Ser leal premia, colecciona las insignias de cada evento...",
@@ -713,7 +857,7 @@
             "kicker": "#1 · Recargas",
             "title": "Primero, tus Fandis",
             "b1": "Compras Fandis: los créditos con los que participas.",
-            "rate": "1 Fandi = $5.000 COP",
+            "rate": "1 Fandi = $ 5.000",
             "b2": "Quedan en tu billetera. No se queman en un solo show.",
             "w1": "Conciertos",
             "w2": "Deportes",
@@ -764,7 +908,7 @@
                 "base": "Base"
             },
             "payoffA": "Aportar más no compra el premio.",
-            "payoffB": "Te mueve a donde hay menos competencia para ganar.",
+            "payoffB": "Cada categoría sortea sus propios ganadores.",
             "liveA": "Y todo se mueve en vivo.",
             "liveB": "Las categorías se recalculan mientras los fans aportan durante el evento."
         },
@@ -786,7 +930,7 @@
             "kicker": "Lo que te queda",
             "title": "Ganes o no, te llevas algo",
             "body": "Cada evento deja insignias que nadie te puede quitar y un puesto en el ranking de tu ídolo. Tu lealtad queda registrada.",
-            "rankAlt": "Perfil de ídolo con el ranking de fans en la app Fandi",
+            "rankAlt": "Tu puesto en el ranking de tu ídolo, tu nivel y tus insignias en la app Fandi",
             "tiersLabel": "Niveles de fan",
             "tier": {
                 "leyenda": "Leyenda",
@@ -795,7 +939,19 @@
                 "fanReal": "Fan Real"
             },
             "noMoney": "Tu perfil nunca muestra cuánto gastas.",
-            "noMoneySub": "Solo tu puesto, tu nivel y tus insignias. Lo que importa es qué tan fan eres."
+            "noMoneySub": "Solo tu puesto, tu nivel y tus insignias. Lo que importa es qué tan fan eres.",
+            "mock": {
+                "header": "Tu ranking",
+                "idol": "Tu ídolo",
+                "rankLabel": "Tu puesto",
+                "badges": "Tus insignias",
+                "badge1": "Estuve en vivo",
+                "badge2": "Subasta",
+                "locked": "Por desbloquear",
+                "row1": "Laura",
+                "you": "Tú",
+                "row3": "Mateo"
+            }
         },
         "idolos": {
             "overline": "Para ídolos y equipos",
@@ -813,23 +969,35 @@
             "p3Title": "Más cerca en cada evento",
             "p3Body": "Por cada evento en Fandi refuerzas tu cercanía con tus fans: los rankings y las insignias dejan constancia de quién estuvo, y les dan una razón para volver.",
             "cta": "Escríbenos",
-            "ctaSub": "Por ahora no estamos disponibles para artistas emergentes."
+            "ctaSub": "Por ahora no estamos disponibles para artistas emergentes.",
+            "mock": {
+                "title": "Top fans",
+                "sub": "Tus fans más fieles, en ranking",
+                "stat1": "Fans en ranking",
+                "stat2": "Ciudad top",
+                "stat3": "Nuevos este mes",
+                "city": "Medellín",
+                "tableTitle": "Ranking de fans",
+                "seeAll": "Ver todos →",
+                "row": "{badges} insignias · {events} eventos",
+                "note": "Ejemplo ilustrativo"
+            }
         },
         "descargar": {
             "kicker": "Tu próximo evento",
             "title": "Ahora te toca",
             "body": "Descarga Fandi, recarga tus Fandis y compite en el próximo show de tu ídolo.",
-            "priceNote": "Gratis · Recargas desde $10.000 COP"
+            "priceNote": "Gratis · Recargas desde $ 20.000"
         },
         "faq": {
             "kicker": "Preguntas",
             "title": "Lo que todos preguntan",
             "q1": "¿Qué es un Fandi?",
-            "a1": "Es la moneda dentro de la app: 1 Fandi = $5.000 COP. La usas para aportar a oportunidades y pujar en subastas. El saldo que no uses se queda en tu billetera.",
+            "a1": "Es la moneda dentro de la app: 1 Fandi = $ 5.000. La usas para aportar en oportunidades y pujar en subastas. El saldo que no uses se queda en tu billetera.",
             "q2": "¿Tengo que estar en el estadio?",
             "a2": "No. Fandi funciona en vivo desde donde estés: en la tribuna, en tu casa o viendo la transmisión. Solo necesitas conexión mientras el evento está activo.",
             "q3": "¿Cómo se eligen los ganadores? ¿Es justo?",
-            "a3": "En las oportunidades, tu aporte acumulado te ubica en una categoría y, al cerrar, se sortea al azar entre los fans de esa categoría. Aportar más no compra el premio: te mueve a una categoría donde compites contra menos fans. En las subastas gana el mejor postor, sin sorteo.",
+            "a3": "En las oportunidades, tu aporte acumulado te ubica en una categoría. Al cerrar, cada categoría sortea sus propios ganadores al azar entre sus fans, así que todas tienen al menos un ganador. Aportar más no compra el premio. En las subastas gana el mejor postor, sin sorteo.",
             "q4": "¿Es seguro pagar?",
             "a4": "Los pagos se procesan con pasarelas de pago certificadas. Fandi nunca le muestra a nadie cuánto gastas: tu perfil público solo muestra tu puesto, tu nivel y tus insignias.",
             "q5": "Soy ídolo, manager o equipo. ¿Cómo empiezo?",
@@ -858,20 +1026,21 @@
         "cta": {
             "openApp": "Abrir Fandi",
             "enter": "Entrar"
-        }
+        },
+        "loader": "Cargando"
     },
     "footer": {
         "terms": "Términos y Condiciones",
         "privacy": "Política de Privacidad",
         "contact": "hola@fandi.app",
-        "madeIn": "Hecho con 💜 en Colombia",
+        "madeIn": "Hecho en Colombia",
         "copyright": "© 2026 Fandi. Todos los derechos reservados."
     },
     "badges": {
         "title": "Insignias",
         "subtitle": "Configura las insignias que se otorgarán a los fans",
-        "create": "Crear Insignia",
-        "edit": "Editar Insignia",
+        "create": "Crear insignia",
+        "edit": "Editar insignia",
         "created": "Insignia creada exitosamente",
         "updated": "Insignia actualizada",
         "deleted": "Insignia eliminada",
@@ -882,7 +1051,7 @@
         "applicableTo": "Se otorga en",
         "allCategories": "Todas las categorías",
         "allTypes": "Todos los tipos",
-        "empty": "No hay insignias. ¡Crea la primera para este evento!",
+        "empty": "No hay insignias. Crea la primera para este evento.",
         "inactive": "Inactiva",
         "deactivate": "Desactivar",
         "activate": "Activar",
@@ -897,6 +1066,21 @@
         "applicableOptions": {
             "experience": "Oportunidades",
             "auction": "Subastas"
+        },
+        "filterAll": "Todas",
+        "deleteLabel": "Eliminar insignia",
+        "form": {
+            "namePlaceholder": "Fan VIP Concierto",
+            "descriptionPlaceholder": "Descripción que verá el fan. Ej: Recibes esta insignia porque participaste de mi concierto...",
+            "imageHint": "Formato recomendado: proporción 3:4 (vertical). El recortador mantiene esta proporción automáticamente.",
+            "deactivateHint": "Pausar esta insignia. Los fans <b>no la recibirán</b> hasta que la reactives.",
+            "activateHint": "Reactivar esta insignia. Los fans <b>volverán a recibirla</b> al completar el evento."
         }
+    },
+    "notFoundPage": {
+        "eyebrow": "Error 404",
+        "title": "No encontramos esta página",
+        "body": "Puede que el enlace esté roto o que la página ya no exista.",
+        "cta": "Volver al inicio"
     }
 }

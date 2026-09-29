@@ -14,7 +14,9 @@
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import {
     decodeShareCard,
     fansCompeting,
@@ -95,28 +97,39 @@ export default async function ShareCardPage({
         : `#${payload.r} de ${payload.a} en Fandi`;
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-black px-6 py-16 text-white">
-            {/* The PNG for THIS token — the same image the share unfurls. */}
+        <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-blue px-4 py-12 text-white sm:px-6 sm:py-16">
+            <div className="flex items-center gap-3">
+                <Image
+                    src="/fandi-tile.png"
+                    alt=""
+                    width={44}
+                    height={44}
+                    unoptimized
+                    className="size-11 rounded-[12px] border-2 border-ink shadow-ext-sm"
+                />
+                <span className="font-display text-[22px] text-white">Fandi</span>
+            </div>
+
+            {/* The PNG for THIS token — the same image the share unfurls.
+                The tilt and the extrusion live inside the image, so the
+                frame here stays flat: the card is the one protagonist. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
                 src={`/r/${encodeURIComponent(token)}/image`}
                 alt={heroAlt}
                 width={CARD_SIZE.width}
                 height={CARD_SIZE.height}
-                className="h-auto w-full max-w-2xl border border-white/10"
+                className="h-auto w-full max-w-2xl rounded-2xl border-2 border-ink shadow-ext-lg"
                 data-testid="share-hero"
             />
 
-            <p className="text-sm text-neutral-400">
+            <p className="label-mono text-center text-[11px] text-lilac">
                 {impacto ? impactoresLine(payload.t) : fansCompeting(payload.t)}
             </p>
 
-            <Link
-                href={WEB_APP_URL}
-                className="bg-[#2D00F7] px-8 py-4 text-lg font-semibold text-white"
-            >
-                Entrar a Fandi
-            </Link>
+            <Button asChild size="lg">
+                <Link href={WEB_APP_URL}>Entrar a Fandi</Link>
+            </Button>
         </main>
     );
 }
