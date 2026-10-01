@@ -38,6 +38,7 @@ import {
     experienceStatusColors,
 } from '@/lib/chart-colors';
 import { HudTooltip } from '@/components/charts/hud-tooltip';
+import { HostSegmentsSection } from '@/components/collaborations/SegmentsSection';
 import { Skeleton } from '@/components/ui/skeleton';
 import type {
     EventSummaryResponse,
@@ -95,6 +96,8 @@ export default function AnalyticsPage() {
                 <RevenueBreakdown summary={summary} t={t} />
                 <ExperienceBreakdownSection breakdown={breakdown} t={t} />
             </div>
+            {/* RFC §4 — only when the event has guest idols. */}
+            <HostSegmentsSection eventId={eventId} />
         </div>
     );
 }

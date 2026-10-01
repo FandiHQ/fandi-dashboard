@@ -5,7 +5,8 @@ export { ApiError } from '@/lib/api';
 export interface UserSyncResponse {
     id: string;
     supabaseId: string;
-    role: 'fan' | 'organizer' | 'sponsor' | 'staff';
+    /** 'admin' = platform admin (users.role), not an org role. */
+    role: 'fan' | 'organizer' | 'sponsor' | 'staff' | 'admin';
     phone: string | null;
     email: string | null;
     displayName: string | null;
@@ -292,6 +293,187 @@ export interface Experience {
     // Lineup tags (Step 6.4).
     tagIds?: string[];
     tags?: LineupEntry[];
+    // Knowledge contest (fandi-api RFC §2).
+    contestFinalizedAt?: string | null;
+    /** Dashboard list only: questions in the bank. */
+    contestQuestionCount?: number;
+    /** Dashboard list only: the bank can go live (≥ 20 valid questions). */
+    contestReady?: boolean;
+}
+
+// ── Idol collaborations (fandi-api RFC §3) ──
+
+export type CollaborationStatus = 'pending' | 'accepted' | 'declined' | 'ended' | 'expired';
+export type DynamicType = 'experience' | 'auction';
+
+export interface Collaboration {
+    id: string;
+    eventId: string;
+    eventName: string;
+    eventDate: string | null;
+    hostOrgId: string;
+    hostOrgName: string;
+    guestOrgId: string;
+    guestOrgName: string;
+    guestAvatarUrl: string | null;
+    dynamicType: DynamicType;
+    dynamicId: string;
+    dynamicName: string;
+    /** Experiences only, when the API sends it: an Impacto has no contest results. */
+    dynamicKind?: ExperienceKind | null;
+    status: CollaborationStatus;
+    source: 'manual' | 'migration';
+    invitedAt: string;
+    expiresAt: string;
+    respondedAt: string | null;
+    endedAt: string | null;
+}
+
+export interface IdolSearchResult {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+}
+
+export interface SharedEvent {
+    eventId: string;
+    eventName: string;
+    eventDate: string | null;
+    hostOrgName: string;
+    dynamics: Collaboration[];
+}
+
+export interface SharedEventTotals {
+    eventId: string;
+    eventName: string;
+    eventDate: string | null;
+    status: string | null;
+    hostOrgName: string;
+    participants: number;
+    contributedCop: number;
+    /** Ended collaboration: data up to here. */
+    until: string | null;
+}
+
+export interface SharedParticipants {
+    dynamicType: DynamicType;
+    dynamicId: string;
+    until: string | null;
+    totalParticipants: number;
+    /**
+     * Legacy: guests now see every fan of their tagged dynamics by name
+     * (no consent gate), so this is 0 or absent. Not shown.
+     */
+    withoutAuthorization?: number;
+    /** More named fans than the 500 listed (in order of arrival). */
+    hasMore: boolean;
+    fans: {
+        userId: string;
+        displayName: string | null;
+        instagramHandle: string | null;
+        firstAt: string;
+    }[];
+}
+
+// ── Segments per shared event (fandi-api RFC §4) ──
+
+export type SegmentGroup = 'onlyHost' | 'onlyGuest' | 'both' | 'neither' | 'withoutConsent';
+/** '<5' = 1–4 fans; 'hidden' = withheld so a '<5' can't be deduced. */
+export type ReportedCount = number | '<5' | 'hidden';
+
+/**
+ * Served from the nightly snapshot, never live. Before the first snapshot
+ * `participants` is 0 and every `counts` is null; a guest the latest
+ * snapshot doesn't cover yet also has `counts: null`.
+ */
+export interface HostSegments {
+    eventId: string;
+    participants: number | '<5';
+    snapshotAt: string | null;
+    guests: { guestOrgId: string; guestName: string; counts: Record<SegmentGroup, ReportedCount> | null }[];
+}
+
+export interface SharedSegments {
+    eventId: string;
+    /** 1–4 reads '<5': the split would give the few fans away. */
+    participants: number | '<5';
+    /** Null before the first nightly snapshot. */
+    counts: Record<SegmentGroup, ReportedCount> | null;
+    until: string | null;
+    snapshotAt: string | null;
+}
+
+// ── Idol classification (platform admin, fandi-api RFC §4) ──
+
+export interface CategoryNode {
+    id: string;
+    parentId: string | null;
+    slug: string;
+    nameEs: string;
+    nameEn: string;
+    level: number;
+    position: number;
+    idolCount: number;
+}
+
+export interface Placement {
+    categoryId: string;
+    region: string | null;
+}
+
+export interface ClassifiedIdol {
+    id: string;
+    name: string;
+    isPublic: boolean;
+    unclassified: boolean;
+    placements: Placement[];
+    tags: string[];
+}
+
+// ── Knowledge contest (fandi-api RFC §2) ──
+
+/** Authors only (owner/admin of the host org): carries the right answer. */
+export interface BankQuestion {
+    id: string;
+    prompt: string;
+    options: string[];
+    correctIndex: number;
+    position: number;
+}
+
+export interface BankResponse {
+    /** True once the oportunidad is live or closed. */
+    locked: boolean;
+    minQuestions: number;
+    ready: boolean;
+    questions: BankQuestion[];
+}
+
+export interface ContestWinnerRow {
+    position: number;
+    /** Null only for a deleted (anonymised) fan. */
+    userId: string | null;
+    displayName: string | null;
+    responseMs: number;
+    firstContributionAt: string;
+}
+
+export interface ContestCategoryResult {
+    level: number;
+    name: string;
+    participants: number;
+    eligible: number;
+    /** Answers under the 700 ms human floor: counted, never eligible. */
+    tooFast?: number;
+    vacancies: number;
+    winners: ContestWinnerRow[];
+}
+
+/** After finalization only (409 CONTEST_NOT_FINALIZED before). */
+export interface ContestResults {
+    finalizedAt: string;
+    winnersPerCategory: number;
+    categories: ContestCategoryResult[];
 }
 
 export interface ExperienceSlotBrief {
@@ -477,6 +659,8 @@ export interface ExperienceBreakdownItem {
     totalRaised: number;
     contributorCount: number;
     winnersCount: number;
+    /** Knowledge contest: fans who answered (a count only, never correctness). */
+    answeredCount?: number;
     escuadraDistribution: {
         level: number;
         count: number;

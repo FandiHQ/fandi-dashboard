@@ -38,7 +38,7 @@ export function DashboardHeader() {
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
-    const visibleItems = getVisibleItems(memberRole);
+    const visibleItems = getVisibleItems(memberRole, user?.role === 'admin');
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (

@@ -47,7 +47,9 @@
         "events": "Eventos",
         "topFans": "Top Fans",
         "team": "Equipo",
-        "settings": "Configuración"
+        "settings": "Configuración",
+        "collaborations": "Colaboraciones",
+        "classification": "Clasificación"
     },
     "fanTiers": {
         "leyenda": "Leyenda",
@@ -59,7 +61,6 @@
         "title": "Top Fans",
         "subtitle": "Tus fans más devotos, en ranking",
         "rankedFans": "{count} fans en el ranking",
-        "privateFan": "Perfil privado",
         "anonymousFan": "Fan",
         "empty": "Aún no hay fans en el ranking. Se construye cuando tus fans participan en tus eventos.",
         "errorLoading": "No se pudo cargar el ranking",
@@ -84,7 +85,7 @@
         },
         "fanDetail": {
             "title": "Detalle del fan",
-            "privateBody": "Este fan mantiene su identidad privada. Su puesto igual cuenta.",
+            "privateBody": "Este fan eligió un perfil privado: los demás fans no lo ven. Tú, como su ídolo, sí.",
             "events": "Eventos",
             "wins": "Victorias",
             "auctionsWon": "Subastas",
@@ -94,7 +95,8 @@
             "close": "Cerrar"
         },
         "leaderboardTitle": "Ranking",
-        "topCityFans": "{count} fans"
+        "topCityFans": "{count} fans",
+        "privateMark": "Oculto a otros fans"
     },
     "artistProfile": {
         "title": "Perfil de Artista",
@@ -214,7 +216,8 @@
             "EVENT_END_REQUIRED": "Define la fecha de fin del evento para poder publicarlo.",
             "invalidUrl": "URL inválida",
             "maxLength": "Máximo {max} caracteres",
-            "required": "Este campo es obligatorio"
+            "required": "Este campo es obligatorio",
+            "CONTEST_BANK_INCOMPLETE": "Cada oportunidad necesita al menos 20 preguntas antes de publicar el evento."
         },
         "form": {
             "city": "Ciudad",
@@ -315,8 +318,8 @@
         "artists": "Artistas",
         "artistsEmpty": "Agrega artistas al lineup del evento para poder etiquetar.",
         "noParticipantsYet": "Sin participantes aún",
-        "closeConfirm": "¿Cerrar esta oportunidad? Se seleccionarán los ganadores de cada categoría.",
-        "closed": "Oportunidad cerrada y ganadores seleccionados",
+        "closeConfirm": "¿Cerrar esta oportunidad? Se dejan de recibir aportes y los ganadores de cada categoría se publican en unos segundos.",
+        "closed": "Oportunidad cerrada. Los ganadores se publican en unos segundos.",
         "escuadra": {
             "1": "Base",
             "2": "Media",
@@ -324,7 +327,7 @@
             "4": "VIP"
         },
         "customNames": "Nombres de las categorías",
-        "distribution": "Distribución: 50% / 30% / 15% / 5%",
+        "distribution": "Por dinero: VIP el 5% más alto · Alta hasta el 20% · Media hasta el 50% · Base el resto (desde 4 F)",
         "statusPending": "Pendiente",
         "statusActive": "Activa",
         "statusClosed": "Cerrada",
@@ -340,21 +343,20 @@
         "goalHelp": "Opcional. Los fans ven el progreso hacia la meta.",
         "beneficiary": "Beneficiario",
         "beneficiaryPlaceholder": "Ej: Fundación Sonido",
-        "impactoExplainer": "Un Impacto es una Oportunidad sin sorteo: los fans aportan a una causa que tu ídolo respalda. Sin ganadores ni premios: el reconocimiento es su posición en la categoría, el muro de Impactores y una insignia.",
+        "impactoExplainer": "Un Impacto es una Oportunidad sin pregunta ni premios: los fans aportan a una causa que tu ídolo respalda. El reconocimiento es su posición en la categoría, el muro de Impactores y una insignia.",
         "progress": "Progreso",
         "raisedOf": "{raised} de {goal} F",
         "raised": "{raised} F recaudados",
         "goalReached": "Meta alcanzada",
         "impactores": "Impactores",
         "noImpactores": "Aún no hay Impactores.",
-        "privateFan": "Perfil privado",
         "closeImpactoConfirm": "¿Cerrar este Impacto? Los fans ya no podrán aportar.",
         "impactoClosed": "Impacto cerrado",
         "filterAll": "Todas",
         "filterOportunidades": "Oportunidades",
         "filterImpactos": "Impactos",
         "list": {
-            "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis durante una ventana corta. Quedan en 4 categorías y <hl>cada categoría sortea sus propios ganadores</hl>, así que todo el que aporta tiene una oportunidad real.",
+            "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis durante una ventana corta y responden una pregunta sobre tu ídolo. Quedan en 4 categorías según su aporte acumulado y <hl>en cada categoría ganan quienes aciertan más rápido</hl>. Todas tienen el mismo número de ganadores; se sube de categoría aportando más que los demás.",
             "closeBanner": "Cerrar aviso",
             "emptyTitle": "Aún no hay oportunidades",
             "emptyBody": "Crea la primera oportunidad para tus fans.",
@@ -384,20 +386,25 @@
             "increase": "Sumar",
             "categoryName": "Nombre de la categoría {name}",
             "rule": {
-                "4": "Top 5%",
-                "3": "Sig. 15%",
-                "2": "Sig. 30%",
-                "1": "Últ. 50%"
+                "4": "Top 5% del dinero",
+                "3": "Hasta 20%",
+                "2": "Hasta 50%",
+                "1": "Desde 4 F"
             },
             "namesOptional": "Nombres opcionales. Deja vacío para usar VIP, Alta, Media y Base.",
             "fanNeverSees": "El fan nunca ve estos porcentajes",
-            "autoAssigned": "Las categorías se asignan solas al cerrar.",
+            "autoAssigned": "Se recalculan en vivo con cada aporte y se congelan al cerrar.",
             "surprisePlaceholder": "Ej: Pase a backstage incluido",
-            "redemptionPlaceholder": "Ej: Presentarse en la entrada VIP con el QR"
+            "discardTitle": "¿Descartar los cambios?",
+            "discardBody": "Tienes cambios sin guardar en este panel. Si lo cierras, se pierden.",
+            "discard": "Descartar",
+            "keepEditing": "Seguir editando",
+            "redemptionPlaceholder": "Ej: Presentarse en la entrada VIP con el QR",
+            "sameWinners": "El mismo número de ganadores en cada categoría"
         },
         "impactos": {
             "title": "Impactos",
-            "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis a una causa que tu ídolo respalda. <hl>No hay sorteo ni premios</hl>: el reconocimiento es el muro de Impactores, su insignia y ver la meta cumplirse.",
+            "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis a una causa que tu ídolo respalda. <hl>No hay pregunta ni premios</hl>: el reconocimiento es el muro de Impactores, su insignia y ver la meta cumplirse.",
             "emptyTitle": "Aún no hay Impactos",
             "emptyBody": "Crea uno para que los fans apoyen una causa durante el evento.",
             "form": {
@@ -406,7 +413,43 @@
                 "story": "La historia (opcional)",
                 "storyPlaceholder": "Por qué importa y a quién ayuda. Los fans lo leen antes de aportar."
             }
-        }
+        },
+        "questions": {
+            "title": "Preguntas",
+            "missing": "{count}/{min} preguntas · faltan {missing}",
+            "ready": "{count} preguntas · lista",
+            "blindNote": "Los fans no saben si acertaron hasta el cierre",
+            "howItWorks": "Cada fan recibe una de estas preguntas, con las opciones en otro orden. En su categoría gana quien acierta más rápido.",
+            "locked": "Bloqueadas: la oportunidad ya está en vivo",
+            "loading": "Cargando preguntas…",
+            "loadError": "No pudimos cargar las preguntas. Sin ellas no se pueden editar ni guardar.",
+            "retry": "Reintentar",
+            "showAnswers": "Ver respuestas",
+            "hideAnswers": "Ocultar respuestas",
+            "number": "Pregunta {n}",
+            "remove": "Quitar la pregunta {n}",
+            "promptPlaceholder": "¿En qué ciudad grabó su primer video?",
+            "promptLabel": "Texto de la pregunta {n}",
+            "correctLegend": "Opción correcta de la pregunta {n}",
+            "markCorrect": "Marcar la opción {letter} como correcta",
+            "optionPlaceholder": "Opción {letter}",
+            "optionLabel": "Opción {letter} de la pregunta {n}",
+            "add": "Agregar pregunta",
+            "preview": "Vista del fan",
+            "previewReading": "Pregunta {n} · lectura {s} s",
+            "previewOptions": "Opciones · el orden cambia para cada fan",
+            "previewSeconds": "15 s para responder",
+            "cardMissing": "Faltan preguntas · {count}/{min}",
+            "problems": {
+                "prompt": "Escribe una pregunta de 5 a 200 caracteres.",
+                "optionLength": "Completa las 4 opciones (máximo 80 caracteres).",
+                "optionsDistinct": "Las 4 opciones deben ser distintas.",
+                "correct": "Marca la opción correcta."
+            },
+            "saveFailedAfterCreate": "La oportunidad se creó, pero sus preguntas no se guardaron: {message}. Guarda de nuevo para reintentar solo las preguntas."
+        },
+        "legacyTags": "Etiquetas anteriores (texto)",
+        "privateMark": "Oculto a otros fans"
     },
     "franjas": {
         "title": "Franjas",
@@ -518,7 +561,8 @@
             "increase": "Sumar",
             "fandisEquivalent": "= {fandis} F",
             "mustBeMultiple": "Debe ser múltiplo de $ {amount}"
-        }
+        },
+        "legacyTags": "Etiquetas anteriores (texto)"
     },
     "team": {
         "title": "EQUIPO",
@@ -608,7 +652,8 @@
         "auctionLiveTag": "Subasta · en vivo",
         "feedContributions": "{count, plural, one {+# aporte} other {+# aportes}} en {name}",
         "feedBids": "{count, plural, one {+# puja} other {+# pujas}} en {name}",
-        "loadError": "Error al cargar datos en vivo"
+        "loadError": "Error al cargar datos en vivo",
+        "answered": "Respondieron {count}"
     },
     "analytics": {
         "title": "Analíticas",
@@ -680,7 +725,24 @@
             "redeemedAt": "Canjeado"
         },
         "filterByStatus": "Filtrar por estado",
-        "filterByType": "Filtrar por tipo"
+        "filterByType": "Filtrar por tipo",
+        "contest": {
+            "title": "Resultados del concurso",
+            "pick": "Oportunidad",
+            "empty": "Aún no hay oportunidades cerradas.",
+            "pending": "Los resultados aparecen unos segundos después del cierre.",
+            "categoryLine": "{participants} fans · acertaron {eligible}",
+            "tooFast": "{count, plural, one {# respuesta} other {# respuestas}} en menos de 0,3 s: no válidas",
+            "position": "Puesto",
+            "fan": "Fan",
+            "time": "Tiempo",
+            "firstAporte": "Primer aporte",
+            "vacant": "Vacante",
+            "csv": "Descargar CSV",
+            "rule": "En cada categoría ganan quienes acertaron más rápido; empate: el primer aporte.",
+            "noContestData": "Esta oportunidad cerró antes del concurso de preguntas: no tiene resultados por tiempo.",
+            "csvFailed": "No pudimos generar el CSV"
+        }
     },
     "redemption": {
         "title": "Canje de Premios",
@@ -757,7 +819,7 @@
         "contributionsPrice": "Desde 2 Fandies",
         "contributionsBenefit1": "→ Aporta y entra a una categoría",
         "contributionsBenefit2": "→ Compite contra fans de tu nivel",
-        "contributionsBenefit3": "→ Ganadores elegidos al azar en cada categoría",
+        "contributionsBenefit3": "→ En cada categoría ganan quienes aciertan más rápido",
         "auctionsTitle": "Subastas en Vivo",
         "auctionsDesc": "Puja en tiempo real por experiencias exclusivas. Artículos firmados, backstage passes, y más. El mejor postor gana.",
         "artistsTitle": "PARA ARTISTAS Y EQUIPOS DE FÚTBOL",
@@ -786,7 +848,7 @@
             "oportunidadesBullet3": "Cenas y conciertos privados",
             "oportunidadesMore": "¡Y MÁS!",
             "oportunidadesBody": "Fandea la moneda del concierto y compite contra fans como tú.",
-            "oportunidadesTagline": "CADA CATEGORÍA SORTEA SUS PROPIOS GANADORES.",
+            "oportunidadesTagline": "TODAS LAS CATEGORÍAS TIENEN EL MISMO NÚMERO DE GANADORES.",
             "insigniasTitle": "INSIGNIAS",
             "insigniasPill": "COLECCIONA",
             "insigniasBody": "Ser leal premia, colecciona las insignias de cada evento...",
@@ -869,7 +931,7 @@
             "b3": "El evento que ya veías en la app abre su reloj. Ahí empieza todo.",
             "b4": "Y en vivo entras por dos caminos:",
             "oportunidades": "Oportunidades",
-            "oportunidadesSub": "Aportas y se sortea",
+            "oportunidadesSub": "Aportas y respondes",
             "subastas": "Subastas",
             "subastasSub": "El mejor postor gana"
         },
@@ -899,7 +961,7 @@
             "c1": "Miles de fans aportan para ganar la misma interacción: una experiencia o un artículo exclusivo.",
             "c2": "Según cuánto aportas, entras en una categoría.",
             "c3": "Todas las categorías tienen al menos un ganador y el mismo premio. El ídolo define cuántos ganadores por categoría.",
-            "c4": "Al cerrar, se sortean los ganadores correspondientes en cada una.",
+            "c4": "Respondes una pregunta sobre tu ídolo. Al cerrar, en cada categoría ganan quienes acertaron más rápido.",
             "onePrize": "1 ganador",
             "band": {
                 "vip": "VIP",
@@ -908,16 +970,16 @@
                 "base": "Base"
             },
             "payoffA": "Aportar más no compra el premio.",
-            "payoffB": "Cada categoría sortea sus propios ganadores.",
+            "payoffB": "Todas las categorías tienen el mismo número de ganadores.",
             "liveA": "Y todo se mueve en vivo.",
             "liveB": "Las categorías se recalculan mientras los fans aportan durante el evento."
         },
         "subastas": {
             "kicker": "#3 · Subastas",
-            "title": "Sin sorteo",
-            "body": "Algunas cosas no se rifan. Se pelean en vivo, puja a puja, hasta que el reloj llega a cero.",
+            "title": "Al mejor postor",
+            "body": "Algunas cosas se pelean en vivo, puja a puja, hasta que el reloj llega a cero.",
             "contrastA": "Oportunidades:",
-            "contrastARest": "aportas, entras en una categoría y se sortea.",
+            "contrastARest": "aportas, entras en una categoría y respondes una pregunta.",
             "contrastB": "Subastas:",
             "contrastBRest": "el mejor postor gana. Punto.",
             "live": "En vivo",
@@ -997,7 +1059,7 @@
             "q2": "¿Tengo que estar en el estadio?",
             "a2": "No. Fandi funciona en vivo desde donde estés: en la tribuna, en tu casa o viendo la transmisión. Solo necesitas conexión mientras el evento está activo.",
             "q3": "¿Cómo se eligen los ganadores? ¿Es justo?",
-            "a3": "En las oportunidades, tu aporte acumulado te ubica en una categoría. Al cerrar, cada categoría sortea sus propios ganadores al azar entre sus fans, así que todas tienen al menos un ganador. Aportar más no compra el premio. En las subastas gana el mejor postor, sin sorteo.",
+            "a3": "En las oportunidades, tu aporte acumulado te ubica en una categoría y respondes una pregunta sobre tu ídolo. Al cerrar, en cada categoría ganan quienes acertaron más rápido. Todas las categorías tienen el mismo número de ganadores y subes de categoría aportando más. Aportar más no compra el premio. En las subastas gana el mejor postor.",
             "q4": "¿Es seguro pagar?",
             "a4": "Los pagos se procesan con pasarelas de pago certificadas. Fandi nunca le muestra a nadie cuánto gastas: tu perfil público solo muestra tu puesto, tu nivel y tus insignias.",
             "q5": "Soy ídolo, manager o equipo. ¿Cómo empiezo?",
@@ -1082,5 +1144,124 @@
         "title": "No encontramos esta página",
         "body": "Puede que el enlace esté roto o que la página ya no exista.",
         "cta": "Volver al inicio"
+    },
+    "collaborations": {
+        "title": "Ídolos invitados",
+        "howItWorks": "Invita la cuenta real de otro ídolo. Solo cuando acepte, los fans lo verán en esta dinámica y su equipo podrá verla en su panel (solo lectura).",
+        "saveFirst": "Guarda primero para poder invitar ídolos a esta dinámica.",
+        "searchPlaceholder": "Busca un ídolo por nombre",
+        "noResults": "Sin resultados",
+        "invite": "Invitar",
+        "alreadyInvited": "Invitado",
+        "invited": "Invitación enviada a {count, plural, one {# persona} other {# personas}} de su equipo",
+        "invitedNoEmail": "Invitación creada. Su equipo aún no tiene un correo para avisarle.",
+        "resend": "Reenviar",
+        "resent": "Invitación reenviada",
+        "cancel": "Cancelar invitación",
+        "end": "Terminar",
+        "ended": "Colaboración terminada",
+        "cancelConfirm": "¿Cancelar la invitación a {name}?",
+        "endConfirm": "¿Terminar la colaboración con {name}? Conservará lo que ya pudo ver.",
+        "status": {
+            "pending": "Pendiente",
+            "accepted": "Aceptada",
+            "declined": "Rechazada",
+            "ended": "Terminada",
+            "expired": "Vencida"
+        },
+        "pageTitle": "Colaboraciones",
+        "pageLead": "Otros ídolos pueden invitarte a sus dinámicas. Si aceptas, las ves aquí en modo lectura y los fans te ven en ellas.",
+        "tokenTitle": "Te invitaron a colaborar",
+        "tokenBody": "Acepta para ver esa dinámica en tu panel y aparecer ante los fans; rechaza si no quieres participar.",
+        "tokenInvite": "{host} te invita a «{dynamic}» en {event}.",
+        "onlyAuthors": "Solo propietarios o administradores pueden responder",
+        "accept": "Aceptar",
+        "decline": "Rechazar",
+        "acceptedToast": "Colaboración aceptada en {name}",
+        "declinedToast": "Invitación rechazada",
+        "pendingTitle": "Invitaciones ({count})",
+        "pendingEmpty": "No tienes invitaciones pendientes.",
+        "activeTitle": "Colaboraciones activas ({count})",
+        "activeEmpty": "Aún no colaboras en eventos de otros ídolos.",
+        "historyTitle": "Historial",
+        "open": "Ver",
+        "from": "De {host}",
+        "expires": "vence el {date}",
+        "hostedBy": "Evento de {host}",
+        "viewOnly": "Solo lectura",
+        "until": "datos hasta el {date}",
+        "sharedNotFound": "No tienes acceso a este evento.",
+        "participants": "Fans participando",
+        "contributed": "Aportes del evento",
+        "participantsLine": "{total, plural, one {# fan} other {# fans}}",
+        "fan": "Fan",
+        "instagram": "Instagram",
+        "results": "Resultados del concurso",
+        "resultsPending": "Los resultados aparecen unos segundos después del cierre.",
+        "segments": {
+            "title": "Por quién vienen",
+            "lead": "{count} fans del evento según su afinidad con cada ídolo. Se calcula cada noche con su actividad, nunca con montos.",
+            "leadGuest": "{count} fans de tus dinámicas en este evento, según su afinidad. Se calcula cada noche con su actividad, nunca con montos.",
+            "with": "Con {name}",
+            "onlyYou": "Solo tú",
+            "onlyOther": "Solo {name}",
+            "both": "Ambos",
+            "neither": "Ninguno todavía",
+            "withoutConsent": "Sin autorización de personalización",
+            "small": "menos de 5",
+            "hidden": "oculto",
+            "withheldNote": "Los grupos de menos de 5 fans no se muestran, y otro grupo se oculta con ellos para que no se puedan deducir.",
+            "nightly": "Actualizado cada noche",
+            "tooFew": "Menos de 5 fans en tus dinámicas: el detalle no se muestra para no delatar a nadie.",
+            "tooFewHost": "Menos de 5 fans en el evento: el detalle no se muestra para no delatar a nadie.",
+            "pending": "Aún sin datos: el reparto se calcula cada noche."
+        },
+        "since": "Desde",
+        "moreFans": "Se muestran los primeros 500 fans en llegar; los totales incluyen a todos."
+    },
+    "classification": {
+        "title": "Clasificación de ídolos",
+        "lead": "Ubica cada ídolo en el árbol (dominio › género o deporte › subgénero o liga › club). Alimenta las recomendaciones de Descubre e Inicio.",
+        "noAccess": "Solo administradores de Fandi.",
+        "tree": "Árbol",
+        "newDomain": "Nuevo dominio",
+        "nameEs": "Nombre (es)",
+        "nameEn": "Nombre (en)",
+        "addChild": "Agregar subcategoría",
+        "rename": "Renombrar",
+        "delete": "Borrar",
+        "idolCount": "{count, plural, one {# ídolo} other {# ídolos}}",
+        "idols": "Ídolos",
+        "filterUnclassified": "Sin clasificar",
+        "filterAll": "Todos",
+        "search": "Buscar ídolo",
+        "private": "Privado",
+        "edit": "Editar",
+        "placements": "Ubicación en el árbol",
+        "placementHint": "Hasta 5. Sin ninguna, el ídolo vuelve a «Sin clasificar».",
+        "chooseCategory": "Elige una categoría",
+        "region": "Región (CO, CO-ANT)",
+        "regionInvalid": "Usa un código ISO: CO o CO-ANT",
+        "addPlacement": "Agregar ubicación",
+        "remove": "Quitar",
+        "tags": "Etiquetas",
+        "tagsHint": "Separadas por comas; se guardan en minúsculas y sin tildes (máx. 10).",
+        "saved": "Clasificación guardada",
+        "created": "Categoría creada",
+        "renamed": "Categoría renombrada",
+        "deleted": "Categoría borrada",
+        "empty": "No hay ídolos por clasificar.",
+        "loadError": "No pudimos cargar la clasificación.",
+        "deleteConfirm": "¿Borrar la categoría «{name}»?",
+        "deleteBody": "Esto no se puede deshacer.",
+        "newDomainTitle": "Nuevo dominio",
+        "newChildTitle": "Nueva subcategoría en {parent}",
+        "renameTitle": "Renombrar categoría",
+        "editIdolTitle": "Clasificar a {name}",
+        "tagsOver": "Tienes {count} etiquetas y el máximo es {max}: quita {over} para guardar.",
+        "errors": {
+            "CATEGORY_NOT_EMPTY": "Solo se borra una categoría sin subcategorías ni ídolos",
+            "CATEGORY_TOO_DEEP": "El árbol tiene como máximo 4 niveles"
+        }
     }
 }

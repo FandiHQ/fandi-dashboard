@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored design reference (Azul Bloque handoff); not app code.
+    "design-handoff/**",
   ]),
 ]);
 

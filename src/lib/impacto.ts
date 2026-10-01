@@ -44,3 +44,16 @@ export function filterByKind<T extends { kind?: ExperienceKind | null }>(
     if (filter === 'all') return items;
     return items.filter((item) => kindOf(item) === filter);
 }
+
+/**
+ * Sala en vivo: "Respondieron N" is a contest number, so it shows only for
+ * a dynamic known to be an oportunidad. While the list has not loaded, or
+ * for an id it does not hold, nothing is claimed.
+ */
+export function showsAnswered(
+    experienceId: string,
+    experiences: readonly { id: string; kind?: ExperienceKind | null }[] | undefined,
+): boolean {
+    const exp = experiences?.find((e) => e.id === experienceId);
+    return !!exp && kindOf(exp) === 'oportunidad';
+}

@@ -209,7 +209,7 @@ export default function EditEventPage() {
                 toast.error(t('lineupInUse'));
                 return;
             }
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });

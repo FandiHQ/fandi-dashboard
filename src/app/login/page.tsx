@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useEffect } from 'react';
+import { safeNextPath } from '@/lib/safe-next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
@@ -42,7 +43,7 @@ function LoginContent() {
         if (!isLoading && isAuthenticated) {
             const destination = memberRole === 'staff'
                 ? '/staff'
-                : (next || '/dashboard');
+                : safeNextPath(next);
             router.replace(destination);
         }
     }, [isLoading, isAuthenticated, memberRole, next, router]);

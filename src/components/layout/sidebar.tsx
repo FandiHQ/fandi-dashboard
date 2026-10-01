@@ -17,11 +17,11 @@ import { isNavActive, getVisibleItems } from './nav-config';
 import { LogoutDialog } from './logout-dialog';
 
 export function Sidebar() {
-    const { organization, memberRole } = useAuth();
+    const { user, organization, memberRole } = useAuth();
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
-    const visibleItems = getVisibleItems(memberRole);
+    const visibleItems = getVisibleItems(memberRole, user?.role === 'admin');
 
     return (
         <aside className="flex h-full w-[84px] flex-col items-center justify-between bg-ink py-5">

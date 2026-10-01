@@ -8,7 +8,8 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { eventsApi, analyticsApi, auctionsApi } from '@/lib/api-hooks';
+import { eventsApi, analyticsApi, auctionsApi, experiencesApi } from '@/lib/api-hooks';
+import { showsAnswered } from '@/lib/impacto';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { formatFandis, formatCop } from '@/lib/currency';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -307,6 +308,13 @@ export default function LiveDashboardPage() {
         enabled: event?.status === 'live',
     });
 
+    // ── Experiences (kind only: the breakdown does not carry it) ──
+    const { data: experienceList } = useQuery({
+        queryKey: ['experiences', eventId],
+        queryFn: () => experiencesApi.list(eventId),
+        enabled: event?.status === 'live',
+    });
+
     // ── Auctions (every 5s) ──
     const { data: auctions } = useQuery({
         queryKey: ['events', eventId, 'auctions'],
@@ -498,6 +506,15 @@ export default function LiveDashboardPage() {
                                             <div className="font-space-mono text-[10px] uppercase text-lilac">
                                                 ≈ {formatCop(exp.totalRaised)} · {fmtInt(exp.contributorCount)} {t('fans')}
                                             </div>
+                                            {/* Knowledge contest (oportunidades only): a count
+                                                only — never who or whether right. */}
+                                            {showsAnswered(exp.experienceId, experienceList) && (
+                                                <div
+                                                    className="mt-1 font-space-mono text-[11px] font-bold uppercase text-lime"
+                                                    data-testid="live-answered">
+                                                    {t('answered', { count: fmtInt(exp.answeredCount ?? 0) })}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

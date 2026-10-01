@@ -240,6 +240,7 @@ function MemberActions({
     member: OrganizationMember;
     t: ReturnType<typeof useTranslations>;
 }) {
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -250,7 +251,7 @@ function MemberActions({
             toast.success(t('inviteResent'));
         },
         onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });
@@ -311,6 +312,7 @@ function MemberActions({
 // ── Invite Member Dialog ──
 
 function InviteMemberDialog({ t, isOwner }: { t: ReturnType<typeof useTranslations>; isOwner: boolean }) {
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
@@ -337,7 +339,7 @@ function InviteMemberDialog({ t, isOwner }: { t: ReturnType<typeof useTranslatio
             setOpen(false);
         },
         onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });
@@ -474,6 +476,7 @@ function ChangeRoleDialog({
     onOpenChange: (open: boolean) => void;
     t: ReturnType<typeof useTranslations>;
 }) {
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
     const [newRole, setNewRole] = useState<OrgRole>(member.role === 'owner' ? 'admin' : member.role);
     const [selectedEventIds, setSelectedEventIds] = useState<string[]>(member.eventIds ?? []);
@@ -496,7 +499,7 @@ function ChangeRoleDialog({
             onOpenChange(false);
         },
         onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });
@@ -591,6 +594,7 @@ function RemoveConfirmDialog({
     onOpenChange: (open: boolean) => void;
     t: ReturnType<typeof useTranslations>;
 }) {
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
 
     const remove = useMutation({
@@ -601,7 +605,7 @@ function RemoveConfirmDialog({
             onOpenChange(false);
         },
         onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });

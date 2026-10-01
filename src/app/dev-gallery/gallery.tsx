@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { ContestShowcase } from './contest-showcase';
+import { SegmentsShowcase } from './segments-showcase';
 
 const STATS = [
     { k: 'RECAUDADO', v: '1.578 F', sub: '$ 7.890.000' },
@@ -145,6 +147,9 @@ export function Gallery() {
                         </Sheet>
                     </div>
                 </div>
+
+                <ContestShowcase />
+                <SegmentsShowcase />
             </div>
         </div>
     );

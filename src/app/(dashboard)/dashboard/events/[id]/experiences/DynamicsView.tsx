@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -11,7 +11,16 @@ import {
     Trash2, X, Clock, HeartHandshake,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
-import { experiencesApi, eventsApi, slotsApi } from '@/lib/api-hooks';
+import { contestApi, experiencesApi, eventsApi, slotsApi } from '@/lib/api-hooks';
+import {
+    BANK_MIN_QUESTIONS,
+    bankPanelState,
+    bankSaveAction,
+    canSaveBank,
+    type BankQuestionDraft,
+} from '@/lib/contest-bank';
+import { QuestionBankEditor } from '@/components/contest/QuestionBankEditor';
+import { IdolCollaborationsSection } from '@/components/collaborations/IdolCollaborationsSection';
 import { filterByKind, goalReached, impactoPercent, isImpacto } from '@/lib/impacto';
 import { escuadraColors, escuadraDefaultNames } from '@/lib/chart-colors';
 import { formatCop } from '@/lib/currency';
@@ -24,6 +33,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatusBadge as EventStatusBadge } from '@/components/ui/status-badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { useConfirmDialog } from '@/components/ui/confirm-dialog';
 import { motion } from 'framer-motion';
 
 // ── Category levels, VIP (4) first. Colours come from chart-colors
@@ -162,6 +172,12 @@ function OpportunityCard({
         queryFn: () => experiencesApi.impactores(exp.id),
         enabled: impacto && expanded,
     });
+    // Knowledge contest: authors can read the (locked) bank once live.
+    const bankQuery = useQuery({
+        queryKey: ['experiences', exp.id, 'questions'],
+        queryFn: () => contestApi.getBank(exp.id),
+        enabled: !impacto && isWrite && expanded && exp.status !== 'pending',
+    });
 
     return (
         <motion.div
@@ -185,6 +201,16 @@ function OpportunityCard({
                     {impacto && reached && (
                         <span className={`${PILL} border-ink bg-lime text-ink`}>
                             {t('goalReached')}
+                        </span>
+                    )}
+                    {!impacto && exp.status === 'pending' && exp.contestReady === false && (
+                        <span
+                            className={`${PILL} border-alert-white bg-white text-alert-white`}
+                            data-testid="bank-missing">
+                            {t('questions.cardMissing', {
+                                count: exp.contestQuestionCount ?? 0,
+                                min: BANK_MIN_QUESTIONS,
+                            })}
                         </span>
                     )}
                     <h3 className="min-w-0 truncate font-display text-[18px]">{exp.name}</h3>
@@ -370,12 +396,12 @@ function OpportunityCard({
                                             key={row.userId}
                                             className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-ink">
                                             <span className="w-8 font-space-mono text-[11px] text-blue">#{row.position}</span>
-                                            {row.isPrivate ? (
-                                                <span className="flex items-center gap-1.5 italic text-muted-white">
-                                                    <Lock size={11} /> {t('privateFan')}
+                                            {/* The idol sees private fans too (hidden from other fans only). */}
+                                            <span>{row.firstName ?? '—'}</span>
+                                            {row.isPrivate && (
+                                                <span className="flex items-center gap-1 font-space-mono text-[10px] font-normal uppercase text-muted-white">
+                                                    <Lock size={10} /> {t('privateMark')}
                                                 </span>
-                                            ) : (
-                                                <span>{row.firstName ?? '—'}</span>
                                             )}
                                         </li>
                                     ))}
@@ -410,6 +436,13 @@ function OpportunityCard({
                             </span>
                             <p className="text-sm text-body-white">{exp.redemptionInstructions}</p>
                         </div>
+                    )}
+                    {bankQuery.data && (
+                        <QuestionBankEditor
+                            questions={bankQuery.data.questions}
+                            onChange={() => {}}
+                            locked
+                        />
                     )}
                 </div>
             )}
@@ -466,8 +499,14 @@ function OpportunityFormDialog({
     onClose: () => void;
 }) {
     const t = useTranslations('experiences');
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
-    const isEditing = !!existing;
+    const { confirm, dialog: confirmDialog } = useConfirmDialog();
+    // The oportunidad's id once it exists: the one being edited, or the one
+    // this panel just created when its bank save failed (M2) — the panel
+    // then stays open in edit mode so a retry only PUTs the bank.
+    const [savedId, setSavedId] = useState<string | null>(existing?.id ?? null);
+    const isEditing = savedId !== null;
     const impacto = kind === 'impacto';
 
     // Phase 6 — cause fields (impactos only). Goal is typed in Fandis and
@@ -497,29 +536,39 @@ function OpportunityFormDialog({
         queryFn: () => slotsApi.list(eventId),
     });
 
-    const { mutate: create, isPending: isCreating } = useMutation({
-        mutationFn: (dto: CreateExperienceDto) => experiencesApi.create(eventId, dto),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
-            queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
-            toast.success(impacto ? t('impactoCreated') : t('created'));
-            onClose();
-        },
-        onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : 'Error'); },
+    // Knowledge contest bank (oportunidades only). null = untouched, so an
+    // edit that never opens the questions never rewrites them.
+    // Only a pre-existing oportunidad has a bank to load: until it has
+    // loaded, the editor is not shown and nothing can be saved over it (an
+    // empty draft saved on top of an unloaded bank would wipe it). Always a
+    // fresh read when the panel opens (never a cached copy), and no
+    // background refetch after that while the panel is open.
+    const existingId = existing?.id ?? null;
+    const bankEnabled = !impacto && existingId !== null;
+    const bankQuery = useQuery({
+        queryKey: ['experiences', existingId, 'questions'],
+        queryFn: () => contestApi.getBank(existingId!),
+        enabled: bankEnabled,
+        refetchOnMount: 'always',
+        staleTime: Infinity,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     });
-
-    const { mutate: update, isPending: isUpdating } = useMutation({
-        mutationFn: (dto: Partial<CreateExperienceDto>) => experiencesApi.update(existing!.id, dto),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
-            queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
-            toast.success(impacto ? t('impactoUpdated') : t('updated'));
-            onClose();
-        },
-        onError: (err: unknown) => { toast.error(err instanceof Error ? err.message : 'Error'); },
+    const [bankDraft, setBankDraft] = useState<BankQuestionDraft[] | null>(null);
+    const {
+        loaded: bankLoaded,
+        loading: bankLoading,
+        failed: bankFailed,
+    } = bankPanelState({
+        enabled: bankEnabled,
+        hasDraft: bankDraft !== null,
+        isSuccess: bankQuery.isSuccess,
+        isFetching: bankQuery.isFetching,
+        isError: bankQuery.isError,
     });
-
-    const isPending = isCreating || isUpdating;
+    const questions: BankQuestionDraft[] = bankDraft ?? bankQuery.data?.questions ?? [];
+    const bankLocked = bankQuery.data?.locked ?? false;
+    const bankValid = impacto || bankDraft === null || canSaveBank(bankDraft);
 
     const goalFandisNumber = goalFandis.trim() === '' ? null : Number(goalFandis);
     const goalValid =
@@ -527,14 +576,11 @@ function OpportunityFormDialog({
         (Number.isInteger(goalFandisNumber) && goalFandisNumber > 0);
     const impactoValid = !impacto || goalValid;
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!name.trim()) return;
-
+    /** The body the panel would send now (also the dirty-check snapshot). */
+    const buildDto = (): CreateExperienceDto => {
         // Phase 6 — an Impacto never sends prize/slot fields.
         if (impacto) {
-            if (!impactoValid) return;
-            const dto: CreateExperienceDto = {
+            return {
                 name: name.trim(),
                 ...(description && { description }),
                 kind: 'impacto',
@@ -545,12 +591,6 @@ function OpportunityFormDialog({
                 ...(beneficiaryName.trim() && { beneficiaryName: beneficiaryName.trim() }),
                 tagIds,
             };
-            if (isEditing) {
-                update(dto);
-            } else {
-                create(dto);
-            }
-            return;
         }
 
         // Only include escuadra names that have values
@@ -559,7 +599,7 @@ function OpportunityFormDialog({
             if (val.trim()) names[level] = val.trim();
         }
 
-        const dto: CreateExperienceDto = {
+        return {
             name: name.trim(),
             ...(description && { description }),
             winnersPerEscuadra,
@@ -570,6 +610,113 @@ function OpportunityFormDialog({
             slotId: slotId || null,
             tagIds,
         };
+    };
+    // What the server holds for the form fields: the opening values, then
+    // whatever this panel last saved.
+    const [baselineJson, setBaselineJson] = useState(() => JSON.stringify(buildDto()));
+    const dirty = bankDraft !== null || JSON.stringify(buildDto()) !== baselineJson;
+
+    /** Saves the bank after the oportunidad exists (a new one has no id before). */
+    const saveBank = async (experienceId: string) => {
+        if (impacto || bankDraft === null) return;
+        // Never send a bank the panel has not loaded: it would replace
+        // the saved questions with whatever the draft holds.
+        const action = bankSaveAction({
+            enabled: bankEnabled,
+            hasDraft: true,
+            isSuccess: bankQuery.isSuccess,
+            locked: bankLocked,
+        });
+        if (action === 'refuse') throw new Error(t('questions.loadError'));
+        if (action === 'skip') return;
+        await contestApi.replaceBank(experienceId, bankDraft);
+        queryClient.invalidateQueries({ queryKey: ['experiences', experienceId, 'questions'] });
+    };
+
+    const onSaveError = (err: unknown) => { toast.error(err instanceof Error ? err.message : tCommon('error')); };
+
+    const { mutate: create, isPending: isCreating } = useMutation({
+        mutationFn: async (dto: CreateExperienceDto) => {
+            const created = await experiencesApi.create(eventId, dto);
+            // The oportunidad now exists: a failed bank save must not leave
+            // the panel in "create" mode (a retry would duplicate it).
+            try {
+                await saveBank(created.id);
+                return { created, dto, bankError: null as string | null };
+            } catch (err) {
+                return { created, dto, bankError: err instanceof Error ? err.message : tCommon('error') };
+            }
+        },
+        onSuccess: ({ created, dto, bankError }) => {
+            queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
+            queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
+            if (bankError) {
+                // M2: stay open, now editing the created one; bankDraft is
+                // kept, so saving again only PUTs the bank.
+                setSavedId(created.id);
+                setBaselineJson(JSON.stringify(dto));
+                toast.error(t('questions.saveFailedAfterCreate', { message: bankError }));
+                return;
+            }
+            toast.success(impacto ? t('impactoCreated') : t('created'));
+            onClose();
+        },
+        onError: onSaveError,
+    });
+
+    const { mutate: update, isPending: isUpdating } = useMutation({
+        mutationFn: async (dto: CreateExperienceDto) => {
+            const id = savedId!;
+            // Unchanged fields are not re-sent (after M2 this is bank only).
+            if (JSON.stringify(dto) !== baselineJson) {
+                await experiencesApi.update(id, dto);
+                setBaselineJson(JSON.stringify(dto));
+            }
+            await saveBank(id);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
+            queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
+            toast.success(impacto ? t('impactoUpdated') : t('updated'));
+            onClose();
+        },
+        onError: onSaveError,
+    });
+
+    const isPending = isCreating || isUpdating;
+
+    // Leaving the page with unsaved work asks the browser to confirm.
+    useEffect(() => {
+        if (!dirty) return;
+        const onBeforeUnload = (e: BeforeUnloadEvent) => {
+            e.preventDefault();
+            e.returnValue = '';
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
+        return () => window.removeEventListener('beforeunload', onBeforeUnload);
+    }, [dirty]);
+
+    /** Close, asking first when there is unsaved work (M1). */
+    const requestClose = async () => {
+        if (isPending) return;
+        if (dirty) {
+            const discard = await confirm({
+                title: t('panel.discardTitle'),
+                description: t('panel.discardBody'),
+                confirmLabel: t('panel.discard'),
+                cancelLabel: t('panel.keepEditing'),
+            });
+            if (!discard) return;
+        }
+        onClose();
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!name.trim() || isPending) return;
+        if (impacto && !impactoValid) return;
+        if (!impacto && (bankLoading || !bankValid)) return;
+        const dto = buildDto();
         if (isEditing) {
             update(dto);
         } else {
@@ -578,7 +725,7 @@ function OpportunityFormDialog({
     };
 
     return (
-        <Sheet open onOpenChange={(open) => { if (!open) onClose(); }}>
+        <Sheet open onOpenChange={(open) => { if (!open) void requestClose(); }}>
             <SheetContent side="right" className="gap-0 p-0" aria-describedby={undefined}>
                 <SheetHeader className="shrink-0 border-b-2 border-ink px-7 py-[22px] pr-16">
                     <SheetTitle className="text-[24px]">
@@ -665,6 +812,9 @@ function OpportunityFormDialog({
                                         {t('panel.totalWinners', { count: winnersPerEscuadra * CATEGORY_LEVELS.length })}
                                     </span>
                                 </div>
+                                <p className="font-space-mono text-[10px] font-bold uppercase text-ink" data-testid="same-winners-help">
+                                    {t('panel.sameWinners')}
+                                </p>
                                 <Stepper
                                     onDecrement={() => setWinnersPerEscuadra((v) => Math.max(1, v - 1))}
                                     onIncrement={() => setWinnersPerEscuadra((v) => Math.min(100, v + 1))}
@@ -723,6 +873,43 @@ function OpportunityFormDialog({
                             </div>
                             )}
 
+                            {/* Knowledge contest bank — Oportunidades only. When
+                                editing, the editor (and its Add button) appears
+                                only once the saved bank has loaded. */}
+                            {!impacto && bankLoaded && (
+                                <QuestionBankEditor
+                                    questions={questions}
+                                    onChange={setBankDraft}
+                                    locked={bankLocked}
+                                />
+                            )}
+                            {!impacto && bankLoading && (
+                                <p className="font-space-mono text-[11px] text-muted-white" data-testid="question-bank-loading">
+                                    {t('questions.loading')}
+                                </p>
+                            )}
+                            {!impacto && bankFailed && (
+                                <div
+                                    className="flex flex-wrap items-center justify-between gap-3 rounded-[10px] border-2 border-alert-white px-3 py-2.5"
+                                    role="alert"
+                                    data-testid="question-bank-error"
+                                >
+                                    <p className="min-w-0 flex-1 text-[12px] font-bold text-alert-white">
+                                        {t('questions.loadError')}
+                                    </p>
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        size="sm"
+                                        onClick={() => void bankQuery.refetch()}
+                                        disabled={bankQuery.isFetching}
+                                    >
+                                        {bankQuery.isFetching && <Loader2 size={14} className="animate-spin" />}
+                                        {t('questions.retry')}
+                                    </Button>
+                                </div>
+                            )}
+
                             {/* Franja (slot) — Step 6.2. Impactos open with the
                                 event's Fandi window: no franja. */}
                             {!impacto && (
@@ -745,18 +932,29 @@ function OpportunityFormDialog({
                             </div>
                             )}
 
-                            {/* Artistas (lineup tags) — Step 6.4 */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className={FIELD_LABEL}>
-                                    {t('artists')}
-                                </label>
-                                <ArtistMultiSelect
-                                    lineup={lineup}
-                                    value={tagIds}
-                                    onChange={setTagIds}
-                                    emptyHint={t('artistsEmpty')}
-                                />
-                            </div>
+                            {/* Idol collaborations (RFC §3): real idol accounts,
+                                by invitation. They replace the text tags. */}
+                            <IdolCollaborationsSection
+                                eventId={eventId}
+                                dynamicType="experience"
+                                dynamicId={savedId}
+                            />
+
+                            {/* Legacy lineup text tags (Step 6.4): kept so old
+                                ones can be seen and removed. */}
+                            {tagIds.length > 0 && (
+                                <div className="flex flex-col gap-1.5">
+                                    <label className={FIELD_LABEL}>
+                                        {t('legacyTags')}
+                                    </label>
+                                    <ArtistMultiSelect
+                                        lineup={lineup}
+                                        value={tagIds}
+                                        onChange={setTagIds}
+                                        emptyHint={t('artistsEmpty')}
+                                    />
+                                </div>
+                            )}
 
                             {/* Surprise + redemption — Oportunidades only */}
                             {!impacto && (
@@ -797,7 +995,7 @@ function OpportunityFormDialog({
                             type="button"
                             variant="outline"
                             size="lg"
-                            onClick={onClose}
+                            onClick={() => void requestClose()}
                             className="flex-1"
                         >
                             {t('panel.cancel')}
@@ -805,7 +1003,7 @@ function OpportunityFormDialog({
                         <Button
                             type="submit"
                             size="lg"
-                            disabled={!name.trim() || !impactoValid || isPending}
+                            disabled={!name.trim() || !impactoValid || !bankValid || bankLoading || isPending}
                             className="flex-[2] font-black [font-stretch:112%]"
                         >
                             {isPending && <Loader2 size={14} className="animate-spin" />}
@@ -813,6 +1011,7 @@ function OpportunityFormDialog({
                         </Button>
                     </div>
                 </form>
+                {confirmDialog}
             </SheetContent>
         </Sheet>
     );
@@ -833,14 +1032,16 @@ function SectionHeader({ live, children }: { live?: boolean; children: React.Rea
 // ── Main page ──
 /**
  * Oportunidades and Impactos are separate sections (separate tabs, separate
- * create panels): an Oportunidad is a draw by categories, an Impacto is a
- * cause with a goal and no draw. Same data (experiences), split by `kind`.
+ * create panels): an Oportunidad is a knowledge contest by categories (the
+ * fastest right answer wins in each), an Impacto is a cause with a goal and
+ * no prize. Same data (experiences), split by `kind`.
  */
 export function DynamicsView({ kind }: { kind: ExperienceKind }) {
     const impactoMode = kind === 'impacto';
     const params = useParams();
     const eventId = params.id as string;
     const t = useTranslations('experiences');
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
     const { memberRole } = useAuth();
     const isWrite = memberRole === 'owner' || memberRole === 'admin';
@@ -865,7 +1066,7 @@ export function DynamicsView({ kind }: { kind: ExperienceKind }) {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
             toast.success(t('revealed'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const closeMutation = useMutation({
@@ -875,7 +1076,7 @@ export function DynamicsView({ kind }: { kind: ExperienceKind }) {
             const closedExp = experiences?.find((e) => e.id === id);
             toast.success(closedExp && isImpacto(closedExp) ? t('impactoClosed') : t('closed'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const deleteMutation = useMutation({
@@ -884,7 +1085,7 @@ export function DynamicsView({ kind }: { kind: ExperienceKind }) {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
             toast.success(t('deleted'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const handleReveal = (id: string) => {

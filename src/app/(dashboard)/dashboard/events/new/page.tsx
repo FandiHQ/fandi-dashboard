@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/select';
 
 export default function CreateEventPage() {
+    const tCommon = useTranslations('common');
     const router = useRouter();
     const t = useTranslations('events');
     const { memberRole } = useAuth();
@@ -135,7 +136,7 @@ export default function CreateEventPage() {
             toast.success(t('created'));
         },
         onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });

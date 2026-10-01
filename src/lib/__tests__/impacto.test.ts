@@ -6,6 +6,7 @@ import {
     impactoPercent,
     isImpacto,
     kindOf,
+    showsAnswered,
 } from '../impacto.ts';
 
 describe('impacto helpers (Phase 6)', () => {
@@ -42,5 +43,14 @@ describe('impacto helpers (Phase 6)', () => {
         assert.deepEqual(filterByKind(items, 'all').map((i) => i.id), ['a', 'b', 'c']);
         assert.deepEqual(filterByKind(items, 'impacto').map((i) => i.id), ['a']);
         assert.deepEqual(filterByKind(items, 'oportunidad').map((i) => i.id), ['b', 'c']);
+    });
+
+    test('"Respondieron N" only for a dynamic known to be an oportunidad', () => {
+        const list = [{ id: 'o1', kind: 'oportunidad' as const }, { id: 'i1', kind: 'impacto' as const }, { id: 'legacy' }];
+        assert.equal(showsAnswered('o1', list), true);
+        assert.equal(showsAnswered('legacy', list), true);
+        assert.equal(showsAnswered('i1', list), false);
+        assert.equal(showsAnswered('o1', undefined), false);
+        assert.equal(showsAnswered('missing', list), false);
     });
 });

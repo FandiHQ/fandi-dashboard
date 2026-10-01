@@ -1,5 +1,5 @@
 import {
-    LayoutDashboard, Calendar, Users, Settings, Trophy,
+    LayoutDashboard, Calendar, Users, Settings, Trophy, Handshake, FolderTree,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -9,6 +9,7 @@ export interface NavItem {
     labelKey: string;        // i18n key within 'dashboardNav' namespace
     exactMatch?: boolean;    // true = pathname === href, false = startsWith
     roles?: string[];        // if set, only shown for these memberRole values
+    platformAdmin?: boolean; // only for platform admins (users.role = 'admin')
 }
 
 export const navItems: NavItem[] = [
@@ -29,6 +30,13 @@ export const navItems: NavItem[] = [
         labelKey: 'topFans',
     },
     {
+        // Idol collaborations: invitations and events shared with my org.
+        href: '/dashboard/collaborations',
+        icon: Handshake,
+        labelKey: 'collaborations',
+        roles: ['owner', 'admin', 'viewer'],
+    },
+    {
         href: '/dashboard/team',
         icon: Users,
         labelKey: 'team',
@@ -38,6 +46,14 @@ export const navItems: NavItem[] = [
         href: '/dashboard/settings',
         icon: Settings,
         labelKey: 'settings',
+    },
+    {
+        // Idol classification tree (fandi-api RFC §4). The API checks the
+        // persisted role; this only hides the entry.
+        href: '/dashboard/admin/classification',
+        icon: FolderTree,
+        labelKey: 'classification',
+        platformAdmin: true,
     },
 ];
 
@@ -50,8 +66,9 @@ export function isNavActive(item: NavItem, pathname: string): boolean {
 }
 
 // Helper: filter items by role
-export function getVisibleItems(memberRole: string | null): NavItem[] {
+export function getVisibleItems(memberRole: string | null, isPlatformAdmin = false): NavItem[] {
     return navItems.filter(item => {
+        if (item.platformAdmin && !isPlatformAdmin) return false;
         if (!item.roles) return true;
         return memberRole ? item.roles.includes(memberRole) : false;
     });

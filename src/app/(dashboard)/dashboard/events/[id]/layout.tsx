@@ -62,6 +62,7 @@ const TABS: readonly TabDef[] = [
 ] as const;
 
 export default function EventDetailLayout({ children }: { children: React.ReactNode }) {
+    const tCommon = useTranslations('common');
     const params = useParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -95,12 +96,14 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 'FANDI_OPENS_BEFORE_EVENT',
                 'FANDI_CLOSES_AFTER_EVENT',
                 'FANDI_WINDOW_INVALID',
+                // Knowledge contest: every oportunidad needs ≥ 20 questions (BANK_MIN_QUESTIONS).
+                'CONTEST_BANK_INCOMPLETE',
             ];
             if (err instanceof ApiError && DATE_CODES.includes(err.code)) {
                 toast.error(t(`validation.${err.code}`));
                 return;
             }
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });
@@ -113,7 +116,7 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
             router.push('/dashboard/events');
         },
         onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : 'Error';
+            const message = err instanceof Error ? err.message : tCommon('error');
             toast.error(message);
         },
     });

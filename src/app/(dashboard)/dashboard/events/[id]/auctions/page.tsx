@@ -16,6 +16,7 @@ import { auctionsApi, eventsApi } from '@/lib/api-hooks';
 import { ApiError } from '@/lib/api';
 import type { Auction, CreateAuctionDto, UpdateAuctionDto, AuctionStatus, Event } from '@/types/api';
 import { ArtistMultiSelect } from '@/components/events/ArtistMultiSelect';
+import { IdolCollaborationsSection } from '@/components/collaborations/IdolCollaborationsSection';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -718,18 +719,28 @@ function AuctionFormDialog({
                                 />
                             </div>
 
-                            {/* Artistas (lineup tags) — Step 6.4 */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className={FIELD_LABEL}>
-                                    {t('artists')}
-                                </label>
-                                <ArtistMultiSelect
-                                    lineup={event?.lineup ?? []}
-                                    value={tagIds}
-                                    onChange={setTagIds}
-                                    emptyHint={t('artistsEmpty')}
-                                />
-                            </div>
+                            {/* Idol collaborations (RFC §3): real idol accounts,
+                                by invitation. They replace the text tags. */}
+                            <IdolCollaborationsSection
+                                eventId={eventId}
+                                dynamicType="auction"
+                                dynamicId={existing?.id ?? null}
+                            />
+
+                            {/* Legacy lineup text tags (Step 6.4). */}
+                            {tagIds.length > 0 && (
+                                <div className="flex flex-col gap-1.5">
+                                    <label className={FIELD_LABEL}>
+                                        {t('legacyTags')}
+                                    </label>
+                                    <ArtistMultiSelect
+                                        lineup={event?.lineup ?? []}
+                                        value={tagIds}
+                                        onChange={setTagIds}
+                                        emptyHint={t('artistsEmpty')}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -1010,6 +1021,7 @@ const CARD_GRID = 'grid grid-cols-1 items-start gap-6 md:grid-cols-2 xl:grid-col
 
 // ── Main page ──
 export default function AuctionsPage() {
+    const tCommon = useTranslations('common');
     const params = useParams();
     const eventId = params.id as string;
     const t = useTranslations('auctions');
@@ -1067,7 +1079,7 @@ export default function AuctionsPage() {
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'auctions'] });
             toast.success(t('activate'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const pauseMutation = useMutation({
@@ -1076,7 +1088,7 @@ export default function AuctionsPage() {
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'auctions'] });
             toast.success(t('pause'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const resumeMutation = useMutation({
@@ -1085,7 +1097,7 @@ export default function AuctionsPage() {
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'auctions'] });
             toast.success(t('resume'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const endMutation = useMutation({
@@ -1094,7 +1106,7 @@ export default function AuctionsPage() {
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'auctions'] });
             toast.success(t('end'));
         },
-        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : 'Error'),
+        onError: (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error')),
     });
 
     const deleteMutation = useMutation({

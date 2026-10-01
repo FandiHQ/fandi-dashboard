@@ -46,6 +46,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import type { WinnersListItem, WinnersListQuery } from '@/types/api';
+import { ContestResultsSection } from '@/components/contest/ContestResultsSection';
 
 // ─── Local types ─────────────────────────────────────────────
 
@@ -294,6 +295,9 @@ export default function WinnersPage() {
                     </Table>
                 )}
             </div>
+
+            {/* ─── Knowledge contest: per-category results ─── */}
+            <ContestResultsSection eventId={eventId} eventName={event?.name} canExport={isWriteRole} />
 
             {/* ─── Pagination ─── */}
             {winners && winners.total > winners.limit && (

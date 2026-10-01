@@ -17,28 +17,35 @@ import { ScrollCue } from './ScrollAffordance';
  *
  * The mechanic is not explained in prose, it is SIMULATED: 600 dots (fans)
  * fly in, sort themselves into four categorías, every categoría receives
- * the SAME prize, and then the draw fires — one dot lights up per
- * categoría, at random.
+ * the SAME prize, and then one dot lights up per categoría — the fan who
+ * answered right the fastest (fandi-api knowledge contest, RFC §2).
  *
- * The point it teaches: every categoría has its own winner and the same
- * prize, so a fan in BASE always has a real chance.
+ * The point it teaches: every categoría has the same number of winners and
+ * the same prize, and a fan in BASE competes only with BASE.
  *
  * Deliberately NO statistics on screen and no odds copy (fan-side copy
  * rule, DESIGN_GUIDELINES §6: no "1 de cada N", no percentages, no
  * "más probabilidades"). Category colours are the equal-weight set from
  * chart-colors.ts so no band reads as "better".
  *
- * Faithful to experiences.service.ts: ranking is by cumulative aporte,
- * bands are relative to the other participants, and the winner inside a
- * band is drawn uniformly at random — contributing more never buys the
- * prize.
+ * Faithful to fandi-api: the category is by cumulative aporte, bands are
+ * relative to the other participants, and inside a band the fastest right
+ * answer wins — contributing more never buys the prize. Nothing random.
+ *
+ * Bands are NEUTRAL on purpose: the same number of dots each. Categories
+ * are placed by each fan's share of the money, not by head count, so a
+ * crowd split in fixed fan proportions (e.g. 5/15/30/50 %) would teach a
+ * rule that does not exist. Head counts per band vary event to event.
  */
 
+/** Dots per band — identical for every band (see the note above). */
+const BAND_DOTS = 150;
+
 const BANDS = [
-    { key: 'vip', count: 30, accent: escuadraColors[4], seed: 0.37 },
-    { key: 'alta', count: 90, accent: escuadraColors[3], seed: 0.62 },
-    { key: 'media', count: 180, accent: escuadraColors[2], seed: 0.18 },
-    { key: 'base', count: 300, accent: escuadraColors[1], seed: 0.81 },
+    { key: 'vip', count: BAND_DOTS, accent: escuadraColors[4], seed: 0.37 },
+    { key: 'alta', count: BAND_DOTS, accent: escuadraColors[3], seed: 0.62 },
+    { key: 'media', count: BAND_DOTS, accent: escuadraColors[2], seed: 0.18 },
+    { key: 'base', count: BAND_DOTS, accent: escuadraColors[1], seed: 0.81 },
 ] as const;
 
 /** Canvas needs literal colours: ink (extrusion/outline) and the

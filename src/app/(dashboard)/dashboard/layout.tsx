@@ -17,7 +17,8 @@ export default function DashboardLayout({
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
-            router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+            // Keep the query too (e.g. a collaboration invitation token).
+            router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
         }
     }, [isLoading, isAuthenticated, pathname, router]);
 

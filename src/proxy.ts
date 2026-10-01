@@ -18,7 +18,8 @@ export async function proxy(request: NextRequest) {
 
     if (error || !user) {
         const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('next', pathname);
+        // Keep the query too (e.g. a collaboration invitation token).
+        loginUrl.searchParams.set('next', pathname + request.nextUrl.search);
         return NextResponse.redirect(loginUrl);
     }
 

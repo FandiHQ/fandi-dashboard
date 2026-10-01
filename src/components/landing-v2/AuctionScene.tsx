@@ -7,10 +7,11 @@ import { useTranslations } from 'next-intl';
 /**
  * §4 — SUBASTAS. The deliberate opposite of §3.
  *
- * Categorías is a draw: you improve your position, luck picks the winner.
- * A subasta has no luck in it at all — the highest bid at the buzzer wins,
- * full stop. Stating that contrast plainly is what stops fans conflating
- * the two mechanics.
+ * In the oportunidades (§3) your aporte places you in a categoría and, in
+ * each one, the fastest right answers win: contributing more never buys
+ * the prize. A subasta is the one place where it does — the highest bid at
+ * the buzzer wins, full stop. Stating that contrast plainly is what stops
+ * fans conflating the two mechanics.
  *
  * The tension is simulated: while the card is on screen bids keep landing
  * and the clock keeps falling, so the section *feels* like the thing it

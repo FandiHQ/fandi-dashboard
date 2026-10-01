@@ -175,9 +175,7 @@ export default function TopFansPage() {
                             <Crown size={14} className="text-lilac" />
                             {t('stats.mostDevoted')}:{' '}
                             <span className="font-bold text-white">
-                                {mostDevoted.isPrivate
-                                    ? t('privateFan')
-                                    : (mostDevoted.firstName ?? t('anonymousFan'))}
+                                {mostDevoted.firstName ?? t('anonymousFan')}
                             </span>
                         </span>
                     ) : null}
@@ -267,27 +265,21 @@ export default function TopFansPage() {
                                 {entry.rank}
                             </span>
                             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                                {entry.isPrivate ? (
-                                    <span className="flex items-center gap-2 text-sm font-semibold text-muted-white">
-                                        <Lock size={12} />
-                                        {t('privateFan')}
-                                    </span>
-                                ) : (
-                                    <>
-                                        <span className="truncate text-sm font-extrabold text-ink">
-                                            {entry.firstName ?? t('anonymousFan')}
-                                        </span>
-                                        <span className="font-space-mono text-[10px] uppercase text-muted-white">
-                                            {t('rowMeta', {
-                                                badges: entry.badgesCount ?? 0,
-                                                events: entry.eventsParticipated ?? 0,
-                                            })}
-                                            {entry.memberSince
-                                                ? ` · ${t('rowSince', { date: sinceLabel(entry.memberSince) ?? '' })}`
-                                                : ''}
-                                        </span>
-                                    </>
-                                )}
+                                {/* Idols always see their fans in full; "private"
+                                    only hides the fan from OTHER FANS (RFC §3). */}
+                                <span className="flex min-w-0 items-center gap-2 text-sm font-extrabold text-ink">
+                                    <span className="truncate">{entry.firstName ?? t('anonymousFan')}</span>
+                                    {entry.isPrivate && <PrivateMark label={t('privateMark')} />}
+                                </span>
+                                <span className="font-space-mono text-[10px] uppercase text-muted-white">
+                                    {t('rowMeta', {
+                                        badges: entry.badgesCount ?? 0,
+                                        events: entry.eventsParticipated ?? 0,
+                                    })}
+                                    {entry.memberSince
+                                        ? ` · ${t('rowSince', { date: sinceLabel(entry.memberSince) ?? '' })}`
+                                        : ''}
+                                </span>
                             </div>
                             {entry.tier && (
                                 <span className={`${TIER_PILL} ${tierStyle[entry.tier]}`}>
@@ -352,10 +344,9 @@ export default function TopFansPage() {
                             <div className="flex flex-col gap-5">
                                 <div className="flex flex-wrap items-center gap-3">
                                     <span className="font-display text-[26px] text-white">
-                                        {detailQuery.data.isPrivate
-                                            ? t('privateFan')
-                                            : (detailQuery.data.firstName ?? t('anonymousFan'))}
+                                        {detailQuery.data.firstName ?? t('anonymousFan')}
                                     </span>
+                                    {detailQuery.data.isPrivate && <PrivateMark label={t('privateMark')} />}
                                     {detailQuery.data.rank.tier && (
                                         <span className={`${TIER_PILL} ${tierStyle[detailQuery.data.rank.tier]}`}>
                                             {tTiers(detailQuery.data.rank.tier)}
@@ -369,80 +360,87 @@ export default function TopFansPage() {
                                     </p>
                                 )}
 
-                                {detailQuery.data.isPrivate ? (
-                                    <p className="text-sm text-muted-ink">
+                                {detailQuery.data.isPrivate && (
+                                    <p className="flex items-start gap-2 text-sm text-muted-ink" data-testid="fan-detail-private">
+                                        <Lock size={14} className="mt-0.5 shrink-0" />
                                         {t('fanDetail.privateBody')}
                                     </p>
-                                ) : (
-                                    <>
-                                        {/* Phase 4 — read-only; the api only
-                                            sends it for public fans. */}
-                                        {detailQuery.data.instagramHandle ? (
-                                            <a
-                                                href={`https://instagram.com/${detailQuery.data.instagramHandle}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-1.5 self-start font-space-mono text-xs text-lilac underline decoration-2 underline-offset-4 hover:text-white"
-                                                data-testid="fan-detail-instagram">
-                                                <ExternalLink size={12} />
-                                                @{detailQuery.data.instagramHandle}
-                                            </a>
-                                        ) : null}
-                                        {detailQuery.data.superlatives && (
-                                            <div className="grid grid-cols-3 gap-2">
-                                                <MiniStat
-                                                    icon={<CalendarDays size={12} />}
-                                                    value={detailQuery.data.superlatives.eventsParticipated}
-                                                    label={t('fanDetail.events')}
-                                                />
-                                                <MiniStat
-                                                    icon={<Trophy size={12} />}
-                                                    value={detailQuery.data.superlatives.experiencesWon}
-                                                    label={t('fanDetail.wins')}
-                                                />
-                                                <MiniStat
-                                                    icon={<Award size={12} />}
-                                                    value={detailQuery.data.superlatives.auctionsWon}
-                                                    label={t('fanDetail.auctionsWon')}
-                                                />
-                                            </div>
-                                        )}
-                                        {detailQuery.data.superlatives?.fanSince ? (
-                                            <p className="label-mono text-[11px] text-muted-ink">
-                                                {t('fanDetail.fanSince', {
-                                                    year: detailQuery.data.superlatives.fanSince,
-                                                })}
-                                            </p>
-                                        ) : null}
-
-                                        <div className="flex flex-col gap-2">
-                                            <span className="label-mono text-muted-ink">
-                                                {t('fanDetail.badges')}
-                                            </span>
-                                            {detailQuery.data.badges.length === 0 ? (
-                                                <span className="text-[13px] text-muted-ink">
-                                                    {t('fanDetail.noBadges')}
-                                                </span>
-                                            ) : (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {detailQuery.data.badges.map((badge) => (
-                                                        <span
-                                                            key={badge.id}
-                                                            className="rounded-[10px] border-2 border-dash-ink bg-chip-ink px-2.5 py-1 text-[12px] font-bold text-white">
-                                                            {badge.name}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </>
                                 )}
+                                {/* Phase 4 — read-only; the api sends it for public
+                                    fans, and for every fan to their own idol. */}
+                                {detailQuery.data.instagramHandle ? (
+                                    <a
+                                        href={`https://instagram.com/${detailQuery.data.instagramHandle}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 self-start font-space-mono text-xs text-lilac underline decoration-2 underline-offset-4 hover:text-white"
+                                        data-testid="fan-detail-instagram">
+                                        <ExternalLink size={12} />
+                                        @{detailQuery.data.instagramHandle}
+                                    </a>
+                                ) : null}
+                                {detailQuery.data.superlatives && (
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <MiniStat
+                                            icon={<CalendarDays size={12} />}
+                                            value={detailQuery.data.superlatives.eventsParticipated}
+                                            label={t('fanDetail.events')}
+                                        />
+                                        <MiniStat
+                                            icon={<Trophy size={12} />}
+                                            value={detailQuery.data.superlatives.experiencesWon}
+                                            label={t('fanDetail.wins')}
+                                        />
+                                        <MiniStat
+                                            icon={<Award size={12} />}
+                                            value={detailQuery.data.superlatives.auctionsWon}
+                                            label={t('fanDetail.auctionsWon')}
+                                        />
+                                    </div>
+                                )}
+                                {detailQuery.data.superlatives?.fanSince ? (
+                                    <p className="label-mono text-[11px] text-muted-ink">
+                                        {t('fanDetail.fanSince', {
+                                            year: detailQuery.data.superlatives.fanSince,
+                                        })}
+                                    </p>
+                                ) : null}
+
+                                <div className="flex flex-col gap-2">
+                                    <span className="label-mono text-muted-ink">
+                                        {t('fanDetail.badges')}
+                                    </span>
+                                    {detailQuery.data.badges.length === 0 ? (
+                                        <span className="text-[13px] text-muted-ink">
+                                            {t('fanDetail.noBadges')}
+                                        </span>
+                                    ) : (
+                                        <div className="flex flex-wrap gap-2">
+                                            {detailQuery.data.badges.map((badge) => (
+                                                <span
+                                                    key={badge.id}
+                                                    className="rounded-[10px] border-2 border-dash-ink bg-chip-ink px-2.5 py-1 text-[12px] font-bold text-white">
+                                                    {badge.name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
                 )}
             </div>
         </div>
+    );
+}
+
+function PrivateMark({ label }: { label: string }) {
+    return (
+        <span className="flex shrink-0 items-center gap-1 font-space-mono text-[10px] font-normal uppercase text-muted-white">
+            <Lock size={10} />
+            {label}
+        </span>
     );
 }
 
