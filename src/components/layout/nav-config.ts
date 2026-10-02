@@ -25,9 +25,10 @@ export const navItems: NavItem[] = [
         labelKey: 'events',
     },
     {
-        href: '/dashboard/top-fans',
+        // Fanbase (fandi-api RFC §8); the old Top Fans is its "Top fans" tab.
+        href: '/dashboard/fanbase',
         icon: Trophy,
-        labelKey: 'topFans',
+        labelKey: 'fanbase',
     },
     {
         // Idol collaborations: invitations and events shared with my org.

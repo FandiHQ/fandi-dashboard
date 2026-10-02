@@ -17,6 +17,7 @@ import { ApiError } from '@/lib/api';
 import type { Auction, CreateAuctionDto, UpdateAuctionDto, AuctionStatus, Event } from '@/types/api';
 import { ArtistMultiSelect } from '@/components/events/ArtistMultiSelect';
 import { IdolCollaborationsSection } from '@/components/collaborations/IdolCollaborationsSection';
+import { useQueuedInvites } from '@/components/collaborations/useQueuedInvites';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -382,6 +383,8 @@ function AuctionFormDialog({
     const t = useTranslations('auctions');
     const queryClient = useQueryClient();
     const isEditing = !!existing;
+    // Idols picked before the first save, invited once it exists (RFC §3).
+    const queuedInvites = useQueuedInvites(eventId, 'auction');
 
     const [name, setName] = useState(existing?.name ?? '');
     const [description, setDescription] = useState(existing?.description ?? '');
@@ -426,10 +429,16 @@ function AuctionFormDialog({
     };
 
     const { mutate: create, isPending: isCreating } = useMutation({
-        mutationFn: (dto: CreateAuctionDto) => auctionsApi.create(eventId, dto),
-        onSuccess: () => {
+        mutationFn: async (dto: CreateAuctionDto) => {
+            const created = await auctionsApi.create(eventId, dto);
+            // It exists now: the picked idols are invited to it, one call
+            // each. Never throws — a failed invitation is only reported.
+            const invites = await queuedInvites.sendFor(created.id);
+            return { created, invites };
+        },
+        onSuccess: ({ invites }) => {
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'auctions'] });
-            toast.success(t('created'));
+            queuedInvites.announce(invites, t('created'));
             onClose();
         },
         onError: (err: unknown) => toast.error(toErrorMessage(err)),
@@ -720,11 +729,13 @@ function AuctionFormDialog({
                             </div>
 
                             {/* Idol collaborations (RFC §3): real idol accounts,
-                                by invitation. They replace the text tags. */}
+                                by invitation — pickable before the first save.
+                                They replace the text tags. */}
                             <IdolCollaborationsSection
                                 eventId={eventId}
                                 dynamicType="auction"
                                 dynamicId={existing?.id ?? null}
+                                queue={queuedInvites.queue}
                             />
 
                             {/* Legacy lineup text tags (Step 6.4). */}

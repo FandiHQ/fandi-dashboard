@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Calendar, AlertCircle, ChevronRight, Copy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
+import { apiErrorKind } from '@/lib/api-error-kind';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,13 +26,14 @@ export default function EventsListPage() {
     const router = useRouter();
     const t = useTranslations('events');
     const tCommon = useTranslations('common');
+    const locale = useLocale();
     const { memberRole } = useAuth();
     const isWriteRole = memberRole === 'owner' || memberRole === 'admin';
     const queryClient = useQueryClient();
 
     const [statusFilter, setStatusFilter] = useState<string>('all');
 
-    const { data, isLoading, error, refetch } = useQuery({
+    const { data, isLoading, error, refetch, isRefetching } = useQuery({
         queryKey: ['events', statusFilter],
         queryFn: () =>
             eventsApi.list(
@@ -46,7 +49,7 @@ export default function EventsListPage() {
     }, [data]);
 
     const formatDate = (iso: string) =>
-        new Intl.DateTimeFormat('es', {
+        new Intl.DateTimeFormat(locale, {
             day: 'numeric',
             month: 'short',
             year: 'numeric',
@@ -71,12 +74,13 @@ export default function EventsListPage() {
         return (
             <div className="flex flex-col gap-6">
                 <PageHeader title={t('title')} isWriteRole={isWriteRole} router={router} />
-                <div className="block-white flex flex-col items-center justify-center gap-4 p-8">
-                    <AlertCircle size={32} className="text-alert-white" />
-                    <p className="text-sm font-semibold text-ink">
-                        {(error as Error).message || t('empty')}
+                <div className="block-white flex flex-col items-center justify-center gap-4 p-8 text-center" role="alert">
+                    <AlertCircle size={32} className="text-alert-white" aria-hidden="true" />
+                    <p className="max-w-[420px] text-sm font-semibold text-ink">
+                        {apiErrorKind(error) === 'forbidden' ? t('form.noPermission') : t('form.listError')}
                     </p>
-                    <Button variant="secondary" onClick={() => refetch()}>
+                    <Button variant="secondary" onClick={() => refetch()} disabled={isRefetching}>
+                        {isRefetching && <Loader2 size={14} className="animate-spin" aria-hidden="true" />}
                         {tCommon('retry')}
                     </Button>
                 </div>
@@ -101,7 +105,7 @@ export default function EventsListPage() {
                         )}
                     </span>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger size="sm" className="w-[180px] cursor-pointer font-space-mono text-xs uppercase">
+                        <SelectTrigger size="sm" aria-label={t('statusLabel')} className="w-[180px] cursor-pointer font-space-mono text-xs uppercase">
                             <SelectValue placeholder={t('allStatuses')} />
                         </SelectTrigger>
                         <SelectContent>
@@ -150,12 +154,16 @@ export default function EventsListPage() {
                         ) : events.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={6}>
-                                    <div className="flex flex-col items-center justify-center gap-4 py-16">
-                                        <Calendar size={40} className="text-muted-white" />
+                                    <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+                                        <Calendar size={40} className="text-muted-white" aria-hidden="true" />
                                         <p className="text-[17px] font-semibold text-muted-white">
-                                            {t('empty')}
+                                            {statusFilter !== 'all' ? t('form.emptyFiltered') : t('empty')}
                                         </p>
-                                        {isWriteRole && (
+                                        {statusFilter !== 'all' ? (
+                                            <Button variant="secondary" onClick={() => setStatusFilter('all')}>
+                                                {t('form.showAll')}
+                                            </Button>
+                                        ) : isWriteRole && (
                                             <Button onClick={() => router.push('/dashboard/events/new')}>
                                                 <Plus />
                                                 {t('create')}
@@ -175,7 +183,14 @@ export default function EventsListPage() {
                                         <StatusBadge status={event.status} />
                                     </TableCell>
                                     <TableCell className="max-w-[320px] truncate font-display text-[15px]">
-                                        {event.name}
+                                        {/* A real link so the row works with the keyboard too. */}
+                                        <Link
+                                            href={`/dashboard/events/${event.id}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="rounded-[4px] outline-none hover:underline focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+                                        >
+                                            {event.name}
+                                        </Link>
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell">
                                         {eventTypeBadge(event.eventType)}

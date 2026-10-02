@@ -288,6 +288,16 @@ html {
   background: #0B0B0F;
 }
 
+/* Sideways strips (section tabs) still scroll on narrow screens, by touch,
+   trackpad or shift+wheel, but show no bar: on desktop the bar sat under
+   the ink segmented bar even when every tab fit. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .live-dot { animation: none; }
 }

@@ -5,7 +5,8 @@
  * chip on the left (white, 2px ink, 3px extrusion: "[JB] J Balvin"), the
  * user + role on the right (role in lilac mono, never orange), a 2px ink
  * rule underneath. Below lg the rail collapses into a left sheet with
- * text labels.
+ * text labels. Colaboraciones carries the count of invitations awaiting
+ * an answer (and the menu button a dot, so it is seen while closed).
  */
 import { useState } from 'react';
 import { Menu, LogOut } from 'lucide-react';
@@ -15,6 +16,9 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { PendingInvitationsBadge } from '@/components/collaborations/PendingInvitationsBadge';
+import { usePendingInvitations } from '@/components/collaborations/usePendingInvitations';
+import { COLLABORATIONS_HREF } from '@/lib/collaborations';
 import { isNavActive, getVisibleItems } from './nav-config';
 import { LogoutDialog } from './logout-dialog';
 
@@ -38,8 +42,13 @@ export function DashboardHeader() {
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
+    const tCollab = useTranslations('collaborations');
     const visibleItems = getVisibleItems(memberRole, user?.role === 'admin');
     const [mobileOpen, setMobileOpen] = useState(false);
+    const pendingCount = usePendingInvitations()?.count ?? 0;
+    const pendingLabel = pendingCount > 0 ? tCollab('pendingBadge', { count: pendingCount }) : null;
+    // Dashboard branding first, then the fan-facing crest most idols set instead.
+    const orgImage = organization?.logoUrl || organization?.avatarUrl || null;
 
     return (
         <header className="flex h-[74px] items-center justify-between gap-4 border-b-2 border-ink px-5 lg:px-9">
@@ -47,10 +56,17 @@ export function DashboardHeader() {
                 <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                     <SheetTrigger asChild>
                         <button
-                            className="flex size-11 items-center justify-center rounded-[10px] border-2 border-ink bg-white text-ink shadow-ext-sm lg:hidden"
-                            aria-label="Open navigation menu"
+                            className="relative flex size-11 items-center justify-center rounded-[10px] border-2 border-ink bg-white text-ink shadow-ext-sm lg:hidden"
+                            aria-label={pendingLabel ? `Open navigation menu · ${pendingLabel}` : 'Open navigation menu'}
                         >
                             <Menu size={20} />
+                            {pendingLabel && (
+                                <span
+                                    aria-hidden="true"
+                                    data-testid="nav-menu-pending-dot"
+                                    className="absolute -right-1.5 -top-1.5 size-3.5 rounded-full border-2 border-ink bg-lime"
+                                />
+                            )}
                         </button>
                     </SheetTrigger>
 
@@ -75,11 +91,13 @@ export function DashboardHeader() {
                                     {visibleItems.map((item) => {
                                         const active = isNavActive(item, pathname);
                                         const Icon = item.icon;
+                                        const badge = item.href === COLLABORATIONS_HREF ? pendingCount : 0;
                                         return (
                                             <Link
                                                 key={item.href}
                                                 href={item.href}
                                                 onClick={() => setMobileOpen(false)}
+                                                aria-label={badge > 0 && pendingLabel ? `${t(item.labelKey)} · ${pendingLabel}` : undefined}
                                                 aria-current={active ? 'page' : undefined}
                                                 className={`flex items-center gap-3 rounded-[12px] px-3 py-3 text-sm font-extrabold uppercase [font-stretch:108%] transition-colors duration-100 ${
                                                     active ? 'bg-lime text-ink' : 'text-muted-ink hover:bg-chip-ink hover:text-white'
@@ -87,6 +105,7 @@ export function DashboardHeader() {
                                             >
                                                 <Icon size={20} />
                                                 <span>{t(item.labelKey)}</span>
+                                                <PendingInvitationsBadge count={badge} active={active} placement="inline" />
                                             </Link>
                                         );
                                     })}
@@ -105,8 +124,19 @@ export function DashboardHeader() {
 
                 {/* Workspace chip */}
                 <span className="flex min-w-0 items-center gap-2.5 rounded-[10px] border-2 border-ink bg-white px-3 py-1.5 text-[15px] font-black text-ink shadow-ext-sm [font-stretch:110%]">
-                    <span className="flex size-[22px] flex-none items-center justify-center rounded-[6px] bg-ink text-[11px] text-lime">
-                        {initials(organization?.name)}
+                    <span className="flex size-[22px] flex-none items-center justify-center overflow-hidden rounded-[6px] bg-ink text-[11px] text-lime">
+                        {orgImage ? (
+                            <Image
+                                src={orgImage}
+                                alt=""
+                                width={22}
+                                height={22}
+                                className="h-full w-full object-cover"
+                                unoptimized
+                            />
+                        ) : (
+                            initials(organization?.name)
+                        )}
                     </span>
                     <span className="truncate">{organization?.name || 'Fandi'}</span>
                 </span>

@@ -21,6 +21,7 @@ import {
 } from '@/lib/contest-bank';
 import { QuestionBankEditor } from '@/components/contest/QuestionBankEditor';
 import { IdolCollaborationsSection } from '@/components/collaborations/IdolCollaborationsSection';
+import { useQueuedInvites } from '@/components/collaborations/useQueuedInvites';
 import { filterByKind, goalReached, impactoPercent, isImpacto } from '@/lib/impacto';
 import { escuadraColors, escuadraDefaultNames } from '@/lib/chart-colors';
 import { formatCop } from '@/lib/currency';
@@ -508,6 +509,8 @@ function OpportunityFormDialog({
     const [savedId, setSavedId] = useState<string | null>(existing?.id ?? null);
     const isEditing = savedId !== null;
     const impacto = kind === 'impacto';
+    // Idols picked before the first save, invited once it exists (RFC §3).
+    const queuedInvites = useQueuedInvites(eventId, 'experience');
 
     // Phase 6 — cause fields (impactos only). Goal is typed in Fandis and
     // sent as COP (FANDI_RATE); formatFandis everywhere on the way back.
@@ -614,7 +617,10 @@ function OpportunityFormDialog({
     // What the server holds for the form fields: the opening values, then
     // whatever this panel last saved.
     const [baselineJson, setBaselineJson] = useState(() => JSON.stringify(buildDto()));
-    const dirty = bankDraft !== null || JSON.stringify(buildDto()) !== baselineJson;
+    const dirty =
+        bankDraft !== null ||
+        queuedInvites.queue.items.length > 0 ||
+        JSON.stringify(buildDto()) !== baselineJson;
 
     /** Saves the bank after the oportunidad exists (a new one has no id before). */
     const saveBank = async (experienceId: string) => {
@@ -638,16 +644,19 @@ function OpportunityFormDialog({
     const { mutate: create, isPending: isCreating } = useMutation({
         mutationFn: async (dto: CreateExperienceDto) => {
             const created = await experiencesApi.create(eventId, dto);
+            // It exists now: the picked idols are invited to it, one call
+            // each. Never throws — a failed invitation is only reported.
+            const invites = await queuedInvites.sendFor(created.id);
             // The oportunidad now exists: a failed bank save must not leave
             // the panel in "create" mode (a retry would duplicate it).
             try {
                 await saveBank(created.id);
-                return { created, dto, bankError: null as string | null };
+                return { created, dto, invites, bankError: null as string | null };
             } catch (err) {
-                return { created, dto, bankError: err instanceof Error ? err.message : tCommon('error') };
+                return { created, dto, invites, bankError: err instanceof Error ? err.message : tCommon('error') };
             }
         },
-        onSuccess: ({ created, dto, bankError }) => {
+        onSuccess: ({ created, dto, invites, bankError }) => {
             queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
             queryClient.invalidateQueries({ queryKey: ['events', eventId, 'slots'] });
             if (bankError) {
@@ -656,9 +665,10 @@ function OpportunityFormDialog({
                 setSavedId(created.id);
                 setBaselineJson(JSON.stringify(dto));
                 toast.error(t('questions.saveFailedAfterCreate', { message: bankError }));
+                queuedInvites.announce(invites);
                 return;
             }
-            toast.success(impacto ? t('impactoCreated') : t('created'));
+            queuedInvites.announce(invites, impacto ? t('impactoCreated') : t('created'));
             onClose();
         },
         onError: onSaveError,
@@ -933,11 +943,13 @@ function OpportunityFormDialog({
                             )}
 
                             {/* Idol collaborations (RFC §3): real idol accounts,
-                                by invitation. They replace the text tags. */}
+                                by invitation — pickable before the first save.
+                                They replace the text tags. */}
                             <IdolCollaborationsSection
                                 eventId={eventId}
                                 dynamicType="experience"
                                 dynamicId={savedId}
+                                queue={queuedInvites.queue}
                             />
 
                             {/* Legacy lineup text tags (Step 6.4): kept so old

@@ -5,22 +5,27 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
 import { Sidebar } from '@/components/layout/sidebar';
 import { DashboardHeader } from '@/components/layout/dashboard-header';
+import { SessionUnreachable } from '@/components/auth/session-unreachable';
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated } = useAuth();
+    const { isLoading, isAuthenticated, isUnreachable, retrySession } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
+        if (!isLoading && !isAuthenticated && !isUnreachable) {
             // Keep the query too (e.g. a collaboration invitation token).
             router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
         }
-    }, [isLoading, isAuthenticated, pathname, router]);
+    }, [isLoading, isAuthenticated, isUnreachable, pathname, router]);
+
+    if (!isLoading && isUnreachable) {
+        return <SessionUnreachable onRetry={retrySession} />;
+    }
 
     if (isLoading || !isAuthenticated) {
         return (

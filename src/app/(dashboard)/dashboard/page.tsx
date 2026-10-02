@@ -16,6 +16,7 @@ import {
     TableHeader, TableRow,
 } from '@/components/ui/table';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { PendingInvitationBanner } from '@/components/collaborations/PendingInvitationBanner';
 
 // ── Stat block (Azul Bloque §7: white, 5px extrusion, mono label) ──
 
@@ -185,6 +186,9 @@ export default function DashboardHomePage() {
                     </Button>
                 )}
             </div>
+
+            {/* ── Collaboration invitations awaiting my answer (owner/admin) ── */}
+            <PendingInvitationBanner />
 
             {/* ── Hero: live / next event (ink card, lime extrusion) ── */}
             {!loading && !error && heroEvent && (

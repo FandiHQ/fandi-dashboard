@@ -8,6 +8,7 @@ import { profileApi } from '@/lib/api-hooks';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ArtistProfileCard } from '@/components/settings/artist-profile-card';
+import { ChangePasswordCard } from '@/components/settings/change-password-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -41,11 +42,13 @@ export default function SettingsPage() {
         // Validate client-side
         const allowed = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowed.includes(file.type)) {
-            toast.error(t('errorUploading'));
+            toast.error(t('imageTypeError'));
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
         if (file.size > 5 * 1024 * 1024) {
-            toast.error(t('uploadHint'));
+            toast.error(t('imageSizeError'));
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
@@ -82,11 +85,15 @@ export default function SettingsPage() {
     };
 
     const handleRemoveAvatar = async () => {
+        const previous = avatarUrl;
         setAvatarUrl('');
         try {
             await profileApi.update({ avatarUrl: '' });
             await refreshUser();
+            toast.success(t('removeAvatarDone'));
         } catch {
+            // Put the photo back so the screen matches what is saved.
+            setAvatarUrl(previous);
             toast.error(t('errorUpdating'));
         }
     };
@@ -161,6 +168,7 @@ export default function SettingsPage() {
 
                             {/* Upload overlay */}
                             <button
+                                type="button"
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={uploading}
                                 aria-label={t('changeAvatar')}
@@ -250,11 +258,13 @@ export default function SettingsPage() {
                     <div className="flex flex-col gap-5 px-6 py-6">
                         {/* Display Name */}
                         <div className="flex flex-col gap-2">
-                            <label className={FIELD_LABEL}>
+                            <label htmlFor="settings-display-name" className={FIELD_LABEL}>
                                 {t('displayName')}
                             </label>
                             <Input
+                                id="settings-display-name"
                                 type="text"
+                                autoComplete="name"
                                 value={displayName}
                                 onChange={(e) => setDisplayName(e.target.value)}
                                 placeholder={t('displayNamePlaceholder')}
@@ -264,10 +274,10 @@ export default function SettingsPage() {
 
                         {/* Email (read-only) */}
                         <div className="flex flex-col gap-2">
-                            <label className={FIELD_LABEL}>
+                            <span id="settings-email-label" className={FIELD_LABEL}>
                                 {t('email')}
-                            </label>
-                            <div className="flex h-12 items-center gap-3 rounded-[10px] border-2 border-line-white bg-line-white px-3">
+                            </span>
+                            <div role="group" aria-labelledby="settings-email-label" className="flex h-12 items-center gap-3 rounded-[10px] border-2 border-line-white bg-line-white px-3">
                                 <span className="truncate text-sm font-semibold text-muted-white">
                                     {user?.email || '—'}
                                 </span>
@@ -279,11 +289,13 @@ export default function SettingsPage() {
 
                         {/* Phone */}
                         <div className="flex flex-col gap-2">
-                            <label className={FIELD_LABEL}>
+                            <label htmlFor="settings-phone" className={FIELD_LABEL}>
                                 {t('phone')}
                             </label>
                             <Input
+                                id="settings-phone"
                                 type="tel"
+                                autoComplete="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 placeholder={t('phonePlaceholder')}
@@ -314,6 +326,9 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
+
+            {/* ── Password (account security) ── */}
+            <ChangePasswordCard />
 
             {/* ── Artist Public Profile (Step 7.2, owner only) ── */}
             {memberRole === 'owner' && <ArtistProfileCard />}

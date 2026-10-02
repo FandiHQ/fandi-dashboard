@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { ContestShowcase } from './contest-showcase';
 import { SegmentsShowcase } from './segments-showcase';
+import { FanbaseShowcase } from './fanbase-showcase';
 
 const STATS = [
     { k: 'RECAUDADO', v: '1.578 F', sub: '$ 7.890.000' },
@@ -150,6 +151,7 @@ export function Gallery() {
 
                 <ContestShowcase />
                 <SegmentsShowcase />
+                <FanbaseShowcase />
             </div>
         </div>
     );

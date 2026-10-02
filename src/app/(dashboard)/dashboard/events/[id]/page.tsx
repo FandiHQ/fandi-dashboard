@@ -123,7 +123,13 @@ export default function EventOverviewPage() {
                     className="block-white press group flex flex-col px-5 py-4 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-lime"
                 >
                     <span className="label-mono text-muted-white">{t('tabs.experiences')}</span>
-                    {statValue(summary?.experienceCount ?? 0, 'w-16')}
+                    {/* Oportunidades only: an impacto has no winners and is not one. */}
+                    {statValue(summary?.oportunidadCount ?? summary?.experienceCount ?? 0, 'w-16')}
+                    {(summary?.impactoCount ?? 0) > 0 && (
+                        <span className="mt-1 font-space-mono text-[10px] uppercase text-muted-white">
+                            {t('overview.plusImpactos', { count: summary?.impactoCount ?? 0 })}
+                        </span>
+                    )}
                     <span className="mt-1.5 font-space-mono text-[10px] uppercase text-blue group-hover:underline">
                         {t('overview.view')}
                     </span>

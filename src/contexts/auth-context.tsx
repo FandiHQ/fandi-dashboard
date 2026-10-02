@@ -3,12 +3,27 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { authApi } from '@/lib/api-hooks';
+import {
+    DashboardAccessError, SyncFailedError, dashboardAccessOf, sessionSyncFailure, withOneRetry,
+} from '@/lib/auth-flow';
 import type { UserSyncResponse } from '@/types/api';
+
+// Closing a session the panel can't use is LOCAL on purpose: the default
+// (global) scope revokes every session of that account, which would also
+// log a fan out of the mobile app just for trying the dashboard.
+const signOutHere = () => supabase.auth.signOut({ scope: 'local' });
 
 interface AuthContextType {
     user: UserSyncResponse | null;
     isLoading: boolean;
     isAuthenticated: boolean;
+    /**
+     * There is a session but our API did not answer on load (offline,
+     * deploy, restart). The session is kept; layouts offer a retry instead
+     * of sending the person to the login form.
+     */
+    isUnreachable: boolean;
+    retrySession: () => Promise<void>;
     organization: UserSyncResponse['organization'];
     memberRole: string | null;
     login: (email: string, password: string) => Promise<UserSyncResponse>;
@@ -21,32 +36,41 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserSyncResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isUnreachable, setIsUnreachable] = useState(false);
+
+    const loadSession = useCallback(async () => {
+        setIsLoading(true);
+        setIsUnreachable(false);
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const syncResponse = await withOneRetry(() => authApi.sync());
+                // Only store if user has dashboard access
+                if (dashboardAccessOf(syncResponse) === 'ok') {
+                    setUser(syncResponse);
+                } else {
+                    // Fan or no org — sign out silently
+                    await signOutHere();
+                }
+            }
+        } catch (err) {
+            if (sessionSyncFailure(err) === 'keepAndRetry') {
+                // Our API is down or restarting: the session itself is fine.
+                setIsUnreachable(true);
+            } else {
+                // Valid Supabase session but our API rejected it
+                await signOutHere();
+                setUser(null);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     // On mount — check existing session
     useEffect(() => {
-        async function init() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    const syncResponse = await authApi.sync();
-                    // Only store if user has dashboard access
-                    if (syncResponse.role !== 'fan' && syncResponse.organization) {
-                        setUser(syncResponse);
-                    } else {
-                        // Fan or no org — sign out silently
-                        await supabase.auth.signOut();
-                    }
-                }
-            } catch {
-                // Valid Supabase session but our API rejected it
-                await supabase.auth.signOut();
-                setUser(null);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        init();
-    }, []);
+        loadSession();
+    }, [loadSession]);
 
     // Subscribe to Supabase auth state changes
     useEffect(() => {
@@ -70,20 +94,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         if (error) throw error;
 
-        const syncResponse = await authApi.sync();
-
-        // Check dashboard access: fans and users without an org cannot access
-        if (syncResponse.role === 'fan' || !syncResponse.organization) {
-            await supabase.auth.signOut();
-            throw new Error('NO_DASHBOARD_ACCESS');
+        // The password was right. If our API doesn't answer (offline,
+        // restarting), close the Supabase session so nothing stays half
+        // signed in, and let the form say "couldn't reach Fandi".
+        let syncResponse: UserSyncResponse;
+        try {
+            syncResponse = await withOneRetry(() => authApi.sync());
+        } catch (syncError) {
+            await signOutHere();
+            throw new SyncFailedError(syncError);
         }
 
+        // Check dashboard access: fans and users without an org cannot access.
+        // The error says which (safe: the caller proved the password).
+        const access = dashboardAccessOf(syncResponse);
+        if (access !== 'ok') {
+            await signOutHere();
+            throw new DashboardAccessError(access);
+        }
+
+        setIsUnreachable(false);
         setUser(syncResponse);
         return syncResponse;
     }, []);
 
     const logout = useCallback(async () => {
-        await supabase.auth.signOut();
+        // "Cerrar sesión" closes THIS browser only (same reason as above:
+        // the global default would also log the person out of the app).
+        await signOutHere();
         setUser(null);
         // Small delay to let Supabase clear cookies before hard navigation
         // prevents Turbopack module-factory race condition on SSR
@@ -95,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const refreshUser = useCallback(async () => {
         try {
             const syncResponse = await authApi.sync();
-            if (syncResponse.role !== 'fan' && syncResponse.organization) {
+            if (dashboardAccessOf(syncResponse) === 'ok') {
                 setUser(syncResponse);
             }
         } catch { /* silently fail */ }
@@ -107,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <AuthContext.Provider value={{
-            user, isLoading, isAuthenticated,
+            user, isLoading, isAuthenticated, isUnreachable, retrySession: loadSession,
             organization, memberRole, login, logout, refreshUser
         }}>
             {children}

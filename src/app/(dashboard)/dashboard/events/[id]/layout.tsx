@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -9,6 +10,13 @@ import { useAuth } from '@/contexts/auth-context';
 import { eventsApi, badgeAwardingApi } from '@/lib/api-hooks';
 import { ApiError } from '@/lib/api';
 import { eventDateViolations, isoToDatetimeLocal } from '@/lib/event-datetime';
+import {
+    badgeBlockers,
+    badgesTabPath,
+    knownMissingBadges,
+    missingBadgesFromError,
+    type MissingBadgeCode,
+} from '@/lib/badge-readiness';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -23,7 +31,7 @@ import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog';
 import type { PreLiveStatsResponse } from '@/types/api';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type TabDef = {
     key: string;
@@ -77,6 +85,26 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         queryFn: () => eventsApi.get(eventId),
     });
 
+    // Badge gate: the API refuses to publish or go live until every badge
+    // the event can award has an active template (EVENT_BADGES_NOT_READY).
+    // Read it up front so the header says so instead of claiming the
+    // dynamics are ready. Under ['events', eventId] so status changes
+    // refresh it too.
+    const preLiveKey = ['events', eventId, 'pre-live-stats'];
+    const { data: preLive } = useQuery({
+        queryKey: preLiveKey,
+        queryFn: () => eventsApi.getPreLiveStats(eventId),
+        enabled: event?.status === 'draft' || event?.status === 'published',
+    });
+    // Tabs create dynamics and badge templates, which change what is
+    // missing: re-read it whenever the organizer moves between tabs.
+    const lastPathname = useRef(pathname);
+    useEffect(() => {
+        if (lastPathname.current === pathname) return;
+        lastPathname.current = pathname;
+        void queryClient.invalidateQueries({ queryKey: ['events', eventId, 'pre-live-stats'] });
+    }, [pathname, eventId, queryClient]);
+
     const { mutate: updateStatus, isPending: isUpdatingStatus } = useMutation({
         mutationFn: (status: string) => eventsApi.updateStatus(eventId, status as 'published' | 'live' | 'ended'),
         onSuccess: (_data, status) => {
@@ -88,7 +116,22 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 toast.success(t('updated'));
             }
         },
-        onError: (err: unknown) => {
+        onError: (err: unknown, status) => {
+            // Badge gate: say which badges, plainly, and where to make them.
+            const missing = missingBadgesFromError(err);
+            if (missing) {
+                void queryClient.invalidateQueries({ queryKey: preLiveKey });
+                toast.error(t(status === 'live' ? 'badgeGate.goLiveFailed' : 'badgeGate.publishFailed'), {
+                    description: missing.length > 0
+                        ? missing.map((code) => t(`badgeGate.missing.${code}`)).join(' · ')
+                        : t('badgeGate.body'),
+                    action: {
+                        label: t('badgeGate.configure'),
+                        onClick: () => router.push(badgesTabPath(eventId)),
+                    },
+                });
+                return;
+            }
             // Surface the typed date/publish-gate codes as localized copy.
             const DATE_CODES = [
                 'EVENT_END_REQUIRED',
@@ -202,14 +245,20 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         fandiOpensAt: isoToDatetimeLocal(event.fandiOpensAt),
         fandiClosesAt: isoToDatetimeLocal(event.fandiClosesAt),
     });
+    // Badges the event still needs (draft/published only; [] otherwise).
+    const missingBadges = badgeBlockers(event.status, preLive);
     const publishBlockReason: string | null = !event.cityId
         ? t('form.cityRequired')
         : !event.eventEndDate
           ? t('validation.EVENT_END_REQUIRED')
           : dateViolations.length > 0
             ? t(`validation.${dateViolations[0]}`)
-            : null;
+            : missingBadges.length > 0
+              ? t('badgeGate.title')
+              : null;
     const canPublish = publishBlockReason === null;
+    const showFandiCountdown =
+        !!event.fandiOpensAt && (event.status === 'published' || event.status === 'draft');
 
     // Mono meta line under the title: date · time · venue, city.
     const place = event.venue
@@ -333,7 +382,13 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                         )}
 
                         {event.status === 'published' && (
-                            <GoLiveButton eventId={eventId} t={t} isUpdatingStatus={isUpdatingStatus} updateStatus={updateStatus} />
+                            <GoLiveButton
+                                eventId={eventId}
+                                t={t}
+                                isUpdatingStatus={isUpdatingStatus}
+                                updateStatus={updateStatus}
+                                badgesHref={badgesTabPath(eventId)}
+                            />
                         )}
 
                         {event.status === 'live' && (
@@ -359,14 +414,30 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 )}
             </div>
 
-            {/* ── Fandi Countdown ── */}
-            {event.fandiOpensAt && (event.status === 'published' || event.status === 'draft') && (
-                <FandiCountdown fandiOpensAt={event.fandiOpensAt} />
+            {/* ── Fandi Countdown + badge gate ── */}
+            {(showFandiCountdown || missingBadges.length > 0) && (
+                <div className="flex flex-wrap items-start gap-4 empty:hidden">
+                    {showFandiCountdown && event.fandiOpensAt && (
+                        <FandiCountdown
+                            fandiOpensAt={event.fandiOpensAt}
+                            hideReady={!preLive || missingBadges.length > 0}
+                        />
+                    )}
+                    {missingBadges.length > 0 && (
+                        <BadgeGateNotice
+                            missing={missingBadges}
+                            hasImpactos={(preLive?.impactoCount ?? 0) > 0}
+                            href={activeTab === 'insignias' ? null : badgesTabPath(eventId)}
+                            t={t}
+                        />
+                    )}
+                </div>
             )}
 
-            {/* ── Tabs (ink segmented bar, §7) ── */}
+            {/* ── Tabs (ink segmented bar, §7) ──
+                Scrolls sideways on narrow screens, with no visible bar. */}
             <Tabs value={activeTab} onValueChange={handleTabChange}>
-                <TabsList className="max-w-full justify-start overflow-x-auto">
+                <TabsList className="no-scrollbar max-w-full justify-start overflow-x-auto overflow-y-hidden">
                     {visibleTabs.map((tab) => (
                         <TabsTrigger
                             key={tab.key}
@@ -429,14 +500,17 @@ function GoLiveButton({
     t,
     isUpdatingStatus,
     updateStatus,
+    badgesHref,
 }: {
     eventId: string;
     t: ReturnType<typeof useTranslations>;
     isUpdatingStatus: boolean;
     updateStatus: (status: string) => void;
+    badgesHref: string;
 }) {
     const [stats, setStats] = useState<PreLiveStatsResponse | null>(null);
     const [loadingStats, setLoadingStats] = useState(false);
+    const missingBadges = stats ? knownMissingBadges(stats.missingBadges) : [];
 
     const handleOpen = async () => {
         setLoadingStats(true);
@@ -490,7 +564,9 @@ function GoLiveButton({
                     <div className="flex flex-col gap-2.5">
                         <ChecklistItem
                             label={t('checkContent', {
-                                experiences: stats.experienceCount,
+                                // Older API builds send only the total.
+                                oportunidades: stats.oportunidadCount ?? stats.experienceCount,
+                                impactos: stats.impactoCount ?? 0,
                                 auctions: stats.auctionCount,
                             })}
                             passed={hasContent && stats.experiencesReady}
@@ -500,13 +576,8 @@ function GoLiveButton({
                             passed={stats.isPublished}
                         />
                         <ChecklistItem
-                            label={
-                                stats.badgesReady
-                                    ? t('checkBadges')
-                                    : `${t('checkBadges')} — ${stats.missingBadges
-                                          .map((code) => t(`missingBadge.${code}`))
-                                          .join(', ')}`
-                            }
+                            label={stats.badgesReady ? t('checkBadges') : t('badgeGate.title')}
+                            detail={missingBadges.map((code) => t(`badgeGate.missing.${code}`))}
                             passed={stats.badgesReady}
                         />
                         <ChecklistItem
@@ -514,7 +585,15 @@ function GoLiveButton({
                             passed={stats.auctionCount > 0}
                             optional
                         />
-                        <div className="mt-4 flex justify-end gap-3">
+                        <div className="mt-4 flex flex-wrap justify-end gap-3">
+                            {!stats.badgesReady && (
+                                <Button asChild size="lg" variant="secondary">
+                                    <Link href={badgesHref}>
+                                        <Award size={15} />
+                                        {t('badgeGate.configure')}
+                                    </Link>
+                                </Button>
+                            )}
                             <Button
                                 size="lg"
                                 onClick={() => updateStatus('live')}
@@ -596,7 +675,18 @@ function EndEventDialog({
     );
 }
 
-function ChecklistItem({ label, passed, optional }: { label: string; passed: boolean; optional?: boolean }) {
+function ChecklistItem({
+    label,
+    passed,
+    optional,
+    detail = [],
+}: {
+    label: string;
+    passed: boolean;
+    optional?: boolean;
+    /** Extra lines under the label (e.g. which badges are missing). */
+    detail?: string[];
+}) {
     return (
         <div className="flex items-center gap-3 rounded-[12px] border-2 border-line-white bg-white px-4 py-3">
             {passed ? (
@@ -610,13 +700,67 @@ function ChecklistItem({ label, passed, optional }: { label: string; passed: boo
                     <XIcon size={14} strokeWidth={3} />
                 </span>
             )}
-            <span className={`text-sm font-bold ${passed ? 'text-ink' : optional ? 'text-muted-white' : 'text-body-white'}`}>
-                {label}
-                {optional && !passed && (
-                    <span className="label-mono ml-2 text-muted-white">(opcional)</span>
-                )}
+            <span className="flex min-w-0 flex-col gap-1">
+                <span className={`text-sm font-bold ${passed ? 'text-ink' : optional ? 'text-muted-white' : 'text-body-white'}`}>
+                    {label}
+                    {optional && !passed && (
+                        <span className="label-mono ml-2 text-muted-white">(opcional)</span>
+                    )}
+                </span>
+                {detail.map((line) => (
+                    <span key={line} className="text-[13px] text-muted-white">
+                        {line}
+                    </span>
+                ))}
             </span>
         </div>
+    );
+}
+
+// ── Badge gate notice (draft / published, while badges are missing) ──
+
+function BadgeGateNotice({
+    missing,
+    hasImpactos,
+    href,
+    t,
+}: {
+    missing: MissingBadgeCode[];
+    hasImpactos: boolean;
+    /** null on the Insignias tab itself: nowhere else to send them. */
+    href: string | null;
+    t: ReturnType<typeof useTranslations>;
+}) {
+    return (
+        <section
+            className="block-white flex min-w-0 max-w-full flex-1 flex-wrap items-center gap-4 px-5 py-4 text-ink"
+            role="status"
+            data-testid="badge-gate-notice"
+        >
+            <AlertCircle size={22} className="shrink-0 text-alert-white" aria-hidden="true" />
+            <div className="flex min-w-0 flex-1 basis-64 flex-col gap-1.5">
+                <p className="font-display text-[17px]">{t('badgeGate.title')}</p>
+                <ul className="flex flex-col gap-0.5">
+                    {missing.map((code) => (
+                        <li key={code} className="text-sm font-bold text-body-white">
+                            {t(`badgeGate.missing.${code}`)}
+                        </li>
+                    ))}
+                </ul>
+                {hasImpactos && missing.includes('experience_participation') && (
+                    <p className="text-[13px] text-muted-white">{t('badgeGate.impactoHint')}</p>
+                )}
+                <p className="text-[13px] text-muted-white">{t('badgeGate.body')}</p>
+            </div>
+            {href && (
+                <Button asChild variant="secondary">
+                    <Link href={href} data-testid="badge-gate-configure">
+                        <Award size={15} />
+                        {t('badgeGate.configure')}
+                    </Link>
+                </Button>
+            )}
+        </section>
     );
 }
 
@@ -669,7 +813,17 @@ function EndsInCountdown({
 
 // ── Fandi Countdown Timer ──
 
-function FandiCountdown({ fandiOpensAt }: { fandiOpensAt: string | Date }) {
+function FandiCountdown({
+    fandiOpensAt,
+    hideReady,
+}: {
+    fandiOpensAt: string | Date;
+    /**
+     * Badges are missing (the go-live will be refused) or not checked
+     * yet: never claim the dynamics are ready.
+     */
+    hideReady: boolean;
+}) {
     const t = useTranslations('events');
     const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
     const [isPast, setIsPast] = useState(false);
@@ -700,6 +854,8 @@ function FandiCountdown({ fandiOpensAt }: { fandiOpensAt: string | Date }) {
     }, [fandiOpensAt]);
 
     if (isPast) {
+        // The "Faltan insignias" notice next to this takes its place.
+        if (hideReady) return null;
         return (
             <div className="block-ink flex items-center gap-3 self-start px-5 py-3">
                 <Zap size={16} className="text-lime" />

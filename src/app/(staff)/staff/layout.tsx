@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
+import { SessionUnreachable } from '@/components/auth/session-unreachable';
 import { useRouter } from 'next/navigation';
 
 export default function StaffLayout({
@@ -12,17 +13,21 @@ export default function StaffLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated, memberRole, user, logout } = useAuth();
+    const { isLoading, isAuthenticated, isUnreachable, retrySession, memberRole, user, logout } = useAuth();
     const router = useRouter();
     const t = useTranslations('redemption');
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
+        if (!isLoading && !isAuthenticated && !isUnreachable) {
             router.replace('/login');
         } else if (!isLoading && isAuthenticated && memberRole !== 'staff') {
             router.replace('/dashboard');
         }
-    }, [isLoading, isAuthenticated, memberRole, router]);
+    }, [isLoading, isAuthenticated, isUnreachable, memberRole, router]);
+
+    if (!isLoading && isUnreachable) {
+        return <SessionUnreachable onRetry={retrySession} />;
+    }
 
     if (isLoading || !isAuthenticated || memberRole !== 'staff') {
         return (

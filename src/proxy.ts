@@ -33,6 +33,9 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
     // SCOPED to protected routes only.
-    // Do NOT run proxy on public pages (/, /login, landing assets).
+    // Do NOT run proxy on public pages (/, /login, landing assets) nor on the
+    // email-link pages, which must open WITHOUT a session: /reset-password
+    // (recovery email) and /invite/accept (team invitation). Their tokens
+    // live in the URL hash and are verified in the browser.
     matcher: ['/dashboard/:path*', '/staff/:path*'],
 };

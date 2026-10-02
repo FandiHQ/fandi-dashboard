@@ -88,15 +88,14 @@ function LoginContent() {
 
             <div className="flex items-center justify-center px-4 pb-12 pt-4 sm:px-12 lg:p-12">
                 <div className="surface-white flex w-full max-w-[464px] flex-col gap-5 rounded-[20px] border-2 border-ink bg-white p-7 text-ink shadow-[10px_10px_0_var(--color-ink)] sm:p-10 lg:max-w-none">
-                    <h2 className="font-display text-[34px] leading-none">
-                        {t('loginTitle')}
-                    </h2>
                     <LoginForm
                         showLogo={false}
+                        heading
                         onSuccess={(me: UserSyncResponse) => {
+                            // `next` comes from the URL: keep it inside this app.
                             const destination = me.organization?.memberRole === 'staff'
                                 ? '/staff'
-                                : (next || '/dashboard');
+                                : safeNextPath(next);
                             router.push(destination);
                         }}
                     />

@@ -432,12 +432,19 @@ export default function BadgesPage() {
     });
 
     // ── Mutations ──
+    // A template change can clear (or reopen) the publish / go-live badge
+    // gate, so the event header's "Faltan insignias" notice re-reads too.
+    const refreshBadges = () => {
+        qc.invalidateQueries({ queryKey: ['badge-templates', eventId] });
+        qc.invalidateQueries({ queryKey: ['events', eventId, 'pre-live-stats'] });
+    };
+
     const createMutation = useMutation({
         mutationFn: (dto: Parameters<typeof badgeTemplatesApi.create>[1]) =>
             badgeTemplatesApi.create(eventId, dto),
         onSuccess: () => {
             toast.success(t('created'));
-            qc.invalidateQueries({ queryKey: ['badge-templates', eventId] });
+            refreshBadges();
             closeDialog();
         },
         onError: () => toast.error(tCommon('error')),
@@ -448,7 +455,7 @@ export default function BadgesPage() {
             badgeTemplatesApi.update(id, dto),
         onSuccess: () => {
             toast.success(t('updated'));
-            qc.invalidateQueries({ queryKey: ['badge-templates', eventId] });
+            refreshBadges();
             closeDialog();
         },
         onError: () => toast.error(tCommon('error')),
@@ -458,7 +465,7 @@ export default function BadgesPage() {
         mutationFn: (id: string) => badgeTemplatesApi.delete(id),
         onSuccess: () => {
             toast.success(t('deleted'));
-            qc.invalidateQueries({ queryKey: ['badge-templates', eventId] });
+            refreshBadges();
             setDeleteTarget(null);
         },
         onError: (err: Error) => {

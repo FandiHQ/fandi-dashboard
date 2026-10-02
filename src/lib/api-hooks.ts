@@ -22,6 +22,7 @@ import type {
     Collaboration,
     DynamicType,
     IdolSearchResult,
+    PendingInvitationsSummary,
     SharedEvent,
     SharedEventTotals,
     SharedParticipants,
@@ -141,6 +142,9 @@ export const collaborationsApi = {
     listForEvent: (eventId: string) =>
         unwrap(api.get<Collaboration[]>(`/dashboard/events/${eventId}/collaborations`)),
     inbox: () => unwrap(api.get<Collaboration[]>('/dashboard/collaborations/inbox')),
+    // Nav badge + Home banner: invitations awaiting an answer (0 if I cannot answer).
+    pendingSummary: () =>
+        unwrap(api.get<PendingInvitationsSummary>('/dashboard/collaborations/pending-summary')),
     accept: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/accept`)),
     decline: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/decline`)),
     end: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/end`)),

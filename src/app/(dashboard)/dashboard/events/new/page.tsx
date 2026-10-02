@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v3';
@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
+import { eventSaveErrorKey, isEventValidationCode } from '@/lib/event-save-error';
 import type { CreateEventDto } from '@/types/api';
 import {
     datetimeLocalToIso,
@@ -29,9 +30,9 @@ import {
 } from '@/components/ui/select';
 
 export default function CreateEventPage() {
-    const tCommon = useTranslations('common');
     const router = useRouter();
     const t = useTranslations('events');
+    const locale = useLocale();
     const { memberRole } = useAuth();
     const queryClient = useQueryClient();
 
@@ -45,23 +46,23 @@ export default function CreateEventPage() {
     const schema = useMemo(
         () =>
             z.object({
-                name: z.string().min(1, 'Este campo es requerido').max(255),
+                name: z.string().trim().min(1, t('validation.required')).max(255, t('validation.maxLength', { max: 255 })),
                 eventType: z.enum(['football', 'concert', 'other']).optional(),
                 // Full datetimes (Step 6.1) — datetime-local "YYYY-MM-DDTHH:MM".
                 // Fixed-width format ⇒ lexicographic compare == chronological.
                 // Only the event start is required at draft save; end + Fandi
                 // window become required at the publish gate (backend-enforced).
-                eventDate: z.string().min(1, 'Este campo es requerido'),
+                eventDate: z.string().min(1, t('validation.required')),
                 eventEndDate: z.string().optional().or(z.literal('')),
                 fandiOpensAt: z.string().optional().or(z.literal('')),
                 fandiClosesAt: z.string().optional().or(z.literal('')),
-                venue: z.string().min(1, 'Este campo es requerido'),
+                venue: z.string().trim().min(1, t('validation.required')),
                 cityId: z.string().regex(/^\d+$/, 'cityId must be numeric').nullable().optional(),
                 status: z.enum(['draft', 'published', 'live', 'ended']).optional(),
                 description: z.string().optional(),
                 coverImageUrl: z
                     .string()
-                    .url('URL no válida')
+                    .url(t('validation.invalidUrl'))
                     .optional()
                     .or(z.literal('')),
             }).superRefine((data, ctx) => {
@@ -84,7 +85,7 @@ export default function CreateEventPage() {
                     });
                 }
             }),
-        [],
+        [t],
     );
 
     type FormValues = z.infer<typeof schema>;
@@ -94,10 +95,12 @@ export default function CreateEventPage() {
         handleSubmit,
         setValue,
         watch,
-        formState: { errors, isValid },
+        formState: { errors },
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
-        mode: 'onChange',
+        // Errors appear once a field is left (not while typing the first
+        // time), then update live. The save button is never silently greyed.
+        mode: 'onTouched',
         defaultValues: {
             name: '',
             eventDate: '',
@@ -115,16 +118,10 @@ export default function CreateEventPage() {
     const [selectedCity, setSelectedCity] = useState<CityAutocompleteValue | null>(null);
     const watchAll = watch();
     const coverImageUrl = watchAll.coverImageUrl;
-    const VALIDATION_CODES = [
-        'EVENT_END_BEFORE_START',
-        'FANDI_OPENS_BEFORE_EVENT',
-        'FANDI_CLOSES_AFTER_EVENT',
-        'FANDI_WINDOW_INVALID',
-    ];
     const formatFieldError = (message?: string) => {
         if (!message) return message;
         if (message === 'events.form.cityRequired') return t('form.cityRequired');
-        if (VALIDATION_CODES.includes(message)) return t(`validation.${message}`);
+        if (isEventValidationCode(message)) return t(`validation.${message}`);
         return message;
     };
 
@@ -135,10 +132,7 @@ export default function CreateEventPage() {
             router.push(`/dashboard/events/${event.id}`);
             toast.success(t('created'));
         },
-        onError: (err: unknown) => {
-            const message = err instanceof Error ? err.message : tCommon('error');
-            toast.error(message);
-        },
+        onError: (err: unknown) => toast.error(t(eventSaveErrorKey(err))),
     });
 
     const onSubmit = (data: FormValues) => {
@@ -180,7 +174,7 @@ export default function CreateEventPage() {
         if (!local) return null;
         const d = new Date(local);
         if (isNaN(d.getTime())) return null;
-        return new Intl.DateTimeFormat('es', {
+        return new Intl.DateTimeFormat(locale, {
             day: 'numeric',
             month: 'short',
             hour: 'numeric',
@@ -210,6 +204,7 @@ export default function CreateEventPage() {
             {/* ── Header ── */}
             <div className="flex flex-col gap-3">
                 <button
+                    type="button"
                     onClick={() => router.push('/dashboard/events')}
                     className="label-mono flex cursor-pointer items-center gap-2 self-start text-[11px] text-lilac transition-colors duration-150 hover:text-white"
                 >
@@ -228,7 +223,8 @@ export default function CreateEventPage() {
             <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_400px]">
                 {/* ── Left: Form ── */}
                 <form
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmit, () => toast.error(t('form.fixErrors')))}
+                    noValidate
                     className="flex min-w-0 flex-col gap-6"
                 >
                     {/* ── Block: event details ── */}
@@ -240,10 +236,12 @@ export default function CreateEventPage() {
                         <div className="flex flex-col gap-5 p-5">
                             {/* Name */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="label-mono text-muted-white">
+                                <label htmlFor="event-name" className="label-mono text-muted-white">
                                     {t('name')} *
                                 </label>
                                 <Input
+                                    id="event-name"
+                                    aria-invalid={errors.name ? true : undefined}
                                     {...register('name')}
                                     placeholder={t('name')}
                                     className="h-12 text-base"
@@ -258,11 +256,11 @@ export default function CreateEventPage() {
                             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                                 {/* Event Type */}
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="label-mono text-muted-white">
+                                    <label htmlFor="event-type" className="label-mono text-muted-white">
                                         {t('eventType')}
                                     </label>
                                     <Select onValueChange={(val) => setValue('eventType', val as 'football' | 'concert' | 'other')}>
-                                        <SelectTrigger className="w-full cursor-pointer text-base data-[size=default]:h-12">
+                                        <SelectTrigger id="event-type" className="w-full cursor-pointer text-base data-[size=default]:h-12">
                                             <SelectValue placeholder={t('eventType')} />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -281,10 +279,12 @@ export default function CreateEventPage() {
 
                                 {/* Venue */}
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="label-mono text-muted-white">
+                                    <label htmlFor="event-venue" className="label-mono text-muted-white">
                                         {t('venue')} *
                                     </label>
                                     <Input
+                                        id="event-venue"
+                                        aria-invalid={errors.venue ? true : undefined}
                                         {...register('venue')}
                                         placeholder={t('venue')}
                                         className="h-12 text-base"
@@ -299,10 +299,11 @@ export default function CreateEventPage() {
 
                             {/* City */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="label-mono text-muted-white">
+                                <label htmlFor="event-city" className="label-mono text-muted-white">
                                     {t('form.city')}
                                 </label>
                                 <CityAutocomplete
+                                    id="event-city"
                                     value={selectedCity}
                                     onChange={(city) => {
                                         setSelectedCity(city);
@@ -317,10 +318,11 @@ export default function CreateEventPage() {
 
                             {/* Description */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="label-mono text-muted-white">
+                                <label htmlFor="event-description" className="label-mono text-muted-white">
                                     {t('description')}
                                 </label>
                                 <Textarea
+                                    id="event-description"
                                     {...register('description')}
                                     rows={4}
                                     placeholder={t('description')}
@@ -339,10 +341,12 @@ export default function CreateEventPage() {
                         <div className="p-5">
                             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="label-mono text-muted-white">
+                                    <label htmlFor="event-start" className="label-mono text-muted-white">
                                         {t('eventStart')} *
                                     </label>
                                     <Input
+                                        id="event-start"
+                                        aria-invalid={errors.eventDate ? true : undefined}
                                         type="datetime-local"
                                         {...register('eventDate')}
                                         className="h-12 font-space-mono text-sm"
@@ -354,10 +358,12 @@ export default function CreateEventPage() {
                                     )}
                                 </div>
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="label-mono text-muted-white">
+                                    <label htmlFor="event-end" className="label-mono text-muted-white">
                                         {t('eventEnd')}
                                     </label>
                                     <Input
+                                        id="event-end"
+                                        aria-invalid={errors.eventEndDate ? true : undefined}
                                         type="datetime-local"
                                         {...register('eventEndDate')}
                                         className="h-12 font-space-mono text-sm"
@@ -385,10 +391,12 @@ export default function CreateEventPage() {
                         </div>
                         <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">
                             <div className="flex flex-col gap-1.5">
-                                <label className="label-mono text-blue">
+                                <label htmlFor="event-fandi-opens" className="label-mono text-blue">
                                     {t('fandiOpensAt')}
                                 </label>
                                 <Input
+                                    id="event-fandi-opens"
+                                    aria-invalid={errors.fandiOpensAt ? true : undefined}
                                     type="datetime-local"
                                     {...register('fandiOpensAt')}
                                     className="h-12 font-space-mono text-sm"
@@ -403,10 +411,12 @@ export default function CreateEventPage() {
                                 </p>
                             </div>
                             <div className="flex flex-col gap-1.5">
-                                <label className="label-mono text-blue">
+                                <label htmlFor="event-fandi-closes" className="label-mono text-blue">
                                     {t('fandiClosesAt')}
                                 </label>
                                 <Input
+                                    id="event-fandi-closes"
+                                    aria-invalid={errors.fandiClosesAt ? true : undefined}
                                     type="datetime-local"
                                     {...register('fandiClosesAt')}
                                     className="h-12 font-space-mono text-sm"
@@ -442,10 +452,11 @@ export default function CreateEventPage() {
 
                     {/* ── Sticky footer: the lime save CTA ── */}
                     <div className="block-ink sticky bottom-4 z-10 flex items-center justify-end gap-3 px-5 py-3.5">
+                        <p className="mr-auto font-space-mono text-[11px] text-muted-ink">{t('form.requiredNote')}</p>
                         <Button
                             type="submit"
                             size="lg"
-                            disabled={!isValid || isPending}
+                            disabled={isPending}
                             className="border-0 shadow-ext-cta"
                         >
                             {isPending ? (

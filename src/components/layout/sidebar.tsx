@@ -5,6 +5,7 @@
  * rail with the brand tile, icon navigation (the active item is a lime
  * 50px tile), logout and the workspace tile at the bottom. Labels live in
  * tooltips; the mobile sheet in DashboardHeader carries them in text.
+ * Colaboraciones carries the count of invitations awaiting an answer.
  */
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,15 +14,22 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { PendingInvitationsBadge } from '@/components/collaborations/PendingInvitationsBadge';
+import { usePendingInvitations } from '@/components/collaborations/usePendingInvitations';
+import { COLLABORATIONS_HREF } from '@/lib/collaborations';
 import { isNavActive, getVisibleItems } from './nav-config';
 import { LogoutDialog } from './logout-dialog';
 
 export function Sidebar() {
     const { user, organization, memberRole } = useAuth();
+    // Dashboard branding first, then the fan-facing crest most idols set instead.
+    const orgImage = organization?.logoUrl || organization?.avatarUrl || null;
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
+    const tCollab = useTranslations('collaborations');
     const visibleItems = getVisibleItems(memberRole, user?.role === 'admin');
+    const pendingCount = usePendingInvitations()?.count ?? 0;
 
     return (
         <aside className="flex h-full w-[84px] flex-col items-center justify-between bg-ink py-5">
@@ -41,22 +49,28 @@ export function Sidebar() {
                     {visibleItems.map((item) => {
                         const active = isNavActive(item, pathname);
                         const Icon = item.icon;
+                        const badge = item.href === COLLABORATIONS_HREF ? pendingCount : 0;
+                        const label =
+                            badge > 0
+                                ? `${t(item.labelKey)} · ${tCollab('pendingBadge', { count: badge })}`
+                                : t(item.labelKey);
                         return (
                             <Tooltip key={item.href}>
                                 <TooltipTrigger asChild>
                                     <Link
                                         href={item.href}
                                         data-testid={`nav-${item.labelKey}`}
-                                        aria-label={t(item.labelKey)}
+                                        aria-label={label}
                                         aria-current={active ? 'page' : undefined}
-                                        className={`flex size-[50px] items-center justify-center rounded-[12px] transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-lime ${
+                                        className={`relative flex size-[50px] items-center justify-center rounded-[12px] transition-colors duration-100 focus-visible:ring-2 focus-visible:ring-lime ${
                                             active ? 'bg-lime text-ink' : 'text-nav-inactive hover:bg-chip-ink hover:text-white'
                                         }`}
                                     >
                                         <Icon size={22} strokeWidth={2.2} />
+                                        <PendingInvitationsBadge count={badge} active={active} placement="rail" />
                                     </Link>
                                 </TooltipTrigger>
-                                <TooltipContent side="right">{t(item.labelKey)}</TooltipContent>
+                                <TooltipContent side="right">{label}</TooltipContent>
                             </Tooltip>
                         );
                     })}
@@ -78,10 +92,10 @@ export function Sidebar() {
                     className="flex size-[46px] items-center justify-center overflow-hidden rounded-[12px] border-2 border-dash-ink bg-chip-ink"
                     aria-label={organization?.name || 'Organization'}
                 >
-                    {organization?.logoUrl ? (
+                    {orgImage ? (
                         <Image
-                            src={organization.logoUrl}
-                            alt={organization.name}
+                            src={orgImage}
+                            alt={organization?.name ?? ''}
                             width={46}
                             height={46}
                             className="h-full w-full object-cover"

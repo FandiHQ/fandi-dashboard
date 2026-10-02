@@ -17,6 +17,8 @@ export interface UserSyncResponse {
         id: string;
         name: string;
         logoUrl: string | null;
+        /** Fan-facing avatar (crest/photo). Absent on older API builds. */
+        avatarUrl?: string | null;
         memberRole: string; // "owner" | "admin" | "viewer" | "staff"
     } | null;
 }
@@ -211,11 +213,18 @@ export interface PaginatedEventsResponse {
 }
 
 export interface PreLiveStatsResponse {
+    /** Oportunidades + impactos. */
     experienceCount: number;
+    oportunidadCount: number;
+    impactoCount: number;
     experiencesReady: boolean;
     auctionCount: number;
     isPublished: boolean;
-    /** All present content types have active winner + participation badges. */
+    /**
+     * Every badge the event can award has an active template (oportunidades:
+     * winner + participation, impactos: participation, subastas: winner +
+     * participation). Required to publish and to go live.
+     */
     badgesReady: boolean;
     /**
      * Codes for missing badge combos, e.g. "experience_winner".
@@ -313,6 +322,8 @@ export interface Collaboration {
     eventDate: string | null;
     hostOrgId: string;
     hostOrgName: string;
+    /** The host idol's picture (older api builds omit it). */
+    hostAvatarUrl?: string | null;
     guestOrgId: string;
     guestOrgName: string;
     guestAvatarUrl: string | null;
@@ -333,6 +344,13 @@ export interface IdolSearchResult {
     id: string;
     name: string;
     avatarUrl: string | null;
+}
+
+/** Invitations awaiting my org's answer (nav badge, Home banner). 0 for members who cannot answer. */
+export interface PendingInvitationsSummary {
+    count: number;
+    /** The newest pending invitation. */
+    latest: Collaboration | null;
 }
 
 export interface SharedEvent {
@@ -611,6 +629,8 @@ export interface BidStatusResponse {
 export type OrgRole = 'owner' | 'admin' | 'viewer' | 'staff';
 
 export interface OrganizationMember {
+    /** Invite response only: the email already had a Fandi account (no email sent; joins on next sign-in). */
+    existingAccount?: boolean;
     organizationId: string;
     userId: string;
     role: OrgRole;
@@ -645,7 +665,11 @@ export interface EventSummaryResponse {
     totalRaisedAuctions: number;
     totalRaised: number;
     uniqueParticipants: number;
+    /** Oportunidades + impactos. */
     experienceCount: number;
+    /** Absent on older API builds. */
+    oportunidadCount?: number;
+    impactoCount?: number;
     auctionCount: number;
     winnersCount: number;
     redemptionRate: number;

@@ -7,8 +7,11 @@
  *    and admins accept or decline it in one click. The token is read once
  *    and dropped from the URL right away (history, Referer, screenshots);
  *    next.config also sends Referrer-Policy: no-referrer on this route.
- *  - Pending invitations (accept / decline), active collaborations (view
- *    only; end), and history.
+ *  - Pending invitations as cards, like a friend request: who invites
+ *    (name + picture), to which dynamic of which event, what accepting
+ *    grants (fans and results, never amounts), Aceptar / Rechazar. The nav
+ *    badge and the Home banner point here (refreshed after an answer).
+ *  - Active collaborations (view only; end), and history.
  *  - Shared events open a view-only page with the dynamics this org was
  *    tagged on: event totals, its participating fans, and contest results.
  */
@@ -23,12 +26,13 @@ import { toast } from 'sonner';
 import { Check, X } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { collaborationsApi } from '@/lib/api-hooks';
-import { canOpenFromHistory, matchTokenInvitation } from '@/lib/collaborations';
+import { canOpenFromHistory, dynamicLabelKey, matchTokenInvitation } from '@/lib/collaborations';
 import type { Collaboration } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useConfirmDialog } from '@/components/ui/confirm-dialog';
 import { CollaborationStatusPill } from '@/components/collaborations/CollaborationStatusPill';
+import { IdolAvatar } from '@/components/collaborations/IdolAvatar';
 
 export default function CollaborationsPage() {
     return (
@@ -58,6 +62,8 @@ function CollaborationsInbox() {
         queryKey: ['collaborations', 'inbox'],
         queryFn: () => collaborationsApi.inbox(),
     });
+    // Every ['collaborations', …] query: the inbox, and the pending summary
+    // behind the nav badge and the Home banner.
     const refresh = () => {
         queryClient.invalidateQueries({ queryKey: ['collaborations'] });
     };
@@ -132,21 +138,24 @@ function CollaborationsInbox() {
 
             {isLoading && <Skeleton className="h-40 w-full rounded-2xl" />}
 
-            <Section title={t('pendingTitle', { count: pending.length })} empty={t('pendingEmpty')} items={pending}>
-                {(c) =>
-                    canAnswer ? (
-                        <div className="flex gap-2">
-                            {/* Per-row action: secondary (one lime primary per screen). */}
-                            <Button size="sm" variant="secondary" onClick={() => answer.mutate({ id: c.id, action: 'accept' })} disabled={answer.isPending}>
-                                {t('accept')}
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => answer.mutate({ id: c.id, action: 'decline' })} disabled={answer.isPending}>
-                                {t('decline')}
-                            </Button>
-                        </div>
-                    ) : null
-                }
-            </Section>
+            <section className="flex flex-col gap-2.5">
+                <h2 className="label-mono text-[11px] font-bold text-lilac">{t('pendingTitle', { count: pending.length })}</h2>
+                {pending.length === 0 ? (
+                    !isLoading && <p className="text-sm text-lilac">{t('pendingEmpty')}</p>
+                ) : (
+                    <ul className="flex flex-col gap-3.5">
+                        {pending.map((c) => (
+                            <InvitationCard
+                                key={c.id}
+                                c={c}
+                                canAnswer={canAnswer}
+                                busy={answer.isPending && answer.variables?.id === c.id}
+                                onAnswer={(action) => answer.mutate({ id: c.id, action })}
+                            />
+                        ))}
+                    </ul>
+                )}
+            </section>
 
             <Section title={t('activeTitle', { count: active.length })} empty={t('activeEmpty')} items={active}>
                 {(c) => (
@@ -191,6 +200,67 @@ function CollaborationsInbox() {
     );
 }
 
+/**
+ * One pending invitation, like a friend request: the host's picture and
+ * name, the dynamic (kind + name) and its event, what accepting grants,
+ * and the answer — Aceptar is this card's lime action, Rechazar its
+ * outline. Members who cannot answer see who can.
+ */
+function InvitationCard({
+    c,
+    canAnswer,
+    busy,
+    onAnswer,
+}: {
+    c: Collaboration;
+    canAnswer: boolean;
+    busy: boolean;
+    onAnswer: (action: 'accept' | 'decline') => void;
+}) {
+    const t = useTranslations('collaborations');
+    const dateLocale = useLocale() === 'en' ? enLocale : esLocale;
+    const eventDate = c.eventDate ? format(parseISO(c.eventDate), 'd MMM yyyy', { locale: dateLocale }) : null;
+    return (
+        <li
+            className="block-white flex flex-col gap-4 px-5 py-4 text-ink md:flex-row md:items-center"
+            data-testid={`inbox-${c.id}`}
+        >
+            <div className="flex min-w-0 flex-1 items-start gap-3.5">
+                <IdolAvatar name={c.hostOrgName} src={c.hostAvatarUrl} size={48} />
+                <div className="min-w-0 flex-1">
+                    <p className="font-display text-[18px] leading-tight">{t('invitedYou', { host: c.hostOrgName })}</p>
+                    <p className="mt-1.5 flex flex-wrap items-center gap-2 text-[15px] font-bold">
+                        <span className="rounded-full border-2 border-ink px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[0.12em]">
+                            {t(`kind.${dynamicLabelKey(c)}`)}
+                        </span>
+                        <span className="min-w-0 break-words">{c.dynamicName}</span>
+                    </p>
+                    <p className="mt-1 font-space-mono text-[10px] uppercase text-muted-white">
+                        {c.eventName}
+                        {eventDate && ` · ${eventDate}`}
+                        {` · ${t('expires', { date: format(parseISO(c.expiresAt), 'd MMM', { locale: dateLocale }) })}`}
+                    </p>
+                    <p className="mt-2.5 text-[13px] leading-snug text-body-white" data-testid="invitation-grants">
+                        {t('grants')}
+                    </p>
+                </div>
+            </div>
+            {canAnswer ? (
+                <div className="flex flex-none gap-2.5 md:flex-col">
+                    <Button onClick={() => onAnswer('accept')} disabled={busy} className="flex-1" data-testid={`accept-${c.id}`}>
+                        <Check size={14} /> {t('accept')}
+                    </Button>
+                    <Button variant="outline" onClick={() => onAnswer('decline')} disabled={busy} className="flex-1" data-testid={`decline-${c.id}`}>
+                        <X size={14} /> {t('decline')}
+                    </Button>
+                </div>
+            ) : (
+                <p className="font-space-mono text-[11px] uppercase text-alert-white">{t('onlyAuthors')}</p>
+            )}
+        </li>
+    );
+}
+
 function Section({
     title,
     empty,
@@ -203,7 +273,6 @@ function Section({
     children: (c: Collaboration) => React.ReactNode;
 }) {
     const t = useTranslations('collaborations');
-    const dateLocale = useLocale() === 'en' ? enLocale : esLocale;
     return (
         <section className="flex flex-col gap-2.5">
             <h2 className="label-mono text-[11px] font-bold text-lilac">{title}</h2>
@@ -218,9 +287,7 @@ function Section({
                                     {c.dynamicName} <span className="text-muted-white">· {c.eventName}</span>
                                 </p>
                                 <p className="font-space-mono text-[10px] uppercase text-muted-white">
-                                    {t('from', { host: c.hostOrgName })}
-                                    {c.status === 'pending' &&
-                                        ` · ${t('expires', { date: format(parseISO(c.expiresAt), 'd MMM', { locale: dateLocale }) })}`}
+                                    {t(`kind.${dynamicLabelKey(c)}`)} · {t('from', { host: c.hostOrgName })}
                                 </p>
                             </div>
                             <CollaborationStatusPill status={c.status} />

@@ -23,6 +23,8 @@ interface CityAutocompleteProps {
     onChange: (v: CityAutocompleteValue | null) => void;
     countryCode?: string;
     error?: string;
+    /** For a <label htmlFor> on the page. */
+    id?: string;
 }
 
 export function CityAutocomplete({
@@ -30,6 +32,7 @@ export function CityAutocomplete({
     onChange,
     countryCode = 'CO',
     error,
+    id,
 }: CityAutocompleteProps) {
     const t = useTranslations('events.form');
     const tEvents = useTranslations('events');
@@ -87,7 +90,9 @@ export function CityAutocomplete({
             <Popover open={showDropdown} onOpenChange={setOpen}>
                 <PopoverAnchor asChild>
                     <Input
+                        id={id}
                         value={query}
+                        aria-invalid={error ? true : undefined}
                         onFocus={() => setOpen(true)}
                         onChange={(event) => {
                             const nextQuery = event.target.value;
