@@ -1,0 +1,25 @@
+{
+  "color": {
+    "fandiBlue": "#2D00F7", "ink": "#0B0B0F", "white": "#FFFFFF", "lime": "#C6FF3D",
+    "lilacText": "#D9D3FF", "mutedOnWhite": "#55555E", "bodyOnWhite": "#3A3A44", "mutedOnInk": "#9A9AA8",
+    "navInactive": "#6E6E7A", "chipInk": "#1A1A22", "lineOnWhite": "#EAEAF0", "lineOnInk": "#1E1E26",
+    "alert": "#FF4FA3", "alertOnWhite": "#D6006F"
+  },
+  "tier": { "VIP": "#B7A8FF", "ALTA": "#5CE1FF", "MEDIA": "#C6FF3D", "BASE": "#FFFFFF" },
+  "font": { "display": "Archivo", "mono": "Space Mono", "displayStretch": "112%", "heroStretch": "115%" },
+  "fontSize": {
+    "mobile": { "hero": 66, "heroCompact": 58, "h1": 27, "h1Result": 34, "cardTitle": 20, "body": 14, "label": 10 },
+    "web": { "hero": 124, "h1": 44, "stat": 38, "body": 15, "label": 11 }
+  },
+  "radius": { "pill": 999, "block": 16, "row": 12, "chip": 10, "button": 14, "sheet": 22 },
+  "shadow": {
+    "lg": "6px 6px 0 #0B0B0F", "md": "4px 4px 0 #0B0B0F", "sm": "3px 3px 0 #0B0B0F",
+    "live": "6px 6px 0 #C6FF3D", "ctaOnInk": "4px 4px 0 #2D00F7"
+  },
+  "border": { "width": 2, "color": "#0B0B0F" },
+  "tiltHeroDeg": -1.5,
+  "spacing": [4, 8, 12, 16, 20, 24, 32, 36],
+  "touchTargetMin": 48,
+  "economy": { "COP_PER_FANDI": 5000, "minRechargeCOP": 20000, "rechargePacksCOP": [20000, 50000, 100000, 200000] },
+  "locale": { "numbers": "es-CO", "currencyPrefix": "$ ", "fandiSuffix": " F" }
+}

@@ -25,17 +25,8 @@ export function DownloadScene() {
         <section
             id="descargar"
             aria-label={t('title')}
-            className="relative overflow-hidden bg-black px-6 py-28 md:py-40"
+            className="relative overflow-hidden bg-blue px-5 py-28 md:px-9 md:py-40"
         >
-            <div
-                className="pointer-events-none absolute inset-0"
-                style={{
-                    background:
-                        'radial-gradient(60% 60% at 50% 50%, rgba(204,255,0,0.12), transparent 70%), radial-gradient(50% 50% at 50% 100%, rgba(45,0,247,0.28), transparent 70%)',
-                }}
-                aria-hidden="true"
-            />
-
             <motion.div
                 {...(reduceMotion
                     ? {}
@@ -47,13 +38,13 @@ export function DownloadScene() {
                       })}
                 className="relative mx-auto flex max-w-4xl flex-col items-center gap-8 text-center"
             >
-                <span className="font-space-mono text-[10px] uppercase tracking-[6px] text-[#CCFF00]">
+                <span className="label-mono text-lilac md:text-[12px]">
                     {t('kicker')}
                 </span>
-                <h2 className="animate-glitch font-sora text-[44px] font-extrabold uppercase leading-[0.88] tracking-tighter text-white md:text-[104px]">
+                <h2 className="font-hero text-[48px] text-white md:text-[120px]">
                     {t('title')}
                 </h2>
-                <p className="max-w-xl font-sora text-lg text-[#B8B8C2] md:text-xl">
+                <p className="max-w-xl text-lg text-lilac md:text-xl">
                     {t('body')}
                 </p>
 
@@ -64,7 +55,7 @@ export function DownloadScene() {
                 </Cta>
 
                 <div className="mt-2 flex flex-col items-center gap-3">
-                    <span className="font-space-mono text-[11px] uppercase tracking-[3px] text-[#6B6B6B]">
+                    <span className="label-mono tabular text-[11px] text-white">
                         {t('priceNote')}
                     </span>
                 </div>
@@ -81,7 +72,7 @@ export function FaqScene() {
         <section
             id="faq"
             aria-label={t('title')}
-            className="relative border-t border-white/10 bg-black px-6 py-24 md:py-32"
+            className="relative bg-blue px-5 py-24 md:px-9 md:py-32"
         >
             <div className="mx-auto max-w-3xl">
                 <motion.div
@@ -95,27 +86,28 @@ export function FaqScene() {
                           })}
                     className="text-center"
                 >
-                    <span className="font-space-mono text-[10px] uppercase tracking-[6px] text-[#CCFF00]">
+                    <span className="label-mono text-lilac md:text-[12px]">
                         {t('kicker')}
                     </span>
-                    <h2 className="mt-4 font-sora text-4xl font-extrabold uppercase tracking-tighter text-white md:text-6xl">
+                    <h2 className="font-hero mt-4 text-4xl text-white md:text-6xl">
                         {t('title')}
                     </h2>
                 </motion.div>
 
-                <div className="mt-12">
+                {/* One white block, questions divided by line-white rules. */}
+                <div className="block-white mt-12 overflow-hidden">
                     {FAQ_ITEMS.map((i) => (
-                        <details key={i} open={i === 1} className="group border-b border-white/10">
-                            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 font-sora text-lg font-bold text-white transition-colors marker:content-none hover:text-[#CCFF00] group-open:text-[#CCFF00] md:text-2xl [&::-webkit-details-marker]:hidden">
+                        <details key={i} open={i === 1} className="group border-b-2 border-line-white px-5 last:border-b-0 md:px-7">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-bold text-ink transition-colors marker:content-none hover:text-blue md:py-6 md:text-[22px] [&::-webkit-details-marker]:hidden">
                                 <span>{t(`q${i}`)}</span>
                                 <span
-                                    className="font-space-mono text-2xl text-[#CCFF00] transition-transform duration-300 group-open:rotate-45"
+                                    className="grid size-8 shrink-0 place-items-center rounded-[10px] border-2 border-ink font-display text-xl text-ink transition-transform duration-300 group-open:rotate-45 group-open:bg-ink group-open:text-white motion-reduce:transition-none"
                                     aria-hidden="true"
                                 >
                                     +
                                 </span>
                             </summary>
-                            <p className="max-w-[62ch] pb-7 font-sora text-base leading-relaxed text-[#A8A8B4]">
+                            <p className="max-w-[62ch] pb-6 text-base leading-relaxed text-body-white md:pb-7">
                                 {t(`a${i}`)}
                             </p>
                         </details>
@@ -130,7 +122,7 @@ export function FooterV2() {
     const t = useTranslations('landingV2.footer');
 
     return (
-        <footer className="border-t border-white/10 bg-black px-6 py-16 md:px-12">
+        <footer className="surface-ink border-t-2 border-ink bg-ink px-5 py-16 md:px-12">
             <div className="mx-auto flex max-w-6xl flex-col gap-10">
                 <div className="flex flex-col justify-between gap-10 md:flex-row md:items-start">
                     <div className="flex flex-col gap-5">
@@ -156,7 +148,7 @@ export function FooterV2() {
                             height={747}
                             className="h-15 w-auto self-start"
                         />
-                        <p className="max-w-xs font-sora text-base text-[#8A8A94]">
+                        <p className="max-w-xs text-base text-muted-ink">
                             {t('tagline')}
                         </p>
                     </div>
@@ -173,6 +165,7 @@ export function FooterV2() {
                         <Cta
                             href="mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento"
                             variant="primary"
+                            onInk
                         >
                             {t('idolCta')}
                         </Cta>
@@ -181,42 +174,42 @@ export function FooterV2() {
 
                 <nav
                     aria-label={t('linksLabel')}
-                    className="flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-white/10 pt-8"
+                    className="flex flex-wrap items-center gap-x-7 gap-y-3 border-t-2 border-line-ink pt-8"
                 >
                     <a
                         href="/terminos"
-                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                        className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
                     >
                         {t('terms')}
                     </a>
                     <a
                         href="/privacidad"
-                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                        className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
                     >
                         {t('privacy')}
                     </a>
                     <a
                         href="/datos-personales"
-                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                        className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
                     >
                         {t('dataPolicy')}
                     </a>
                     <a
                         href="/eliminar-cuenta"
-                        className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                        className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
                     >
                         {t('deleteAccount')}
                     </a>
                     <a
                         href="mailto:hola@fandi.app"
-                                                className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0] transition-colors hover:text-white"
+                        className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
                     >
                         hola@fandi.app
                     </a>
-                    <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#4A4A52]">
+                    <span className="label-mono text-[11px] text-nav-inactive">
                         {t('madeIn')}
                     </span>
-                    <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#4A4A52] md:ml-auto">
+                    <span className="label-mono text-[11px] text-nav-inactive md:ml-auto">
                         {t('copyright')}
                     </span>
                 </nav>

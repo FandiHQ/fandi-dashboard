@@ -1,24 +1,19 @@
 'use client';
 
 /**
- * Analytics page — Step 4.14. Visible to every dashboard role.
+ * Analytics page ("08 Analitica"). Visible to every dashboard role.
  *
  * Sections:
- *   1. Summary cards (4) — totalRaised / auctions / participants / redemptionRate.
- *      Drops the prompt's "Contribuciones" card because EventSummaryResponse
- *      has no `contributionsCount` field (only `experienceCount`, which is
- *      configuration count, not activity count — semantics differ).
- *   2. Revenue split — Recharts PieChart, contributions vs auctions.
- *   3. Experience breakdown — table with expandable escuadra distribution.
+ *   1. Stat blocks (4) — recaudado (F + COP) / participantes /
+ *      ganadores / premios reclamados (redemptionRate).
+ *   2. Revenue split — Recharts donut, Aportes (blue) vs Subastas
+ *      (lilac), flat fills, inside a white block.
+ *   3. Per-opportunity breakdown — ink block, one stacked bar per
+ *      opportunity in the 4 category colours; rows expand to the
+ *      per-category detail.
  *
  * No "revenue over time" section: preflight E confirmed no
  * `/analytics/revenue-over-time` endpoint exists.
- *
- * Money: rendered in Fandies via `formatFandis` to match Step 4.13's
- * dashboard convention.
- *
- * Not wired into the event-detail tab nav yet — reachable via URL
- * only. Flagged follow-up.
  */
 
 import { useState } from 'react';
@@ -35,21 +30,27 @@ import {
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 import { eventsApi, analyticsApi } from '@/lib/api-hooks';
-import { formatFandis } from '@/lib/currency';
+import { formatFandis, formatCop } from '@/lib/currency';
 import {
     chartColors,
     escuadraColors,
     escuadraDefaultNames,
     experienceStatusColors,
-    textColors,
 } from '@/lib/chart-colors';
 import { HudTooltip } from '@/components/charts/hud-tooltip';
-import { Badge } from '@/components/ui/badge';
+import { HostSegmentsSection } from '@/components/collaborations/SegmentsSection';
 import { Skeleton } from '@/components/ui/skeleton';
 import type {
     EventSummaryResponse,
     ExperienceBreakdownItem,
 } from '@/types/api';
+
+/** Category order for bars + legend: VIP first (§2 — equal weight). */
+const CATEGORY_LEVELS = [4, 3, 2, 1] as const;
+
+/** Ink hairline around chart slices (§7). SVG attribute, so a literal:
+ *  chart-colors.ts has no ink constant. */
+const CHART_INK = '#0B0B0F';
 
 // ─── Page ────────────────────────────────────────────────────
 
@@ -79,11 +80,8 @@ export default function AnalyticsPage() {
     if (isDraft) {
         return (
             <div className="flex flex-col items-center justify-center py-24">
-                <div className="hud-card hud-brackets px-8 py-6">
-                    <p
-                        className="font-space-mono text-sm uppercase tracking-[1px]"
-                        style={{ color: textColors.secondary }}
-                    >
+                <div className="block-white px-8 py-6">
+                    <p className="label-mono text-muted-white">
                         {t('unavailableOnDraft')}
                     </p>
                 </div>
@@ -92,10 +90,14 @@ export default function AnalyticsPage() {
     }
 
     return (
-        <div className="flex flex-col gap-8 py-6">
+        <div className="flex flex-col gap-[18px]">
             <SummaryCards summary={summary} t={t} />
-            <RevenueBreakdown summary={summary} t={t} />
-            <ExperienceBreakdownSection breakdown={breakdown} t={t} />
+            <div className="grid grid-cols-1 gap-[22px] xl:grid-cols-[420px_minmax(0,1fr)]">
+                <RevenueBreakdown summary={summary} t={t} />
+                <ExperienceBreakdownSection breakdown={breakdown} t={t} />
+            </div>
+            {/* RFC §4 — only when the event has guest idols. */}
+            <HostSegmentsSection eventId={eventId} />
         </div>
     );
 }
@@ -110,56 +112,50 @@ interface SummaryCardsProps {
 function SummaryCards({ summary, t }: SummaryCardsProps) {
     if (!summary) {
         return (
-            <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2 xl:grid-cols-4">
                 {[0, 1, 2, 3].map((i) => (
-                    <Skeleton
-                        key={i}
-                        className="h-32 w-full rounded-none bg-[#1E1E1E]"
-                    />
+                    <Skeleton key={i} className="h-28 w-full rounded-2xl" />
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2 xl:grid-cols-4">
             <SummaryCard
                 label={t('totalRaised')}
                 value={`${formatFandis(summary.totalRaised)} F`}
-            />
-            <SummaryCard
-                label={t('auctions')}
-                value={summary.auctionCount.toString()}
+                sub={`≈ ${formatCop(summary.totalRaised)}`}
             />
             <SummaryCard
                 label={t('participants')}
-                value={summary.uniqueParticipants.toString()}
+                value={formatCount(summary.uniqueParticipants)}
+                sub={t('stat.participantsSub')}
             />
             <SummaryCard
-                label={t('redemptionRate')}
+                label={t('stat.winners')}
+                value={formatCount(summary.winnersCount)}
+                sub={t('stat.winnersSub', {
+                    experiences: summary.experienceCount,
+                    auctions: summary.auctionCount,
+                })}
+            />
+            <SummaryCard
+                label={t('stat.claimed')}
                 value={`${Math.round(summary.redemptionRate)}%`}
+                sub={t('redemptionRate')}
             />
         </div>
     );
 }
 
-function SummaryCard({ label, value }: { label: string; value: string }) {
+function SummaryCard({ label, value, sub }: { label: string; value: string; sub: string }) {
     return (
-        <div className="hud-card hud-brackets flex flex-col gap-3 px-5 py-5">
-            <span
-                className="font-space-mono text-[11px] uppercase tracking-[2px]"
-                style={{ color: textColors.muted }}
-            >
-                {label}
-            </span>
-            <span
-                className="font-sora text-[32px] font-bold leading-none tabular-nums"
-                style={{
-                    color: textColors.primary,
-                    textShadow: '0 0 18px rgba(45,0,247,0.35)',
-                }}
-            >
-                {value}
+        <div className="block-white flex flex-col px-5 py-4">
+            <span className="label-mono text-muted-white">{label}</span>
+            <span className="font-display tabular mt-2 text-[36px] text-ink">{value}</span>
+            <span className="mt-1.5 font-space-mono text-[10px] uppercase text-muted-white">
+                {sub}
             </span>
         </div>
     );
@@ -179,13 +175,10 @@ function RevenueBreakdown({ summary, t }: RevenueBreakdownProps) {
 
     if (!summary || total === 0) {
         return (
-            <section className="flex flex-col gap-4">
-                <SectionTitle text={t('revenueBreakdown')} />
-                <div
-                    className="hud-card hud-brackets flex h-[200px] items-center justify-center"
-                    style={{ color: textColors.muted }}
-                >
-                    <span className="font-space-mono text-sm">
+            <section className="surface-white flex flex-col gap-4 rounded-[18px] border-2 border-ink bg-white px-[22px] py-5 text-ink shadow-ext-lg">
+                <SectionTitle text={t('revenueSource')} />
+                <div className="flex h-[200px] items-center justify-center">
+                    <span className="label-mono text-muted-white">
                         {summary ? t('noRevenueYet') : t('loading')}
                     </span>
                 </div>
@@ -207,76 +200,67 @@ function RevenueBreakdown({ summary, t }: RevenueBreakdownProps) {
     ];
 
     return (
-        <section className="flex flex-col gap-4">
-            <SectionTitle text={t('revenueBreakdown')} />
-            <div className="hud-card hud-brackets flex flex-col gap-4 px-6 py-6">
-                <div className="h-[260px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={data}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={100}
-                                paddingAngle={2}
-                                strokeWidth={0}
-                            >
-                                {data.map((entry) => (
-                                    <Cell key={entry.name} fill={entry.color} />
-                                ))}
-                            </Pie>
-                            {/* Recharts' default Tooltip is bypassed via the
-                                `content` prop — see TASK C contract. */}
-                            <RechartsTooltip
-                                content={
-                                    <HudTooltip
-                                        formatValue={(v) =>
-                                            `${formatFandis(v)} F · ${pct(v, total)}%`
-                                        }
-                                    />
-                                }
-                                cursor={false}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </div>
-
-                {/* Custom legend (NOT Recharts' default). */}
-                <div className="flex flex-col gap-2">
-                    {data.map((entry) => (
-                        <div
-                            key={entry.name}
-                            className="flex items-center gap-3"
+        <section className="surface-white flex flex-col gap-4 rounded-[18px] border-2 border-ink bg-white px-[22px] py-5 text-ink shadow-ext-lg">
+            <SectionTitle text={t('revenueSource')} />
+            <div className="h-[240px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                        <Pie
+                            data={data}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={58}
+                            outerRadius={100}
+                            paddingAngle={0}
+                            stroke={CHART_INK}
+                            strokeWidth={2}
+                            isAnimationActive={false}
                         >
-                            <span
-                                aria-hidden
-                                className="inline-block h-3 w-3 shrink-0"
-                                style={{ backgroundColor: entry.color }}
-                            />
-                            <span
-                                className="font-space-mono text-xs uppercase tracking-[1px]"
-                                style={{ color: textColors.secondary }}
-                            >
-                                {entry.name}
-                            </span>
-                            <span
-                                className="ml-auto font-sora text-sm tabular-nums"
-                                style={{ color: textColors.primary }}
-                            >
+                            {data.map((entry) => (
+                                <Cell key={entry.name} fill={entry.color} />
+                            ))}
+                        </Pie>
+                        {/* Recharts' default Tooltip is bypassed via the
+                            `content` prop — see TASK C contract. */}
+                        <RechartsTooltip
+                            content={
+                                <HudTooltip
+                                    formatValue={(v) =>
+                                        `${formatFandis(v)} F · ${pct(v, total)}%`
+                                    }
+                                />
+                            }
+                            cursor={false}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+            </div>
+
+            {/* Custom legend (NOT Recharts' default). */}
+            <div className="flex flex-col gap-2">
+                {data.map((entry) => (
+                    <div key={entry.name} className="flex items-center gap-2.5">
+                        <span
+                            aria-hidden
+                            className="inline-block size-3.5 shrink-0 rounded-[3px] border-2 border-ink"
+                            style={{ backgroundColor: entry.color }}
+                        />
+                        <span className="flex-1 text-sm font-bold">{entry.name}</span>
+                        <span className="flex flex-col items-end">
+                            <span className="tabular text-[15px] font-black">
                                 {formatFandis(entry.value)} F
                             </span>
-                            <span
-                                className="w-12 text-right font-space-mono text-xs tabular-nums"
-                                style={{ color: textColors.muted }}
-                            >
-                                {pct(entry.value, total)}%
+                            <span className="tabular font-space-mono text-[10px] text-muted-white">
+                                {formatCop(entry.value)}
                             </span>
-                        </div>
-                    ))}
-                </div>
+                        </span>
+                        <span className="tabular w-10 text-right font-space-mono text-[10px] text-muted-white">
+                            {pct(entry.value, total)}%
+                        </span>
+                    </div>
+                ))}
             </div>
         </section>
     );
@@ -287,7 +271,11 @@ function pct(part: number, whole: number): string {
     return Math.round((part / whole) * 100).toString();
 }
 
-// ─── Experience breakdown table ──────────────────────────────
+function formatCount(n: number): string {
+    return new Intl.NumberFormat('es-CO').format(n);
+}
+
+// ─── Experience breakdown (ink block) ────────────────────────
 
 interface ExperienceBreakdownSectionProps {
     breakdown: ExperienceBreakdownItem[] | undefined;
@@ -298,44 +286,45 @@ function ExperienceBreakdownSection({
     breakdown,
     t,
 }: ExperienceBreakdownSectionProps) {
-    if (!breakdown) {
-        return (
-            <section className="flex flex-col gap-4">
+    return (
+        <section className="surface-ink flex min-w-0 flex-col gap-1 overflow-hidden rounded-[18px] bg-ink px-[22px] py-5 text-white">
+            <div className="mb-2 flex items-baseline justify-between gap-4">
                 <SectionTitle text={t('experienceBreakdown')} />
+                <span className="label-mono text-muted-ink">{t('fansByCategory')}</span>
+            </div>
+
+            {!breakdown ? (
                 <div className="flex flex-col gap-2">
                     {[0, 1, 2].map((i) => (
-                        <Skeleton
-                            key={i}
-                            className="h-14 w-full rounded-none bg-[#1E1E1E]"
-                        />
+                        <Skeleton key={i} className="h-14 w-full bg-chip-ink" />
                     ))}
                 </div>
-            </section>
-        );
-    }
-
-    if (breakdown.length === 0) {
-        return (
-            <section className="flex flex-col gap-4">
-                <SectionTitle text={t('experienceBreakdown')} />
-                <div className="hud-card flex items-center justify-center px-6 py-8">
-                    <span
-                        className="font-space-mono text-sm"
-                        style={{ color: textColors.muted }}
-                    >
-                        {t('exp.empty')}
-                    </span>
+            ) : breakdown.length === 0 ? (
+                <div className="flex items-center justify-center py-8">
+                    <span className="label-mono text-muted-ink">{t('exp.empty')}</span>
                 </div>
-            </section>
-        );
-    }
+            ) : (
+                <div className="flex flex-col">
+                    {breakdown.map((row) => (
+                        <ExperienceRow key={row.experienceId} row={row} t={t} />
+                    ))}
+                </div>
+            )}
 
-    return (
-        <section className="flex flex-col gap-4">
-            <SectionTitle text={t('experienceBreakdown')} />
-            <div className="flex flex-col gap-2">
-                {breakdown.map((row) => (
-                    <ExperienceRow key={row.experienceId} row={row} t={t} />
+            {/* Category legend */}
+            <div className="mt-auto flex flex-wrap gap-4 pt-3">
+                {CATEGORY_LEVELS.map((level) => (
+                    <span
+                        key={level}
+                        className="flex items-center gap-1.5 font-space-mono text-[10px] uppercase text-muted-ink"
+                    >
+                        <span
+                            aria-hidden
+                            className="inline-block size-2.5 rounded-[2px]"
+                            style={{ backgroundColor: escuadraColors[level] }}
+                        />
+                        {escuadraDefaultNames[level]}
+                    </span>
                 ))}
             </div>
         </section>
@@ -351,50 +340,71 @@ function ExperienceRow({
 }) {
     const [expanded, setExpanded] = useState(false);
     const statusColor = experienceStatusColors[row.status];
+    const total = row.escuadraDistribution.reduce((s, d) => s + d.count, 0);
 
     return (
-        <div className="hud-card flex flex-col">
+        <div className="flex flex-col border-t border-line-ink">
             <button
                 onClick={() => setExpanded((v) => !v)}
-                className="grid cursor-pointer grid-cols-[auto_1fr_auto_auto_auto_auto] items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-[#0A0A0A]"
+                aria-expanded={expanded}
+                className="flex cursor-pointer flex-col gap-2 rounded-[10px] py-3 text-left transition-colors hover:bg-chip-ink/60"
             >
-                {expanded ? (
-                    <ChevronDown size={14} className="text-[#737373]" />
-                ) : (
-                    <ChevronRight size={14} className="text-[#737373]" />
-                )}
-                <span className="font-sora text-sm font-medium text-white">
-                    {row.experienceName}
-                </span>
-                <Badge
-                    variant="outline"
-                    className="rounded-none font-space-mono text-[10px] uppercase tracking-[1px]"
-                    style={{ color: statusColor, borderColor: statusColor }}
-                >
-                    {t(`exp.statusLabel.${row.status}`)}
-                </Badge>
-                <span
-                    className="font-sora text-sm tabular-nums"
-                    style={{ color: textColors.primary }}
-                >
-                    {formatFandis(row.totalRaised)} F
-                </span>
-                <span
-                    className="font-space-mono text-xs tabular-nums"
-                    style={{ color: textColors.muted }}
-                >
-                    {t('exp.contributorsCount', { count: row.contributorCount })}
-                </span>
-                <span
-                    className="font-space-mono text-xs tabular-nums"
-                    style={{ color: textColors.muted }}
-                >
-                    {t('exp.winnersCount', { count: row.winnersCount })}
-                </span>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <span className="flex min-w-0 items-center gap-2">
+                        {expanded ? (
+                            <ChevronDown size={14} className="shrink-0 text-muted-ink" />
+                        ) : (
+                            <ChevronRight size={14} className="shrink-0 text-muted-ink" />
+                        )}
+                        <span className="font-display truncate text-[16px]">
+                            {row.experienceName}
+                        </span>
+                        <span className="flex shrink-0 items-center gap-1.5 font-space-mono text-[10px] uppercase text-muted-ink">
+                            <span
+                                aria-hidden
+                                className="inline-block size-2 rounded-full"
+                                style={{ backgroundColor: statusColor }}
+                            />
+                            {t(`exp.statusLabel.${row.status}`)}
+                        </span>
+                    </span>
+                    <span className="flex flex-none flex-wrap items-baseline gap-4 font-space-mono text-[11px] text-muted-ink">
+                        <span className="tabular font-bold text-white">
+                            {formatFandis(row.totalRaised)} F
+                        </span>
+                        <span className="tabular">{formatCop(row.totalRaised)}</span>
+                        <span className="tabular uppercase">
+                            {t('exp.contributorsCount', { count: row.contributorCount })}
+                        </span>
+                        <span className="tabular uppercase">
+                            {t('exp.winnersCount', { count: row.winnersCount })}
+                        </span>
+                    </span>
+                </div>
+
+                {/* Stacked bar: fans per category */}
+                <div className="flex h-3.5 gap-[2px] overflow-hidden rounded-[4px]">
+                    {total === 0 ? (
+                        <span className="block flex-1 bg-chip-ink" />
+                    ) : (
+                        CATEGORY_LEVELS.map((level) => {
+                            const count =
+                                row.escuadraDistribution.find((d) => d.level === level)?.count ?? 0;
+                            if (count === 0) return null;
+                            return (
+                                <span
+                                    key={level}
+                                    className="block"
+                                    style={{ flex: count, backgroundColor: escuadraColors[level] }}
+                                />
+                            );
+                        })
+                    )}
+                </div>
             </button>
 
             {expanded && (
-                <div className="flex flex-col gap-2 border-t border-[#1A1A1A] px-5 py-4">
+                <div className="flex flex-col gap-2 pb-4 pt-1">
                     <EscuadraBars distribution={row.escuadraDistribution} t={t} />
                 </div>
             )}
@@ -410,7 +420,7 @@ function EscuadraBars({
     t: ReturnType<typeof useTranslations>;
 }) {
     // Render levels 4 → 1 (top tier first).
-    const ordered = [4, 3, 2, 1] as const;
+    const ordered = CATEGORY_LEVELS;
     const maxCount = Math.max(...distribution.map((d) => d.count), 1);
 
     return (
@@ -424,28 +434,19 @@ function EscuadraBars({
 
                 return (
                     <div key={level} className="flex items-center gap-3">
-                        <span
-                            className="w-16 font-space-mono text-[10px] uppercase tracking-[1px]"
-                            style={{ color }}
-                        >
+                        <span className="w-14 font-space-mono text-[10px] font-bold uppercase text-white">
                             {escuadraDefaultNames[level]}
                         </span>
-                        <div className="relative h-2 flex-1 bg-[#141414]">
+                        <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-chip-ink">
                             <div
-                                className="h-full"
-                                style={{
-                                    background: color,
-                                    width: `${widthPct}%`,
-                                    boxShadow:
-                                        count > 0 ? `0 0 8px ${color}80` : 'none',
-                                }}
+                                className="h-full rounded-full"
+                                style={{ backgroundColor: color, width: `${widthPct}%` }}
                             />
                         </div>
                         <span
-                            className="w-72 text-right font-space-mono text-[11px] tabular-nums"
-                            style={{
-                                color: count > 0 ? textColors.secondary : textColors.dim,
-                            }}
+                            className={`tabular w-64 text-right font-space-mono text-[11px] ${
+                                count > 0 ? 'text-muted-ink' : 'text-nav-inactive'
+                            }`}
                         >
                             {count > 0
                                 ? t('exp.escuadraSummary', {
@@ -465,12 +466,5 @@ function EscuadraBars({
 // ─── Section title ───────────────────────────────────────────
 
 function SectionTitle({ text }: { text: string }) {
-    return (
-        <h2
-            className="font-space-mono text-[13px] uppercase tracking-[2px]"
-            style={{ color: textColors.muted }}
-        >
-            {text}
-        </h2>
-    );
+    return <h2 className="font-display text-[17px]">{text}</h2>;
 }

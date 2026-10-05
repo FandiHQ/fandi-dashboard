@@ -5,6 +5,7 @@ import Cropper from 'react-easy-crop';
 import type { Area } from 'react-easy-crop';
 import { Loader2, Crop, ZoomIn, ZoomOut } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
+import { Button } from './button';
 
 // ─── Utility: convert crop area to canvas blob ────────────────────────────────
 async function getCroppedBlob(
@@ -81,16 +82,16 @@ export function ImageCropModal({
 
     return (
         <Dialog open={!!imageSrc} onOpenChange={(v) => { if (!v) onCancel(); }}>
-            <DialogContent className="max-w-[520px] rounded-none border border-[#1E1E1E] bg-[#0A0A0A] p-0 text-white [&>button]:text-white">
-                <DialogHeader className="shrink-0 border-b border-[#1E1E1E] px-6 py-4">
-                    <DialogTitle className="flex items-center gap-2 font-sora text-base font-bold text-white">
-                        <Crop size={16} className="text-[#2D00F7]" />
+            <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-[520px]">
+                <DialogHeader className="shrink-0 border-b-2 border-ink px-6 py-4">
+                    <DialogTitle className="flex items-center gap-2.5 text-xl">
+                        <Crop size={18} className="text-blue" />
                         Ajustar imagen
                     </DialogTitle>
                 </DialogHeader>
 
                 {/* Crop area */}
-                <div className="relative h-[380px] w-full bg-[#050505]">
+                <div className="relative h-[380px] w-full bg-ink">
                     {imageSrc && (
                         <Cropper
                             image={imageSrc}
@@ -101,10 +102,10 @@ export function ImageCropModal({
                             onZoomChange={setZoom}
                             onCropComplete={onCropComplete}
                             style={{
-                                containerStyle: { background: '#050505' },
+                                containerStyle: { background: 'var(--color-ink)' },
                                 cropAreaStyle: {
-                                    border: '2px solid #2D00F7',
-                                    boxShadow: '0 0 0 9999em rgba(0,0,0,0.7)',
+                                    border: '3px solid var(--color-white)',
+                                    boxShadow: '0 0 0 9999em rgba(11,11,15,0.7)',
                                 },
                             }}
                         />
@@ -112,8 +113,8 @@ export function ImageCropModal({
                 </div>
 
                 {/* Zoom slider */}
-                <div className="flex items-center gap-3 border-t border-[#1E1E1E] px-6 py-3">
-                    <ZoomOut size={14} className="shrink-0 text-[#737373]" />
+                <div className="flex items-center gap-3 border-t-2 border-ink px-6 py-3.5">
+                    <ZoomOut size={16} className="shrink-0 text-muted-white" />
                     <input
                         type="range"
                         min={1}
@@ -121,33 +122,33 @@ export function ImageCropModal({
                         step={0.05}
                         value={zoom}
                         onChange={(e) => setZoom(Number(e.target.value))}
-                        className="h-1 w-full cursor-pointer appearance-none rounded-none bg-[#1E1E1E] accent-[#2D00F7]"
+                        aria-label="Zoom"
+                        className="h-2 w-full cursor-pointer rounded-full accent-blue"
                     />
-                    <ZoomIn size={14} className="shrink-0 text-[#737373]" />
-                    <span className="shrink-0 font-space-mono text-[10px] text-[#4A4A4A]">
+                    <ZoomIn size={16} className="shrink-0 text-muted-white" />
+                    <span className="w-9 shrink-0 text-right font-space-mono text-[11px] text-ink tabular">
                         {zoom.toFixed(1)}×
                     </span>
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-end gap-3 border-t border-[#1E1E1E] px-6 py-4">
-                    <button
+                <div className="flex items-center justify-end gap-3 border-t-2 border-line-white px-6 py-4">
+                    <Button
                         type="button"
+                        variant="outline"
                         onClick={onCancel}
                         disabled={processing}
-                        className="cursor-pointer border border-[#2A2A2A] px-4 py-2 font-space-mono text-[10px] font-medium uppercase tracking-[1px] text-white transition-colors hover:bg-[#141414] disabled:opacity-40"
                     >
                         Cancelar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
                         onClick={handleConfirm}
                         disabled={processing}
-                        className="flex cursor-pointer items-center gap-2 bg-[#2D00F7] px-4 py-2 font-space-mono text-[10px] font-medium uppercase tracking-[1px] text-white transition-colors hover:bg-[#2400CC] disabled:opacity-40"
                     >
-                        {processing && <Loader2 size={12} className="animate-spin" />}
+                        {processing && <Loader2 size={14} className="animate-spin" />}
                         Aplicar recorte
-                    </button>
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>

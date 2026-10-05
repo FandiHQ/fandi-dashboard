@@ -23,6 +23,8 @@ interface CityAutocompleteProps {
     onChange: (v: CityAutocompleteValue | null) => void;
     countryCode?: string;
     error?: string;
+    /** For a <label htmlFor> on the page. */
+    id?: string;
 }
 
 export function CityAutocomplete({
@@ -30,6 +32,7 @@ export function CityAutocomplete({
     onChange,
     countryCode = 'CO',
     error,
+    id,
 }: CityAutocompleteProps) {
     const t = useTranslations('events.form');
     const tEvents = useTranslations('events');
@@ -67,7 +70,7 @@ export function CityAutocomplete({
     return (
         <div className="flex flex-col gap-2">
             {value && (
-                <div className="flex min-h-10 items-center justify-between border border-[#2A2A2A] bg-[#141414] px-3 font-sora text-base text-white">
+                <div className="flex min-h-10 items-center justify-between rounded-[10px] border-2 border-foreground bg-accent px-3 text-[15px] font-bold text-foreground">
                     <span>{value.name}</span>
                     <button
                         type="button"
@@ -77,7 +80,7 @@ export function CityAutocomplete({
                             setQuery('');
                             setOpen(true);
                         }}
-                        className="cursor-pointer text-[#A0A0A0] transition-colors hover:text-white"
+                        className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
                     >
                         <X size={16} />
                     </button>
@@ -87,7 +90,9 @@ export function CityAutocomplete({
             <Popover open={showDropdown} onOpenChange={setOpen}>
                 <PopoverAnchor asChild>
                     <Input
+                        id={id}
                         value={query}
+                        aria-invalid={error ? true : undefined}
                         onFocus={() => setOpen(true)}
                         onChange={(event) => {
                             const nextQuery = event.target.value;
@@ -95,17 +100,17 @@ export function CityAutocomplete({
                             setOpen(true);
                         }}
                         placeholder={t('cityPlaceholder')}
-                        className="h-14 rounded-none border-[#2A2A2A] bg-[#141414] px-4 font-sora text-xl text-white placeholder:text-[#4A4A4A] focus:border-[#2D00F7] focus:shadow-[0_0_12px_rgba(45,0,247,0.3)] focus:ring-0"
+                        className="h-12 text-base"
                     />
                 </PopoverAnchor>
                 <PopoverContent
                     align="start"
                     onOpenAutoFocus={(event) => event.preventDefault()}
-                    className="w-(--radix-popover-trigger-width) rounded-none border-[#2A2A2A] bg-[#121212] p-0"
+                    className="w-(--radix-popover-trigger-width) overflow-hidden p-0"
                 >
-                    <Command shouldFilter={false} className="rounded-none bg-[#121212]">
+                    <Command shouldFilter={false}>
                         <CommandList>
-                            <CommandEmpty className="py-4 font-space-mono text-sm text-[#737373]">
+                            <CommandEmpty className="py-4 font-space-mono text-[11px] text-muted-foreground">
                                 {isFetching ? '...' : null}
                             </CommandEmpty>
                             <CommandGroup>
@@ -118,7 +123,7 @@ export function CityAutocomplete({
                                             setQuery('');
                                             setOpen(false);
                                         }}
-                                        className="cursor-pointer rounded-none px-4 py-3 font-sora text-base text-white data-[selected=true]:bg-[#1A1A1A] data-[selected=true]:text-white"
+                                        className="cursor-pointer rounded-[10px] px-3 py-2.5 text-[15px] font-semibold"
                                     >
                                         <span>{city.name}, {city.stateName}</span>
                                     </CommandItem>
@@ -131,13 +136,13 @@ export function CityAutocomplete({
 
             {networkError && (
                 <div className="flex items-center justify-between gap-3">
-                    <span className="font-space-mono text-sm text-[#FF3366]">
+                    <span className="font-space-mono text-[11px] text-destructive">
                         {t('cityNetworkError')}
                     </span>
                     <button
                         type="button"
                         onClick={() => refetch()}
-                        className="cursor-pointer font-space-mono text-sm uppercase tracking-[1px] text-[#2D00F7] hover:text-white"
+                        className="label-mono cursor-pointer font-bold text-foreground underline decoration-2 underline-offset-4"
                     >
                         {tEvents('retry')}
                     </button>
@@ -145,7 +150,7 @@ export function CityAutocomplete({
             )}
 
             {error && (
-                <span className="font-space-mono text-base text-[#FF3366]">
+                <span className="font-space-mono text-[11px] text-destructive">
                     {error}
                 </span>
             )}

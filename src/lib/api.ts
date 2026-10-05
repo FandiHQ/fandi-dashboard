@@ -5,12 +5,18 @@ import { supabase } from './supabase';
 export class ApiError extends Error {
     code: string;
     status: number;
+    /**
+     * The rest of a typed error body (shape B below), e.g. `missingBadges`
+     * on EVENT_BADGES_NOT_READY. Empty for the other shapes.
+     */
+    details: Record<string, unknown>;
 
-    constructor(code: string, message: string, status: number) {
+    constructor(code: string, message: string, status: number, details: Record<string, unknown> = {}) {
         super(message);
         this.name = 'ApiError';
         this.code = code;
         this.status = status;
+        this.details = details;
     }
 }
 
@@ -70,7 +76,9 @@ api.interceptors.response.use(
                 ? body.message.join(', ')
                 : body.message;
             if (typeof rawMessage === 'string' && rawMessage.length > 0) {
-                return Promise.reject(new ApiError(body.code ?? 'ERROR', rawMessage, status));
+                return Promise.reject(
+                    new ApiError(body.code ?? 'ERROR', rawMessage, status, body as Record<string, unknown>),
+                );
             }
         }
 

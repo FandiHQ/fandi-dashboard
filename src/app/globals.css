@@ -2,14 +2,30 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/*
+ * FANDI · AZUL BLOQUE (design-handoff/DESIGN_GUIDELINES.md §2, §7).
+ *
+ * The canvas is flat #2D00F7. Information lives in WHITE blocks (2px ink
+ * border, hard ink extrusion, no blur ever); lists, sheets and the live
+ * room live in INK blocks. Lime means live / your action / the primary
+ * CTA — never decoration. Archivo (variable, wdth axis) for display and
+ * UI, Space Mono for labels and data.
+ *
+ * shadcn components read the semantic variables below. Because the same
+ * component can sit on blue, on a white block or inside an ink block,
+ * the variables are RE-SCOPED per surface (white surfaces flip
+ * foreground → ink, muted → #55555E; ink surfaces flip muted → #9A9AA8).
+ */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sora);
-  --font-mono: var(--font-space-mono);
-  --font-sora: var(--font-sora);
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  --font-sora: var(--font-archivo);
   --font-space-mono: var(--font-space-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -41,126 +57,123 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 18px;
+  --radius-3xl: 22px;
+  --radius-4xl: 26px;
 
-  /* Fandi brand tokens */
-  --color-fandi-blue: oklch(0.372 0.331 277.54);
-  --color-fandi-red: oklch(0.641 0.237 12.56);
-  --color-fandi-surface: oklch(0.116 0 0);
-  --color-fandi-surface-dark: oklch(0.147 0 0);
-  
-  /* Tactical Mission Control tokens */
-  --color-tactical-acid: #CCFF00;
-  --color-tactical-magenta: #FF0055;
-  --color-tactical-cyan: #00E5FF;
+  /* Azul Bloque palette (design-tokens.css) — use these, never hex. */
+  --color-blue: #2D00F7;
+  --color-ink: #0B0B0F;
+  --color-lime: #C6FF3D;
+  --color-lilac: #D9D3FF;
+  --color-lilac-dim: #B9B2F0;
+  --color-muted-white: #55555E;
+  --color-body-white: #3A3A44;
+  --color-muted-ink: #9A9AA8;
+  --color-nav-inactive: #6E6E7A;
+  --color-chip-ink: #1A1A22;
+  --color-line-white: #EAEAF0;
+  --color-line-ink: #1E1E26;
+  --color-dash-ink: #3A3A44;
+  --color-alert: #FF4FA3;
+  --color-alert-white: #D6006F;
+  --color-tier-vip: #B7A8FF;
+  --color-tier-alta: #5CE1FF;
+  --color-tier-media: #C6FF3D;
+  --color-tier-base: #FFFFFF;
+  /* Hard extrusion — solid offset, no blur, ever. */
+  --shadow-ext-sm: 3px 3px 0 #0B0B0F;
+  --shadow-ext-md: 4px 4px 0 #0B0B0F;
+  --shadow-ext-block: 5px 5px 0 #0B0B0F;
+  --shadow-ext-lg: 6px 6px 0 #0B0B0F;
+  --shadow-ext-xl: 8px 8px 0 #0B0B0F;
+  --shadow-ext-live: 6px 6px 0 #C6FF3D;
+  --shadow-ext-live-xl: 8px 8px 0 #C6FF3D;
+  --shadow-ext-cta: 4px 4px 0 #2D00F7;
+  --shadow-ext-panel: -10px 0 0 #0B0B0F;
 }
 
-/* ============================================================
- * FANDI DARK THEME — Single dark-mode palette
- * All shadcn components automatically pick up these values.
- * No per-component overrides needed.
- *
- * Fandi Design System Colors:
- *   Background:  #000000  (pure black)
- *   Card/Surface: #121212
- *   Surface-dark: #1A1A1A
- *   Primary:     #2D00F7  (Fandi Blue)
- *   Destructive: #FF3366  (Fandi Red)
- *   Text:        #FFFFFF  (white)
- *   Muted text:  #A0A0A0
- *   Radius:      0px      (sharp corners)
- * ============================================================ */
-
-:root {
-  --radius: 0rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.372 0.331 277.54);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.641 0.237 12.56);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.372 0.331 277.54);
-  --chart-1: oklch(0.372 0.331 277.54);
-  --chart-2: oklch(0.641 0.237 12.56);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.372 0.331 277.54);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.372 0.331 277.54);
-}
-
-/* Fandi dark theme — applied via class="dark" on <html> */
+/* One palette: the app is always Azul Bloque (html carries .dark). */
+:root,
 .dark {
-  --background: oklch(0 0 0);
-  /* #000000 pure black */
-  --foreground: oklch(1 0 0);
-  /* #FFFFFF white */
-  --card: oklch(0.116 0 0);
-  /* #121212 surface */
-  --card-foreground: oklch(1 0 0);
-  --popover: oklch(0.116 0 0);
-  /* #121212 */
-  --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0.372 0.331 277.54);
-  /* #2D00F7 Fandi Blue */
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.147 0 0);
-  /* #1A1A1A */
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.147 0 0);
-  /* #1A1A1A */
-  --muted-foreground: oklch(0.702 0 0);
-  /* #A0A0A0 */
-  --accent: oklch(0.147 0 0);
-  /* #1A1A1A */
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.641 0.237 12.56);
-  /* #FF3366 Fandi Red */
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.147 0 0);
-  /* #1A1A1A */
-  --input: oklch(0.147 0 0);
-  --ring: oklch(0.372 0.331 277.54);
-  /* #2D00F7 focus rings */
-  --chart-1: oklch(0.372 0.331 277.54);
-  /* Fandi Blue */
-  --chart-2: oklch(0.641 0.237 12.56);
-  /* Fandi Red */
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.116 0 0);
-  /* #121212 */
-  --sidebar-foreground: oklch(1 0 0);
-  --sidebar-primary: oklch(0.372 0.331 277.54);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.147 0 0);
-  --sidebar-accent-foreground: oklch(1 0 0);
-  --sidebar-border: oklch(0.147 0 0);
-  --sidebar-ring: oklch(0.372 0.331 277.54);
+  --radius: 12px;
+  --background: #2D00F7;
+  --foreground: #FFFFFF;
+  --card: #FFFFFF;
+  --card-foreground: #0B0B0F;
+  --popover: #FFFFFF;
+  --popover-foreground: #0B0B0F;
+  --primary: #C6FF3D;
+  --primary-foreground: #0B0B0F;
+  --secondary: #FFFFFF;
+  --secondary-foreground: #0B0B0F;
+  --muted: rgba(11, 11, 15, 0.35);
+  --muted-foreground: #D9D3FF;
+  --accent: rgba(11, 11, 15, 0.35);
+  --accent-foreground: #FFFFFF;
+  --destructive: #FF4FA3;
+  --destructive-foreground: #0B0B0F;
+  --border: #0B0B0F;
+  --input: #0B0B0F;
+  --ring: #C6FF3D;
+  /* Charts: flat fills. Aportes blue, Subastas lilac, categories their
+     own colours. No pink/red slices (§7). */
+  --chart-1: #2D00F7;
+  --chart-2: #B7A8FF;
+  --chart-3: #5CE1FF;
+  --chart-4: #C6FF3D;
+  --chart-5: #0B0B0F;
+  --sidebar: #0B0B0F;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #C6FF3D;
+  --sidebar-primary-foreground: #0B0B0F;
+  --sidebar-accent: #1A1A22;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1E1E26;
+  --sidebar-ring: #C6FF3D;
+}
+
+/* White surfaces (cards, menus, dialogs, side panels, tables). */
+[data-slot="card"],
+[data-slot="popover-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="select-content"],
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"],
+[data-slot="sheet-content"],
+[data-slot="command"],
+.surface-white,
+.block-white {
+  --foreground: #0B0B0F;
+  --muted-foreground: #55555E;
+  --muted: #F4F4F8;
+  --accent: #EAEAF0;
+  --accent-foreground: #0B0B0F;
+  --border: #EAEAF0;
+  --input: #0B0B0F;
+  --destructive: #D6006F;
+  --ring: #2D00F7;
+  color: var(--foreground);
+}
+
+/* Ink surfaces (lists, the live room, the sidebar). */
+.surface-ink,
+.block-ink,
+[data-slot="tooltip-content"] {
+  --foreground: #FFFFFF;
+  --muted-foreground: #9A9AA8;
+  --muted: #1A1A22;
+  --accent: #1A1A22;
+  --accent-foreground: #FFFFFF;
+  --border: #1E1E26;
+  --input: #3A3A44;
+  --destructive: #FF4FA3;
+  --ring: #C6FF3D;
+  color: var(--foreground);
 }
 
 html {
@@ -174,177 +187,119 @@ html {
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-sora), sans-serif;
+    font-family: var(--font-archivo), system-ui, sans-serif;
   }
 }
 
-/* Font utility classes */
-.font-sora {
-  font-family: var(--font-sora), sans-serif;
+/* Component classes live in the components layer so Tailwind utilities
+   on the same element (rounded-*, shadow-*, p-*) still win. */
+@layer components {
+  /* ── Type utilities ── */
+  .font-display {
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    font-weight: 900;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    line-height: 0.95;
+  }
+  .font-hero {
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    font-weight: 900;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    line-height: 0.95;
+  }
+  .label-mono {
+    font-family: var(--font-space-mono), ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .font-sora {
+    font-family: var(--font-archivo), system-ui, sans-serif;
+  }
+  .font-space-mono {
+    font-family: var(--font-space-mono), ui-monospace, monospace;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Blocks ── */
+  .block-white {
+    background: #FFFFFF;
+    border: 2px solid #0B0B0F;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 #0B0B0F;
+  }
+  .block-ink {
+    background: #0B0B0F;
+    border: 2px solid #0B0B0F;
+    border-radius: 16px;
+  }
+  .block-quiet {
+    background: rgba(11, 11, 15, 0.35);
+    border-radius: 16px;
+  }
+  .tilt-hero {
+    transform: rotate(-1.5deg);
+  }
+  /* Pressed state: pushed into the extrusion. */
+  .press {
+    transition: transform 80ms ease, box-shadow 80ms ease;
+  }
+  .press:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+
+  /* ── Live dot ── */
+  @keyframes fandi-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.75); }
+  }
+  .live-dot {
+    display: inline-block;
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: currentColor;
+    animation: fandi-pulse 1.6s ease-in-out infinite;
+  }
+  .live-dot-urgent {
+    animation-duration: 0.6s;
+  }
 }
 
-.font-space-mono {
-  font-family: var(--font-space-mono), monospace;
-}
-
-/* ============================================================
- * FANDI TACTICAL CLASSES (Mission Control Overhaul)
- * ============================================================ */
-
-/* Glassmorphic Tactical Data Planes */
-.hud-card {
-  position: relative;
-  background: rgba(18, 18, 18, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-/* Targeting Brackets */
-.hud-brackets {
-  position: relative;
-}
-.hud-brackets::before, .hud-brackets::after {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--color-tactical-acid);
-  pointer-events: none;
-  z-index: 10;
-  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.hud-brackets::before {
-  top: -1px;
-  left: -1px;
-  border-right: none;
-  border-bottom: none;
-}
-.hud-brackets::after {
-  bottom: -1px;
-  right: -1px;
-  border-left: none;
-  border-top: none;
-}
-.hud-brackets-magenta::before, .hud-brackets-magenta::after {
-  border-color: var(--color-tactical-magenta);
-}
-.hud-brackets-hover:hover::before, .hud-brackets-hover:hover::after,
-.group:hover .hud-brackets-hover::before, .group:hover .hud-brackets-hover::after {
-  width: 16px;
-  height: 16px;
-  border-width: 3px;
-  filter: drop-shadow(0 0 8px var(--color-tactical-acid));
-}
-
-/* CRT Scanlines Overlay */
-.scanlines {
-  position: relative;
-}
-.scanlines::before {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-  z-index: 50;
-  background-size: 100% 4px, 6px 100%;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-/* Data Telemetry Glitch */
-@keyframes data-glitch {
-  0%, 94% { opacity: 1; transform: translate(0, 0); filter: blur(0); }
-  95% { opacity: 0.8; transform: translate(-3px, 1px); filter: blur(1px); }
-  96% { opacity: 0.5; transform: translate(3px, -1px); filter: blur(0); }
-  97% { opacity: 1; transform: translate(-2px, 2px); filter: blur(0.5px); }
-  98% { opacity: 0.8; transform: translate(2px, -2px); filter: blur(0); }
-  99%, 100% { opacity: 1; transform: translate(0, 0); filter: blur(0); }
-}
-.animate-glitch {
-  animation: data-glitch 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-}
-.animate-glitch-infinite {
-  animation: data-glitch 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-}
-
-/* Live Heartbeat Glow */
-@keyframes heartbeat-pulse {
-  0% { opacity: 0.8; box-shadow: 0 0 10px rgba(255, 0, 85, 0.4); }
-  50% { opacity: 1; box-shadow: 0 0 25px rgba(255, 0, 85, 0.8); }
-  100% { opacity: 0.8; box-shadow: 0 0 10px rgba(255, 0, 85, 0.4); }
-}
-.live-pulse-container {
-  animation: heartbeat-pulse 2s infinite ease-in-out;
-}
-
-/* Aggressive Button Styling */
-.btn-tactical {
-  background: var(--color-fandi-blue);
-  color: #FFF;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  z-index: 1;
-}
-.btn-tactical::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%; width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transform: skewX(-20deg);
-  z-index: -1;
-  transition: all 0.5s ease;
-}
-.btn-tactical:hover {
-  background: #2400C5;
-  box-shadow: 0 0 30px rgba(45,0,247,0.8);
-}
-.btn-tactical:hover::before {
-  left: 150%;
-}
-
-/* ── Cinematic Grain Overlay ── */
-.noise-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* ── Live Pulse Container — animated border glow for live events ── */
-.live-pulse-container {
-  position: relative;
-  animation: livePulse 2s ease-in-out infinite;
-}
-@keyframes livePulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(255,0,85,0.3), inset 0 0 8px rgba(255,0,85,0.05); }
-  50% { box-shadow: 0 0 20px rgba(255,0,85,0.5), inset 0 0 12px rgba(255,0,85,0.1); }
-}
-/* Fandi Custom Scrollbar */
+/* Scrollbar: quiet ink on blue. */
 ::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track {
-  background: #0A0A0A;
-  border-left: 1px solid #141414;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #2D00F7;
-  border-radius: 0;
+  background: rgba(11, 11, 15, 0.45);
+  border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover, .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #4A00E0;
+  background: #0B0B0F;
+}
+
+/* Sideways strips (section tabs) still scroll on narrow screens, by touch,
+   trackpad or shift+wheel, but show no bar: on desktop the bar sat under
+   the ink segmented bar even when every tab fit. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
 }
 
 /* ── Scroll cue ──

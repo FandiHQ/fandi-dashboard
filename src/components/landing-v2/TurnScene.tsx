@@ -9,8 +9,8 @@ import { ScrollCue } from './ScrollAffordance';
  * §2 — EL GIRO.
  *
  * Hard cut out of the desaturated frustration into full colour: the
- * barrier breaks. This is the brand-maximalist beat — the palette floods
- * back, the type is enormous, the energy is the point.
+ * barrier breaks. This is the brand-maximalist beat — Fandi blue floods
+ * back over the crowd, the type is enormous, the energy is the point.
  *
  * Carries the constraint that matters most commercially: Fandi is LIVE
  * and works from ANYWHERE. Not a venue perk. You do not need to be in
@@ -19,7 +19,6 @@ import { ScrollCue } from './ScrollAffordance';
  */
 
 const PLACES = ['p1', 'p2', 'p3'] as const;
-const ACCENTS = ['#CCFF00', '#00E5FF', '#FF0055'];
 
 export default function TurnScene() {
     const t = useTranslations('landingV2.giro');
@@ -45,25 +44,18 @@ export default function TurnScene() {
     const slamScale = useTransform(scrollYProgress, [0.3, 0.46], [0.86, 1]);
 
     const placesOpacity = useTransform(scrollYProgress, [0.6, 0.72], [0, 1]);
-    // Darkens the plate under the text so type stays legible over confetti.
-    const scrim = useTransform(scrollYProgress, [0.22, 0.42], [0.15, 0.62]);
+    // Floods the plate with flat Fandi blue so type stays legible over
+    // confetti.
+    const scrim = useTransform(scrollYProgress, [0.22, 0.42], [0.2, 0.82]);
 
     return (
         <section
             ref={ref}
             aria-label="Fandi abre, en vivo y desde donde estés"
-            className="relative h-[300vh] bg-black"
+            className="relative h-[300vh] bg-blue"
         >
             <div className="sticky top-0 h-screen w-full overflow-hidden">
-                {/* Euphoria plate (gradient fallback beneath) */}
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background:
-                            'radial-gradient(65% 55% at 50% 55%, #17307a 0%, #0a0a16 55%, #000 100%)',
-                    }}
-                    aria-hidden="true"
-                />
+                {/* Euphoria plate over flat blue */}
                 <motion.div
                     className="absolute inset-0"
                     style={reduceMotion ? undefined : { scale: imgScale, filter }}
@@ -81,14 +73,10 @@ export default function TurnScene() {
                         className="h-full w-full object-cover opacity-80"
                     />
                 </motion.div>
-                <div
-                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(0,0,0,0.7)_75%,#000_100%)]"
-                    aria-hidden="true"
-                />
-                {/* Scrim that deepens as the copy arrives — confetti is busy. */}
+                {/* Blue cover that deepens as the copy arrives — confetti is busy. */}
                 <motion.div
-                    style={{ opacity: reduceMotion ? 0.5 : scrim }}
-                    className="pointer-events-none absolute inset-0 bg-black"
+                    style={{ opacity: reduceMotion ? 0.8 : scrim }}
+                    className="pointer-events-none absolute inset-0 bg-blue"
                     aria-hidden="true"
                 />
 
@@ -96,7 +84,7 @@ export default function TurnScene() {
                     {/* Beat 1 — the pivot */}
                     <motion.p
                         style={reduceMotion ? undefined : { opacity: introOpacity, y: introY }}
-                        className="absolute font-space-mono text-lg uppercase tracking-[8px] text-white/85 md:text-2xl md:tracking-[14px]"
+                        className="absolute font-space-mono text-lg uppercase tracking-[0.3em] text-white md:text-2xl"
                     >
                         {t('intro')}
                     </motion.p>
@@ -108,34 +96,25 @@ export default function TurnScene() {
                                 ? undefined
                                 : { opacity: slamOpacity, scale: slamScale }
                         }
-                        className="animate-glitch font-sora text-[52px] font-extrabold uppercase leading-[0.88] tracking-tighter text-white [text-shadow:0_4px_40px_rgba(0,0,0,0.8)] md:text-[130px]"
+                        className="font-hero flex flex-col items-center text-[52px] leading-[0.9] text-white md:text-[130px]"
                     >
                         {t('slamA')}
-                        <br />
-                        <span
-                            className="text-[#CCFF00]"
-                            style={{ textShadow: '0 0 70px rgba(204,255,0,0.5)' }}
-                        >
+                        {/* The protagonist: the screen's one tilt. */}
+                        <span className="surface-white tilt-hero mt-3 rounded-[18px] border-2 border-ink bg-white px-5 pb-1 pt-2 text-blue shadow-ext-xl md:mt-5 md:px-8">
                             {t('slamB')}
                         </span>
                     </motion.h2>
 
                     {/* Beat 3 — live, and from anywhere. The commercial point. */}
-                    {/* Solid pills, not bare text — these sat on confetti and
-                        were unreadable as thin glowing mono. */}
+                    {/* Solid white pills, not bare text — these sit on confetti. */}
                     <motion.div
                         style={reduceMotion ? undefined : { opacity: placesOpacity }}
                         className="mt-10 flex flex-col items-center gap-3 md:mt-14 md:flex-row md:gap-4"
                     >
-                        {PLACES.map((key, i) => (
+                        {PLACES.map((key) => (
                             <span
                                 key={key}
-                                className="border-2 bg-black/80 px-5 py-3 font-space-mono text-sm font-bold uppercase tracking-[3px] backdrop-blur-sm md:text-base"
-                                style={{
-                                    color: ACCENTS[i],
-                                    borderColor: ACCENTS[i],
-                                    boxShadow: `0 0 30px ${ACCENTS[i]}45`,
-                                }}
+                                className="rounded-full border-2 border-ink bg-white px-5 py-3 font-space-mono text-sm font-bold uppercase tracking-[0.14em] text-ink shadow-ext-sm md:text-base"
                             >
                                 {t(key)}
                             </span>

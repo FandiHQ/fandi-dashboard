@@ -7,10 +7,11 @@ import { useTranslations } from 'next-intl';
 /**
  * §4 — SUBASTAS. The deliberate opposite of §3.
  *
- * Categorías is a draw: you improve your position, luck picks the winner.
- * A subasta has no luck in it at all — the highest bid at the buzzer wins,
- * full stop. Stating that contrast plainly is what stops fans conflating
- * the two mechanics.
+ * In the oportunidades (§3) your aporte places you in a categoría and, in
+ * each one, the fastest right answers win: contributing more never buys
+ * the prize. A subasta is the one place where it does — the highest bid at
+ * the buzzer wins, full stop. Stating that contrast plainly is what stops
+ * fans conflating the two mechanics.
  *
  * The tension is simulated: while the card is on screen bids keep landing
  * and the clock keeps falling, so the section *feels* like the thing it
@@ -58,17 +59,8 @@ export default function AuctionScene() {
             ref={ref}
             id="subastas"
             aria-label={t('title')}
-            className="relative overflow-hidden bg-black px-6 py-28 md:py-40"
+            className="relative overflow-hidden bg-blue px-5 py-28 md:px-9 md:py-40"
         >
-            <div
-                className="pointer-events-none absolute inset-0"
-                style={{
-                    background:
-                        'radial-gradient(55% 45% at 80% 30%, rgba(255,0,85,0.16), transparent 70%), radial-gradient(40% 40% at 10% 80%, rgba(45,0,247,0.14), transparent 70%)',
-                }}
-                aria-hidden="true"
-            />
-
             <div className="relative mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2 md:gap-16">
                 {/* Copy */}
                 <motion.div
@@ -82,30 +74,32 @@ export default function AuctionScene() {
                           })}
                     className="flex flex-col gap-6"
                 >
-                    <span className="font-space-mono text-[10px] uppercase tracking-[6px] text-[#FF0055]">
+                    <span className="label-mono text-lilac md:text-[12px]">
                         {t('kicker')}
                     </span>
-                    <h2 className="font-sora text-[42px] font-extrabold uppercase leading-[0.9] tracking-tighter text-white md:text-[76px]">
+                    <h2 className="font-hero text-[42px] text-white md:text-[76px]">
                         {t('title')}
                     </h2>
-                    <p className="max-w-md font-sora text-lg text-[#B8B8C2] md:text-xl">
+                    <p className="max-w-md text-lg text-lilac md:text-xl">
                         {t('body')}
                     </p>
 
                     {/* The one-line contrast that prevents confusion */}
-                    <div className="flex flex-col gap-3 border-l-2 border-[#FF0055] pl-5">
-                        <p className="font-sora text-base text-white md:text-lg">
-                            <strong className="text-[#FF0055]">{t('contrastA')}</strong>{' '}
+                    <div className="block-white flex flex-col divide-y-2 divide-line-white">
+                        <p className="px-5 py-4 text-base text-body-white md:text-lg">
+                            <strong className="font-display text-blue">{t('contrastA')}</strong>{' '}
                             {t('contrastARest')}
                         </p>
-                        <p className="font-sora text-base text-white md:text-lg">
-                            <strong className="text-[#CCFF00]">{t('contrastB')}</strong>{' '}
+                        <p className="px-5 py-4 text-base text-body-white md:text-lg">
+                            <strong className="font-display text-ink">{t('contrastB')}</strong>{' '}
                             {t('contrastBRest')}
                         </p>
                     </div>
                 </motion.div>
 
-                {/* Live auction card */}
+                {/* Live auction card — the live moment: ink block, lime
+                    extrusion. A new bid flashes the border lime (flat, no
+                    glow). */}
                 <motion.div
                     {...(reduceMotion
                         ? {}
@@ -115,32 +109,29 @@ export default function AuctionScene() {
                               viewport: { once: true, amount: 0.4 },
                               transition: { duration: 0.6, delay: 0.15 },
                           })}
-                    className="hud-card hud-brackets hud-brackets-magenta scanlines relative flex flex-col gap-5 p-6 md:p-8"
-                    style={{
-                        boxShadow: flash
-                            ? '0 0 60px rgba(255,0,85,0.45)'
-                            : '0 0 0 rgba(0,0,0,0)',
-                        transition: 'box-shadow 400ms ease',
-                    }}
+                    className={`surface-ink relative flex flex-col gap-5 rounded-[18px] border-2 bg-ink p-6 shadow-ext-live-xl transition-colors duration-300 md:p-8 ${
+                        flash ? 'border-lime' : 'border-ink'
+                    }`}
                 >
                     <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-2 border border-[#FF0055]/40 bg-[#FF0055]/10 px-3 py-1.5">
-                            <span className="h-2 w-2 animate-pulse rounded-full bg-[#FF0055]" />
-                            <span className="font-space-mono text-[10px] uppercase tracking-[2px] text-[#FF0055]">
+                        {/* Live pill (§3): lime, ink border, pulsing ink dot */}
+                        <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-lime px-3 py-1.5 text-ink">
+                            <span className="live-dot" aria-hidden="true" />
+                            <span className="label-mono font-bold">
                                 {t('live')}
                             </span>
                         </span>
-                        <span className="font-space-mono text-2xl font-bold tabular-nums text-white">
+                        <span className="tabular font-space-mono text-2xl font-bold text-white">
                             {mm}:{ss}
                         </span>
                     </div>
 
-                    <h3 className="font-sora text-2xl font-extrabold uppercase leading-tight tracking-tight text-white md:text-3xl">
+                    <h3 className="font-display text-2xl text-white md:text-3xl">
                         {t('lotName')}
                     </h3>
 
                     <div className="flex flex-col gap-1">
-                        <span className="font-space-mono text-[10px] uppercase tracking-[3px] text-[#6B6B6B]">
+                        <span className="label-mono text-muted-ink">
                             {t('currentBid')}
                         </span>
                         <motion.span
@@ -148,15 +139,15 @@ export default function AuctionScene() {
                             initial={reduceMotion ? false : { y: -14, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: 0.3 }}
-                            className="font-sora text-5xl font-extrabold tabular-nums text-[#CCFF00] md:text-6xl"
-                            style={{ textShadow: '0 0 40px rgba(204,255,0,0.45)' }}
+                            className="font-hero tabular text-[58px] text-white md:text-[66px]"
                         >
                             {bid} F
                         </motion.span>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                        <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#A0A0A0]">
+                    <div className="flex items-center justify-between rounded-[12px] bg-chip-ink px-4 py-3">
+                        <span className="label-mono flex items-center gap-2 text-[11px] text-muted-ink">
+                            <span className="live-dot text-lime" aria-hidden="true" />
                             {t('leading')}
                         </span>
                         <motion.span
@@ -164,13 +155,13 @@ export default function AuctionScene() {
                             initial={reduceMotion ? false : { opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="font-sora text-base font-bold text-white"
+                            className="text-base font-bold text-white"
                         >
                             {NAMES[leader]}
                         </motion.span>
                     </div>
 
-                    <p className="font-space-mono text-[10px] uppercase leading-relaxed tracking-[1.5px] text-[#5A5A64]">
+                    <p className="label-mono leading-relaxed text-muted-ink">
                         {t('cardNote')}
                     </p>
                 </motion.div>

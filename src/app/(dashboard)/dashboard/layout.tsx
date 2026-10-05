@@ -5,43 +5,49 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
 import { Sidebar } from '@/components/layout/sidebar';
 import { DashboardHeader } from '@/components/layout/dashboard-header';
+import { SessionUnreachable } from '@/components/auth/session-unreachable';
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated } = useAuth();
+    const { isLoading, isAuthenticated, isUnreachable, retrySession } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+        if (!isLoading && !isAuthenticated && !isUnreachable) {
+            // Keep the query too (e.g. a collaboration invitation token).
+            router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
         }
-    }, [isLoading, isAuthenticated, pathname, router]);
+    }, [isLoading, isAuthenticated, isUnreachable, pathname, router]);
+
+    if (!isLoading && isUnreachable) {
+        return <SessionUnreachable onRetry={retrySession} />;
+    }
 
     if (isLoading || !isAuthenticated) {
         return (
-            <div className="flex h-screen items-center justify-center bg-black">
-                <div className="h-8 w-8 animate-spin border-2 border-[#2D00F7] border-t-transparent rounded-full" />
+            <div className="flex h-screen items-center justify-center" aria-busy="true">
+                <span className="live-dot size-3 text-lime" aria-hidden="true" />
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen bg-black scanlines">
-            {/* Desktop sidebar — hidden on mobile, fixed position */}
-            <div className="hidden lg:flex lg:w-20 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
+        <div className="flex min-h-screen bg-blue">
+            {/* Desktop rail (84px ink) — fixed; collapses into the header sheet below lg */}
+            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-[84px] lg:flex-col">
                 <Sidebar />
             </div>
 
-            {/* Main area — offset by sidebar width on desktop */}
-            <div className="flex flex-1 flex-col lg:pl-20">
+            {/* Main area — offset by the rail on desktop */}
+            <div className="flex min-w-0 flex-1 flex-col lg:pl-[84px]">
                 <DashboardHeader />
 
-                {/* Content area — FANDI_DESIGN_WEB spacing */}
-                <main className="flex-1 px-5 py-8 lg:px-14 lg:py-12">
+                {/* Content — Azul Bloque web padding (36px) */}
+                <main className="flex-1 px-5 py-7 lg:px-9">
                     {children}
                 </main>
             </div>

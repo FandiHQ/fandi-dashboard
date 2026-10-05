@@ -9,6 +9,7 @@ import {
     useReducedMotion,
 } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { escuadraColors } from '@/lib/chart-colors';
 import { ScrollCue } from './ScrollAffordance';
 
 /**
@@ -16,28 +17,41 @@ import { ScrollCue } from './ScrollAffordance';
  *
  * The mechanic is not explained in prose, it is SIMULATED: 600 dots (fans)
  * fly in, sort themselves into four categorías, every categoría receives
- * the SAME prize, and then the draw fires — one dot lights up per
- * categoría, at random.
+ * the SAME prize, and then one dot lights up per categoría — the fan who
+ * answered right the fastest (fandi-api knowledge contest, RFC §2).
  *
- * The visual injustice does the teaching: VIP is a tiny cluster, Base is a
- * swarm, and both are playing for one prize. Nobody needs a percentage to
- * understand that.
+ * The point it teaches: every categoría has the same number of winners and
+ * the same prize, and a fan in BASE competes only with BASE.
  *
- * Deliberately NO statistics on screen (no 5% / 20% / odds ratios) — dot
- * counts carry the ratio implicitly (30 / 90 / 180 / 300 ≈ 1:3:6:10).
+ * Deliberately NO statistics on screen and no odds copy (fan-side copy
+ * rule, DESIGN_GUIDELINES §6: no "1 de cada N", no percentages, no
+ * "más probabilidades"). Category colours are the equal-weight set from
+ * chart-colors.ts so no band reads as "better".
  *
- * Faithful to experiences.service.ts: ranking is by cumulative aporte,
- * bands are relative to the other participants, and the winner inside a
- * band is drawn uniformly at random — contributing more never buys the
- * prize, it moves you where fewer fans compete.
+ * Faithful to fandi-api: the category is by cumulative aporte, bands are
+ * relative to the other participants, and inside a band the fastest right
+ * answer wins — contributing more never buys the prize. Nothing random.
+ *
+ * Bands are NEUTRAL on purpose: the same number of dots each. Categories
+ * are placed by each fan's share of the money, not by head count, so a
+ * crowd split in fixed fan proportions (e.g. 5/15/30/50 %) would teach a
+ * rule that does not exist. Head counts per band vary event to event.
  */
 
+/** Dots per band — identical for every band (see the note above). */
+const BAND_DOTS = 150;
+
 const BANDS = [
-    { key: 'vip', count: 30, accent: '#CCFF00', seed: 0.37 },
-    { key: 'alta', count: 90, accent: '#00E5FF', seed: 0.62 },
-    { key: 'media', count: 180, accent: '#2D00F7', seed: 0.18 },
-    { key: 'base', count: 300, accent: '#FF0055', seed: 0.81 },
+    { key: 'vip', count: BAND_DOTS, accent: escuadraColors[4], seed: 0.37 },
+    { key: 'alta', count: BAND_DOTS, accent: escuadraColors[3], seed: 0.62 },
+    { key: 'media', count: BAND_DOTS, accent: escuadraColors[2], seed: 0.18 },
+    { key: 'base', count: BAND_DOTS, accent: escuadraColors[1], seed: 0.81 },
 ] as const;
+
+/** Canvas needs literal colours: ink (extrusion/outline) and the
+ *  pre-sort "anonymous" dot, white at 45% on the blue canvas. */
+const INK = '#0B0B0F';
+const DOT_IDLE = 'rgba(255,255,255,0.45)';
 
 const TOTAL = BANDS.reduce((s, b) => s + b.count, 0);
 
@@ -165,6 +179,12 @@ export default function CategoriesScene() {
 
         let w = 0;
         let h = 0;
+        // Canvas can't read CSS vars in `font`; resolve the next/font
+        // family behind --font-space-mono once.
+        const mono =
+            getComputedStyle(document.body)
+                .getPropertyValue('--font-space-mono')
+                .trim() || 'ui-monospace, monospace';
 
         const resize = () => {
             const rect = canvas.getBoundingClientRect();
@@ -230,24 +250,31 @@ export default function CategoriesScene() {
                 const y = lerp(d.sy + wob * 0.6, d.ty, sort);
 
                 const won = d.isWinner && drawIn > 0;
-                const r = won ? 2.6 + drawIn * 2.2 : 1.9;
+                const r = won ? 2.6 + drawIn * 3 : 1.9;
 
-                // Unsorted dots are anonymous grey; sorted ones take the
-                // band colour — the sort itself is the reveal.
-                ctx.globalAlpha = appear * (won ? 1 : 0.35 + sort * 0.5);
+                // Unsorted dots are anonymous; sorted ones take the band
+                // colour — the sort itself is the reveal.
+                ctx.globalAlpha = appear * (won ? 1 : 0.45 + sort * 0.55);
                 if (won) {
-                    ctx.shadowColor = band.accent;
-                    ctx.shadowBlur = 16 * drawIn;
-                    ctx.fillStyle = '#FFFFFF';
+                    // Winner: hard ink extrusion + ink outline, no glow.
+                    ctx.fillStyle = INK;
+                    ctx.beginPath();
+                    ctx.arc(x + 2, y + 2, r + 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = band.accent;
+                    ctx.strokeStyle = INK;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
                 } else {
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = sort > 0.05 ? band.accent : '#6B6B74';
+                    ctx.fillStyle = sort > 0.05 ? band.accent : DOT_IDLE;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fill();
                 }
-                ctx.beginPath();
-                ctx.arc(x, y, r, 0, Math.PI * 2);
-                ctx.fill();
             }
-            ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
 
             // ── band labels + the identical prize ──
@@ -258,8 +285,7 @@ export default function CategoriesScene() {
 
                     ctx.globalAlpha = a;
                     ctx.fillStyle = band.accent;
-                    ctx.font =
-                        '700 11px ui-monospace, "Cascadia Code", "SF Mono", monospace';
+                    ctx.font = `700 11px ${mono}`;
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'alphabetic';
                     ctx.fillText(
@@ -274,19 +300,18 @@ export default function CategoriesScene() {
                         const py = box.centerY;
                         ctx.globalAlpha = prizeIn * a;
 
-                        ctx.save();
-                        ctx.translate(px, py);
-                        ctx.rotate(Math.PI / 4);
-                        ctx.shadowColor = band.accent;
-                        ctx.shadowBlur = 14;
+                        // Prize chip: band colour, ink outline, hard ink
+                        // extrusion (no blur).
+                        ctx.fillStyle = INK;
+                        ctx.fillRect(px - 5 + 2, py - 5 + 2, 10, 10);
                         ctx.fillStyle = band.accent;
-                        ctx.fillRect(-4.5, -4.5, 9, 9);
-                        ctx.restore();
-                        ctx.shadowBlur = 0;
+                        ctx.strokeStyle = INK;
+                        ctx.lineWidth = 1.5;
+                        ctx.fillRect(px - 5, py - 5, 10, 10);
+                        ctx.strokeRect(px - 5, py - 5, 10, 10);
 
-                        ctx.fillStyle = 'rgba(255,255,255,0.72)';
-                        ctx.font =
-                            '700 9px ui-monospace, "Cascadia Code", monospace';
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.font = `700 9px ${mono}`;
                         ctx.textAlign = 'left';
                         ctx.fillText(t('onePrize').toUpperCase(), px + 12, py + 3);
                     }
@@ -340,18 +365,9 @@ export default function CategoriesScene() {
             ref={wrapRef}
             id="categorias"
             aria-label={t('title')}
-            className="relative h-[480vh] bg-black"
+            className="relative h-[480vh] bg-blue"
         >
             <div className="sticky top-0 h-screen w-full overflow-hidden">
-                {/* atmosphere */}
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background:
-                            'radial-gradient(60% 45% at 50% 0%, rgba(45,0,247,0.20), transparent 70%), #000',
-                    }}
-                    aria-hidden="true"
-                />
 
                 <canvas
                     ref={canvasRef}
@@ -367,10 +383,10 @@ export default function CategoriesScene() {
                     style={{ opacity: headOpacity }}
                     className="pointer-events-none absolute left-0 right-0 top-[96px] z-10 flex flex-col items-center gap-5 px-6 text-center md:top-[108px] md:gap-6"
                 >
-                    <span className="font-space-mono text-[10px] uppercase tracking-[6px] text-[#CCFF00] md:text-xs md:tracking-[8px]">
+                    <span className="label-mono text-lilac md:text-[12px]">
                         {t('kicker')}
                     </span>
-                    <h2 className="font-sora text-[38px] font-extrabold uppercase leading-[0.9] tracking-tighter text-white md:text-[82px]">
+                    <h2 className="font-hero text-[38px] text-white md:text-[82px]">
                         {t('title')}
                     </h2>
 
@@ -385,7 +401,7 @@ export default function CategoriesScene() {
                             <motion.p
                                 key={k}
                                 style={{ opacity: o }}
-                                className="absolute inset-0 font-sora text-base text-[#C8C8D0] md:text-2xl"
+                                className="absolute inset-0 text-base text-white md:text-2xl"
                             >
                                 {t(k)}
                             </motion.p>
@@ -398,14 +414,9 @@ export default function CategoriesScene() {
                     style={{ opacity: payoff, y: payoffY }}
                     className="pointer-events-none absolute bottom-[7vh] left-0 right-0 z-10 px-6 text-center"
                 >
-                    <p className="mx-auto max-w-4xl font-sora text-xl font-extrabold uppercase leading-tight tracking-tight text-white md:text-4xl">
+                    <p className="block-white font-display mx-auto max-w-3xl px-5 py-4 text-xl text-ink md:px-8 md:py-5 md:text-[32px]">
                         {t('payoffA')}{' '}
-                        <span
-                            className="text-[#CCFF00]"
-                            style={{ textShadow: '0 0 40px rgba(204,255,0,0.5)' }}
-                        >
-                            {t('payoffB')}
-                        </span>
+                        <span className="text-blue">{t('payoffB')}</span>
                     </p>
                 </motion.div>
 
@@ -414,15 +425,18 @@ export default function CategoriesScene() {
                     style={{ opacity: payoff2, y: payoff2Y }}
                     className="pointer-events-none absolute bottom-[7vh] left-0 right-0 z-10 px-6 text-center"
                 >
-                    <p className="mx-auto max-w-4xl font-sora text-xl font-extrabold uppercase leading-tight tracking-tight text-white md:text-4xl">
-                        <span
-                            className="text-[#00E5FF]"
-                            style={{ textShadow: '0 0 40px rgba(0,229,255,0.5)' }}
-                        >
-                            {t('liveA')}
-                        </span>{' '}
-                        {t('liveB')}
-                    </p>
+                    {/* The live moment: ink block, lime extrusion. */}
+                    <div className="block-ink mx-auto flex max-w-3xl flex-col items-center gap-2 px-5 py-4 shadow-ext-live md:px-8 md:py-5">
+                        <span className="flex items-center gap-2 text-lime">
+                            <span className="live-dot" aria-hidden="true" />
+                            <span className="font-display text-xl md:text-[32px]">
+                                {t('liveA')}
+                            </span>
+                        </span>
+                        <p className="text-sm text-muted-ink md:text-lg">
+                            {t('liveB')}
+                        </p>
+                    </div>
                 </motion.div>
 
                 <ScrollCue targetRef={wrapRef} />

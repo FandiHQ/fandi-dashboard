@@ -1,0 +1,52 @@
+/* Fandi · Azul Bloque tokens (v3). Fonts: Archivo (variable wdth 62–125, wght 400–900), Space Mono 400/700 */
+:root {
+  /* color */
+  --fandi-blue: #2D00F7;
+  --ink: #0B0B0F;
+  --white: #FFFFFF;
+  --lime: #C6FF3D;
+  --lilac-text: #D9D3FF;
+  --muted-on-white: #55555E;
+  --body-on-white: #3A3A44;
+  --muted-on-ink: #9A9AA8;
+  --nav-inactive: #6E6E7A;
+  --chip-ink: #1A1A22;
+  --line-on-white: #EAEAF0;
+  --line-on-ink: #1E1E26;
+  --alert: #FF4FA3;
+  --alert-on-white: #D6006F;
+  --scrim: rgba(11, 11, 15, .45);
+  --ink-on-blue-35: rgba(11, 11, 15, .35);
+  /* categories: equal visual weight, never ranked */
+  --tier-vip: #B7A8FF;
+  --tier-alta: #5CE1FF;
+  --tier-media: #C6FF3D;
+  --tier-base: #FFFFFF;
+  /* type */
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+  --stretch-display: 112%;
+  --stretch-hero: 115%;
+  /* radius */
+  --r-pill: 999px;
+  --r-block: 16px;
+  --r-row: 12px;
+  --r-chip: 10px;
+  --r-button: 14px;
+  --r-sheet: 22px;
+  /* border + extrusion (no blur, ever) */
+  --border: 2px solid var(--ink);
+  --ext-lg: 6px 6px 0 var(--ink);
+  --ext-md: 4px 4px 0 var(--ink);
+  --ext-sm: 3px 3px 0 var(--ink);
+  --ext-live: 6px 6px 0 var(--lime);
+  --ext-cta-on-ink: 4px 4px 0 var(--fandi-blue);
+  --tilt-hero: rotate(-1.5deg);
+  /* spacing (4pt) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-9: 36px;
+  /* motion */
+  --pulse-live: 1.6s;
+  --pulse-urgent: .6s;
+}
+@keyframes fandi-pulse { 0%,100% { opacity: 1; transform: scale(1) } 50% { opacity: .3; transform: scale(.75) } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }

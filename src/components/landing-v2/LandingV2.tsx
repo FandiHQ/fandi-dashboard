@@ -42,13 +42,13 @@ import LazyImageSequence from './LazyImageSequence';
  *   §  ídolos         monetizamos · identificamos · fidelizamos
  *   §  descargar / faq / footer
  */
-/** Hairline-flanked label that separates the two hero audiences. */
+/** Rule-flanked label that separates the two hero audiences. */
 function GroupLabel({ children }: { children: React.ReactNode }) {
     return (
-        <span className="flex items-center gap-3 font-space-mono text-[10px] uppercase tracking-[4px] text-[#9A9AA6]">
-            <span className="h-px w-6 bg-white/20" aria-hidden="true" />
+        <span className="label-mono flex items-center gap-3 text-lilac">
+            <span className="h-[2px] w-6 bg-lilac" aria-hidden="true" />
             {children}
-            <span className="h-px w-6 bg-white/20" aria-hidden="true" />
+            <span className="h-[2px] w-6 bg-lilac" aria-hidden="true" />
         </span>
     );
 }
@@ -75,13 +75,12 @@ export default function LandingV2() {
     );
 
     // The hero must clear the frame BEFORE the mic gets close, otherwise the
-    // logo lingers half-transparent over a busy plate. Short exit with blur
-    // + lift so it reads as a deliberate move rather than a dissolve.
+    // headline lingers half-transparent over a busy plate. Short exit with a
+    // lift so it reads as a deliberate move rather than a dissolve. The flat
+    // blue cover lifts with it and uncovers the concert sequence.
     const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
     const heroY = useTransform(scrollYProgress, [0, 0.1], [0, -70]);
     const heroScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.94]);
-    const heroBlurRaw = useTransform(scrollYProgress, [0, 0.1], [0, 14]);
-    const heroBlur = useTransform(heroBlurRaw, (b) => `blur(${b}px)`);
     const scrimOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
     const cueOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
 
@@ -104,7 +103,7 @@ export default function LandingV2() {
             <NavV2 />
 
             {/* pb on mobile clears the sticky action bar */}
-            <main id="main-content" className="bg-black pb-24 md:pb-0">
+            <main id="main-content" className="bg-blue pb-24 text-white md:pb-0">
                 <h1 className="sr-only">{t('seoTitle')}</h1>
 
                 {/* ═══ §0 — EL MICRÓFONO ═══ */}
@@ -120,13 +119,12 @@ export default function LandingV2() {
                                 opacity: heroOpacity,
                                 y: heroY,
                                 scale: heroScale,
-                                filter: heroBlur,
                             }}
                             className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4"
                         >
                             <motion.div
                                 style={{ opacity: scrimOpacity }}
-                                className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(6,6,8,0.82)_0%,rgba(0,0,0,0.95)_75%)]"
+                                className="absolute inset-0 bg-blue"
                                 aria-hidden="true"
                             />
 
@@ -137,12 +135,12 @@ export default function LandingV2() {
                                     width={967}
                                     height={747}
                                     priority
-                                    className="h-auto w-[52vw] max-w-[380px] drop-shadow-[0_6px_50px_rgba(45,0,247,0.5)]"
+                                    className="h-auto w-[30vw] max-w-[150px]"
                                 />
-                                <p className="mt-6 max-w-2xl font-sora text-lg font-extrabold uppercase leading-tight tracking-tight text-white md:text-[30px]">
+                                <p className="font-hero mt-6 max-w-5xl text-[40px] text-white sm:text-[56px] md:text-[88px]">
                                     {t('hero.slogan')}
                                 </p>
-                                <p className="mt-3 max-w-md font-sora text-sm text-[#B8B8C2] md:text-base">
+                                <p className="mt-4 max-w-md text-[15px] leading-snug text-lilac md:text-[17px]">
                                     {t('hero.sub')}
                                 </p>
 
@@ -173,14 +171,14 @@ export default function LandingV2() {
                                             href={DASHBOARD_URL}
                                             newTab={false}
                                             variant="ghost"
-                                            className="!px-7 !py-3"
+                                            className="!px-7 !py-3 !text-[13px]"
                                         >
                                             {t('hero.signIn')}
                                         </Cta>
                                         <Cta
                                             href="mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento"
-                                            variant="ghost"
-                                            className="!px-7 !py-3"
+                                            variant="primary"
+                                            className="!px-7 !py-3 !text-[13px]"
                                         >
                                             {t('hero.idol')}
                                         </Cta>
@@ -190,7 +188,7 @@ export default function LandingV2() {
 
                             <motion.div
                                 style={{ opacity: cueOpacity }}
-                                className="absolute bottom-8 animate-bounce text-[#6B6B6B]"
+                                className="absolute bottom-8 animate-bounce text-white motion-reduce:animate-none"
                                 aria-hidden="true"
                             >
                                 <ChevronDown size={28} />
@@ -199,28 +197,23 @@ export default function LandingV2() {
 
                         {/* Founder voice, spoken straight into the mic that's
                             now aimed at the viewer. */}
+                        {/* A white info block on the plate (the screen's one
+                            tilt) instead of a dark vignette. */}
                         <motion.div
                             style={{ opacity: founderOpacity, y: founderY }}
-                            className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 px-6 text-center"
+                            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-5"
                         >
-                            <div
-                                className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.9)_70%)]"
-                                aria-hidden="true"
-                            />
-                            <p className="relative z-10 max-w-4xl font-sora text-2xl font-extrabold uppercase leading-[1.05] tracking-tight text-white md:text-[54px]">
-                                {t('hero.founderA')}
-                            </p>
-                            <motion.p
-                                style={{ opacity: founderBOpacity }}
-                                className="relative z-10 max-w-4xl font-sora text-2xl font-extrabold uppercase leading-[1.05] tracking-tight md:text-[54px]"
-                            >
-                                <span
-                                    className="text-[#CCFF00]"
-                                    style={{ textShadow: '0 0 50px rgba(204,255,0,0.45)' }}
+                            <div className="surface-white tilt-hero flex max-w-4xl flex-col gap-4 rounded-[18px] border-2 border-ink bg-white px-6 py-7 text-center shadow-ext-xl md:px-12 md:py-10">
+                                <p className="font-hero text-[28px] text-ink md:text-[54px]">
+                                    {t('hero.founderA')}
+                                </p>
+                                <motion.p
+                                    style={{ opacity: founderBOpacity }}
+                                    className="font-hero text-[28px] text-blue md:text-[54px]"
                                 >
                                     {t('hero.founderB')}
-                                </span>
-                            </motion.p>
+                                </motion.p>
+                            </div>
                         </motion.div>
 
                         {/* Labelled once, here, to teach the pattern. Later
@@ -250,12 +243,8 @@ export default function LandingV2() {
                     frames must not be decoded at page load. */}
                 <section aria-label={t('idolos.title')}>
                     <LazyImageSequence folder="artist" frameCount={240} heightVh={280}>
-                        <div className="absolute inset-0 flex items-end justify-center pb-[12vh]">
-                            <div
-                                className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_40%,rgba(0,0,0,0.9)_100%)]"
-                                aria-hidden="true"
-                            />
-                            <p className="relative z-10 px-6 text-center font-space-mono text-xs uppercase tracking-[8px] text-white/80 md:text-base md:tracking-[12px]">
+                        <div className="absolute inset-0 flex items-end justify-center px-5 pb-[12vh]">
+                            <p className="label-mono rounded-full border-2 border-ink bg-ink px-5 py-2.5 text-center text-[11px] text-white shadow-ext-cta md:text-[13px]">
                                 {t('idolos.overline')}
                             </p>
                         </div>

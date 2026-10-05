@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * NotificationCard — one tactical launch control per trigger.
+ * NotificationCard — one launch control per trigger (white block).
  *
  * State machine:
  *     idle      → user can click CTA
@@ -37,7 +37,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { textColors } from '@/lib/chart-colors';
+import { Button } from '@/components/ui/button';
 import type { NotificationSendResult } from '@/types/api';
 
 // ─── Cooldown persistence (TEMP — client-only) ───────────────
@@ -219,23 +219,18 @@ export function NotificationCard({
     const ctaDisabled = onCooldown || mutation.isPending;
 
     return (
-        <div className="hud-card flex flex-col gap-4 px-6 py-5">
+        <div className="block-white flex flex-col gap-4 px-6 py-5">
             {/* ─── Header: title + status pill ─── */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">
-                    <Bell
-                        size={18}
-                        className="mt-1 shrink-0"
-                        style={{ color: textColors.muted }}
-                    />
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-ink text-white">
+                        <Bell size={16} />
+                    </span>
                     <div className="flex flex-col gap-1">
-                        <h3 className="font-sora text-base font-semibold text-white">
+                        <h3 className="font-display text-[17px]">
                             {t(`${i18nNamespace}.title`)}
                         </h3>
-                        <p
-                            className="font-space-mono text-xs leading-relaxed"
-                            style={{ color: textColors.secondary }}
-                        >
+                        <p className="text-sm leading-relaxed text-muted-white">
                             {t(`${i18nNamespace}.description`)}
                         </p>
                     </div>
@@ -249,11 +244,8 @@ export function NotificationCard({
 
             {/* ─── Last-send badge ─── */}
             {lastResult && lastResult.at > 0 && (
-                <div className="flex flex-wrap items-center gap-3 border-t border-[#1A1A1A] pt-3">
-                    <span
-                        className="font-space-mono text-[11px]"
-                        style={{ color: textColors.muted }}
-                    >
+                <div className="flex flex-wrap items-center gap-3 border-t-2 border-line-white pt-3">
+                    <span className="font-space-mono text-[11px] text-muted-white">
                         {t('lastSent', {
                             relative: formatDistanceToNow(
                                 new Date(lastResult.at),
@@ -262,19 +254,13 @@ export function NotificationCard({
                         })}
                     </span>
                     {lastResult.sent > 0 && (
-                        <span
-                            className="flex items-center gap-1 font-space-mono text-[11px]"
-                            style={{ color: '#22C55E' }}
-                        >
-                            <Check size={12} />
+                        <span className="flex items-center gap-1 font-space-mono text-[11px] font-bold text-ink">
+                            <Check size={12} strokeWidth={3} />
                             {t('sent', { count: lastResult.sent })}
                         </span>
                     )}
                     {lastResult.skipped > 0 && (
-                        <span
-                            className="flex items-center gap-1 font-space-mono text-[11px]"
-                            style={{ color: textColors.muted }}
-                        >
+                        <span className="flex items-center gap-1 font-space-mono text-[11px] text-muted-white">
                             <XIcon size={12} />
                             {t('skipped', { count: lastResult.skipped })}
                         </span>
@@ -284,33 +270,32 @@ export function NotificationCard({
 
             {/* ─── CTA ─── */}
             <div className="flex justify-end">
-                <button
+                <Button
+                    variant="secondary"
                     onClick={() => setDialogOpen(true)}
                     disabled={ctaDisabled}
-                    className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none bg-[#2D00F7] px-6 py-3 font-space-mono text-sm uppercase tracking-[1px] text-white transition-all duration-200 hover:bg-[#2400C5] hover:shadow-[0_0_30px_rgba(45,0,247,0.6)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#2D00F7] disabled:hover:shadow-none"
                 >
                     {mutation.isPending && (
                         <Loader2 size={14} className="animate-spin" />
                     )}
                     {t('cta.send')}
-                </button>
+                </Button>
             </div>
 
             {/* ─── Confirmation AlertDialog ─── */}
             <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <AlertDialogContent className="hud-brackets-magenta rounded-none border border-[var(--color-tactical-magenta)] bg-[#121212] shadow-[0_0_20px_rgba(255,0,85,0.2)]">
+                <AlertDialogContent className="surface-white">
                     <AlertDialogHeader>
-                        <AlertDialogTitle className="font-sora text-xl text-white">
+                        <AlertDialogTitle className="font-display text-[22px]">
                             {t('confirm.title')}
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="font-space-mono text-sm text-[#A0A0A0]">
+                        <AlertDialogDescription>
                             {t(`${i18nNamespace}.confirm`)}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel
                             disabled={mutation.isPending}
-                            className="rounded-none border-[#2A2A2A] bg-transparent font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[#1A1A1A] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {t('cancel')}
                         </AlertDialogCancel>
@@ -324,7 +309,6 @@ export function NotificationCard({
                                 mutation.mutate();
                             }}
                             disabled={mutation.isPending}
-                            className="btn-tactical rounded-none bg-[var(--color-tactical-magenta)] font-space-mono text-sm uppercase tracking-[1px] text-white hover:bg-[var(--color-tactical-magenta)] hover:shadow-[0_0_30px_rgba(255,0,85,0.8)] disabled:opacity-50"
                         >
                             {mutation.isPending ? (
                                 <Loader2
@@ -353,27 +337,20 @@ function StatusPill({
     secondsRemaining: number;
     t: ReturnType<typeof useTranslations>;
 }) {
-    const color = onCooldown ? '#EAB308' : '#22C55E';
+    // The word carries the state (§8): available = lime (your action),
+    // cooldown = lilac (waiting, no urgency).
     const label = onCooldown
         ? t('cooldown', { seconds: secondsRemaining })
         : t('available');
 
     return (
-        <div className="flex shrink-0 items-center gap-2">
-            <span
-                aria-hidden
-                className={`h-2 w-2 rounded-full ${onCooldown ? '' : 'animate-pulse'}`}
-                style={{
-                    background: color,
-                    boxShadow: `0 0 6px ${color}`,
-                }}
-            />
-            <span
-                className="font-space-mono text-[11px] uppercase tracking-[1px] tabular-nums"
-                style={{ color }}
-            >
-                {label}
-            </span>
-        </div>
+        <span
+            className={`tabular inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 border-ink px-2.5 py-0.5 font-space-mono text-[10px] font-bold uppercase tracking-[0.12em] text-ink ${
+                onCooldown ? 'bg-lilac' : 'bg-lime'
+            }`}
+        >
+            <span aria-hidden className="inline-block size-[7px] rounded-full bg-ink" />
+            {label}
+        </span>
     );
 }

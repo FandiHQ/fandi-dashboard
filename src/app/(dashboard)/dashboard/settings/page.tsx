@@ -8,10 +8,14 @@ import { profileApi } from '@/lib/api-hooks';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ArtistProfileCard } from '@/components/settings/artist-profile-card';
+import { ChangePasswordCard } from '@/components/settings/change-password-card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function SettingsPage() {
     const { user, organization, memberRole, refreshUser } = useAuth();
     const t = useTranslations('settings');
+    const tTeam = useTranslations('team');
 
     // ── Form state ──
     const [displayName, setDisplayName] = useState(user?.displayName || '');
@@ -40,11 +44,13 @@ export default function SettingsPage() {
         // Validate client-side
         const allowed = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowed.includes(file.type)) {
-            toast.error(t('errorUploading'));
+            toast.error(t('imageTypeError'));
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
         if (file.size > 5 * 1024 * 1024) {
-            toast.error(t('uploadHint'));
+            toast.error(t('imageSizeError'));
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
@@ -81,11 +87,15 @@ export default function SettingsPage() {
     };
 
     const handleRemoveAvatar = async () => {
+        const previous = avatarUrl;
         setAvatarUrl('');
         try {
             await profileApi.update({ avatarUrl: '' });
             await refreshUser();
+            toast.success(t('removeAvatarDone'));
         } catch {
+            // Put the photo back so the screen matches what is saved.
+            setAvatarUrl(previous);
             toast.error(t('errorUpdating'));
         }
     };
@@ -115,14 +125,6 @@ export default function SettingsPage() {
           })
         : '—';
 
-    // ── Role badge color ──
-    const roleBadgeColor: Record<string, string> = {
-        owner: 'border-[var(--color-tactical-magenta)] text-[var(--color-tactical-magenta)]',
-        admin: 'border-[#6C63FF] text-[#6C63FF]',
-        staff: 'border-[var(--color-tactical-acid)] text-[var(--color-tactical-acid)]',
-        viewer: 'border-[#737373] text-[#737373]',
-    };
-
     // Initials fallback
     const initials = (displayName || user?.email || '?')
         .split(' ')
@@ -131,25 +133,27 @@ export default function SettingsPage() {
         .join('')
         .toUpperCase();
 
+    const FIELD_LABEL = 'label-mono text-[11px] text-muted-white';
+
     return (
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-8">
             {/* ── Page Header ── */}
             <div className="flex flex-col gap-2">
-                <h1 className="animate-glitch font-sora text-[64px] font-black leading-none tracking-[-3px] text-white">
+                <h1 className="font-hero text-[44px] text-white lg:text-[48px]">
                     {t('title')}
                 </h1>
-                <p className="font-space-mono text-sm uppercase tracking-[2px] text-[#737373]">
+                <p className="label-mono text-[11px] text-lilac">
                     {t('subtitle')}
                 </p>
             </div>
 
             {/* ── Profile Section ── */}
-            <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
+            <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
                 {/* Left Column: Avatar Card */}
-                <div className="hud-card hud-brackets flex flex-col items-center gap-6 rounded-none p-8">
+                <div className="block-white flex flex-col items-center gap-5 p-7">
                     {/* Avatar */}
                     <div className="group relative">
-                        <div className="hud-brackets hud-brackets-hover relative h-32 w-32 overflow-hidden bg-[#1A1A1A]">
+                        <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-ink bg-tier-vip shadow-ext-sm">
                             {avatarUrl ? (
                                 <img
                                     src={avatarUrl}
@@ -158,7 +162,7 @@ export default function SettingsPage() {
                                 />
                             ) : (
                                 <div className="flex h-full w-full items-center justify-center">
-                                    <span className="font-sora text-4xl font-black text-white">
+                                    <span className="font-display text-4xl text-ink">
                                         {initials}
                                     </span>
                                 </div>
@@ -166,9 +170,11 @@ export default function SettingsPage() {
 
                             {/* Upload overlay */}
                             <button
+                                type="button"
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={uploading}
-                                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                                aria-label={t('changeAvatar')}
+                                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-ink/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
                             >
                                 {uploading ? (
                                     <Loader2 size={24} className="animate-spin text-white" />
@@ -187,55 +193,56 @@ export default function SettingsPage() {
                     </div>
 
                     {/* Avatar actions */}
-                    <div className="flex gap-3">
-                        <button
+                    <div className="flex gap-2">
+                        <Button
+                            variant="secondary"
+                            size="sm"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={uploading}
-                            className="cursor-pointer rounded-none border border-[#2A2A2A] bg-transparent px-4 py-2 font-space-mono text-xs uppercase tracking-[1px] text-white transition-colors duration-150 hover:bg-[#1A1A1A] disabled:opacity-50"
                         >
                             {t('changeAvatar')}
-                        </button>
+                        </Button>
                         {avatarUrl && (
-                            <button
+                            <Button
+                                variant="destructive"
+                                size="icon-sm"
                                 onClick={handleRemoveAvatar}
-                                className="cursor-pointer rounded-none border border-[#2A2A2A] bg-transparent px-3 py-2 text-[#FF3366] transition-colors duration-150 hover:bg-[#1A1A1A]"
+                                aria-label={t('removeAvatar')}
                             >
                                 <Trash2 size={14} />
-                            </button>
+                            </Button>
                         )}
                     </div>
-                    <p className="font-space-mono text-[11px] text-[#4A4A4A]">
+                    <p className="font-space-mono text-[10px] text-muted-white">
                         {t('uploadHint')}
                     </p>
 
                     {/* Metadata under avatar */}
-                    <div className="flex w-full flex-col gap-3 border-t border-[#1E1E1E] pt-6">
+                    <div className="flex w-full flex-col gap-3 border-t-2 border-line-white pt-5">
                         <div className="flex items-center gap-3">
-                            <Shield size={14} className="text-[#4A4A4A]" />
-                            <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#4A4A4A]">
+                            <Shield size={14} className="text-muted-white" />
+                            <span className="label-mono text-muted-white">
                                 {t('role')}
                             </span>
-                            <span
-                                className={`ml-auto rounded-none border px-3 py-0.5 font-space-mono text-[11px] uppercase tracking-[1px] ${roleBadgeColor[memberRole || ''] || roleBadgeColor.viewer}`}
-                            >
-                                {memberRole || '—'}
+                            <span className="label-mono ml-auto rounded-full border-2 border-ink bg-lilac px-2.5 py-0.5 font-bold text-ink">
+                                {memberRole ? tTeam(`roles.${memberRole}`) : '—'}
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Building2 size={14} className="text-[#4A4A4A]" />
-                            <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#4A4A4A]">
+                            <Building2 size={14} className="text-muted-white" />
+                            <span className="label-mono text-muted-white">
                                 {t('organization')}
                             </span>
-                            <span className="ml-auto font-sora text-xs font-semibold text-white">
+                            <span className="ml-auto text-right text-[13px] font-extrabold text-ink">
                                 {organization?.name || '—'}
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Clock size={14} className="text-[#4A4A4A]" />
-                            <span className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#4A4A4A]">
+                            <Clock size={14} className="text-muted-white" />
+                            <span className="label-mono text-muted-white">
                                 {t('memberSince')}
                             </span>
-                            <span className="ml-auto font-space-mono text-xs text-[#737373]">
+                            <span className="ml-auto font-space-mono text-[11px] text-ink">
                                 {memberSince}
                             </span>
                         </div>
@@ -243,62 +250,68 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Right Column: Profile Form */}
-                <div className="hud-card hud-brackets flex flex-col gap-8 rounded-none p-8">
-                    <h2 className="font-space-mono text-[16px] uppercase tracking-[2px] text-[#737373]">
-                        {t('profile')}
-                    </h2>
+                <div className="block-white flex flex-col overflow-hidden">
+                    <div className="border-b-2 border-ink px-6 py-4">
+                        <h2 className="font-display text-[17px]">
+                            {t('profile')}
+                        </h2>
+                    </div>
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-5 px-6 py-6">
                         {/* Display Name */}
                         <div className="flex flex-col gap-2">
-                            <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                            <label htmlFor="settings-display-name" className={FIELD_LABEL}>
                                 {t('displayName')}
                             </label>
-                            <input
+                            <Input
+                                id="settings-display-name"
                                 type="text"
+                                autoComplete="name"
                                 value={displayName}
                                 onChange={(e) => setDisplayName(e.target.value)}
                                 placeholder={t('displayNamePlaceholder')}
-                                className="rounded-none border border-[#2A2A2A] bg-[#0A0A0A] px-4 py-3 font-sora text-sm text-white outline-none transition-colors duration-150 placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:ring-1 focus:ring-[var(--color-tactical-acid)]"
+                                className="h-12"
                             />
                         </div>
 
                         {/* Email (read-only) */}
                         <div className="flex flex-col gap-2">
-                            <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                            <span id="settings-email-label" className={FIELD_LABEL}>
                                 {t('email')}
-                            </label>
-                            <div className="flex items-center rounded-none border border-[#1E1E1E] bg-[#0A0A0A] px-4 py-3">
-                                <span className="font-sora text-sm text-[#4A4A4A]">
+                            </span>
+                            <div role="group" aria-labelledby="settings-email-label" className="flex h-12 items-center gap-3 rounded-[10px] border-2 border-line-white bg-line-white px-3">
+                                <span className="truncate text-sm font-semibold text-muted-white">
                                     {user?.email || '—'}
                                 </span>
-                                <span className="ml-auto rounded-none border border-[#2A2A2A] px-2 py-0.5 font-space-mono text-[9px] uppercase tracking-[1px] text-[#4A4A4A]">
-                                    read-only
+                                <span className="label-mono ml-auto shrink-0 rounded-full border-2 border-muted-white px-2 py-0.5 text-[9px] text-muted-white">
+                                    {t('readOnly')}
                                 </span>
                             </div>
                         </div>
 
                         {/* Phone */}
                         <div className="flex flex-col gap-2">
-                            <label className="font-space-mono text-[11px] uppercase tracking-[2px] text-[#737373]">
+                            <label htmlFor="settings-phone" className={FIELD_LABEL}>
                                 {t('phone')}
                             </label>
-                            <input
+                            <Input
+                                id="settings-phone"
                                 type="tel"
+                                autoComplete="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 placeholder={t('phonePlaceholder')}
-                                className="rounded-none border border-[#2A2A2A] bg-[#0A0A0A] px-4 py-3 font-sora text-sm text-white outline-none transition-colors duration-150 placeholder:text-[#4A4A4A] focus:border-[var(--color-tactical-acid)] focus:ring-1 focus:ring-[var(--color-tactical-acid)]"
+                                className="h-12"
                             />
                         </div>
                     </div>
 
                     {/* Save Button */}
-                    <div className="flex justify-end border-t border-[#1E1E1E] pt-6">
-                        <button
+                    <div className="mt-auto flex justify-end border-t-2 border-line-white px-6 py-4">
+                        <Button
+                            size="lg"
                             onClick={handleSave}
                             disabled={saving}
-                            className="btn-tactical flex cursor-pointer items-center gap-2 rounded-none px-8 py-3 font-space-mono text-xs font-bold uppercase tracking-[2px] disabled:opacity-50"
                         >
                             {saving ? (
                                 <>
@@ -311,10 +324,13 @@ export default function SettingsPage() {
                                     {t('saveChanges')}
                                 </>
                             )}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
+
+            {/* ── Password (account security) ── */}
+            <ChangePasswordCard />
 
             {/* ── Artist Public Profile (Step 7.2, owner only) ── */}
             {memberRole === 'owner' && <ArtistProfileCard />}

@@ -51,7 +51,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-    themeColor: '#000000',
+    // Azul Bloque canvas (§1: blue is the world).
+    themeColor: '#2D00F7',
 };
 
 export default function PublicLayout({

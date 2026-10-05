@@ -4,7 +4,7 @@ import type {
     Event, CreateEventDto, UpdateEventDto, EventStatus,
     PaginatedEventsResponse,
     PreLiveStatsResponse,
-    Experience, CreateExperienceDto,
+    Experience, CreateExperienceDto, Impactor,
     ExperienceSlot, CreateSlotDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
     Organization, UpdateOrganizationDto, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
@@ -16,7 +16,19 @@ import type {
     BadgeTemplate, CreateBadgeTemplateDto, UpdateBadgeTemplateDto,
     BadgeAwardResult,
     CitySearchResult,
+    BankResponse,
+    ContestResults,
+    HostSegments, SharedSegments, CategoryNode, ClassifiedIdol,
+    Collaboration,
+    DynamicType,
+    IdolSearchResult,
+    PendingInvitationsSummary,
+    SharedEvent,
+    SharedEventTotals,
+    SharedParticipants,
 } from '@/types/api';
+import type { BankQuestionDraft } from './contest-bank';
+import { toBankPayload } from './contest-bank';
 
 // ── Helper: extract .data from AxiosResponse ──
 const unwrap = <T>(promise: Promise<{ data: T }>): Promise<T> =>
@@ -97,6 +109,71 @@ export const experiencesApi = {
         unwrap(api.post<Experience>(`/dashboard/experiences/${id}/reveal`)),
     getWinners: (id: string) =>
         unwrap(api.get<WinnersListItem[]>(`/dashboard/experiences/${id}/winners`)),
+    // Phase 6 — Impactores wall: names by privacy, positions only, NO amounts.
+    impactores: (id: string) =>
+        unwrap(api.get<Impactor[]>(`/dashboard/experiences/${id}/impactores`)),
+};
+
+// ── Knowledge contest — question bank (authors) and results ──
+export const contestApi = {
+    getBank: (experienceId: string) =>
+        unwrap(api.get<BankResponse>(`/dashboard/experiences/${experienceId}/questions`)),
+    replaceBank: (experienceId: string, questions: BankQuestionDraft[]) =>
+        unwrap(api.put<BankResponse>(`/dashboard/experiences/${experienceId}/questions`, toBankPayload(questions))),
+    results: (experienceId: string) =>
+        unwrap(api.get<ContestResults>(`/dashboard/experiences/${experienceId}/contest/results`)),
+    resultsCsv: (experienceId: string) =>
+        api
+            .get(`/dashboard/experiences/${experienceId}/contest/results`, {
+                params: { format: 'csv' },
+                responseType: 'blob',
+            })
+            .then((res) => res.data as Blob),
+};
+
+// ── Idol collaborations (host + guest) ──
+export const collaborationsApi = {
+    searchIdols: (q: string) =>
+        unwrap(api.get<IdolSearchResult[]>('/dashboard/idols/search', { params: { q } })),
+    invite: (dto: { dynamicType: DynamicType; dynamicId: string; guestOrgId: string }) =>
+        unwrap(api.post<{ collaboration: Collaboration; emailed: number }>('/dashboard/collaborations', dto)),
+    resend: (id: string) =>
+        unwrap(api.post<{ collaboration: Collaboration; emailed: number }>(`/dashboard/collaborations/${id}/resend`)),
+    listForEvent: (eventId: string) =>
+        unwrap(api.get<Collaboration[]>(`/dashboard/events/${eventId}/collaborations`)),
+    inbox: () => unwrap(api.get<Collaboration[]>('/dashboard/collaborations/inbox')),
+    // Nav badge + Home banner: invitations awaiting an answer (0 if I cannot answer).
+    pendingSummary: () =>
+        unwrap(api.get<PendingInvitationsSummary>('/dashboard/collaborations/pending-summary')),
+    accept: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/accept`)),
+    decline: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/decline`)),
+    end: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/end`)),
+    respondByToken: (token: string, action: 'accept' | 'decline') =>
+        unwrap(api.post<Collaboration>('/dashboard/collaborations/respond', { token, action })),
+    sharedEvents: () => unwrap(api.get<SharedEvent[]>('/dashboard/shared/events')),
+    sharedEvent: (eventId: string) => unwrap(api.get<SharedEventTotals>(`/dashboard/shared/events/${eventId}`)),
+    sharedParticipants: (type: DynamicType, id: string) =>
+        unwrap(api.get<SharedParticipants>(`/dashboard/shared/dynamics/${type}/${id}/participants`)),
+    // Segments (RFC §4): the host sees every guest's split; a guest its own, small groups hidden.
+    hostSegments: (eventId: string) =>
+        unwrap(api.get<HostSegments>(`/dashboard/events/${eventId}/segments`)),
+    sharedSegments: (eventId: string) =>
+        unwrap(api.get<SharedSegments>(`/dashboard/shared/events/${eventId}/segments`)),
+};
+
+// ── Idol classification — platform admins only (RFC §4) ──
+export const classificationApi = {
+    tree: () => unwrap(api.get<CategoryNode[]>('/admin/classification/categories')),
+    createCategory: (dto: { parentId?: string; nameEs: string; nameEn: string }) =>
+        unwrap(api.post<CategoryNode>('/admin/classification/categories', dto)),
+    renameCategory: (id: string, dto: { nameEs: string; nameEn: string }) =>
+        unwrap(api.patch<void>(`/admin/classification/categories/${id}`, dto)),
+    deleteCategory: (id: string) =>
+        unwrap(api.delete<void>(`/admin/classification/categories/${id}`)),
+    idols: (params: { filter: 'all' | 'unclassified'; q?: string }) =>
+        unwrap(api.get<ClassifiedIdol[]>('/admin/classification/idols', { params })),
+    setIdol: (orgId: string, dto: { placements: { categoryId: string; region?: string }[]; tags: string[] }) =>
+        unwrap(api.put<ClassifiedIdol>(`/admin/classification/idols/${orgId}`, dto)),
 };
 
 // ── Opportunity slots (Franjas) — Step 6.2 ──
@@ -143,8 +220,9 @@ export const orgApi = {
     update: (dto: UpdateOrganizationDto) =>
         unwrap(api.put<Organization>('/dashboard/organization', dto)),
     // Top Fans (Step 7.2) — public fan-ranking endpoint, PII-free.
-    // Private fans arrive as { firstName: null, isPrivate: true } and
-    // MUST render as "Perfil privado · #N"; never any spend.
+    // Fan-facing ranking: private fans arrive as { firstName: null,
+    // isPrivate: true } and MUST render as "Perfil privado · #N"; never
+    // any spend. (The owner/admin CRM below names them — RFC §3.)
     getLeaderboard: (orgId: string, params?: { page?: number; limit?: number }) =>
         unwrap(api.get<ArtistLeaderboard>(`/artists/${orgId}/leaderboard`, { params })),
     // Fan analytics CRM (Step 7.5.3) — owner/admin, NO spend anywhere.

@@ -22,7 +22,7 @@ export function ArtistMultiSelect({
 }: ArtistMultiSelectProps) {
     if (lineup.length === 0) {
         return (
-            <p className="font-space-mono text-[11px] leading-relaxed text-[#737373]">
+            <p className="font-space-mono text-[10px] leading-relaxed text-muted-foreground">
                 {emptyHint}
             </p>
         );
@@ -43,10 +43,10 @@ export function ArtistMultiSelect({
                         type="button"
                         onClick={() => toggle(entry.id)}
                         aria-pressed={selected}
-                        className={`rounded-full border px-3 py-1.5 font-sora text-sm transition-colors ${
+                        className={`press rounded-full border-2 px-3 py-1.5 text-[13px] font-extrabold transition-colors ${
                             selected
-                                ? 'border-[#2D00F7] bg-[#2D00F7] text-white'
-                                : 'border-[#2A2A2A] bg-[#141414] text-[#A0A0A0] hover:border-[#2D00F7]'
+                                ? 'border-ink bg-blue text-white shadow-ext-sm'
+                                : 'border-foreground bg-transparent text-foreground hover:bg-accent'
                         }`}
                     >
                         {entry.name}

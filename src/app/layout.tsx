@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Sora, Space_Mono } from "next/font/google";
+import { Archivo, Space_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/providers";
 import "./globals.css";
 
-const sora = Sora({
-  variable: "--font-sora",
+// Archivo variable with the width axis: display type is weight 900 at
+// font-stretch 112-115% (Azul Bloque section 2).
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  axes: ["wdth"],
 });
 
 const spaceMono = Space_Mono({
@@ -64,9 +66,8 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="dark">
       <body
-        className={`${sora.variable} ${spaceMono.variable} antialiased`}
+        className={`${archivo.variable} ${spaceMono.variable} antialiased`}
       >
-        <div className="noise-overlay" aria-hidden="true" />
         <NextIntlClientProvider messages={messages}>
           <Providers>
               {children}

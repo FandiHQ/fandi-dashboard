@@ -200,7 +200,7 @@ export default function ImageSequenceCanvas({
                 {/* Loading progress bar */}
                 {loadProgress < 1 && (
                     <div
-                        className="absolute bottom-0 left-0 h-[3px] bg-[#2D00F7] transition-all duration-200"
+                        className="absolute bottom-0 left-0 h-[4px] bg-white transition-all duration-200"
                         style={{ width: `${loadProgress * 100}%` }}
                     />
                 )}

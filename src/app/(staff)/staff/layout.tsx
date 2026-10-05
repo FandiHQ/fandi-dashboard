@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
+import { SessionUnreachable } from '@/components/auth/session-unreachable';
 import { useRouter } from 'next/navigation';
 
 export default function StaffLayout({
@@ -12,61 +13,65 @@ export default function StaffLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated, memberRole, user, logout } = useAuth();
+    const { isLoading, isAuthenticated, isUnreachable, retrySession, memberRole, user, logout } = useAuth();
     const router = useRouter();
     const t = useTranslations('redemption');
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
+        if (!isLoading && !isAuthenticated && !isUnreachable) {
             router.replace('/login');
         } else if (!isLoading && isAuthenticated && memberRole !== 'staff') {
             router.replace('/dashboard');
         }
-    }, [isLoading, isAuthenticated, memberRole, router]);
+    }, [isLoading, isAuthenticated, isUnreachable, memberRole, router]);
+
+    if (!isLoading && isUnreachable) {
+        return <SessionUnreachable onRetry={retrySession} />;
+    }
 
     if (isLoading || !isAuthenticated || memberRole !== 'staff') {
         return (
-            <div className="flex h-screen items-center justify-center bg-black">
-                <div className="h-8 w-8 animate-spin border-2 border-[#2D00F7] border-t-transparent rounded-full" />
+            <div className="flex h-screen items-center justify-center bg-blue text-lime">
+                <span className="live-dot size-3" aria-hidden="true" />
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-black">
-            <header className="flex h-14 items-center justify-between border-b border-[#1A1A1A] px-4">
-                <div className="flex items-center gap-3">
+        <div className="flex min-h-screen flex-col bg-blue text-white">
+            <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 bg-ink px-4">
+                <div className="flex min-w-0 items-center gap-3">
                     <Image
-                        src="/fandi-logo.png"
+                        src="/fandi-tile.png"
                         alt="Fandi"
-                        width={80}
-                        height={28}
+                        width={36}
+                        height={36}
                         unoptimized
-                        className="h-6 w-auto object-contain"
+                        className="size-9 shrink-0 rounded-[10px] object-cover"
                     />
-                    <span className="bg-[#22C55E20] px-2 py-0.5 font-space-mono text-[10px] uppercase tracking-[1px] text-[#22C55E]">
+                    <span className="label-mono shrink-0 rounded-full border-2 border-lilac px-2.5 py-0.5 text-[11px] font-bold text-lilac">
                         Staff
                     </span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex min-w-0 items-center gap-3">
                     {/* Who's signed in — a shared/borrowed venue phone
                         should make the active account obvious. */}
                     {user?.displayName ? (
-                        <span className="hidden max-w-[40vw] truncate font-space-mono text-[11px] text-[#737373] sm:inline">
+                        <span className="hidden max-w-[40vw] truncate font-space-mono text-[11px] text-muted-ink sm:inline">
                             {user.displayName}
                         </span>
                     ) : null}
                     <button
                         onClick={() => void logout()}
                         aria-label={t('logout')}
-                        className="flex h-9 items-center gap-2 border border-[#2A2A2A] px-3 font-space-mono text-[11px] uppercase tracking-[1px] text-[#A0A0A0] transition-colors hover:border-[#FF3366] hover:text-[#FF3366]"
+                        className="flex h-12 min-w-12 items-center justify-center gap-2 rounded-[12px] border-2 border-dash-ink px-3 font-space-mono text-[11px] font-bold uppercase tracking-[0.1em] text-white transition-colors hover:border-alert hover:text-alert"
                     >
-                        <LogOut size={14} />
+                        <LogOut size={16} />
                         <span className="hidden sm:inline">{t('logout')}</span>
                     </button>
                 </div>
             </header>
-            <main className="flex-1 p-4">{children}</main>
+            <main className="flex-1 px-4 py-5">{children}</main>
         </div>
     );
 }

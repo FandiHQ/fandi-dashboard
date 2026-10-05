@@ -15,15 +15,18 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Baseline CSP keeps Next scripts, Supabase, WebSockets, uploads
-          // and the staff camera scanner working. Strict script policies
-          // require a separate nonce-based rollout and authenticated tests.
           {
             key: "Content-Security-Policy",
             value: "base-uri 'self'; object-src 'none'; frame-ancestors 'none'",
           },
         ],
       },
+      // These routes can carry invitation bearer tokens. Keep the stricter
+      // rule after the baseline so no token is sent in a Referer header.
+      ...["/dashboard/collaborations", "/login", "/invite/accept", "/reset-password"].map((source) => ({
+        source,
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+      })),
     ];
   },
 };

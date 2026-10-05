@@ -108,7 +108,7 @@ export function ImageUpload({
     if (value) {
         return (
             <>
-                <div className={`relative overflow-hidden rounded-none border border-[#1E1E1E] ${aspectClasses[aspect]} ${className || ''}`}>
+                <div className={`relative overflow-hidden rounded-[12px] border-2 border-ink bg-white ${aspectClasses[aspect]} ${className || ''}`}>
                     <Image
                         src={value}
                         alt="Preview"
@@ -120,7 +120,8 @@ export function ImageUpload({
                         type="button"
                         onClick={() => onChange(null)}
                         disabled={disabled}
-                        className="absolute right-2 top-2 cursor-pointer rounded-none bg-black/60 p-1.5 text-white transition-colors duration-150 hover:bg-black/80"
+                        aria-label="Quitar imagen"
+                        className="absolute right-2 top-2 flex size-9 cursor-pointer items-center justify-center rounded-[10px] border-2 border-ink bg-white text-ink shadow-ext-sm transition-transform duration-75 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-45"
                     >
                         <X size={16} />
                     </button>
@@ -144,22 +145,24 @@ export function ImageUpload({
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
                 onClick={() => !disabled && !uploading && inputRef.current?.click()}
-                className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-none border border-dashed transition-colors duration-150 ${aspectClasses[aspect]} ${
+                className={`flex cursor-pointer flex-col items-center justify-center gap-2.5 rounded-[12px] border-2 border-dashed px-4 text-center transition-colors duration-150 ${aspectClasses[aspect]} ${
                     dragOver
-                        ? 'border-[#2D00F7] bg-[#141414]'
-                        : 'border-[#1E1E1E] bg-[#0A0A0A] hover:border-[#2D00F7] hover:bg-[#141414]'
+                        ? 'border-blue bg-line-white'
+                        : 'border-ink bg-white hover:border-blue hover:bg-line-white'
                 } ${disabled ? 'pointer-events-none opacity-50' : ''} ${className || ''}`}
             >
-                {uploading ? (
-                    <Loader2 size={40} className="animate-spin text-[#2D00F7]" />
-                ) : (
-                    <Upload size={40} className="text-[#4A4A4A]" />
-                )}
-                <span className="font-space-mono text-xs uppercase tracking-[1px] text-[#737373]">
+                <span className="flex size-12 items-center justify-center rounded-full border-2 border-ink bg-white text-ink shadow-ext-sm">
+                    {uploading ? (
+                        <Loader2 size={22} className="animate-spin text-blue" />
+                    ) : (
+                        <Upload size={22} />
+                    )}
+                </span>
+                <span className="text-[13px] font-extrabold uppercase text-ink">
                     {uploading ? 'Subiendo...' : 'Arrastra o haz clic'}
                 </span>
-                <span className="font-space-mono text-[10px] text-[#4A4A4A]">
-                    JPG, PNG, WebP — máx. 5MB
+                <span className="font-space-mono text-[10px] uppercase text-muted-white">
+                    JPG, PNG, WebP · máx. 5MB
                 </span>
                 <input
                     ref={inputRef}
