@@ -22,7 +22,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Versión 1.0 · Vigente desde 1 de agosto de 2026"
+    "text": "Versión 1.1 · Vigente desde 23 de octubre de 2026"
   },
   {
     "t": "table",
@@ -203,11 +203,11 @@
       ],
       [
         "Oportunidad",
-        "Modalidad en la que el Usuario aporta Fandis, es agrupado por rango de aporte y resulta ganador mediante selección aleatoria dentro de su grupo."
+        "Modalidad de concurso de conocimiento en la que el Usuario aporta Fandis y resultan adjudicatarios, dentro de cada Categoría, quienes respondan correctamente y en el menor tiempo una pregunta sobre el Ídolo o la temática de la Oportunidad."
       ],
       [
-        "Grupo de Aporte",
-        "Segmento de participantes de una Oportunidad, definido por rangos de Fandis aportados, dentro del cual se selecciona al ganador."
+        "Categoría",
+        "Segmento de participantes de una Oportunidad, definido por la proporción del total aportado que representa el aporte acumulado de cada Usuario, dentro del cual compiten por la Experiencia quienes responden correctamente en el menor tiempo."
       ],
       [
         "Evento",
@@ -248,7 +248,7 @@
     "t": "table",
     "rows": [
       [
-        "Naturaleza del servicio y estado regulatorioLas modalidades de participación pueden constituir juego de suerte y azar bajo la normativa colombiana, en tanto suponen un aporte económico, la intervención del azar y la obtención de un premio. En consecuencia, la operación de cada modalidad está condicionada a la obtención y vigencia de las autorizaciones que exija la autoridad competente (Coljuegos o la entidad territorial que corresponda).Cuando una modalidad requiera autorización y esta no se encuentre vigente, Fandi se abstendrá de operarla. Fandi podrá habilitar, restringir o suspender modalidades, Experiencias o territorios en función del estado de dichas autorizaciones, sin que ello constituya incumplimiento de estos Términos."
+        "Naturaleza del servicio. Ninguna de las modalidades de participación depende del azar. La Subasta se adjudica al mejor postor y la Oportunidad es un concurso de conocimiento que se adjudica a quienes responden correctamente en el menor tiempo. Fandi obtendrá y mantendrá las autorizaciones que, en su caso, exija la autoridad competente, y podrá habilitar, restringir o suspender modalidades, Experiencias o territorios en función de ellas, sin que ello constituya incumplimiento de estos Términos."
       ]
     ]
   },
@@ -392,7 +392,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Los Fandis que el Usuario compromete en una puja (Subasta) o en un aporte (Oportunidad) se rigen por las reglas de la modalidad respectiva y se consideran consumidos conforme a dichas reglas. Los Fandis así comprometidos no forman parte del saldo no utilizado y no son objeto de la devolución prevista en la Sección 6.4. El Usuario reconoce que, por la naturaleza de las modalidades, el resultado depende del azar y de la mecánica descrita, y que los Fandis comprometidos pueden perderse conforme a las reglas informadas antes de participar."
+    "text": "Los Fandis que el Usuario compromete en una puja (Subasta) o en un aporte (Oportunidad) se rigen por las reglas de la modalidad respectiva y se consideran consumidos conforme a dichas reglas. Los Fandis así comprometidos no forman parte del saldo no utilizado y no son objeto de la devolución prevista en la Sección 6.4. El Usuario reconoce que, por la naturaleza de las modalidades, el resultado depende de la mecánica descrita (la mayor puja en la Subasta; la respuesta correcta y el tiempo de respuesta en la Oportunidad), y que los Fandis comprometidos pueden perderse conforme a las reglas informadas antes de participar."
   },
   {
     "t": "p",
@@ -457,12 +457,12 @@
   {
     "t": "li",
     "level": 0,
-    "text": "Las reglas específicas de cada Experiencia y Evento (valor base, incremento mínimo, rangos de Grupos de Aporte, número de ganadores, fechas y cierre) se informan en la Aplicación antes de participar y forman parte de estos Términos."
+    "text": "Las reglas específicas de cada Experiencia y Evento (valor base, incremento mínimo, Categorías, número de ganadores, fechas y cierre) se informan en la Aplicación antes de participar y forman parte de estos Términos."
   },
   {
     "t": "li",
     "level": 0,
-    "text": "Fandi opera y audita cada participación de forma trazable. Los registros de participación son la evidencia de la integridad del juego y se conservan conforme a la ley y a la Política de Tratamiento de Datos."
+    "text": "Fandi opera y audita cada participación de forma trazable. Los registros de participación son la evidencia de la integridad de cada modalidad y se conservan conforme a la ley y a la Política de Tratamiento de Datos."
   },
   {
     "t": "li",
@@ -472,7 +472,7 @@
   {
     "t": "li",
     "level": 0,
-    "text": "Naturaleza diferenciada de las modalidades. La Subasta se adjudica exclusivamente al mejor postor y su resultado depende de la voluntad y la conducta de los participantes, no del azar; en consecuencia, no constituye juego de suerte y azar. La Oportunidad incorpora un componente aleatorio en la selección de los adjudicatarios dentro de cada Grupo de Aporte y, por ello, se sujeta al régimen de autorizaciones descrito en esta Sección. Ambas modalidades son independientes entre sí y pueden ofrecerse por separado."
+    "text": "Naturaleza diferenciada de las modalidades. La Subasta se adjudica exclusivamente al mejor postor. La Oportunidad es un concurso de conocimiento que se adjudica, dentro de cada Categoría, a quienes responden correctamente en el menor tiempo. En ninguna de las dos la adjudicación depende del azar. Ambas modalidades son independientes entre sí y pueden ofrecerse por separado."
   },
   {
     "t": "p",
@@ -492,13 +492,178 @@
   {
     "t": "p",
     "level": 0,
-    "text": "En la Oportunidad, el Usuario aporta Fandis y es asignado a un Grupo de Aporte según el rango aportado. Dentro de cada grupo, la Plataforma selecciona uno o más ganadores mediante un mecanismo aleatorio. Un mayor aporte mejora la probabilidad relativa dentro del grupo, pero no elimina la posibilidad de ganar de quien realiza el aporte mínimo habilitado. La selección no se basa en las características personales del Usuario ni en la elaboración de perfiles: el único parámetro que determina el grupo es el monto aportado."
+    "text": "7.3.1. Qué es. La Oportunidad es un concurso de conocimiento. El Usuario aporta Fandis para participar y, con su aporte, adquiere el derecho a responder una pregunta sobre el Ídolo o sobre la temática definida por el Organizador. Resultan adjudicatarios de la Experiencia, dentro de cada Categoría, los Usuarios que respondan correctamente en el menor tiempo. La adjudicación no se realiza por sorteo ni depende del azar. El monto aportado determina únicamente la Categoría en la que compite el Usuario; no otorga ventaja para ganar dentro de ella."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.2. Aportes. El aporte mínimo es de cuatro (4) Fandis, equivalentes a veinte mil pesos colombianos (COP 20.000). El Usuario puede realizar varios aportes durante la vigencia de la Oportunidad, y estos se acumulan. Los aportes se reciben únicamente hasta el cierre informado en la Aplicación. Los Fandis aportados se consideran consumidos conforme a la Sección 6, salvo el reintegro previsto si la Oportunidad no llega a realizarse."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.3. Categorías. Los participantes se ubican en cuatro Categorías (por defecto VIP, Alta, Media y Base; el Organizador puede asignarles otros nombres) según el total acumulado de sus aportes:"
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(a) Ordenamiento. Los participantes se ordenan de mayor a menor total aportado."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(b) Asignación por proporción del dinero. Pertenecen a VIP quienes se ubican dentro del primer cinco por ciento (5 %) de la suma de todos los aportes de la Oportunidad; a Alta, quienes se ubican hasta el veinte por ciento (20 %); a Media, quienes se ubican hasta el cincuenta por ciento (50 %); y a Base, los demás."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(c) Mismo total, misma Categoría. Los Usuarios con el mismo total acumulado pertenecen siempre a la misma Categoría."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(d) Movimiento escalonado. Un participante nunca queda más de una Categoría por debajo del grupo inmediatamente superior."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(e) Variación en vivo. Las Categorías varían en tiempo real mientras la Oportunidad está abierta, y se congelan en el momento del cierre. La Aplicación muestra en vivo el aporte desde el cual se ingresa a cada Categoría y la Categoría actual del Usuario."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.4. Número de ganadores. Cada Categoría tiene el mismo número de adjudicatarios. El Organizador lo define y se informa en la Aplicación antes de participar."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.5. La pregunta."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(a) Banco de preguntas. El Organizador elabora un banco de al menos veinte (20) preguntas, cada una con cuatro (4) opciones y una sola respuesta correcta."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(b) Asignación. Con su primer aporte, el Usuario recibe una pregunta del banco, asignada de forma aleatoria. Las opciones de respuesta se presentan en un orden aleatorio para cada Usuario."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(c) Lectura. Primero se muestra el enunciado durante un tiempo de lectura de entre tres (3) y siete (7) segundos, según su extensión."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(d) Tiempo de respuesta. Después se muestran las opciones, y el Usuario dispone de quince (15) segundos para responder. Si el Usuario permanece en la lectura más allá del tiempo previsto, el conteo de los quince (15) segundos inicia automáticamente."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(e) Medición. El tiempo de respuesta lo miden los servidores de Fandi, desde el envío de las opciones hasta la recepción de la respuesta, con un margen técnico de tolerancia. La medición de Fandi prevalece sobre cualquier medición del dispositivo del Usuario."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(f) Tiempos no humanos. Una respuesta registrada en menos de trescientos (300) milisegundos se considera no humana y se tiene por no válida."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(g) Sin respuesta. Una pregunta no respondida dentro del tiempo se tiene por no respondida."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(h) Momento para responder. El Usuario puede responder inmediatamente después de su aporte o más tarde, siempre antes del cierre de la Oportunidad."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.6. Segunda pregunta. A partir de su segundo aporte, el Usuario puede optar por responder una pregunta adicional, distinta de la primera. Cada Usuario puede responder como máximo dos (2) preguntas por Oportunidad."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(a) Reemplazo. Una vez mostrada la segunda pregunta, su resultado reemplaza al de la primera, aun cuando la primera hubiera sido correcta."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(b) Sin respuesta a tiempo. Si no la responde a tiempo, el Usuario pierde la respuesta que tenía registrada."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(c) Aviso previo. La Aplicación informa este efecto antes de que el Usuario elija la segunda pregunta."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.7. Determinación de los adjudicatarios."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(a) Respuestas válidas. Al cierre, dentro de cada Categoría se toman únicamente las respuestas correctas y válidas."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(b) Orden. Esas respuestas se ordenan de menor a mayor tiempo de respuesta."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(c) Adjudicación. Resultan adjudicatarios los más rápidos, hasta completar el número de ganadores de la Categoría."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(d) Empates. En caso de empate en el tiempo, prevalece el Usuario cuyo primer aporte se registró primero."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(e) Puestos vacantes. Si una Categoría no tiene suficientes respuestas correctas y válidas, los puestos restantes quedan vacantes."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.8. Confidencialidad durante el concurso y publicación de resultados."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(a) Antes del cierre. Fandi no revela si las respuestas son correctas ni la posición de ningún participante."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(b) Después del cierre, a cada Usuario. La Aplicación informa a cada Usuario su pregunta, la respuesta correcta, su respuesta, su tiempo, si resultó adjudicatario y el tiempo máximo con el que se ganó en su Categoría."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "(c) Lista pública de adjudicatarios. La lista de adjudicatarios se publica por Categoría, con sus tiempos de respuesta. Los Usuarios con perfil privado aparecen con su nombre oculto."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.9. Oportunidades compartidas. Cuando una Oportunidad cuenta con Ídolos invitados, el Usuario puede indicar por cuál o cuáles Ídolos participa. Esa elección solo afecta su posición en el ranking de fans de esos Ídolos. No influye en la Categoría, en la pregunta ni en la adjudicación."
+  },
+  {
+    "t": "p",
+    "level": 0,
+    "text": "7.3.10. Insignia de participación. Todo participante recibe una insignia de participación, sin perjuicio del resultado."
   },
   {
     "t": "table",
     "rows": [
       [
-        "Condición de operación de la OportunidadFandi obtiene, con carácter previo a cada Evento, la autorización que exija la autoridad competente para el conjunto de Oportunidades que se ofrecerán en él. Ninguna Oportunidad se habilita en la Aplicación sin que dicha autorización se encuentre expedida y vigente. La autorización es un acto de la autoridad frente a Fandi y no se publica en la Aplicación; Fandi la conserva y la pone a disposición de la autoridad que la requiera.En ausencia de autorización vigente, el Evento podrá operar únicamente bajo la modalidad de Subasta, que no depende del azar y se adjudica al mejor postor, o la Experiencia podrá no ofrecerse. Ello no genera responsabilidad para Fandi ni derecho a indemnización a favor del Usuario, más allá del reintegro íntegro de los Fandis aportados a una Oportunidad que no llegue a realizarse.Reglas oficiales y ausencia de patrocinio de las tiendas. Las reglas completas de cada Subasta y de cada Oportunidad se presentan en la Aplicación antes de participar. Apple Inc. y Google LLC no patrocinan ni promueven estas modalidades, no participan en su operación ni en la adjudicación de las Experiencias, y no asumen responsabilidad alguna en relación con ellas."
+        "Reintegro y reglas oficiales. Si una Oportunidad no llega a realizarse, Fandi reintegra íntegramente a la Billetera del Usuario los Fandis aportados a ella. Las reglas completas de cada Subasta y de cada Oportunidad se presentan en la Aplicación antes de participar. Apple Inc. y Google LLC no patrocinan ni promueven estas modalidades, no participan en su operación ni en la adjudicación de las Experiencias, y no asumen responsabilidad alguna en relación con ellas."
       ]
     ]
   },
@@ -545,7 +710,7 @@
   {
     "t": "p",
     "level": 0,
-    "text": "Fandi promueve un uso sano de la Aplicación y pone a disposición del Usuario herramientas de autocontrol: límites de recarga, límites de participación, periodos de enfriamiento y autoexclusión. El Usuario puede solicitar su autoexclusión temporal o permanente. Fandi respeta estas medidas y se abstiene de dirigir comunicaciones de recarga o participación a quienes las hayan activado. Ninguna participación es un medio de inversión ni una fuente de ingresos; los resultados dependen del azar y de la mecánica descrita."
+    "text": "Fandi promueve un uso sano de la Aplicación y pone a disposición del Usuario herramientas de autocontrol: límites de recarga, límites de participación, periodos de enfriamiento y autoexclusión. El Usuario puede solicitar su autoexclusión temporal o permanente. Fandi respeta estas medidas y se abstiene de dirigir comunicaciones de recarga o participación a quienes las hayan activado. Ninguna participación es un medio de inversión ni una fuente de ingresos; los resultados dependen de la mecánica descrita y no están garantizados."
   },
   {
     "t": "h",
@@ -571,6 +736,11 @@
     "t": "li",
     "level": 0,
     "text": "Utilizar bots, scrapers, automatizaciones o cualquier medio para interferir con la Plataforma o eludir sus controles."
+  },
+  {
+    "t": "li",
+    "level": 0,
+    "text": "Responder las preguntas de una Oportunidad mediante bots, herramientas automatizadas o ayuda de terceros. Fandi podrá invalidar las respuestas y descalificar al Usuario que lo haga."
   },
   {
     "t": "li",

@@ -14,7 +14,7 @@ export default function TerminosPage() {
         <LegalDoc
             title="Términos y Condiciones de Uso"
             subtitle="Fandi Holding S.A.S. · NIT 902.070.820-4"
-            version="Versión 1.0 · Vigente desde el 1 de agosto de 2026"
+            version="Versión 1.1 · Vigente desde el 23 de octubre de 2026"
             blocks={blocks as LegalBlock[]}
             related={[
                 { href: '/privacidad', label: 'Política de Privacidad' },
