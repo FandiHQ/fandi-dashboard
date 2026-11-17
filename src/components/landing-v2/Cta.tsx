@@ -28,6 +28,15 @@ export const WEB_APP_URL =
     process.env.NEXT_PUBLIC_WEB_APP_URL ?? 'http://localhost:8081';
 
 /**
+ * Organizer dashboard. Kept environment-specific so staging and production
+ * can promote the same source without crossing their authentication flows.
+ */
+export const DASHBOARD_URL = new URL(
+    '/login',
+    process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'http://localhost:3000',
+).toString();
+
+/**
  * acid    — lime, THE action (entering the app). One per view.
  * primary — white extruded block (secondary actions: "Escríbenos").
  * ghost   — white outline, no fill (quiet doors: "Ingresar (ídolos)").

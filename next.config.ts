@@ -5,19 +5,28 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  poweredByHeader: false,
   async headers() {
     return [
       {
-        // Invitation links land here with ?token=… (a bearer secret): never
-        // leak it to another origin through the Referer header.
-        source: "/dashboard/collaborations",
-        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+        source: "/:path*",
+        headers: [
+          { key: "Strict-Transport-Security", value: "max-age=31536000" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Content-Security-Policy",
+            value: "base-uri 'self'; object-src 'none'; frame-ancestors 'none'",
+          },
+        ],
       },
-      {
-        // Signed-out invitees pass through /login?next=…?token=… first.
-        source: "/login",
+      // These routes can carry invitation bearer tokens. Keep the stricter
+      // rule after the baseline so no token is sent in a Referer header.
+      ...["/dashboard/collaborations", "/login", "/invite/accept", "/reset-password"].map((source) => ({
+        source,
         headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
-      },
+      })),
     ];
   },
 };

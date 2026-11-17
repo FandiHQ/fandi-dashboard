@@ -1,5 +1,8 @@
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import LandingV2 from '@/components/landing-v2/LandingV2';
+import { isDashboardHost } from '@/lib/site-routing';
 
 const SITE = 'https://fandi.app';
 const FAQ_IDS = [1, 2, 3, 4, 5] as const;
@@ -18,6 +21,14 @@ const FAQ_IDS = [1, 2, 3, 4, 5] as const;
  * be at the stadium).
  */
 export default async function HomePage() {
+    const host = (await headers()).get('host');
+
+    // In each environment the public host renders the landing, while the
+    // explicit dashboard host opens staff login. Authorization is unchanged.
+    if (isDashboardHost(host)) {
+        redirect('/login');
+    }
+
     const t = await getTranslations('landingV2');
 
     const jsonLd = {

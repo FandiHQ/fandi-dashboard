@@ -69,17 +69,14 @@ export default function DashboardHomePage() {
     });
     const members = membersQuery.data ?? [];
 
-    const fetchEvents = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const data = await eventsApi.list();
-            setEvents(data.items);
-        } catch {
-            setError(t('errorLoading'));
-        } finally {
-            setLoading(false);
-        }
+    const fetchEvents = useCallback(() => {
+        return eventsApi.list()
+            .then((data) => {
+                setError(null);
+                setEvents(data.items);
+            })
+            .catch(() => setError(t('errorLoading')))
+            .finally(() => setLoading(false));
     }, [t]);
 
     useEffect(() => {
@@ -274,7 +271,14 @@ export default function DashboardHomePage() {
                 <div className="block-white flex flex-col items-center gap-4 p-8">
                     <AlertCircle size={32} className="text-alert-white" />
                     <p className="text-sm font-semibold text-ink">{error}</p>
-                    <Button variant="secondary" onClick={fetchEvents}>
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            setLoading(true);
+                            setError(null);
+                            void fetchEvents();
+                        }}
+                    >
                         {t('retry')}
                     </Button>
                 </div>

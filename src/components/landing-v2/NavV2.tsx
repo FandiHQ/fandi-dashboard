@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Cta, WEB_APP_URL } from './Cta';
+import { Cta, DASHBOARD_URL, WEB_APP_URL } from './Cta';
 
 /**
  * Persistent nav + mobile sticky CTA bar.
@@ -28,7 +28,7 @@ function switchLocale(locale: string) {
     window.location.reload();
 }
 
-export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
+export default function NavV2() {
     const t = useTranslations('landingV2.nav');
     const tCta = useTranslations('landingV2.cta');
     const locale = useLocale();
@@ -112,13 +112,12 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                             ))}
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={onSignIn}
+                        <a
+                            href={DASHBOARD_URL}
                             className="label-mono hidden px-3 py-2 text-[11px] text-muted-ink transition-colors hover:text-white sm:block"
                         >
                             {t('signIn')}
-                        </button>
+                        </a>
                         <Cta
                             href={WEB_APP_URL}
                             newTab={false}
@@ -138,7 +137,12 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                     past ? 'translate-y-0' : 'translate-y-full'
                 }`}
             >
-                <Cta onClick={onSignIn} variant="ghost" className="flex-1 !px-4 !py-3 !text-[13px]">
+                <Cta
+                    href={DASHBOARD_URL}
+                    newTab={false}
+                    variant="ghost"
+                    className="flex-1 !px-4 !py-3 !text-[13px]"
+                >
                     {t('idol')}
                 </Cta>
                 <Cta

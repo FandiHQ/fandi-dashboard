@@ -38,11 +38,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isUnreachable, setIsUnreachable] = useState(false);
 
-    const loadSession = useCallback(async () => {
-        setIsLoading(true);
-        setIsUnreachable(false);
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
+    const loadSession = useCallback(() => {
+        return supabase.auth.getSession().then(async ({ data: { session } }) => {
             if (session) {
                 const syncResponse = await withOneRetry(() => authApi.sync());
                 // Only store if user has dashboard access
@@ -53,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     await signOutHere();
                 }
             }
-        } catch (err) {
+        }).catch(async (err: unknown) => {
             if (sessionSyncFailure(err) === 'keepAndRetry') {
                 // Our API is down or restarting: the session itself is fine.
                 setIsUnreachable(true);
@@ -62,10 +59,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 await signOutHere();
                 setUser(null);
             }
-        } finally {
+        }).finally(() => {
             setIsLoading(false);
-        }
+        });
     }, []);
+
+    // The initial render already starts loading. Reset retry state only
+    // in the explicit user action, not synchronously in the mount effect.
+    const retrySession = useCallback(async () => {
+        setIsLoading(true);
+        setIsUnreachable(false);
+        await loadSession();
+    }, [loadSession]);
 
     // On mount — check existing session
     useEffect(() => {
@@ -145,7 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <AuthContext.Provider value={{
-            user, isLoading, isAuthenticated, isUnreachable, retrySession: loadSession,
+            user, isLoading, isAuthenticated, isUnreachable, retrySession,
             organization, memberRole, login, logout, refreshUser
         }}>
             {children}

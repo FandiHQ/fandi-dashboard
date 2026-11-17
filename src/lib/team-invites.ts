@@ -24,4 +24,3 @@ export function inviteLikelyExpired(
     if (Number.isNaN(sent)) return false;
     return now - sent > ttlHours * 60 * 60 * 1000;
 }
-
