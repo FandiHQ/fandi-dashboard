@@ -19,7 +19,7 @@ import AuctionScene from './AuctionScene';
 import KeepScene from './KeepScene';
 import IdolsScene from './IdolsScene';
 import { DownloadScene, FaqScene, FooterV2 } from './CloseScene';
-import { Cta, WEB_APP_URL } from './Cta';
+import { Cta, StoreBadges } from './Cta';
 import { ScrollProgress, ScrollCue } from './ScrollAffordance';
 import LazyImageSequence from './LazyImageSequence';
 
@@ -105,8 +105,9 @@ export default function LandingV2() {
             <NavV2 onSignIn={() => setSignInOpen(true)} />
             <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
 
-            {/* pb on mobile clears the sticky action bar */}
-            <main id="main-content" className="bg-blue pb-24 text-white md:pb-0">
+            {/* The mobile sticky bar's clearance lives in the footer (ink),
+                not here: padding on <main> painted a blue band under it. */}
+            <main id="main-content" className="bg-blue text-white">
                 <h1 className="sr-only">{t('seoTitle')}</h1>
 
                 {/* ═══ §0 — EL MICRÓFONO ═══ */}
@@ -140,31 +141,25 @@ export default function LandingV2() {
                                     priority
                                     className="h-auto w-[30vw] max-w-[150px]"
                                 />
-                                <p className="font-hero mt-6 max-w-5xl text-[40px] text-white sm:text-[56px] md:text-[88px]">
+                                {/* Sized by its longest word, CONVERTIMOS
+                                    (≈9.4× the font size): a fixed 40px ran it
+                                    edge to edge at 375px and off-screen below
+                                    that, and 88px overflowed 768–1000px. */}
+                                <p className="font-hero mt-6 max-w-5xl text-[clamp(30px,9.4vw,40px)] text-white sm:text-[56px] md:text-[72px] lg:text-[88px]">
                                     {t('hero.slogan')}
                                 </p>
-                                <p className="mt-4 max-w-md text-[15px] leading-snug text-lilac md:text-[17px]">
+                                <p className="mt-4 max-w-md text-balance text-[15px] leading-snug text-lilac md:text-[17px]">
                                     {t('hero.sub')}
                                 </p>
 
                                 {/* Two audiences, explicitly labelled. Fans
-                                    open the web app; "Ingresar" is the
-                                    dashboard login and belongs to ídolos, not
-                                    to fans — unlabelled it read as a fan
-                                    action.
-
-                                    The stores have not approved yet, so the
-                                    web app IS the product for launch. This is
-                                    a same-tab handoff, not a download. */}
+                                    get the app from its store; "Ingresar" is
+                                    the dashboard login and belongs to ídolos,
+                                    not to fans — unlabelled it read as a fan
+                                    action. */}
                                 <div className="mt-8 flex flex-col items-center gap-3.5">
                                     <GroupLabel>{t('hero.forFans')}</GroupLabel>
-                                    <Cta
-                                        href={WEB_APP_URL}
-                                        newTab={false}
-                                        variant="acid"
-                                    >
-                                        {t('cta.openApp')}
-                                    </Cta>
+                                    <StoreBadges priority />
                                 </div>
 
                                 <div className="mt-7 flex flex-col items-center gap-3.5">
@@ -173,14 +168,14 @@ export default function LandingV2() {
                                         <Cta
                                             onClick={() => setSignInOpen(true)}
                                             variant="ghost"
-                                            className="!px-7 !py-3 !text-[13px]"
+                                            className="min-h-11 !px-7 !py-3 !text-[13px]"
                                         >
                                             {t('hero.signIn')}
                                         </Cta>
                                         <Cta
                                             href="mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento"
                                             variant="primary"
-                                            className="!px-7 !py-3 !text-[13px]"
+                                            className="min-h-11 !px-7 !py-3 !text-[13px]"
                                         >
                                             {t('hero.idol')}
                                         </Cta>

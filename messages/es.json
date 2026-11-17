@@ -123,7 +123,51 @@
         "team": "Equipo",
         "settings": "Configuración",
         "collaborations": "Colaboraciones",
-        "classification": "Clasificación"
+        "classification": "Clasificación",
+        "withdrawals": "Retiros"
+    },
+    "withdrawalsAdmin": {
+        "title": "Retiros de fans",
+        "lead": "Devolución del saldo no usado (Términos §6). Los retiros con saldo de recargas de los últimos 30 días esperan tu revisión; el resto sale solo por ACH. Aprobar envía el dinero; rechazar lo devuelve a la billetera del fan.",
+        "noAccess": "Solo para administradores de Fandi.",
+        "filterAll": "Todos",
+        "status": {
+            "in_review": "En revisión",
+            "approved": "Aprobado",
+            "processing": "Enviando",
+            "paid": "Pagado",
+            "failed": "Falló",
+            "rejected": "Rechazado"
+        },
+        "reason": {
+            "recent_topup_30d": "Recarga reciente (< 30 días)",
+            "identity_check": "Identidad sin cruzar con KYC"
+        },
+        "cols": {
+            "fan": "Fan",
+            "amount": "Retira",
+            "fee": "Costo",
+            "net": "Recibe",
+            "account": "Cuenta",
+            "recent": "Recargas 30 días",
+            "status": "Estado",
+            "created": "Solicitado"
+        },
+        "feeWaived": "Sin costo (retracto)",
+        "approve": "Aprobar y enviar",
+        "reject": "Rechazar",
+        "rejectReason": "Motivo del rechazo (lo ve el fan)",
+        "rejectPlaceholder": "Ej.: La recarga es muy reciente; inténtalo de nuevo en unos días.",
+        "confirmTitle": "¿Enviar {net} a {fan}?",
+        "confirmBody": "Se transfiere por ACH a la cuenta {bank} ····{last4}. No se puede deshacer.",
+        "confirm": "Enviar",
+        "cancel": "Cancelar",
+        "reconcile": "Reintentar y verificar envíos",
+        "reconciled": "{retried} reintentados · {polled} verificados",
+        "approved": "Retiro aprobado y enviado",
+        "rejected": "Retiro rechazado; el saldo volvió al fan",
+        "empty": "No hay retiros en este estado.",
+        "error": "No pudimos completar la acción"
     },
     "fanTiers": {
         "leyenda": "Leyenda",
@@ -1390,11 +1434,10 @@
             "a5": "Escríbenos a hola@fandi.app y te montamos un evento de prueba. Tú defines las experiencias; nosotros ponemos las subastas, el cobro, la entrega por QR y el dashboard en tiempo real."
         },
         "store": {
-            "iosLine1": "Descárgala en el",
-            "iosLine2": "App Store",
-            "androidLine1": "Disponible en",
-            "androidLine2": "Google Play",
-            "soon": "Muy pronto"
+            "appStoreAlt": "Descárgalo en el App Store",
+            "googlePlayAlt": "Descargar en Google Play",
+            "scanQr": "Escanea con tu celular",
+            "qrAlt": "Código QR que abre fandi.app/descargar"
         },
         "footer": {
             "tagline": "Convertimos a tu ídolo en tu amigo.",
@@ -1409,10 +1452,6 @@
             "deleteAccount": "Eliminar mi cuenta"
         },
         "scrollCue": "Sigue bajando",
-        "cta": {
-            "openApp": "Abrir Fandi",
-            "enter": "Entrar"
-        },
         "loader": "Cargando"
     },
     "footer": {

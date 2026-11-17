@@ -16,8 +16,10 @@ import type {
     BadgeTemplate, CreateBadgeTemplateDto, UpdateBadgeTemplateDto,
     BadgeAwardResult,
     CitySearchResult,
+    AdminWithdrawal,
     AiJob,
     BankResponse,
+    WithdrawalStatus,
     ContestResults,
     HostSegments, SharedSegments, CategoryNode, ClassifiedIdol,
     Collaboration,
@@ -113,6 +115,17 @@ export const experiencesApi = {
     // Phase 6 — Impactores wall: names by privacy, positions only, NO amounts.
     impactores: (id: string) =>
         unwrap(api.get<Impactor[]>(`/dashboard/experiences/${id}/impactores`)),
+};
+
+// ── Fan withdrawals review (platform admins; API re-checks the role) ──
+export const withdrawalsAdminApi = {
+    list: (status?: WithdrawalStatus) =>
+        unwrap(api.get<AdminWithdrawal[]>('/admin/withdrawals', { params: status ? { status } : {} })),
+    approve: (id: string) => unwrap(api.post<void>(`/admin/withdrawals/${id}/approve`)),
+    reject: (id: string, reason: string) =>
+        unwrap(api.post<void>(`/admin/withdrawals/${id}/reject`, { reason })),
+    reconcile: () =>
+        unwrap(api.post<{ retried: number; polled: number }>('/admin/withdrawals/reconcile')),
 };
 
 // ── Knowledge contest — question bank (authors) and results ──

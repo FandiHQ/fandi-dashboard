@@ -146,7 +146,10 @@ export default function IdolsScene() {
                                       viewport: { once: true, amount: 0.5 },
                                       transition: { duration: 0.55, delay: i * 0.16 },
                                   })}
-                            className="font-hero text-[38px] text-white md:text-[92px]"
+                            // IDENTIFICAMOS is ≈9.9× the font size wide: a
+                            // fixed 38px clipped it at 375px and 92px at
+                            // tablet widths, so both scale with the viewport.
+                            className="font-hero text-[clamp(28px,8.8vw,38px)] text-white md:text-[64px] lg:text-[92px]"
                         >
                             {t(key)}
                         </motion.h2>

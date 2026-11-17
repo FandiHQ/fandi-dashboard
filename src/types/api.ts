@@ -467,6 +467,30 @@ export interface BankResponse {
     questions: BankQuestion[];
 }
 
+/** Fan withdrawal of unused balance, as ops see it (GET /admin/withdrawals). */
+export type WithdrawalStatus = 'in_review' | 'approved' | 'processing' | 'paid' | 'failed' | 'rejected';
+
+export interface AdminWithdrawal {
+    id: string;
+    userId: string;
+    fanName: string | null;
+    grossCop: number;
+    feeCop: number;
+    netCop: number;
+    feeWaivedReason: string | null;
+    status: WithdrawalStatus;
+    /** Why it needs a person: 'recent_topup_30d' | 'identity_check'. */
+    reviewReason: string | null;
+    failureReason: string | null;
+    lastError: string | null;
+    createdAt: string;
+    bankName: string | null;
+    accountType: 'SAVINGS' | 'CHECKING';
+    accountLast4: string;
+    /** Top-ups completed by this fan in the last 30 days. */
+    recentTopupsCop: number;
+}
+
 /** One AI-generated draft (not in the bank until the author adds it). */
 export interface AiQuestionDraft {
     prompt: string;

@@ -1,5 +1,5 @@
 import {
-    LayoutDashboard, Calendar, Users, Settings, Trophy, Handshake, FolderTree,
+    LayoutDashboard, Calendar, Users, Settings, Trophy, Handshake, FolderTree, Banknote,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -54,6 +54,13 @@ export const navItems: NavItem[] = [
         href: '/dashboard/admin/classification',
         icon: FolderTree,
         labelKey: 'classification',
+        platformAdmin: true,
+    },
+    {
+        // Fan withdrawals that need a person (recent top-ups) — Terms §6.
+        href: '/dashboard/admin/withdrawals',
+        icon: Banknote,
+        labelKey: 'withdrawals',
         platformAdmin: true,
     },
 ];

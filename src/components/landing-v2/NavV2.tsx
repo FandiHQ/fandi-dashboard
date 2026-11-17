@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Cta, WEB_APP_URL } from './Cta';
+import { DOWNLOAD_PATH } from '@/lib/app-links';
+import { Cta, scrollToDownloadIfNoStore } from './Cta';
 
 /**
  * Persistent nav + mobile sticky CTA bar.
@@ -30,7 +31,6 @@ function switchLocale(locale: string) {
 
 export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     const t = useTranslations('landingV2.nav');
-    const tCta = useTranslations('landingV2.cta');
     const locale = useLocale();
     const { scrollYProgress } = useScroll();
     const [past, setPast] = useState(false);
@@ -46,7 +46,10 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
     return (
         <>
             <header
-                className={`fixed inset-x-0 top-0 z-50 border-b-2 border-ink bg-ink transition-opacity duration-300 ${
+                // focus-within: while hidden over the hero the bar is still
+                // in the tab order, so a keyboard user tabbing into it must
+                // be able to see where focus went.
+                className={`fixed inset-x-0 top-0 z-50 border-b-2 border-ink bg-ink transition-opacity duration-300 focus-within:pointer-events-auto focus-within:opacity-100 ${
                     past
                         ? 'pointer-events-auto opacity-100'
                         : 'pointer-events-none opacity-0'
@@ -56,7 +59,11 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                     {/* Intrinsic size is 967x747 — declaring a wrong aspect
                         ratio makes next/image generate mis-sized renditions
                         and the mark goes soft. */}
-                    <a href="#main-content" aria-label="Fandi" className="shrink-0">
+                    <a
+                        href="#main-content"
+                        aria-label="Fandi"
+                        className="flex min-h-11 shrink-0 items-center rounded-[8px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    >
                         <Image
                             src="/fandi-logo.png"
                             alt="Fandi"
@@ -75,7 +82,7 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                             <a
                                 key={l.key}
                                 href={l.href}
-                                className="label-mono text-[11px] text-muted-ink transition-colors hover:text-white"
+                                className="label-mono inline-flex min-h-11 items-center text-[11px] text-muted-ink transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                             >
                                 {t(l.key)}
                             </a>
@@ -100,7 +107,7 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                                         type="button"
                                         onClick={() => switchLocale(loc)}
                                         aria-pressed={locale === loc}
-                                        className={`label-mono cursor-pointer text-[11px] transition-colors ${
+                                        className={`label-mono inline-flex min-h-11 cursor-pointer items-center px-1 text-[11px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
                                             locale === loc
                                                 ? 'text-white'
                                                 : 'text-muted-ink hover:text-white'
@@ -115,18 +122,21 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                         <button
                             type="button"
                             onClick={onSignIn}
-                            className="label-mono hidden px-3 py-2 text-[11px] text-muted-ink transition-colors hover:text-white sm:block"
+                            className="label-mono hidden min-h-11 items-center px-3 text-[11px] text-muted-ink transition-colors hover:text-white sm:inline-flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                         >
                             {t('signIn')}
                         </button>
+                        {/* md+ only: on phones the sticky bar below
+                            carries this same action, and two lime buttons
+                            on one screen break "one acid CTA per view". */}
                         <Cta
-                            href={WEB_APP_URL}
-                            newTab={false}
+                            href={DOWNLOAD_PATH}
+                            onClick={scrollToDownloadIfNoStore}
                             variant="acid"
                             onInk
-                            className="!px-5 !py-2.5 !text-[13px]"
+                            className="min-h-11 !hidden !px-5 !py-2.5 !text-[13px] md:!inline-flex"
                         >
-                            {tCta('enter')}
+                            {t('download')}
                         </Cta>
                     </div>
                 </div>
@@ -134,21 +144,21 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
 
             {/* Mobile sticky action bar */}
             <div
-                className={`fixed inset-x-0 bottom-0 z-50 flex gap-3 border-t-2 border-ink bg-ink p-3 transition-transform duration-300 md:hidden ${
+                className={`fixed inset-x-0 bottom-0 z-50 flex gap-3 border-t-2 border-ink bg-ink p-3 transition-transform duration-300 focus-within:translate-y-0 md:hidden ${
                     past ? 'translate-y-0' : 'translate-y-full'
                 }`}
             >
-                <Cta onClick={onSignIn} variant="ghost" className="flex-1 !px-4 !py-3 !text-[13px]">
+                <Cta onClick={onSignIn} variant="ghost" className="min-h-11 flex-1 !px-4 !py-3 !text-[13px]">
                     {t('idol')}
                 </Cta>
                 <Cta
-                    href={WEB_APP_URL}
-                    newTab={false}
+                    href={DOWNLOAD_PATH}
+                    onClick={scrollToDownloadIfNoStore}
                     variant="acid"
                     onInk
-                    className="flex-1 !px-4 !py-3 !text-[13px]"
+                    className="min-h-11 flex-1 !px-4 !py-3 !text-[13px]"
                 >
-                    {tCta('enter')}
+                    {t('download')}
                 </Cta>
             </div>
         </>

@@ -8,15 +8,16 @@
  * and (b) hand them a way into Fandi — every share is an invitation.
  *
  * Phase 5: the hero IS the card PNG for the same token (one renderer,
- * one truth — no HTML re-implementation to drift), then the CTA.
+ * one truth — no HTML re-implementation to drift), then the official
+ * store badges. iOS Safari also shows its Smart App Banner on top.
  *
  * Renders nothing from an unverified token: a bad signature is a 404.
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { StoreBadges } from '@/components/landing-v2/Cta';
+import { SMART_APP_BANNER } from '@/lib/app-links';
 import {
     decodeShareCard,
     fansCompeting,
@@ -27,8 +28,6 @@ import {
     topPercent,
 } from '@/lib/share-card';
 import { CARD_SIZE } from './card';
-
-const WEB_APP_URL = process.env.NEXT_PUBLIC_WEB_APP_URL ?? 'https://app.fandi.app';
 
 function read(token: string) {
     return decodeShareCard(
@@ -57,6 +56,7 @@ export async function generateMetadata({
             openGraph: { title, description, type: 'profile' },
             twitter: { card: 'summary_large_image', title, description },
             robots: { index: false, follow: false },
+            other: SMART_APP_BANNER,
         };
     }
 
@@ -79,6 +79,9 @@ export async function generateMetadata({
         // A ranking link is personal and ephemeral; it has no business in
         // a search index.
         robots: { index: false, follow: false },
+        // Whoever opens a shared card on an iPhone gets the native
+        // "Open / Get" banner for the app on top of the page.
+        other: SMART_APP_BANNER,
     };
 }
 
@@ -127,9 +130,8 @@ export default async function ShareCardPage({
                 {impacto ? impactoresLine(payload.t) : fansCompeting(payload.t)}
             </p>
 
-            <Button asChild size="lg">
-                <Link href={WEB_APP_URL}>Entrar a Fandi</Link>
-            </Button>
+            {/* Every share is an invitation: straight to the stores. */}
+            <StoreBadges size="lg" />
         </main>
     );
 }

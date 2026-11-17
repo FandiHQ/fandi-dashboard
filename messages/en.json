@@ -123,7 +123,51 @@
         "team": "Team",
         "settings": "Settings",
         "collaborations": "Collaborations",
-        "classification": "Classification"
+        "classification": "Classification",
+        "withdrawals": "Withdrawals"
+    },
+    "withdrawalsAdmin": {
+        "title": "Fan withdrawals",
+        "lead": "Refund of unused balance (Terms §6). Withdrawals using balance from top-ups of the last 30 days wait for your review; the rest go out automatically by ACH. Approving sends the money; rejecting returns it to the fan wallet.",
+        "noAccess": "Fandi admins only.",
+        "filterAll": "All",
+        "status": {
+            "in_review": "In review",
+            "approved": "Approved",
+            "processing": "Sending",
+            "paid": "Paid",
+            "failed": "Failed",
+            "rejected": "Rejected"
+        },
+        "reason": {
+            "recent_topup_30d": "Recent top-up (< 30 days)",
+            "identity_check": "Identity not matched to KYC"
+        },
+        "cols": {
+            "fan": "Fan",
+            "amount": "Withdraws",
+            "fee": "Fee",
+            "net": "Receives",
+            "account": "Account",
+            "recent": "Top-ups 30 days",
+            "status": "Status",
+            "created": "Requested"
+        },
+        "feeWaived": "No fee (statutory withdrawal)",
+        "approve": "Approve and send",
+        "reject": "Reject",
+        "rejectReason": "Rejection reason (the fan sees it)",
+        "rejectPlaceholder": "E.g.: The top-up is too recent; try again in a few days.",
+        "confirmTitle": "Send {net} to {fan}?",
+        "confirmBody": "It goes by ACH to the {bank} account ····{last4}. It cannot be undone.",
+        "confirm": "Send",
+        "cancel": "Cancel",
+        "reconcile": "Retry and check payouts",
+        "reconciled": "{retried} retried · {polled} checked",
+        "approved": "Withdrawal approved and sent",
+        "rejected": "Withdrawal rejected; the balance went back to the fan",
+        "empty": "No withdrawals in this status.",
+        "error": "We could not complete the action"
     },
     "fanTiers": {
         "leyenda": "Leyenda",
@@ -1390,11 +1434,10 @@
             "a5": "Write to hola@fandi.app and we'll set up a trial event. You define the experiences; we handle the auctions, payments, QR delivery and the real-time dashboard."
         },
         "store": {
-            "iosLine1": "Download on the",
-            "iosLine2": "App Store",
-            "androidLine1": "Get it on",
-            "androidLine2": "Google Play",
-            "soon": "Coming soon"
+            "appStoreAlt": "Download on the App Store",
+            "googlePlayAlt": "Get it on Google Play",
+            "scanQr": "Scan with your phone",
+            "qrAlt": "QR code that opens fandi.app/descargar"
         },
         "footer": {
             "tagline": "We turn your idol into your friend.",
@@ -1409,10 +1452,6 @@
             "deleteAccount": "Delete my account"
         },
         "scrollCue": "Keep scrolling",
-        "cta": {
-            "openApp": "Open Fandi",
-            "enter": "Enter"
-        },
         "loader": "Loading"
     },
     "footer": {
