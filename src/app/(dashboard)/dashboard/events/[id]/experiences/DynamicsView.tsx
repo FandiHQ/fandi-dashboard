@@ -1,6 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+
+/** localStorage "dismissed" flags (try/catch: private mode, blocked storage). */
+function subscribeToStorage(onChange: () => void): () => void {
+    window.addEventListener('storage', onChange);
+    return () => window.removeEventListener('storage', onChange);
+}
+function readFlag(key: string): boolean {
+    try {
+        return window.localStorage.getItem(key) === '1';
+    } catch {
+        return false;
+    }
+}
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -32,7 +45,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { StatusBadge as EventStatusBadge } from '@/components/ui/status-badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useConfirmDialog } from '@/components/ui/confirm-dialog';
 import { motion } from 'framer-motion';
@@ -891,6 +903,7 @@ function OpportunityFormDialog({
                                     questions={questions}
                                     onChange={setBankDraft}
                                     locked={bankLocked}
+                                    experienceId={existingId}
                                 />
                             )}
                             {!impacto && bankLoading && (
@@ -1060,7 +1073,18 @@ export function DynamicsView({ kind }: { kind: ExperienceKind }) {
 
     const [showForm, setShowForm] = useState(false);
     const [editingExp, setEditingExp] = useState<Experience | null>(null);
-    const [showBanner, setShowBanner] = useState(true);
+    // "Cómo funcionan": once closed, it stays closed on this browser.
+    const bannerKey = `fandi.howItWorks.v2.dismissed.${impactoMode ? 'impactos' : 'oportunidades'}`;
+    // Read through useSyncExternalStore: the server render (no storage)
+    // shows it, the client hides it after hydration without a mismatch.
+    const dismissedBefore = useSyncExternalStore(
+        subscribeToStorage,
+        () => readFlag(bannerKey),
+        () => false,
+    );
+    const [closedNow, setClosedNow] = useState(false);
+    const showBanner = !dismissedBefore && !closedNow;
+    const setShowBanner = (show: boolean) => setClosedNow(!show);
 
     const { data: experiences, isLoading } = useQuery({
         queryKey: ['experiences', eventId],
@@ -1144,17 +1168,11 @@ export function DynamicsView({ kind }: { kind: ExperienceKind }) {
         <div className="flex flex-col gap-[18px]">
             {/* ── Header ── */}
             <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="flex flex-col gap-2">
-                    <h1 className="font-display text-[32px] text-white">
-                        {impactoMode ? t('impactos.title') : t('title')}
-                    </h1>
-                    {event && (
-                        <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="label-mono text-[11px] text-lilac">{event.name}</span>
-                            <EventStatusBadge status={event.status} />
-                        </div>
-                    )}
-                </div>
+                {/* The event name and status are already in the event header
+                    right above — not repeated here. */}
+                <h1 className="font-display text-[32px] text-white">
+                    {impactoMode ? t('impactos.title') : t('title')}
+                </h1>
 
                 {isWrite && (
                     <Button
@@ -1169,28 +1187,50 @@ export function DynamicsView({ kind }: { kind: ExperienceKind }) {
             </div>
 
             {/* ── How it works ── */}
+            {/* Three short numbered steps, dark on white (the old paragraph
+                was 14px lilac on ink: hard to read). Impactos are explained
+                as what they are — donations, no question, no prizes. */}
             {showBanner && (
-                <div className="flex items-start gap-3.5 rounded-[14px] bg-ink px-[18px] py-3.5 text-white">
-                    <span
-                        aria-hidden="true"
-                        className="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-lime text-sm font-black text-ink"
-                    >
-                        i
-                    </span>
-                    <p className="max-w-[640px] flex-1 text-sm leading-relaxed text-lilac">
-                        {t.rich(impactoMode ? 'impactos.howItWorks' : 'list.howItWorks', {
-                            b: (chunks) => <b className="text-white">{chunks}</b>,
-                            hl: (chunks) => <b className="text-lime">{chunks}</b>,
-                        })}
-                    </p>
+                <section
+                    className="block-white flex items-start gap-4 p-4"
+                    aria-labelledby="how-it-works-title"
+                    data-testid="how-it-works"
+                >
+                    <div className="flex flex-1 flex-col gap-3">
+                        <h2 id="how-it-works-title" className="font-display text-[18px] text-ink">
+                            {t(impactoMode ? 'impactos.howTitle' : 'list.howTitle')}
+                        </h2>
+                        <ol className="grid gap-3 md:grid-cols-3">
+                            {([1, 2, 3] as const).map((n) => (
+                                <li key={n} className="flex items-start gap-2.5">
+                                    <span
+                                        aria-hidden="true"
+                                        className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-lime font-display text-[13px] text-ink"
+                                    >
+                                        {n}
+                                    </span>
+                                    <span className="text-[15px] leading-snug text-ink">
+                                        {t(`${impactoMode ? 'impactos' : 'list'}.howStep${n}`)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
                     <button
-                        onClick={() => setShowBanner(false)}
-                        className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-[10px] text-muted-ink transition-colors hover:bg-chip-ink hover:text-white"
+                        onClick={() => {
+                            setShowBanner(false);
+                            try {
+                                window.localStorage.setItem(bannerKey, '1');
+                            } catch {
+                                // Private mode: it just shows again next time.
+                            }
+                        }}
+                        className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-[10px] text-ink transition-colors hover:bg-line-white"
                         aria-label={t('list.closeBanner')}
                     >
-                        <X size={16} />
+                        <X size={18} />
                     </button>
-                </div>
+                </section>
             )}
 
             {/* ── Franjas (slots) — Step 6.2 ── */}

@@ -384,6 +384,19 @@
         }
     },
     "events": {
+        "setup": {
+            "title": "Ready to publish · {done} of {total}",
+            "ready": "All set to publish",
+            "steps": {
+                "details": "Date, city and Fandi window",
+                "dynamics": "At least one dynamic",
+                "questions": "At least 20 questions per opportunity (the more, the better)",
+                "badges": "Event badges"
+            },
+            "dynamicsDetail": "Create an opportunity, an impact or an auction.",
+            "questionsDetail": "Questions missing in: {names}",
+            "questionsBlock": "{count, plural, one {One opportunity is missing its 20 questions} other {# opportunities are missing their 20 questions}}"
+        },
         "title": "Events",
         "create": "Create Event",
         "created": "Event created successfully",
@@ -590,6 +603,10 @@
         "statusClosed": "Closed",
         "list": {
             "howItWorks": "<b>How they work:</b> fans contribute Fandis during a short window and answer a question about your idol. They land in 4 categories by their running total and <hl>in each category the fastest right answers win</hl>. Every category has the same number of winners; fans move up by contributing more than others.",
+            "howTitle": "How they work",
+            "howStep1": "Fans contribute Fandis (from 4 F) while the opportunity is open.",
+            "howStep2": "Depending on what each one contributes, they land in one of 4 categories: VIP, High, Medium or Base.",
+            "howStep3": "They answer a very easy question about your idol. In each category the fastest right answers win; every category has the same number of winners.",
             "closeBanner": "Dismiss",
             "emptyTitle": "No oportunidades yet",
             "emptyBody": "Create the first oportunidad for your fans.",
@@ -642,6 +659,10 @@
         "impactos": {
             "title": "Impacts",
             "howItWorks": "<b>How they work:</b> fans put Fandis into a cause your idol backs. <hl>No question and no prizes</hl>: the recognition is the Impactores wall, their badge and watching the goal get met.",
+            "howTitle": "How impacts work",
+            "howStep1": "They are donations: fans put Fandis into a cause your idol backs.",
+            "howStep2": "No questions, categories or prizes.",
+            "howStep3": "The recognition is the Impactores wall, their badge and watching the goal get met.",
             "emptyTitle": "No Impacts yet",
             "emptyBody": "Create one so fans can back a cause during the event.",
             "form": {
@@ -683,7 +704,43 @@
                 "optionsDistinct": "The 4 options must be different.",
                 "correct": "Mark the right option."
             },
-            "saveFailedAfterCreate": "The oportunidad was created, but its questions were not saved: {message}. Save again to retry just the questions."
+            "saveFailedAfterCreate": "The oportunidad was created, but its questions were not saved: {message}. Save again to retry just the questions.",
+            "edit": "Edit question {n}",
+            "collapse": "Done",
+            "showMore": "Show {count} more ({total} in total)",
+            "ai": {
+                "title": "Generate with AI",
+                "intro": "VERY easy questions about your idol, so any fan can answer in seconds. They come from public sources and an automatic review flags the doubtful ones. Nothing is saved until you review it.",
+                "count": "How many questions",
+                "countCustom": "Another amount (max {max})",
+                "countMax": "Max {max}",
+                "focus": "Focus (optional)",
+                "focusPlaceholder": "Optional focus: an album, a season, a tournament…",
+                "start": "Generate {count} questions",
+                "full": "The bank reached its maximum of {max}",
+                "saveFirst": "Save the opportunity to generate questions with AI.",
+                "unavailable": "AI generation is not available right now.",
+                "startFailed": "We could not start the generation. Try again in a moment.",
+                "status": {
+                    "queued": "Queued…",
+                    "researching": "Researching the idol… the first time takes 2 to 4 minutes",
+                    "generating": "Generating: {done} of {total}",
+                    "done": "Done: {count} drafts",
+                    "failed": "It stopped",
+                    "cancelled": "Stopped · what was generated is kept"
+                },
+                "cancel": "Stop",
+                "drafts": "Drafts to review ({count})",
+                "addAllOk": "Add the {count} OK ones",
+                "rememberSave": "What you add goes to the bank below; it is saved with the opportunity Save button.",
+                "ok": "OK",
+                "doubtful": "Doubtful",
+                "why": "Why:",
+                "fact": "Based on",
+                "source": "Source",
+                "add": "Add",
+                "discard": "Discard"
+            }
         },
         "legacyTags": "Previous tags (text)",
         "privateMark": "Hidden from other fans"

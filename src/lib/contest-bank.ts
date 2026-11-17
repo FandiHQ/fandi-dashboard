@@ -6,7 +6,7 @@
  */
 
 export const BANK_MIN_QUESTIONS = 20;
-export const BANK_MAX_QUESTIONS = 50;
+export const BANK_MAX_QUESTIONS = 1000;
 export const OPTIONS_PER_QUESTION = 4;
 export const PROMPT_MIN_CHARS = 5;
 export const PROMPT_MAX_CHARS = 200;

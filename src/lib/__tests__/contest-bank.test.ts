@@ -68,7 +68,9 @@ describe('contest bank rules (mirror of fandi-api R3)', () => {
         assert.equal(bankReady(twenty), true);
         assert.equal(questionsMissing(twenty), 0);
         assert.equal(canSaveBank([...twenty, emptyQuestion()]), false);
-        assert.equal(canSaveBank(Array.from({ length: 51 }, (_, i) => valid(i))), false);
+        // Cap raised 50 → 1000 (2026-11-17, AI generation for huge audiences).
+        assert.equal(canSaveBank(Array.from({ length: 1000 }, (_, i) => valid(i))), true);
+        assert.equal(canSaveBank(Array.from({ length: 1001 }, (_, i) => valid(i))), false);
     });
 
     test('the payload trims text and keeps ids only when present', () => {

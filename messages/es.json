@@ -384,6 +384,19 @@
         }
     },
     "events": {
+        "setup": {
+            "title": "Lista para publicar · {done} de {total}",
+            "ready": "Todo listo para publicar",
+            "steps": {
+                "details": "Fecha, ciudad y horario Fandi",
+                "dynamics": "Al menos una dinámica",
+                "questions": "Mínimo 20 preguntas por oportunidad (entre más, mejor)",
+                "badges": "Insignias del evento"
+            },
+            "dynamicsDetail": "Crea una oportunidad, un impacto o una subasta.",
+            "questionsDetail": "Faltan preguntas en: {names}",
+            "questionsBlock": "{count, plural, one {Una oportunidad no tiene sus 20 preguntas} other {# oportunidades no tienen sus 20 preguntas}}"
+        },
         "title": "Eventos",
         "create": "Crear Evento",
         "created": "Evento creado exitosamente",
@@ -594,6 +607,10 @@
         "filterImpactos": "Impactos",
         "list": {
             "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis durante una ventana corta y responden una pregunta sobre tu ídolo. Quedan en 4 categorías según su aporte acumulado y <hl>en cada categoría ganan quienes aciertan más rápido</hl>. Todas tienen el mismo número de ganadores; se sube de categoría aportando más que los demás.",
+            "howTitle": "Cómo funcionan",
+            "howStep1": "Los fans aportan Fandis (desde 4 F) mientras la oportunidad está abierta.",
+            "howStep2": "Según lo que aporta cada uno, queda en una de 4 categorías: VIP, Alta, Media o Base.",
+            "howStep3": "Responde una pregunta muy fácil sobre tu ídolo. En cada categoría ganan quienes aciertan más rápido; todas tienen el mismo número de ganadores.",
             "closeBanner": "Cerrar aviso",
             "emptyTitle": "Aún no hay oportunidades",
             "emptyBody": "Crea la primera oportunidad para tus fans.",
@@ -642,6 +659,10 @@
         "impactos": {
             "title": "Impactos",
             "howItWorks": "<b>Cómo funcionan:</b> los fans aportan Fandis a una causa que tu ídolo respalda. <hl>No hay pregunta ni premios</hl>: el reconocimiento es el muro de Impactores, su insignia y ver la meta cumplirse.",
+            "howTitle": "Cómo funcionan los impactos",
+            "howStep1": "Son donaciones: los fans aportan Fandis a una causa que tu ídolo respalda.",
+            "howStep2": "No hay preguntas, categorías ni premios.",
+            "howStep3": "El reconocimiento es el muro de Impactores, su insignia y ver la meta cumplirse.",
             "emptyTitle": "Aún no hay Impactos",
             "emptyBody": "Crea uno para que los fans apoyen una causa durante el evento.",
             "form": {
@@ -683,7 +704,43 @@
                 "optionsDistinct": "Las 4 opciones deben ser distintas.",
                 "correct": "Marca la opción correcta."
             },
-            "saveFailedAfterCreate": "La oportunidad se creó, pero sus preguntas no se guardaron: {message}. Guarda de nuevo para reintentar solo las preguntas."
+            "saveFailedAfterCreate": "La oportunidad se creó, pero sus preguntas no se guardaron: {message}. Guarda de nuevo para reintentar solo las preguntas.",
+            "edit": "Editar la pregunta {n}",
+            "collapse": "Listo",
+            "showMore": "Mostrar {count} más ({total} en total)",
+            "ai": {
+                "title": "Generar con IA",
+                "intro": "Preguntas MUY fáciles sobre tu ídolo, para que cualquier fan pueda responder en segundos. Se basan en fuentes públicas y una revisión automática marca las dudosas. Nada se guarda sin que lo revises.",
+                "count": "Cuántas preguntas",
+                "countCustom": "Otra cantidad (máximo {max})",
+                "countMax": "Máx. {max}",
+                "focus": "Enfoque (opcional)",
+                "focusPlaceholder": "Enfoque opcional: un álbum, una temporada, un torneo…",
+                "start": "Generar {count} preguntas",
+                "full": "El banco llegó al máximo de {max}",
+                "saveFirst": "Guarda la oportunidad para poder generar preguntas con IA.",
+                "unavailable": "La generación con IA no está disponible en este momento.",
+                "startFailed": "No pudimos iniciar la generación. Intenta de nuevo en un momento.",
+                "status": {
+                    "queued": "En cola…",
+                    "researching": "Investigando sobre el ídolo… la primera vez toma 2 a 4 minutos",
+                    "generating": "Generando: {done} de {total}",
+                    "done": "Listo: {count} borradores",
+                    "failed": "Se detuvo",
+                    "cancelled": "Detenido · lo generado se conserva"
+                },
+                "cancel": "Detener",
+                "drafts": "Borradores por revisar ({count})",
+                "addAllOk": "Agregar las {count} OK",
+                "rememberSave": "Lo que agregues pasa al banco de abajo; se guarda con el botón Guardar de la oportunidad.",
+                "ok": "OK",
+                "doubtful": "Dudosa",
+                "why": "Por qué:",
+                "fact": "Basada en",
+                "source": "Fuente",
+                "add": "Agregar",
+                "discard": "Descartar"
+            }
         },
         "legacyTags": "Etiquetas anteriores (texto)",
         "privateMark": "Oculto a otros fans"

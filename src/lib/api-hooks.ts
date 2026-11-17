@@ -16,6 +16,7 @@ import type {
     BadgeTemplate, CreateBadgeTemplateDto, UpdateBadgeTemplateDto,
     BadgeAwardResult,
     CitySearchResult,
+    AiJob,
     BankResponse,
     ContestResults,
     HostSegments, SharedSegments, CategoryNode, ClassifiedIdol,
@@ -122,6 +123,20 @@ export const contestApi = {
         unwrap(api.put<BankResponse>(`/dashboard/experiences/${experienceId}/questions`, toBankPayload(questions))),
     results: (experienceId: string) =>
         unwrap(api.get<ContestResults>(`/dashboard/experiences/${experienceId}/contest/results`)),
+    // "Generar con IA" — background jobs; the panel polls getAiJob.
+    startAiJob: (experienceId: string, count: number, focus?: string) =>
+        unwrap(
+            api.post<AiJob>(`/dashboard/experiences/${experienceId}/questions/ai-jobs`, {
+                count,
+                ...(focus?.trim() ? { focus: focus.trim() } : {}),
+            }),
+        ),
+    latestAiJob: (experienceId: string) =>
+        unwrap(api.get<AiJob | null>(`/dashboard/experiences/${experienceId}/questions/ai-jobs/latest`)),
+    getAiJob: (experienceId: string, jobId: string) =>
+        unwrap(api.get<AiJob>(`/dashboard/experiences/${experienceId}/questions/ai-jobs/${jobId}`)),
+    cancelAiJob: (experienceId: string, jobId: string) =>
+        unwrap(api.post<AiJob>(`/dashboard/experiences/${experienceId}/questions/ai-jobs/${jobId}/cancel`)),
     resultsCsv: (experienceId: string) =>
         api
             .get(`/dashboard/experiences/${experienceId}/contest/results`, {

@@ -7,7 +7,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, AlertCircle, Check, X as XIcon, Loader2, Pencil, Trash2, Timer, Zap, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
-import { eventsApi, badgeAwardingApi } from '@/lib/api-hooks';
+import { eventsApi, badgeAwardingApi, experiencesApi } from '@/lib/api-hooks';
+import { EventSetupChecklist, type SetupStep } from '@/components/events/EventSetupChecklist';
 import { ApiError } from '@/lib/api';
 import { eventDateViolations, isoToDatetimeLocal } from '@/lib/event-datetime';
 import {
@@ -105,6 +106,18 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
         void queryClient.invalidateQueries({ queryKey: ['events', eventId, 'pre-live-stats'] });
     }, [pathname, eventId, queryClient]);
 
+    // Oportunidades whose question bank cannot go live yet (< 20 valid).
+    // The API refuses to publish with any of them (CONTEST_BANK_INCOMPLETE);
+    // the button and the checklist say so up front instead of after a toast.
+    const { data: experiences } = useQuery({
+        queryKey: ['experiences', eventId],
+        queryFn: () => experiencesApi.list(eventId),
+        enabled: event?.status === 'draft' || event?.status === 'published',
+    });
+    const incompleteBanks = (experiences ?? []).filter(
+        (e) => e.kind !== 'impacto' && e.status === 'pending' && e.contestReady === false,
+    );
+
     const { mutate: updateStatus, isPending: isUpdatingStatus } = useMutation({
         mutationFn: (status: string) => eventsApi.updateStatus(eventId, status as 'published' | 'live' | 'ended'),
         onSuccess: (_data, status) => {
@@ -179,7 +192,13 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
     // Filter tabs by role. Write-only tabs (Analytics,
     // Notifications) disappear from the strip for viewer/staff so
     // they can't even see they exist.
-    const visibleTabs = TABS.filter((tab) => !tab.writeOnly || isWriteRole);
+    // A draft has no winners or numbers yet: those tabs would only be empty.
+    const PRE_LIVE_HIDDEN = new Set(['ganadores', 'analitica']);
+    const visibleTabs = TABS.filter(
+        (tab) =>
+            (!tab.writeOnly || isWriteRole) &&
+            !(event?.status === 'draft' && PRE_LIVE_HIDDEN.has(tab.key)),
+    );
 
     // Determine active tab from pathname
     const activeTab = visibleTabs.find((tab) => {
@@ -253,12 +272,59 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
           ? t('validation.EVENT_END_REQUIRED')
           : dateViolations.length > 0
             ? t(`validation.${dateViolations[0]}`)
-            : missingBadges.length > 0
-              ? t('badgeGate.title')
-              : null;
+            : incompleteBanks.length > 0
+              ? t('setup.questionsBlock', { count: incompleteBanks.length })
+              : missingBadges.length > 0
+                ? t('badgeGate.title')
+                : null;
     const canPublish = publishBlockReason === null;
     const showFandiCountdown =
         !!event.fandiOpensAt && (event.status === 'published' || event.status === 'draft');
+    // "Dinámicas listas para activar" only when that is true: a published
+    // event whose badges and question banks are complete. A draft (or a
+    // draft whose date already passed) never claims it.
+    const hideFandiReady =
+        event.status !== 'published' || !preLive || missingBadges.length > 0 || incompleteBanks.length > 0;
+
+    const detailsDone = !!event.cityId && !!event.eventEndDate && dateViolations.length === 0;
+    const setupSteps: SetupStep[] = [
+        {
+            key: 'details',
+            done: detailsDone,
+            detail: detailsDone
+                ? undefined
+                : !event.cityId
+                  ? t('form.cityRequired')
+                  : !event.eventEndDate
+                    ? t('validation.EVENT_END_REQUIRED')
+                    : t(`validation.${dateViolations[0]}`),
+            href: `/dashboard/events/edit/${eventId}`,
+        },
+        {
+            key: 'dynamics',
+            done: (preLive?.experienceCount ?? 0) + (preLive?.auctionCount ?? 0) > 0,
+            detail: t('setup.dynamicsDetail'),
+            href: `/dashboard/events/${eventId}/experiences`,
+        },
+        {
+            key: 'questions',
+            done: incompleteBanks.length === 0,
+            detail: t('setup.questionsDetail', {
+                names: incompleteBanks
+                    .slice(0, 3)
+                    .map((e) => `${e.name} (${e.contestQuestionCount ?? 0}/20)`)
+                    .join(', '),
+            }),
+            href: `/dashboard/events/${eventId}/experiences`,
+        },
+        {
+            key: 'badges',
+            done: missingBadges.length === 0,
+            detail: missingBadges.map((code) => t(`badgeGate.missing.${code}`)).join(' · '),
+            href: badgesTabPath(eventId),
+        },
+    ];
+    const showSetup = event.status === 'draft' && isWriteRole;
 
     // Mono meta line under the title: date · time · venue, city.
     const place = event.venue
@@ -373,7 +439,8 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-                                {!canPublish && publishBlockReason && (
+                                {/* On a draft the setup checklist below already says it. */}
+                                {!canPublish && publishBlockReason && !showSetup && (
                                     <span className="max-w-64 rounded-[10px] bg-ink px-3 py-1.5 text-right font-space-mono text-[11px] text-alert">
                                         {publishBlockReason}
                                     </span>
@@ -414,16 +481,19 @@ export default function EventDetailLayout({ children }: { children: React.ReactN
                 )}
             </div>
 
+            {/* ── Draft: one setup checklist instead of scattered notices ── */}
+            {showSetup && <EventSetupChecklist steps={setupSteps} />}
+
             {/* ── Fandi Countdown + badge gate ── */}
-            {(showFandiCountdown || missingBadges.length > 0) && (
+            {(showFandiCountdown || (!showSetup && missingBadges.length > 0)) && (
                 <div className="flex flex-wrap items-start gap-4 empty:hidden">
                     {showFandiCountdown && event.fandiOpensAt && (
                         <FandiCountdown
                             fandiOpensAt={event.fandiOpensAt}
-                            hideReady={!preLive || missingBadges.length > 0}
+                            hideReady={hideFandiReady}
                         />
                     )}
-                    {missingBadges.length > 0 && (
+                    {!showSetup && missingBadges.length > 0 && (
                         <BadgeGateNotice
                             missing={missingBadges}
                             hasImpactos={(preLive?.impactoCount ?? 0) > 0}

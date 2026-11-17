@@ -467,6 +467,33 @@ export interface BankResponse {
     questions: BankQuestion[];
 }
 
+/** One AI-generated draft (not in the bank until the author adds it). */
+export interface AiQuestionDraft {
+    prompt: string;
+    options: string[];
+    correctIndex: number;
+    fact: string | null;
+    sourceUrl: string | null;
+    sourceTitle: string | null;
+    /** Independent automatic check: "doubtful" ones need a human look. */
+    check: 'ok' | 'doubtful';
+    checkNote: string | null;
+}
+
+export type AiJobStatus = 'queued' | 'researching' | 'generating' | 'done' | 'failed' | 'cancelled';
+
+/** POST/GET /dashboard/experiences/:id/questions/ai-jobs[...] */
+export interface AiJob {
+    id: string;
+    status: AiJobStatus;
+    requestedCount: number;
+    focus: string | null;
+    questions: AiQuestionDraft[];
+    error: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface ContestWinnerRow {
     position: number;
     /** Null only for a deleted (anonymised) fan. */

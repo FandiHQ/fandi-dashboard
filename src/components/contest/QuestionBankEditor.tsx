@@ -27,25 +27,35 @@ import {
     readMsFor,
     type BankQuestionDraft,
 } from '@/lib/contest-bank';
+import { AiQuestionGenerator } from './AiQuestionGenerator';
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const;
 const FIELD_LABEL = 'label-mono text-muted-white';
+/** Rows rendered at a time — a bank can hold up to BANK_MAX_QUESTIONS (1000). */
+const PAGE = 50;
 
 export function QuestionBankEditor({
     questions,
     onChange,
     locked,
     loading = false,
+    experienceId = null,
 }: {
     questions: BankQuestionDraft[];
     onChange: (next: BankQuestionDraft[]) => void;
     locked: boolean;
     loading?: boolean;
+    /** The saved oportunidad — AI generation needs it (null while creating). */
+    experienceId?: string | null;
 }) {
     const t = useTranslations('experiences.questions');
     const [previewIndex, setPreviewIndex] = useState(0);
     const [showPreview, setShowPreview] = useState(false);
     const [revealAnswers, setRevealAnswers] = useState(false);
+    // Rows are compact (question + right answer) unless opened for editing,
+    // new, or invalid — 1000 questions × 5 inputs would not be usable.
+    const [expanded, setExpanded] = useState<Set<string>>(new Set());
+    const [visibleCount, setVisibleCount] = useState(PAGE);
     const answersHidden = locked && !revealAnswers;
 
     const missing = questionsMissing(questions);
@@ -54,6 +64,14 @@ export function QuestionBankEditor({
         copy[index] = next;
         onChange(copy);
     };
+    const keyOf = (q: BankQuestionDraft, index: number) => q.id ?? q.clientKey ?? `row-${index}`;
+    const toggle = (key: string) =>
+        setExpanded((prev) => {
+            const next = new Set(prev);
+            if (next.has(key)) next.delete(key);
+            else next.add(key);
+            return next;
+        });
     const preview = questions[Math.min(previewIndex, Math.max(0, questions.length - 1))];
 
     return (
@@ -100,11 +118,67 @@ export function QuestionBankEditor({
 
             {loading && <p className="font-space-mono text-[11px] text-muted-white">{t('loading')}</p>}
 
+            {!locked && experienceId && (
+                <AiQuestionGenerator
+                    experienceId={experienceId}
+                    questions={questions}
+                    onAdd={(added) => {
+                        onChange([...questions, ...added]);
+                        setVisibleCount((n) => Math.max(n, questions.length + Math.min(added.length, PAGE)));
+                    }}
+                />
+            )}
+            {!locked && !experienceId && (
+                <p className="rounded-[10px] bg-line-white px-3 py-2 text-[12px] text-ink" data-testid="ai-save-first">
+                    {t('ai.saveFirst')}
+                </p>
+            )}
+
             <ol className="flex flex-col gap-3">
-                {questions.map((q, index) => {
+                {questions.slice(0, visibleCount).map((q, index) => {
                     const problems = questionProblems(q);
                     // Saved questions key by id; new ones carry a client key.
-                    const rowKey = q.id ?? q.clientKey ?? `row-${index}`;
+                    const rowKey = keyOf(q, index);
+                    const isNewEmpty = !q.id && q.prompt.trim() === '';
+                    const open = !locked && (expanded.has(rowKey) || problems.length > 0 || isNewEmpty);
+                    if (!open) {
+                        const right = q.options[q.correctIndex];
+                        return (
+                            <li
+                                key={rowKey}
+                                className="flex items-start justify-between gap-2 rounded-[12px] border-2 border-ink px-3 py-2"
+                                data-testid={`question-${index}`}
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => !locked && toggle(rowKey)}
+                                    onFocus={() => setPreviewIndex(index)}
+                                    disabled={locked}
+                                    className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left disabled:cursor-default"
+                                    aria-label={locked ? undefined : t('edit', { n: index + 1 })}
+                                    data-testid={`question-${index}-compact`}
+                                >
+                                    <span className="label-mono font-bold text-muted-white">{t('number', { n: index + 1 })}</span>
+                                    <span className="text-sm font-bold text-ink">{q.prompt}</span>
+                                    {!answersHidden && right && (
+                                        <span className="flex items-center gap-1 rounded-[8px] bg-lime px-2 py-0.5 text-[12px] font-bold text-ink">
+                                            <Check size={12} aria-hidden="true" /> {right}
+                                        </span>
+                                    )}
+                                </button>
+                                {!locked && (
+                                    <button
+                                        type="button"
+                                        onClick={() => onChange(questions.filter((_, i) => i !== index))}
+                                        aria-label={t('remove', { n: index + 1 })}
+                                        className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-[8px] text-muted-white hover:bg-line-white hover:text-ink"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                )}
+                            </li>
+                        );
+                    }
                     return (
                         <li
                             key={rowKey}
@@ -114,6 +188,16 @@ export function QuestionBankEditor({
                         >
                             <div className="flex items-center justify-between gap-2">
                                 <span className="label-mono font-bold text-ink">{t('number', { n: index + 1 })}</span>
+                                {!locked && expanded.has(rowKey) && problems.length === 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => toggle(rowKey)}
+                                        className="ml-auto flex h-9 cursor-pointer items-center rounded-[8px] px-2 text-[11px] font-extrabold uppercase text-blue hover:underline"
+                                        data-testid={`question-${index}-collapse`}
+                                    >
+                                        {t('collapse')}
+                                    </button>
+                                )}
                                 {!locked && (
                                     <button
                                         type="button"
@@ -198,6 +282,17 @@ export function QuestionBankEditor({
                 })}
             </ol>
 
+            {questions.length > visibleCount && (
+                <button
+                    type="button"
+                    onClick={() => setVisibleCount((n) => n + PAGE)}
+                    className="flex h-10 cursor-pointer items-center justify-center rounded-[10px] border-2 border-dashed border-ink text-[12px] font-extrabold uppercase text-ink"
+                    data-testid="question-show-more"
+                >
+                    {t('showMore', { count: Math.min(PAGE, questions.length - visibleCount), total: questions.length })}
+                </button>
+            )}
+
             <div className="flex flex-wrap items-center gap-2">
                 {!locked && (
                     <button
@@ -205,6 +300,7 @@ export function QuestionBankEditor({
                         onClick={() => {
                             onChange([...questions, emptyQuestion()]);
                             setPreviewIndex(questions.length);
+                            setVisibleCount((n) => Math.max(n, questions.length + 1));
                         }}
                         disabled={questions.length >= BANK_MAX_QUESTIONS}
                         className="press flex h-10 cursor-pointer items-center gap-2 rounded-[10px] border-2 border-ink bg-white px-3 text-[12px] font-extrabold uppercase text-ink shadow-ext-sm disabled:cursor-not-allowed disabled:opacity-50"
