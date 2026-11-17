@@ -19,6 +19,17 @@ import {
  */
 
 /**
+ * Organizer dashboard (ídolos). Kept environment-specific so staging and
+ * production can promote the same source without crossing their
+ * authentication flows. Fans never come here: they get the app from the
+ * stores (StoreBadges / `/descargar`).
+ */
+export const DASHBOARD_URL = new URL(
+    '/login',
+    process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'http://localhost:3000',
+).toString();
+
+/**
  * acid    — lime, THE action (getting the app). One per view.
  * primary — white extruded block (secondary actions: "Escríbenos").
  * ghost   — white outline, no fill (quiet doors: "Ingresar (ídolos)").
@@ -45,6 +56,7 @@ export function Cta({
     onClick,
     variant = 'primary',
     className = '',
+    newTab,
     onInk = false,
 }: {
     children: ReactNode;
@@ -53,6 +65,11 @@ export function Cta({
     onClick?: (event: MouseEvent<HTMLElement>) => void;
     variant?: Variant;
     className?: string;
+    /**
+     * Override the default target (http(s) opens a new tab). Pass `false`
+     * for a handoff that should replace this page, e.g. the dashboard login.
+     */
+    newTab?: boolean;
     /** Rendered inside an ink bar/block: swaps the extrusion colour. */
     onInk?: boolean;
 }) {
@@ -71,7 +88,7 @@ export function Cta({
         // (If nothing happens at all, no default mail app is configured —
         // that is an OS setting, not something the page can fix.)
         // Relative links (`/descargar`) stay in the tab too.
-        const isNewTab = /^https?:/i.test(href);
+        const isNewTab = newTab ?? /^https?:/i.test(href);
         return (
             <a
                 href={href}

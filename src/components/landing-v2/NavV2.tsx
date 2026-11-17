@@ -5,7 +5,7 @@ import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { DOWNLOAD_PATH } from '@/lib/app-links';
-import { Cta, scrollToDownloadIfNoStore } from './Cta';
+import { Cta, DASHBOARD_URL, scrollToDownloadIfNoStore } from './Cta';
 
 /**
  * Persistent nav + mobile sticky CTA bar.
@@ -29,7 +29,7 @@ function switchLocale(locale: string) {
     window.location.reload();
 }
 
-export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
+export default function NavV2() {
     const t = useTranslations('landingV2.nav');
     const locale = useLocale();
     const { scrollYProgress } = useScroll();
@@ -119,13 +119,12 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                             ))}
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={onSignIn}
+                        <a
+                            href={DASHBOARD_URL}
                             className="label-mono hidden min-h-11 items-center px-3 text-[11px] text-muted-ink transition-colors hover:text-white sm:inline-flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                         >
                             {t('signIn')}
-                        </button>
+                        </a>
                         {/* md+ only: on phones the sticky bar below
                             carries this same action, and two lime buttons
                             on one screen break "one acid CTA per view". */}
@@ -148,7 +147,13 @@ export default function NavV2({ onSignIn }: { onSignIn: () => void }) {
                     past ? 'translate-y-0' : 'translate-y-full'
                 }`}
             >
-                <Cta onClick={onSignIn} variant="ghost" className="min-h-11 flex-1 !px-4 !py-3 !text-[13px]">
+                <Cta
+                    href={DASHBOARD_URL}
+                    newTab={false}
+                    variant="ghost"
+                    className="min-h-11 flex-1 !px-4 !py-3 !text-[13px]"
+                >
+                    {/* Ídolos → organizer dashboard (its own host in production). */}
                     {t('idol')}
                 </Cta>
                 <Cta

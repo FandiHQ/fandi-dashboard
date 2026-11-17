@@ -25,7 +25,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
     const reconnectAttemptRef = useRef(0);
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const topicsRef = useRef(topics);
-    topicsRef.current = topics;
+    useEffect(() => { topicsRef.current = topics; }, [topics]);
 
     // ── Ref for onMessage to avoid stale closures ──
     // Without this, ws.onmessage captures the onMessage from when
@@ -33,7 +33,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
     // any state it closes over becomes stale. Using a ref means the
     // WebSocket handler always calls the LATEST version of onMessage.
     const onMessageRef = useRef(onMessage);
-    onMessageRef.current = onMessage;
+    useEffect(() => { onMessageRef.current = onMessage; }, [onMessage]);
 
     // ── Check if WebSocket is available ──
     const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
@@ -49,7 +49,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
     }, []);
 
     // ── Connect function ──
-    const connect = useCallback(async () => {
+    const connect = useCallback(async function connectSocket() {
         // Guard: disabled or no URL configured
         if (!enabled || !wsUrl) {
             setConnectionStatus('disabled');
@@ -134,7 +134,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
             setConnectionStatus('reconnecting');
 
             reconnectTimeoutRef.current = setTimeout(() => {
-                connect();
+                void connectSocket();
             }, delay);
         };
 

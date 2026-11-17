@@ -133,7 +133,7 @@ export function SetPasswordFlow({ variant }: { variant: Variant }) {
     if (state.status === 'none' && variant === 'reset') {
         return (
             <>
-                <ForgotPasswordForm idPrefix="reset-request" />
+                <ForgotPasswordForm idPrefix="reset-request" /> {/* gitleaks:allow -- Static DOM id prefix, not a password or credential. */}
                 <BackToLogin label={t('forgot.backToLogin')} />
             </>
         );
@@ -166,7 +166,7 @@ export function SetPasswordFlow({ variant }: { variant: Variant }) {
                         {expired ? t('reset.expiredBody') : t('reset.invalidBody')}
                     </p>
                 </AuthShellHeader>
-                <ForgotPasswordForm idPrefix="reset-retry" showTitle={false} autoFocus={false} />
+                <ForgotPasswordForm idPrefix="reset-retry" showTitle={false} autoFocus={false} /> {/* gitleaks:allow -- Static DOM id prefix, not a password or credential. */}
                 <BackToLogin label={t('forgot.backToLogin')} />
             </>
         );
