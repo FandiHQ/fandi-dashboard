@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect } from 'react';
 import { safeNextPath } from '@/lib/safe-next';
+import { loginContextFor, postLoginPath } from '@/lib/auth-flow';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
@@ -23,13 +24,15 @@ export default function LoginPage() {
 }
 
 function LoginContent() {
-    const { isAuthenticated, isLoading, memberRole } = useAuth();
+    const { isAuthenticated, isLoading, user } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const t = useTranslations('auth');
 
     const expired = searchParams.get('expired') === 'true';
     const next = searchParams.get('next');
+    // A collaboration email link: say which account to use.
+    const context = loginContextFor(next);
 
     // Show expired toast
     useEffect(() => {
@@ -40,13 +43,12 @@ function LoginContent() {
 
     // Already authenticated → redirect by role (in useEffect to avoid setState during render)
     useEffect(() => {
-        if (!isLoading && isAuthenticated) {
-            const destination = memberRole === 'staff'
-                ? '/staff'
-                : safeNextPath(next);
-            router.replace(destination);
+        if (!isLoading && isAuthenticated && user) {
+            // The layouts ask for the 6-digit code first when the account
+            // has an authenticator (lib/two-step.ts).
+            router.replace(postLoginPath(user, safeNextPath(next)));
         }
-    }, [isLoading, isAuthenticated, memberRole, next, router]);
+    }, [isLoading, isAuthenticated, user, next, router]);
 
     if (isLoading || isAuthenticated) {
         return (
@@ -88,15 +90,20 @@ function LoginContent() {
 
             <div className="flex items-center justify-center px-4 pb-12 pt-4 sm:px-12 lg:p-12">
                 <div className="surface-white flex w-full max-w-[464px] flex-col gap-5 rounded-[20px] border-2 border-ink bg-white p-7 text-ink shadow-[10px_10px_0_var(--color-ink)] sm:p-10 lg:max-w-none">
+                    {context && (
+                        <p
+                            className="rounded-[12px] border-2 border-ink bg-lilac px-4 py-3 text-[14px] font-semibold leading-snug text-ink"
+                            data-testid="login-context"
+                        >
+                            {t(`loginContext.${context}`)}
+                        </p>
+                    )}
                     <LoginForm
                         showLogo={false}
                         heading
                         onSuccess={(me: UserSyncResponse) => {
                             // `next` comes from the URL: keep it inside this app.
-                            const destination = me.organization?.memberRole === 'staff'
-                                ? '/staff'
-                                : safeNextPath(next);
-                            router.push(destination);
+                            router.push(postLoginPath(me, safeNextPath(next)));
                         }}
                     />
                 </div>

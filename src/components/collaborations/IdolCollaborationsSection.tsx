@@ -28,10 +28,11 @@ import { Input } from '@/components/ui/input';
 import { useConfirmDialog } from '@/components/ui/confirm-dialog';
 import { CollaborationStatusPill } from './CollaborationStatusPill';
 import { IdolAvatar } from './IdolAvatar';
+import { useCollabErrorMessage } from './useCollabErrorMessage';
 import type { QueuedIdols } from './useQueuedInvites';
 
 const ROW_BUTTON =
-    'press flex h-9 cursor-pointer items-center rounded-[8px] border-2 border-ink bg-white px-3 text-[12px] font-extrabold uppercase text-ink shadow-ext-sm disabled:cursor-not-allowed disabled:opacity-50';
+    'press flex h-11 cursor-pointer items-center rounded-[8px] border-2 border-ink bg-white px-3 text-[12px] font-extrabold uppercase text-ink shadow-ext-sm disabled:cursor-not-allowed disabled:opacity-50';
 
 export function IdolCollaborationsSection({
     eventId,
@@ -78,7 +79,8 @@ export function IdolCollaborationsSection({
     });
     const queueFull = creating && queue.items.length >= MAX_QUEUED_IDOLS;
 
-    const onError = (err: unknown) => toast.error(err instanceof Error ? err.message : tCommon('error'));
+    const describeError = useCollabErrorMessage();
+    const onError = (err: unknown) => toast.error(describeError(err));
     const refresh = () => {
         queryClient.invalidateQueries({ queryKey: listKey });
         queryClient.invalidateQueries({ queryKey: ['experiences', eventId] });
@@ -115,7 +117,7 @@ export function IdolCollaborationsSection({
         <section className="flex flex-col gap-3 rounded-[12px] border-2 border-ink px-4 py-4" data-testid="idol-collaborations">
             <div className="flex items-start gap-3">
                 <span className="flex size-9 flex-none items-center justify-center rounded-[10px] bg-ink text-white" aria-hidden="true">
-                    <Handshake size={18} />
+                    <Handshake size={18} aria-hidden="true" />
                 </span>
                 <div className="min-w-0">
                     <h3 className="font-display text-[17px] leading-tight text-ink">{t('title')}</h3>
@@ -136,9 +138,10 @@ export function IdolCollaborationsSection({
                                     type="button"
                                     onClick={() => resend.mutate(c.id)}
                                     disabled={resend.isPending}
-                                    className="flex h-8 cursor-pointer items-center gap-1 rounded-[8px] px-2 text-[11px] font-extrabold uppercase text-blue hover:underline"
+                                    aria-label={t('resendFor', { name: c.guestOrgName })}
+                                    className="flex h-11 cursor-pointer items-center gap-1 rounded-[8px] px-2 text-[11px] font-extrabold uppercase text-blue hover:underline disabled:opacity-50"
                                 >
-                                    <Send size={12} /> {t('resend')}
+                                    <Send size={12} aria-hidden="true" /> {t('resend')}
                                 </button>
                             )}
                             {(c.status === 'pending' || c.status === 'accepted') && (
@@ -153,10 +156,10 @@ export function IdolCollaborationsSection({
                                         if (ok) end.mutate(c.id);
                                     }}
                                     disabled={end.isPending}
-                                    aria-label={t(c.status === 'pending' ? 'cancel' : 'end')}
-                                    className="flex size-8 cursor-pointer items-center justify-center rounded-[8px] text-muted-white hover:bg-line-white hover:text-ink"
+                                    aria-label={t(c.status === 'pending' ? 'cancelFor' : 'endFor', { name: c.guestOrgName })}
+                                    className="flex size-11 cursor-pointer items-center justify-center rounded-[8px] text-muted-white hover:bg-line-white hover:text-ink disabled:opacity-50"
                                 >
-                                    <X size={14} />
+                                    <X size={16} aria-hidden="true" />
                                 </button>
                             )}
                         </li>
@@ -182,9 +185,9 @@ export function IdolCollaborationsSection({
                                 type="button"
                                 onClick={() => queue.remove(idol.id)}
                                 aria-label={t('removeQueued', { name: idol.name })}
-                                className="flex size-7 cursor-pointer items-center justify-center rounded-full text-muted-white hover:bg-line-white hover:text-ink"
+                                className="-my-2 flex size-11 cursor-pointer items-center justify-center rounded-full text-muted-white hover:bg-line-white hover:text-ink"
                             >
-                                <X size={14} />
+                                <X size={14} aria-hidden="true" />
                             </button>
                         </li>
                     ))}
@@ -192,7 +195,7 @@ export function IdolCollaborationsSection({
             )}
 
             <div className="relative">
-                <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-white" />
+                <Search size={14} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-white" />
                 <Input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -205,7 +208,7 @@ export function IdolCollaborationsSection({
             {queueFull && <p className="text-[12px] text-muted-white">{t('queueFull', { max: MAX_QUEUED_IDOLS })}</p>}
             {debounced.length >= 2 && (
                 <ul className="flex flex-col gap-1" aria-live="polite">
-                    {isFetching && <Loader2 size={14} className="animate-spin text-muted-white" />}
+                    {isFetching && <Loader2 size={14} className="animate-spin text-muted-white" aria-hidden="true" />}
                     {!isFetching && candidates.length === 0 && (
                         <li className="text-[13px] text-muted-white">{t('noResults')}</li>
                     )}

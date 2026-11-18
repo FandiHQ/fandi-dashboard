@@ -49,18 +49,76 @@ export function resetPasswordRedirectUrl(origin: string): string {
     return `${origin.replace(/\/+$/, '')}/reset-password`;
 }
 
+/**
+ * The team-invitation page. Public like /reset-password (the proxy only
+ * guards /dashboard and /staff): the token travels in the #t= fragment
+ * and the page signs people in itself. See lib/invitations.ts.
+ */
+export const INVITATION_PATH = '/invitacion';
+
+export type LoginContext = 'collabInvite' | 'collabSent';
+
+/**
+ * The one line of context on /login when `next` is a collaboration email
+ * link (the proxy keeps the query): an invitation to answer, or the answer
+ * to one my team sent. Null for anything else.
+ */
+export function loginContextFor(next: string | null | undefined): LoginContext | null {
+    if (!next || !next.startsWith('/')) return null;
+    let url: URL;
+    try {
+        url = new URL(next, 'http://x');
+    } catch {
+        return null;
+    }
+    if (url.origin !== 'http://x') return null;
+    if (url.pathname.replace(/\/+$/, '') !== '/dashboard/collaborations') return null;
+    if (url.searchParams.has('invite') || url.searchParams.has('token')) return 'collabInvite';
+    if (url.searchParams.has('sent')) return 'collabSent';
+    return null;
+}
+
 // ── Dashboard access (after a CORRECT password) ──
 
-export type DashboardAccess = 'ok' | 'fan' | 'noOrg';
+export type DashboardAccess = 'ok' | 'admin' | 'fan' | 'noOrg';
 
 /**
  * Who may enter the panel. Fans never do (the panel is for idols and their
- * teams); everyone else needs an organization membership.
+ * teams); team accounts need an organization membership ('ok'); a Fandi
+ * admin (users.role 'admin') without one gets the /admin area only
+ * ('admin'). An admin who also belongs to an org keeps 'ok' and reaches
+ * /admin from the rail.
  */
 export function dashboardAccessOf(user: Pick<UserSyncResponse, 'role' | 'organization'>): DashboardAccess {
     if (user.role === 'fan') return 'fan';
-    if (!user.organization) return 'noOrg';
-    return 'ok';
+    if (user.organization) return 'ok';
+    if (user.role === 'admin') return 'admin';
+    return 'noOrg';
+}
+
+/** Access that keeps the session (anything but fan / noOrg). */
+export function hasPanelAccess(access: DashboardAccess): access is 'ok' | 'admin' {
+    return access === 'ok' || access === 'admin';
+}
+
+/** The Fandi Admin area (persisted users.role; the API checks it again). */
+export const ADMIN_HOME_PATH = '/admin';
+
+/**
+ * Where a successful sign-in lands: staff on the scanner, a Fandi admin
+ * without an org in /admin (or the /admin page they asked for), everyone
+ * else on `next` (already made safe by the caller) or /dashboard.
+ */
+export function postLoginPath(
+    user: Pick<UserSyncResponse, 'role' | 'organization'>,
+    safeNext: string,
+): string {
+    if (user.organization?.memberRole === 'staff') return '/staff';
+    if (user.role === 'admin') {
+        if (safeNext === ADMIN_HOME_PATH || safeNext.startsWith(`${ADMIN_HOME_PATH}/`)) return safeNext;
+        if (!user.organization) return ADMIN_HOME_PATH;
+    }
+    return safeNext;
 }
 
 /**
@@ -69,9 +127,9 @@ export function dashboardAccessOf(user: Pick<UserSyncResponse, 'role' | 'organiz
  * account), unlike a wrong-password failure.
  */
 export class DashboardAccessError extends Error {
-    readonly reason: Exclude<DashboardAccess, 'ok'>;
+    readonly reason: Exclude<DashboardAccess, 'ok' | 'admin'>;
 
-    constructor(reason: Exclude<DashboardAccess, 'ok'>) {
+    constructor(reason: Exclude<DashboardAccess, 'ok' | 'admin'>) {
         super('NO_DASHBOARD_ACCESS');
         this.name = 'DashboardAccessError';
         this.reason = reason;

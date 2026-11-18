@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ArtistProfileCard } from '@/components/settings/artist-profile-card';
 import { ChangePasswordCard } from '@/components/settings/change-password-card';
+import { TwoStepCard } from '@/components/security/two-step-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -332,6 +333,10 @@ export default function SettingsPage() {
 
             {/* ── Password (account security) ── */}
             <ChangePasswordCard />
+
+            {/* ── Two-step verification (required for owner/admin after the
+                reminder period, optional for viewer/staff) ── */}
+            <TwoStepCard />
 
             {/* ── Artist Public Profile (Step 7.2, owner only) ── */}
             {memberRole === 'owner' && <ArtistProfileCard />}

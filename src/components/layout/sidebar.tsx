@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { PendingInvitationsBadge } from '@/components/collaborations/PendingInvitationsBadge';
-import { usePendingInvitations } from '@/components/collaborations/usePendingInvitations';
+import { useCollaborationsNavBadge } from '@/components/collaborations/usePendingInvitations';
 import { COLLABORATIONS_HREF } from '@/lib/collaborations';
 import { isNavActive, getVisibleItems } from './nav-config';
 import { LogoutDialog } from './logout-dialog';
@@ -27,9 +27,9 @@ export function Sidebar() {
     const pathname = usePathname();
     const t = useTranslations('dashboardNav');
     const tAuth = useTranslations('auth');
-    const tCollab = useTranslations('collaborations');
     const visibleItems = getVisibleItems(memberRole, user?.role === 'admin');
-    const pendingCount = usePendingInvitations()?.count ?? 0;
+    // Invitations to answer + new answers to ours (one number, both in the label).
+    const collabBadge = useCollaborationsNavBadge();
 
     return (
         <aside className="flex h-full w-[84px] flex-col items-center justify-between bg-ink py-5">
@@ -51,10 +51,10 @@ export function Sidebar() {
                     {visibleItems.map((item) => {
                         const active = isNavActive(item, pathname);
                         const Icon = item.icon;
-                        const badge = item.href === COLLABORATIONS_HREF ? pendingCount : 0;
+                        const badge = item.href === COLLABORATIONS_HREF ? collabBadge.count : 0;
                         const label =
-                            badge > 0
-                                ? `${t(item.labelKey)} · ${tCollab('pendingBadge', { count: badge })}`
+                            badge > 0 && collabBadge.label
+                                ? `${t(item.labelKey)} · ${collabBadge.label}`
                                 : t(item.labelKey);
                         return (
                             <Tooltip key={item.href}>

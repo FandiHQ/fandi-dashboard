@@ -9,24 +9,32 @@ import { eventsApi, slotsApi, experiencesApi } from '@/lib/api-hooks';
 import { ApiError } from '@/lib/api';
 import type { ExperienceSlot, CreateSlotDto } from '@/types/api';
 import { isoToDatetimeLocal, datetimeLocalToIso } from '@/lib/event-datetime';
+import { isInstantFormatError } from '@/lib/event-save-error';
+import { eventCityName } from '@/lib/event-time-zone';
+import { BrowserZoneWarning, ZoneHint, useEventTime } from '@/components/events/EventZone';
 import { Input } from '@/components/ui/input';
 
 type SlotViolation = 'SLOT_WINDOW_INVALID' | 'SLOT_OUTSIDE_FANDI_WINDOW';
 
 /**
  * Slot (Franja) window violations, mirrored from the backend so the form
- * blocks before the request. Compares datetime-local strings (fixed-width
- * ⇒ lexicographic == chronological).
+ * blocks before the request. Compares instants (ISO), so the result is
+ * the same whatever zone the computer is in.
  */
 function slotViolation(
-    opens: string,
-    closes: string,
-    fandiOpens: string,
-    fandiCloses: string,
+    opens: string | undefined,
+    closes: string | undefined,
+    fandiOpens: string | null,
+    fandiCloses: string | null,
 ): SlotViolation | null {
-    if (!opens || !closes) return null;
-    if (opens >= closes) return 'SLOT_WINDOW_INVALID';
-    if (fandiOpens && fandiCloses && (opens < fandiOpens || closes > fandiCloses)) {
+    const at = (iso: string | null | undefined) => (iso ? Date.parse(iso) : NaN);
+    const o = at(opens);
+    const c = at(closes);
+    if (!Number.isFinite(o) || !Number.isFinite(c)) return null;
+    if (o >= c) return 'SLOT_WINDOW_INVALID';
+    const fo = at(fandiOpens);
+    const fc = at(fandiCloses);
+    if (Number.isFinite(fo) && Number.isFinite(fc) && (o < fo || c > fc)) {
         return 'SLOT_OUTSIDE_FANDI_WINDOW';
     }
     return null;
@@ -55,13 +63,15 @@ export function FranjasSection({ eventId }: { eventId: string }) {
         queryFn: () => experiencesApi.list(eventId),
     });
 
+    // Franjas are read and typed on the event's clock, with its label.
+    const eventTime = useEventTime(event?.timezone, eventCityName(event));
     const fmt = (iso: string) =>
-        new Intl.DateTimeFormat('es-CO', {
+        eventTime.format(iso, {
             day: 'numeric',
             month: 'short',
             hour: 'numeric',
             minute: '2-digit',
-        }).format(new Date(iso));
+        });
 
     const onClose = () => {
         setShowForm(false);
@@ -92,6 +102,11 @@ export function FranjasSection({ eventId }: { eventId: string }) {
             <p className="max-w-[720px] text-sm leading-relaxed text-lilac">
                 {t('help')}
             </p>
+            {slots.length > 0 && (
+                <p className="font-space-mono text-[10px] font-bold uppercase tracking-[0.08em] text-lilac" data-testid="franjas-zone">
+                    {eventTime.label(slots[0].opensAt)}
+                </p>
+            )}
 
             {slots.length > 0 ? (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -156,6 +171,8 @@ export function FranjasSection({ eventId }: { eventId: string }) {
                     existing={editing}
                     fandiOpensAt={event?.fandiOpensAt ?? null}
                     fandiClosesAt={event?.fandiClosesAt ?? null}
+                    timeZone={event?.timezone ?? null}
+                    city={eventCityName(event)}
                     onClose={onClose}
                     onSaved={() => {
                         queryClient.invalidateQueries({
@@ -212,6 +229,8 @@ function SlotFormDialog({
     existing,
     fandiOpensAt,
     fandiClosesAt,
+    timeZone,
+    city,
     onClose,
     onSaved,
 }: {
@@ -219,29 +238,34 @@ function SlotFormDialog({
     existing: ExperienceSlot | null;
     fandiOpensAt: string | null;
     fandiClosesAt: string | null;
+    /** The event's zone: the inputs are its wall clock (Bogotá when unset). */
+    timeZone: string | null;
+    city: string | null;
     onClose: () => void;
     onSaved: () => void;
 }) {
     const t = useTranslations('franjas');
+    const tTime = useTranslations('eventTime');
     const isEditing = !!existing;
     const [label, setLabel] = useState(existing?.label ?? '');
-    const [opens, setOpens] = useState(isoToDatetimeLocal(existing?.opensAt));
-    const [closes, setCloses] = useState(isoToDatetimeLocal(existing?.closesAt));
+    const [opens, setOpens] = useState(isoToDatetimeLocal(existing?.opensAt, timeZone));
+    const [closes, setCloses] = useState(isoToDatetimeLocal(existing?.closesAt, timeZone));
 
-    const fandiOpensLocal = isoToDatetimeLocal(fandiOpensAt);
-    const fandiClosesLocal = isoToDatetimeLocal(fandiClosesAt);
+    // Instants (ISO with Z) of what was typed on the event's clock.
+    const opensIso = datetimeLocalToIso(opens, timeZone);
+    const closesIso = datetimeLocalToIso(closes, timeZone);
     const violation = useMemo(
-        () => slotViolation(opens, closes, fandiOpensLocal, fandiClosesLocal),
-        [opens, closes, fandiOpensLocal, fandiClosesLocal],
+        () => slotViolation(opensIso, closesIso, fandiOpensAt, fandiClosesAt),
+        [opensIso, closesIso, fandiOpensAt, fandiClosesAt],
     );
-    const canSave = Boolean(label.trim()) && Boolean(opens) && Boolean(closes) && !violation;
+    const canSave = Boolean(label.trim()) && Boolean(opensIso) && Boolean(closesIso) && !violation;
 
     const save = useMutation({
         mutationFn: () => {
             const dto: CreateSlotDto = {
                 label: label.trim(),
-                opensAt: datetimeLocalToIso(opens)!,
-                closesAt: datetimeLocalToIso(closes)!,
+                opensAt: opensIso!,
+                closesAt: closesIso!,
             };
             return isEditing
                 ? slotsApi.update(existing!.id, dto)
@@ -254,6 +278,8 @@ function SlotFormDialog({
         onError: (err: unknown) => {
             if (err instanceof ApiError && SLOT_CODES.includes(err.code)) {
                 toast.error(t(`validation.${err.code}`));
+            } else if (isInstantFormatError(err)) {
+                toast.error(tTime('invalidInstant'));
             } else {
                 toast.error(t('saveError'));
             }
@@ -279,6 +305,8 @@ function SlotFormDialog({
                     />
                 </div>
 
+                <BrowserZoneWarning zone={timeZone} city={city} instants={[opensIso, closesIso, fandiOpensAt]} />
+
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="flex flex-col gap-2">
                         <label className="label-mono font-bold text-muted-white">
@@ -290,6 +318,7 @@ function SlotFormDialog({
                             onChange={(e) => setOpens(e.target.value)}
                             className="h-12 px-4 text-base"
                         />
+                        <ZoneHint zone={timeZone} city={city} local={opens} />
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className="label-mono font-bold text-muted-white">
@@ -301,6 +330,7 @@ function SlotFormDialog({
                             onChange={(e) => setCloses(e.target.value)}
                             className="h-12 px-4 text-base"
                         />
+                        <ZoneHint zone={timeZone} city={city} local={closes} />
                     </div>
                 </div>
 

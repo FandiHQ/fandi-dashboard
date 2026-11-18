@@ -27,6 +27,10 @@
         "password": "Password",
         "invalidCredentials": "Invalid credentials",
         "sessionExpired": "Your session expired. Please log in again.",
+        "twoStepCode": {
+            "title": "Enter your code",
+            "body": "Your account has two-step verification. Enter the 6-digit code from your app to save the new password."
+        },
         "noAccount": "No account yet? Ask your organizer to invite you to their team.",
         "noDashboardAccess": "This account doesn't have dashboard access.",
         "invalidEmail": "Invalid email address",
@@ -43,7 +47,7 @@
         "showPassword": "Show password",
         "hidePassword": "Hide password",
         "forgotPassword": "Forgot your password?",
-        "noAccessNoOrg": "Your account doesn't have access to a panel yet. Ask your team's owner to invite you.",
+        "noAccessNoOrg": "Your account isn't on a team yet. Open the invitation you got by email or ask your team's owner to invite you.",
         "noAccessFan": "This is a fan account. The panel is for idols and their teams.",
         "emailNotConfirmed": "You haven't confirmed your email yet. Open the link we sent you and try again.",
         "tooManyAttempts": "Too many attempts in a row. Wait a few minutes and try again.",
@@ -112,12 +116,193 @@
             "doneEntering": "Opening your panel...",
             "doneSignIn": "You can now log in with your email and your new password."
         },
+        "loginContext": {
+            "collabInvite": "Log in with your team's account to answer the invitation.",
+            "collabSent": "Log in with your team's account to see the answer."
+        },
         "loginHero": {
             "line1": "Your show.",
             "line2": "Your fans.",
             "line3": "Live.",
             "body": "Create opportunities, run every dynamic during the show and reward the fans who were there.",
             "footer": "Fandi for artists, teams and organizers"
+        }
+    },
+    "twoStep": {
+        "title": "Two-step verification",
+        "why": "It protects your events and your fans' data.",
+        "whyAdmin": "It protects payments and fans' data.",
+        "checking": "Checking your session...",
+        "verifyTitle": "Enter your code",
+        "verifyBody": "Open your authenticator app and enter the 6-digit Fandi code.",
+        "verifyEnter": "Sign in",
+        "verifySubmit": "Confirm code",
+        "verifying": "Checking...",
+        "lostDevice": "Lost the app or changed phones? Email hola@fandi.app from your account's address.",
+        "otherAccount": "Use another account (signed in as {email})",
+        "enrolTitle": "Turn on two-step verification",
+        "enrolReasonAdmin": "Fandi Admin always requires it.",
+        "enrolReasonRequired": "Your owner or admin role needs it to use the panel.",
+        "enrolReasonGrace": "Your role needs it from {date}. Turn it on now and you're set.",
+        "enrolStep1": "Install an authenticator app on your phone: Google Authenticator, Microsoft Authenticator or 1Password.",
+        "enrolStep2": "In the app, scan this QR code. If you can't, type the key.",
+        "enrolStep3": "Enter the 6-digit code the app shows.",
+        "qrAlt": "QR code for your authenticator app",
+        "secretLabel": "Key to type by hand",
+        "secretHint": "Don't share this key with anyone.",
+        "copySecret": "Copy key",
+        "copied": "Copied",
+        "enrolSubmit": "Turn on",
+        "preparing": "Preparing your QR code...",
+        "retry": "Try again",
+        "cancel": "Cancel",
+        "codeLabel": "6-digit code",
+        "codeHint": "It changes every 30 seconds.",
+        "statusOn": "On",
+        "statusOff": "Off",
+        "loading": "Loading...",
+        "activeSince": "Turned on {date} with your authenticator app.",
+        "enable": "Turn on verification",
+        "remove": "Remove",
+        "removeConfirmTitle": "Remove two-step verification?",
+        "removeConfirmRequired": "Your role needs it: you'll have to turn it on again to keep using the panel.",
+        "removeConfirmOptional": "Your account will be protected by your password only.",
+        "removeConfirm": "Remove",
+        "enabledToast": "Done. Two-step verification is on.",
+        "removedToast": "Two-step verification removed.",
+        "requirement": {
+            "admin": "Required in Fandi Admin.",
+            "required": "Required for your role.",
+            "requiredFrom": "Required for your role from {date}.",
+            "optional": "Optional for your role. We recommend it."
+        },
+        "banner": {
+            "title": "Turn on two-step verification before {date}",
+            "why": "It protects your events and your fans' data. It takes 2 minutes with an app on your phone.",
+            "cta": "Turn on now"
+        },
+        "errors": {
+            "disabled": "Two-step verification is not enabled in Fandi yet. Let the Fandi team know at hola@fandi.app.",
+            "wrongCode": "That code is not right. Check the app and enter the code it shows now.",
+            "codeExpired": "The code expired. Enter the one the app shows now.",
+            "tooManyFactors": "You already have too many apps registered. Remove one before adding another.",
+            "needsCode": "Enter the code from your app first.",
+            "sessionExpired": "Your session expired. Sign in again.",
+            "tooManyAttempts": "Too many attempts. Wait a moment and try again.",
+            "networkError": "We couldn't connect. Check your internet.",
+            "failed": "We couldn't complete the verification. Try again."
+        }
+    },
+    "adminNav": {
+        "label": "Fandi Admin",
+        "navAria": "Fandi Admin navigation",
+        "organizations": "Idols",
+        "withdrawals": "Withdrawals",
+        "topups": "Top-ups",
+        "fans": "Fans",
+        "classification": "Classification",
+        "audit": "Audit log",
+        "security": "Security",
+        "idolDashboard": "Idol panel",
+        "role": "Fandi team",
+        "menu": "Menu",
+        "securityTitle": "Security",
+        "securitySubtitle": "Your access to Fandi Admin"
+    },
+    "invitation": {
+        "checking": "Checking your invitation...",
+        "joining": "Opening your panel...",
+        "invitedBy": "{inviter} invited you to the team of",
+        "invitedByUnknown": "You were invited to the team of",
+        "invitationTo": "Invitation to the team of",
+        "roleLabel": "Role",
+        "allows": {
+            "owner": "You'll have full control: profile, events, dynamics, results and team.",
+            "admin": "You'll create and edit events and dynamics, see results and invite viewers and staff.",
+            "viewer": "You'll see events, dynamics and results, without editing anything.",
+            "staff": "You'll validate prizes with the QR scanner on event day."
+        },
+        "expires": "Expires on {date} at {time} (Colombia time).",
+        "sentTo": "Sent to {hint}",
+        "terms": "I accept Fandi's <terms>Terms and Conditions</terms> and <privacy>Privacy Policy</privacy>.",
+        "create": {
+            "title": "Create your password",
+            "body": "You'll use it to enter your team's panel. This link already confirms your email.",
+            "submit": "Create password and join",
+            "saving": "Creating your access..."
+        },
+        "signIn": {
+            "title": "Log in to join",
+            "body": "The invited email ({hint}) already has a Fandi account. Log in with it to join the team.",
+            "accountExistsNote": "That email already has a Fandi account. Log in with your password to join.",
+            "submit": "Log in and join",
+            "saving": "Logging in...",
+            "emailMismatch": "That isn't the invited email ({hint}). Enter the email the invitation was sent to."
+        },
+        "accept": {
+            "title": "Join the team",
+            "signedInAs": "You're logged in as {email}.",
+            "submit": "Join the team",
+            "saving": "Joining...",
+            "notYou": "Not you? Log out"
+        },
+        "otherAccount": {
+            "title": "You're logged in with another account",
+            "body": "You're on Fandi as {email}, but this invitation is for {hint}. Log out and log in with the invited email.",
+            "bodyUnknown": "This invitation is for {hint}, not for the account you're logged in with. Log out and log in with the invited email.",
+            "action": "Log out and continue"
+        },
+        "expired": {
+            "title": "This invitation has expired",
+            "body": "Invitations last 7 days. Ask {inviter} to resend it from Team.",
+            "bodyUnknown": "Invitations last 7 days. Ask whoever invited you to resend it from Team."
+        },
+        "revoked": {
+            "title": "This invitation was cancelled",
+            "body": "Whoever invited you cancelled it, so the link no longer works. If you think it's a mistake, ask for a new one."
+        },
+        "accepted": {
+            "title": "You already accepted this invitation",
+            "body": "You're already on the team. Enter your panel with your email and password."
+        },
+        "alreadyMember": {
+            "title": "You're already on this team",
+            "body": "Your account is already on {org}'s team. Nothing else to do."
+        },
+        "otherTeam": {
+            "title": "You're already on another team",
+            "body": "On Fandi each person is on one team only, and your account already belongs to another idol's team. To join {org}, ask for the invitation at another email."
+        },
+        "fanAccount": {
+            "title": "This email belongs to a fan account",
+            "body": "The panel is for idols and their teams, and a fan account can't join. Ask whoever invited you to use another email."
+        },
+        "notEligible": {
+            "title": "This account can't join",
+            "body": "The account for that email can't enter a team's panel. Ask whoever invited you to use another email."
+        },
+        "invalid": {
+            "title": "This link doesn't work",
+            "body": "It may be incomplete or no longer valid. Open the button in the email again or ask for a new invitation."
+        },
+        "loadError": {
+            "title": "We couldn't open your invitation",
+            "body": "Check your connection and try again."
+        },
+        "goToPanel": "Go to your panel",
+        "goHome": "Go to the home page",
+        "retry": "Try again",
+        "joinedToast": "You're now on {org}'s team",
+        "errors": {
+            "weakPassword": "Choose a stronger password: at least 8 characters, with letters and numbers.",
+            "tooLong": "That password is too long. Use a shorter one.",
+            "termsRequired": "Tick the box to accept the Terms and the Privacy Policy.",
+            "authUnavailable": "We couldn't create your access right now. Try again in a few minutes.",
+            "accountConflict": "We couldn't link this account. Write to us at hola@fandi.app.",
+            "tooManyAttempts": "Too many attempts in a row. Wait a minute and try again.",
+            "network": "No connection. Check your internet and try again.",
+            "server": "Fandi didn't answer. Try again in a moment.",
+            "generic": "Something went wrong. Try again."
         }
     },
     "dashboardNav": {
@@ -129,7 +314,8 @@
         "settings": "Settings",
         "collaborations": "Collaborations",
         "classification": "Classification",
-        "withdrawals": "Withdrawals"
+        "withdrawals": "Withdrawals",
+        "fandiAdmin": "Fandi Admin"
     },
     "pageTitles": {
         "newEvent": "New event",
@@ -179,6 +365,389 @@
         "rejected": "Withdrawal rejected; the balance went back to the fan",
         "empty": "No withdrawals in this status.",
         "error": "We could not complete the action"
+    },
+    "fandiAdmin": {
+        "colombiaTime": "Colombia time",
+        "dateTime": "{date}, {time}",
+        "titles": {
+            "organizations": "Idols",
+            "topups": "Top-ups",
+            "fans": "Fans",
+            "fan": "Fan",
+            "audit": "Audit log"
+        },
+        "common": {
+            "retry": "Try again",
+            "refresh": "Refresh",
+            "cancel": "Cancel",
+            "close": "Close",
+            "save": "Save",
+            "saving": "Saving...",
+            "noName": "No name",
+            "yes": "Yes",
+            "no": "No",
+            "previous": "Previous",
+            "next": "Next",
+            "pageOf": "Page {page} of {pages}",
+            "range": "{from} to {to} of {total}",
+            "pagination": "Pagination",
+            "search": "Search",
+            "clear": "Clear"
+        },
+        "errors": {
+            "adminRequired": "This section is for the Fandi team only.",
+            "mfaRequired": "Confirm your two-step verification code to continue.",
+            "unknownCategory": "That category no longer exists. Pick another one.",
+            "nothingToUpdate": "You did not change anything.",
+            "organizationNotFound": "That idol no longer exists. Reload the list.",
+            "emailRequired": "Enter the owner's email.",
+            "resendLimit": "You already sent this invitation 3 times today. Try again later.",
+            "resendLimitAt": "You already sent this invitation 3 times today. You can resend it on {date} at {time} (Colombia time).",
+            "invitationPending": "There is already a pending invitation for that email.",
+            "invitationNotPending": "That invitation is no longer pending. Reload the list.",
+            "queryTooShort": "Type at least 3 characters.",
+            "userNotFound": "That account does not exist.",
+            "verificationNotFound": "That verification no longer exists.",
+            "notFound": "We could not find it. Reload the list.",
+            "tooManyRequests": "Too many attempts in a row. Wait a minute.",
+            "invalid": "Check the details and try again.",
+            "network": "We could not reach Fandi. Check your connection.",
+            "server": "Fandi did not answer. Try again in a moment.",
+            "generic": "Something went wrong. Try again."
+        },
+        "fields": {
+            "required": "This field is required.",
+            "invalid": "Enter a valid email.",
+            "tooLong": "It is too long."
+        },
+        "organizations": {
+            "title": "Idols",
+            "lead": "Every idol on Fandi. Create one with its owner, or resend the invitation if they have not joined yet.",
+            "searchLabel": "Search idols",
+            "searchPlaceholder": "Idol name",
+            "create": "Create idol",
+            "empty": "No idols yet. Create the first one.",
+            "emptySearch": "No idol matches \"{q}\".",
+            "cols": {
+                "idol": "Idol",
+                "visibility": "Visibility",
+                "members": "Team",
+                "events": "Events",
+                "owner": "Owner",
+                "invitation": "Owner invitation",
+                "created": "Created (Colombia time)"
+            },
+            "public": "Public",
+            "private": "Hidden",
+            "noOwner": "No owner",
+            "invitation": {
+                "none": "No invitation",
+                "pending": "Pending, expires on {date}",
+                "needsResend": "No live link: resend it",
+                "expired": "Expired on {date}"
+            },
+            "lastSent": "Last sent: {date}",
+            "resend": "Resend",
+            "changeOwner": "Change email",
+            "inviteOwner": "Invite owner",
+            "edit": "Edit",
+            "actionsFor": "Actions for {name}"
+        },
+        "createIdol": {
+            "title": "Create idol",
+            "hint": "We create the idol's profile and send the invitation to its owner.",
+            "name": "Idol name",
+            "namePlaceholder": "Yalí",
+            "category": "Category",
+            "categoryNone": "Unclassified",
+            "categoryHint": "You can change it later in Classification.",
+            "categoriesUnavailable": "We could not load the categories. It stays Unclassified.",
+            "isPublic": "Visible to fans",
+            "isPublicHint": "Leave it off until the profile is ready.",
+            "ownerEmail": "Owner email",
+            "ownerEmailPlaceholder": "manager@example.com",
+            "ownerName": "Owner name (optional)",
+            "ownerNamePlaceholder": "María García",
+            "ownerHint": "They get a link to join as owner. It expires in 7 days.",
+            "submit": "Create and invite",
+            "submitting": "Creating...",
+            "sentTitle": "Idol created",
+            "sentBody": "Invitation sent to {email}.",
+            "notSentTitle": "Idol created, but the email did not go out",
+            "notSentBody": "We could not send the email to {email}. The invitation is ready: resend it in a moment.",
+            "resendNow": "Resend invitation",
+            "resent": "Invitation resent to {email}.",
+            "createAnother": "Create another idol",
+            "done": "Done"
+        },
+        "ownerInvite": {
+            "title": "Owner invitation",
+            "hintResend": "We send a new link to {email}. The old one stops working and the new one expires in 7 days.",
+            "hintNew": "This idol has no active owner invitation. Enter who to invite.",
+            "email": "Owner email",
+            "emailHint": "Leave it as is to resend. If you enter another email, we cancel the current invitation and invite that one.",
+            "name": "Name (optional)",
+            "resend": "Resend invitation",
+            "invite": "Invite this email",
+            "sending": "Sending...",
+            "done": "Invitation sent to {email}.",
+            "notEmailed": "The invitation for {email} is ready, but the email did not go out. Check the email setup or resend it later.",
+            "limit": "At most 3 sends a day per invitation."
+        },
+        "editIdol": {
+            "title": "Edit idol",
+            "name": "Name",
+            "isPublic": "Visible to fans",
+            "isPublicHint": "When off, fans do not see it in the app.",
+            "saved": "Changes saved."
+        },
+        "topups": {
+            "title": "Top-ups with problems",
+            "lead": "OnePay top-ups pending for more than 10 minutes and not credited. Reconcile asks OnePay about the payment and credits the Fandis if it is already approved.",
+            "empty": "No stuck top-ups. Everything is up to date.",
+            "cols": {
+                "fan": "Fan",
+                "amount": "Amount",
+                "reference": "Reference",
+                "provider": "OnePay",
+                "waiting": "Waiting",
+                "attempts": "Automatic attempts",
+                "next": "Next attempt (Colombia time)",
+                "created": "Created (Colombia time)"
+            },
+            "reported": "Reported the payment",
+            "notReported": "No report",
+            "noNextAttempt": "Not scheduled",
+            "reconcile": "Reconcile",
+            "confirmTitle": "Reconcile the {amount} top-up?",
+            "confirmBody": "We ask OnePay about reference {reference}. If the payment is approved, we credit the Fandis to {fan}. It goes into the audit log.",
+            "confirm": "Reconcile",
+            "outcome": {
+                "completed": "Top-up credited.",
+                "failed": "OnePay declined the payment. The top-up is now failed.",
+                "expired": "The top-up expired without payment.",
+                "pending": "OnePay has not confirmed the payment yet. It is still pending."
+            },
+            "openFan": "View fan"
+        },
+        "fans": {
+            "title": "Fans",
+            "lead": "Find an account by phone, email, name or ID to give support.",
+            "recordedNote": "Every search and every profile you open is recorded in the audit log (Colombian data law 1581).",
+            "searchLabel": "Search accounts",
+            "searchPlaceholder": "Phone, email, name or ID",
+            "idle": "Type at least 3 characters. We show up to 20 accounts.",
+            "empty": "No account matches \"{q}\".",
+            "max": "Showing the first 20. Type something more precise to narrow it down.",
+            "cols": {
+                "name": "Name",
+                "email": "Email",
+                "phone": "Phone",
+                "role": "Type",
+                "created": "Created (Colombia time)",
+                "state": "State"
+            },
+            "roles": {
+                "fan": "Fan",
+                "organizer": "Idol team",
+                "admin": "Fandi Admin",
+                "staff": "Staff",
+                "sponsor": "Sponsor"
+            },
+            "active": "Active",
+            "deleted": "Deleted",
+            "open": "Open"
+        },
+        "fanDetail": {
+            "back": "Back to Fans",
+            "recordedNote": "Opening this profile was recorded in the audit log (Colombian data law 1581).",
+            "viewAudit": "See its history in the audit log",
+            "profile": "Profile",
+            "fields": {
+                "id": "ID",
+                "email": "Email",
+                "phone": "Phone",
+                "role": "Account type",
+                "instagram": "Instagram",
+                "birthDate": "Birth date",
+                "city": "City",
+                "publicProfile": "Public profile in rankings",
+                "terms": "Terms accepted",
+                "created": "Account created",
+                "deleted": "Deleted"
+            },
+            "termsValue": "{date} (version {version})",
+            "notSet": "Not set",
+            "deletedBanner": "This account was deleted on {date}. Its personal data was anonymised.",
+            "organization": "Team",
+            "orgRoles": {
+                "owner": "Owner",
+                "admin": "Admin",
+                "viewer": "Viewer",
+                "staff": "Staff"
+            },
+            "noOrganization": "Not part of any team.",
+            "balance": "Balance",
+            "balanceFandis": "{fandis} F",
+            "ledger": "Movements (last 50)",
+            "ledgerEmpty": "No movements.",
+            "ledgerCols": {
+                "date": "Date (Colombia time)",
+                "type": "Type",
+                "amount": "Amount",
+                "balanceAfter": "Balance after",
+                "status": "Status",
+                "reference": "Reference"
+            },
+            "ledgerTypes": {
+                "topup": "Top-up",
+                "contribution": "Contribution",
+                "bid_reserve": "Bid reserve",
+                "bid_release": "Bid released",
+                "bid_charge": "Bid charged",
+                "refund": "Refund",
+                "withdrawal": "Withdrawal",
+                "withdrawal_reversal": "Withdrawal returned"
+            },
+            "ledgerStatus": {
+                "pending": "Pending",
+                "completed": "Completed",
+                "failed": "Failed"
+            },
+            "kyc": "Identity verification",
+            "kycLevels": {
+                "prize": "For prizes",
+                "stepup": "Reinforced"
+            },
+            "kycApproved": "Approved",
+            "kycStatus": {
+                "none": "Not started",
+                "not_started": "Not started",
+                "in_progress": "In progress",
+                "in_review": "In review",
+                "approved": "Approved",
+                "declined": "Declined",
+                "expired": "Expired",
+                "abandoned": "Abandoned"
+            },
+            "kycThreshold": "The reinforced one is required at {amount} in top-ups over 30 days, or if you flag the account here.",
+            "flagged": "Flagged: needs the reinforced verification before topping up",
+            "flaggedSince": "Since {date}. Reason: {reason}",
+            "notFlagged": "Not flagged.",
+            "flag": "Require reinforced verification",
+            "flagTitle": "Require reinforced verification",
+            "flagHint": "Before their next top-up, the fan must pass the reinforced verification. It goes into the audit log.",
+            "flagReason": "Reason (seen by the Fandi team, not the fan)",
+            "flagPlaceholder": "E.g. repeated declined payments with different cards",
+            "flagReasonHint": "Between 3 and 500 characters.",
+            "flagSubmit": "Flag the account",
+            "flagDone": "Account flagged.",
+            "unflag": "Remove the flag",
+            "unflagTitle": "Remove the flag?",
+            "unflagBody": "The fan can top up without the reinforced verification up to the 30 day threshold. It goes into the audit log.",
+            "unflagDone": "Flag removed.",
+            "verifications": "Verifications",
+            "noVerifications": "No identity verification yet.",
+            "verificationTitle": "{level}: {status}",
+            "verificationMeta": "{date} · {reason}",
+            "approve": "Approve",
+            "decline": "Decline",
+            "approveTitle": "Approve verification",
+            "declineTitle": "Decline verification",
+            "decideHint": "Didit sent it to review. Explain your decision: it goes to the audit log.",
+            "decideNotes": "Decision note",
+            "approveSubmit": "Approve",
+            "declineSubmit": "Decline",
+            "decideApproved": "Verification approved.",
+            "decideDeclined": "Verification declined.",
+            "kycReasons": {"prize": "Prize won", "topup_threshold": "Top-ups over the threshold", "manual": "Manual flag"},
+            "withdrawals": "Withdrawals (last 20)",
+            "withdrawalsEmpty": "No withdrawals.",
+            "withdrawalCols": {
+                "date": "Requested (Colombia time)",
+                "gross": "Withdraws",
+                "fee": "Fee",
+                "net": "Receives",
+                "status": "Status",
+                "detail": "Detail"
+            },
+            "withdrawalStatus": {
+                "in_review": "In review",
+                "approved": "Approved",
+                "processing": "Sending",
+                "paid": "Paid",
+                "failed": "Failed",
+                "rejected": "Rejected"
+            },
+            "withdrawalReason": {
+                "recent_topup_30d": "Top-up in the last 30 days",
+                "identity_check": "Identity not matched with the verification"
+            },
+            "topups": "Top-ups (last 20)",
+            "topupsEmpty": "No top-ups.",
+            "topupCols": {
+                "date": "Created (Colombia time)",
+                "amount": "Amount",
+                "reference": "Reference",
+                "status": "Status",
+                "detail": "Detail"
+            },
+            "topupStatus": {
+                "pending": "Pending",
+                "completed": "Credited",
+                "failed": "Failed",
+                "expired": "Expired"
+            }
+        },
+        "audit": {
+            "title": "Audit log",
+            "lead": "What the Fandi team does in this panel stays here: who, what, on what and from where. It cannot be edited or deleted.",
+            "action": "Action",
+            "allActions": "All actions",
+            "targetType": "On",
+            "allTargets": "Everything",
+            "targetId": "ID",
+            "targetIdPlaceholder": "Paste an ID",
+            "apply": "Filter",
+            "clear": "Clear filters",
+            "empty": "No records with these filters.",
+            "cols": {
+                "time": "When (Colombia time)",
+                "actor": "Who",
+                "action": "Action",
+                "target": "On",
+                "details": "Details",
+                "ip": "IP"
+            },
+            "script": "Server script",
+            "onlyThis": "Filter by this",
+            "actions": {
+                "org_create": "Created an idol",
+                "org_update": "Edited an idol",
+                "org_owner_invite": "Invited the owner",
+                "user_search": "Searched accounts",
+                "user_view": "Opened a profile",
+                "kyc_flag": "Required reinforced verification",
+                "kyc_unflag": "Removed the verification flag",
+                "kyc_decide": "Decided a verification",
+                "topup_reconcile": "Reconciled a top-up",
+                "withdrawal_approve": "Approved a withdrawal",
+                "withdrawal_reject": "Rejected a withdrawal",
+                "withdrawal_reconcile": "Reconciled withdrawals",
+                "classification_category_create": "Created a category",
+                "classification_category_rename": "Renamed a category",
+                "classification_category_delete": "Deleted a category",
+                "classification_idol_set": "Classified an idol"
+            },
+            "targets": {
+                "organization": "Idol",
+                "user": "Account",
+                "kyc_verification": "Verification",
+                "topup": "Top-up",
+                "withdrawal": "Withdrawal",
+                "category": "Category"
+            }
+        }
     },
     "fanTiers": {
         "leyenda": "Leyenda",
@@ -410,7 +979,8 @@
             "currentRequired": "Enter your current password.",
             "currentWrong": "Your current password isn't right.",
             "sameAsCurrent": "The new password must be different from the current one.",
-            "forgotHint": "Can't remember the current one? Log out and use “Forgot your password?”."
+            "forgotHint": "Can't remember the current one? Log out and use “Forgot your password?”.",
+            "twoStepCode": "Your account has two-step verification: enter your app's code to change the password."
         }
     },
     "dashboard": {
@@ -482,7 +1052,11 @@
             "FANDI_CLOSES_AFTER_EVENT": "The Fandi clock can't close after the event ends.",
             "FANDI_WINDOW_INVALID": "The Fandi clock must close after it opens.",
             "EVENT_END_REQUIRED": "Set the event end date to publish it.",
-            "CONTEST_BANK_INCOMPLETE": "Every oportunidad needs at least 20 questions before the event is published."
+            "CONTEST_BANK_INCOMPLETE": "Every oportunidad needs at least 20 questions before the event is published.",
+            "EVENT_CITY_REQUIRED": "Choose the event city to publish it: it sets the time zone fans read every time in.",
+            "EVENT_TIMEZONE_REQUIRED": "The event has no time zone. Choose the event city again to publish it.",
+            "FANDI_WINDOW_REQUIRED": "Set when Fandi opens and closes (date and time) to publish the event.",
+            "INVALID_INSTANT": "A date arrived without its time zone. Reload the page and try again."
         },
         "venue": "Venue",
         "city": "City",
@@ -804,6 +1378,15 @@
         "legacyTags": "Previous tags (text)",
         "privateMark": "Hidden from other fans"
     },
+    "eventTime": {
+        "zoneLabel": "{city} time ({offset})",
+        "zoneLabelColombia": "Colombia time ({offset})",
+        "zoneLabelEvent": "Event local time ({offset})",
+        "browserDiffers": "Your computer is in another time zone; these times are {city} time.",
+        "browserDiffersColombia": "Your computer is in another time zone; these times are Colombia time.",
+        "browserDiffersEvent": "Your computer is in another time zone; these times are the event's local time.",
+        "invalidInstant": "A date arrived without its time zone. Reload the page and try again."
+    },
     "franjas": {
         "title": "Slots",
         "add": "Create Slot",
@@ -928,15 +1511,12 @@
         "actions": "Actions",
         "allEvents": "All events",
         "pending": "Pending",
-        "active": "Active",
-        "invitedOn": "Invited",
         "displayName": "Name (Optional)",
         "empty": "No team members yet.",
         "error": "Error loading team.",
         "inviteMember": "INVITE MEMBER",
         "invite": "Send Invitation",
-        "invited": "Member invited successfully",
-        "invitedExisting": "That person already has a Fandi account: they'll see your team the next time they sign in.",
+        "invitationSent": "Invitation sent to {email}",
         "changeRole": "Change Role",
         "changeRoleFor": "Change role for {name}",
         "newRole": "New Role",
@@ -948,10 +1528,9 @@
         "confirmRemove": "Remove {name} from the team? This action cannot be undone.",
         "cancel": "Cancel",
         "eventRestriction": "Event Restriction",
-        "eventRestrictionHint": "If no events are selected, staff will have access to all events.",
+        "eventRestrictionHint": "If you pick no events, this person will have access to all of them.",
         "noEvents": "No events available",
-        "resendInvite": "Resend Invite",
-        "inviteResent": "Invitation resent",
+        "inviteResent": "Invitation resent to {email}",
         "roles": {
             "owner": "Owner",
             "admin": "Admin",
@@ -959,12 +1538,12 @@
             "staff": "Staff"
         },
         "membersTitle": "Members",
-        "invitePanelHint": "They'll get an email with a link to join your team.",
+        "invitePanelHint": "They'll get an email with a link to join your team. The link lasts 7 days and works once.",
         "roleHints": {
-            "owner": "Controls everything: events, team and public profile.",
-            "admin": "Creates and edits events and dynamics. Can invite viewers and staff.",
-            "viewer": "Sees events and results. Can't change anything.",
-            "staff": "Hands prizes to the winners on event day, from their phone."
+            "owner": "Controls everything: public profile, events, dynamics, results and team.",
+            "admin": "Creates and edits events and dynamics, sees results and invites viewers and staff.",
+            "viewer": "Sees events, dynamics and results, without changing anything.",
+            "staff": "Validates the winners' prizes with the QR scanner on event day."
         },
         "rolesGuideTitle": "What each role can do",
         "eventsCount": "{count, plural, one {# event} other {# events}}",
@@ -973,16 +1552,43 @@
         "emptyBody": "Invite the people who help you with your events.",
         "invalidEmail": "Enter a valid email, for example name@email.com.",
         "emailRequired": "Enter the person's email.",
-        "inviteMayHaveExpired": "The link may have expired",
         "resendShort": "Resend",
         "resendFor": "Resend the invitation to {name}",
         "sending": "Sending...",
+        "invitationsTitle": "Invitations",
+        "invitationsEmpty": "No pending invitations.",
+        "invitationsError": "We couldn't load the invitations.",
+        "invitationState": {
+            "pending": "Pending",
+            "expired": "Expired",
+            "needsResend": "Needs resending"
+        },
+        "expiresOn": "Expires on {date} at {time} (Colombia time)",
+        "expiredOn": "Expired on {date} at {time} (Colombia time)",
+        "needsResendHint": "Their previous link no longer works. Resend it so they get a new one.",
+        "sentBy": "Sent by {name}",
+        "sentByFandi": "Sent by Fandi",
+        "resendAvailable": "You can resend it on {date} at {time} (Colombia time)",
+        "cancelShort": "Cancel",
+        "cancelFor": "Cancel the invitation to {name}",
+        "cancelInvitationTitle": "Cancel the invitation?",
+        "cancelInvitationBody": "The link sent to {email} will stop working. You can invite them again any time.",
+        "cancelInvitationConfirm": "Cancel invitation",
+        "keepInvitation": "Back",
+        "invitationCancelled": "Invitation cancelled",
         "errors": {
             "alreadyMember": "That person is already on your team.",
-            "fanAccount": "That email belongs to a fan account. Use another email for the team.",
-            "otherTeam": "That account already belongs to another idol's team.",
-            "accountActive": "That person already has an account: they just need to sign in to join.",
-            "emailRegistered": "That email already has a Fandi account and we couldn't invite it. Contact support.",
+            "noOrg": "Your account is no longer on this team. Reload the page.",
+            "roleNotAllowed": "As an admin you can invite and manage viewers and staff. Admins are invited by the owner.",
+            "eventScope": "Only viewers and staff can be limited to certain events.",
+            "eventNotInOrg": "One of the chosen events is no longer available. Reload the page and pick again.",
+            "invitationPending": "There's already a pending invitation for that email. You can resend it from Invitations.",
+            "orgRateLimited": "Your team already sent {limit} invitations in the last 24 hours. Try again later.",
+            "tooFast": "You're going too fast. Wait a minute and try again.",
+            "invitationNotFound": "That invitation no longer exists. Reload the page.",
+            "invitationNotPending": "That invitation was already accepted or cancelled. Reload the page.",
+            "resendLimit": "You already sent this invitation 3 times in 24 hours. You can resend it on {date} at {time} (Colombia time).",
+            "resendLimitSoon": "You already sent this invitation 3 times in 24 hours. Try again later.",
             "noPermission": "Your role can't do this. Ask the team's owner.",
             "notFound": "That person is no longer on your team. Reload the page.",
             "invalid": "Check the details and try again.",
@@ -1539,7 +2145,7 @@
     },
     "collaborations": {
         "title": "Invited idols",
-        "howItWorks": "Search for the idol · an invitation reaches their dashboard · once they accept, they see their fans' data on this dynamic",
+        "howItWorks": "Search for the idol · their team gets the invitation in their panel · if they accept, fans see them on this dynamic and they see its fans and results, never amounts",
         "queued": "Will be invited on save",
         "queuedListLabel": "Idols to invite on save",
         "removeQueued": "Remove {name}",
@@ -1568,19 +2174,70 @@
             "expired": "Expired"
         },
         "pageTitle": "Collaborations",
-        "pageLead": "Other idols can invite you to their dynamics. If you accept, you see them here in view-only mode and fans see you on them.",
+        "pageLead": "Invite other idols to your dynamics and answer the invitations they send you.",
+        "howTitle": "How they work",
+        "howSteps": {
+            "invite": {
+                "title": "Invite",
+                "body": "From a dynamic of your event, search for the other idol and send them the invitation."
+            },
+            "answer": {
+                "title": "They answer",
+                "body": "Their team accepts or declines from Collaborations. We let you know by email."
+            },
+            "share": {
+                "title": "You collaborate",
+                "body": "If they accept, fans see them on that dynamic and their team sees its fans and results in view-only mode, never amounts."
+            }
+        },
+        "tabs": {
+            "received": "Received",
+            "sent": "Sent",
+            "active": "Active",
+            "history": "History",
+            "label": "Collaborations"
+        },
+        "empty": {
+            "received": "You have no invitations to answer.",
+            "receivedBody": "When another idol invites you to one of their dynamics, you'll see it here and get an email.",
+            "sent": "You haven't invited other idols yet.",
+            "sentBody": "Invite an idol from a dynamic of your event: their team will see the invitation in their panel.",
+            "active": "You don't collaborate on other idols' events yet.",
+            "activeBody": "When you accept an invitation, the collaboration shows up here.",
+            "history": "No history yet.",
+            "historyBody": "Here you'll see the invitations you answered, the ones that expired and the collaborations that ended."
+        },
+        "emptyCta": "Invite an idol from a dynamic",
+        "highlight": {
+            "fromEmail": "This is the invitation from your email",
+            "answered": "That invitation was already answered. Here is its status.",
+            "expired": "That invitation expired. Ask {host} to resend it.",
+            "notFound": "We couldn't find that invitation in your panel. It may be for another idol's team or no longer exist.",
+            "sentNotFound": "We couldn't find that invitation among the ones your team sent."
+        },
+        "sentTo": "You invited {guest}",
+        "newResponse": "New answer",
+        "goToDynamic": "Go to the dynamic",
+        "resendFor": "Resend the invitation to {name}",
+        "cancelFor": "Cancel the invitation to {name}",
+        "endFor": "End the collaboration with {name}",
+        "loadError": "We couldn't load your collaborations.",
+        "scopedInbox": "Your access is limited to certain events, so you don't see the invitations your team receives here.",
+        "declineConfirm": "Decline {host}'s invitation?",
+        "declineConfirmBody": "{host} won't be able to invite you again for 7 days.",
         "tokenTitle": "You were invited to collaborate",
-        "tokenBody": "Accept to see that dynamic in your dashboard and appear to fans; decline if you do not want to take part.",
-        "tokenInvite": "{host} invites you to “{dynamic}” at {event}.",
+        "tokenBody": "If you accept, fans see you on that dynamic and you see it in view-only mode, without amounts. Decline if you don't want to take part.",
+        "tokenInvite": "{host} invited you to “{dynamic}” at {event}.",
         "onlyAuthors": "Only owners or admins can answer",
         "invitedYou": "{host} invited you",
-        "grants": "You will see this dynamic's fans and results. You will not see amounts.",
+        "grants": "If you accept, fans see you on this dynamic and you see its fans and results in view-only mode. You won't see amounts.",
         "kind": {
             "oportunidad": "Oportunidad",
             "impacto": "Impacto",
             "auction": "Auction"
         },
         "pendingBadge": "{count, plural, one {# pending invitation} other {# pending invitations}}",
+        "responsesBadge": "{count, plural, one {# new answer} other {# new answers}}",
         "banner": "{host} invited you to {dynamic} at {event}",
         "bannerMore": "and {count, plural, one {# more invitation} other {# more invitations}}",
         "bannerCta": "{count, plural, one {View invitation} other {View invitations}}",
@@ -1588,20 +2245,14 @@
         "decline": "Decline",
         "acceptedToast": "Collaboration accepted in {name}",
         "declinedToast": "Invitation declined",
-        "pendingTitle": "Invitations ({count})",
-        "pendingEmpty": "You have no pending invitations.",
-        "activeTitle": "Active collaborations ({count})",
-        "activeEmpty": "You do not collaborate on other idols' events yet.",
-        "historyTitle": "History",
         "open": "Open",
         "from": "From {host}",
-        "expires": "expires {date}",
+        "expiresAt": "Expires on {date} at {time} (Colombia time)",
         "hostedBy": "Event by {host}",
         "viewOnly": "View only",
         "until": "data up to {date}",
         "sharedNotFound": "You do not have access to this event.",
         "participants": "Fans taking part",
-        "contributed": "Event aportes",
         "participantsLine": "{total, plural, one {# fan} other {# fans}}",
         "fan": "Fan",
         "instagram": "Instagram",
@@ -1627,7 +2278,28 @@
             "pending": "No data yet: the split is computed every night."
         },
         "since": "Since",
-        "moreFans": "Showing the first 500 fans to arrive; the totals include everyone."
+        "moreFans": "Showing the first 500 fans to arrive; the totals include everyone.",
+        "errors": {
+            "self": "You can't invite your own idol.",
+            "idolNotFound": "We couldn't find that idol. They may no longer be public on Fandi.",
+            "idolNoAccount": "That idol has no one to answer in their Fandi panel yet.",
+            "exists": "That idol is already invited to or collaborating on this dynamic.",
+            "notPending": "That invitation was already answered. Reload the page.",
+            "expired": "That invitation expired. Ask for it to be resent.",
+            "linkUsed": "That link no longer works. Find the invitation in Received.",
+            "notActive": "That collaboration already ended.",
+            "noPermission": "Your role can't do this. Ask the owner or an admin.",
+            "notFound": "That collaboration no longer exists. Reload the page.",
+            "dynamicNotFound": "That dynamic no longer exists. Reload the page.",
+            "cooldown": "This idol recently declined one of your invitations. You can invite them again on {date} at {time} (Colombia time).",
+            "cooldownSoon": "This idol recently declined one of your invitations. You can invite them again in a few days.",
+            "inviteLimit": "You already sent {limit} invitations to this idol in the last 24 hours. Try again later.",
+            "tooFast": "You're going too fast. Wait a minute and try again.",
+            "notSynced": "Your session isn't ready. Reload the page.",
+            "noOrg": "Your account is no longer on a team. Reload the page.",
+            "network": "No connection. Check your internet and try again.",
+            "generic": "Something went wrong. Try again."
+        }
     },
     "classification": {
         "title": "Idol classification",

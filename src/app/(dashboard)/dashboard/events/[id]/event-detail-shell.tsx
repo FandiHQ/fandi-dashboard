@@ -9,8 +9,10 @@ import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi, badgeAwardingApi, experiencesApi } from '@/lib/api-hooks';
 import { EventSetupChecklist, type SetupStep } from '@/components/events/EventSetupChecklist';
-import { ApiError } from '@/lib/api';
-import { eventDateViolations, isoToDatetimeLocal } from '@/lib/event-datetime';
+import { eventPublishBlockers } from '@/lib/event-datetime';
+import { eventDateErrorCode } from '@/lib/event-save-error';
+import { eventCityName } from '@/lib/event-time-zone';
+import { useEventTime, type EventTime } from '@/components/events/EventZone';
 import {
     badgeBlockers,
     badgesTabPath,
@@ -86,6 +88,8 @@ export default function EventDetailShell({ children }: { children: React.ReactNo
         queryKey: ['events', eventId],
         queryFn: () => eventsApi.get(eventId),
     });
+    // Every time in the header is on the event's clock, with its label.
+    const eventTime = useEventTime(event?.timezone, eventCityName(event));
 
     // Badge gate: the API refuses to publish or go live until every badge
     // the event can award has an active template (EVENT_BADGES_NOT_READY).
@@ -146,18 +150,12 @@ export default function EventDetailShell({ children }: { children: React.ReactNo
                 });
                 return;
             }
-            // Surface the typed date/publish-gate codes as localized copy.
-            const DATE_CODES = [
-                'EVENT_END_REQUIRED',
-                'EVENT_END_BEFORE_START',
-                'FANDI_OPENS_BEFORE_EVENT',
-                'FANDI_CLOSES_AFTER_EVENT',
-                'FANDI_WINDOW_INVALID',
-                // Knowledge contest: every oportunidad needs ≥ 20 questions (BANK_MIN_QUESTIONS).
-                'CONTEST_BANK_INCOMPLETE',
-            ];
-            if (err instanceof ApiError && DATE_CODES.includes(err.code)) {
-                toast.error(t(`validation.${err.code}`));
+            // Surface the typed date/publish-gate codes (end date, city, its
+            // zone, the Fandi window, the date invariants, the question
+            // banks, a datetime without a zone) as localized copy.
+            const dateCode = eventDateErrorCode(err);
+            if (dateCode) {
+                toast.error(t(`validation.${dateCode}`));
                 return;
             }
             const message = err instanceof Error ? err.message : tCommon('error');
@@ -257,27 +255,20 @@ export default function EventDetailShell({ children }: { children: React.ReactNo
         );
     }
 
-    // Publish gate (Step 6.1): city + end date present + all date invariants
-    // hold. Mirrors the backend so the button reflects what the API enforces.
-    const dateViolations = eventDateViolations({
-        eventDate: isoToDatetimeLocal(event.eventDate),
-        eventEndDate: isoToDatetimeLocal(event.eventEndDate),
-        fandiOpensAt: isoToDatetimeLocal(event.fandiOpensAt),
-        fandiClosesAt: isoToDatetimeLocal(event.fandiClosesAt),
-    });
+    // Publish gate (Step 6.1): end date, city, its zone and both ends of the
+    // Fandi window present, and every date invariant holds (compared as
+    // instants). Mirrors the backend so the button reflects what the API
+    // enforces, first reason first.
+    const dateBlockers = eventPublishBlockers(event);
     // Badges the event still needs (draft/published only; [] otherwise).
     const missingBadges = badgeBlockers(event.status, preLive);
-    const publishBlockReason: string | null = !event.cityId
-        ? t('form.cityRequired')
-        : !event.eventEndDate
-          ? t('validation.EVENT_END_REQUIRED')
-          : dateViolations.length > 0
-            ? t(`validation.${dateViolations[0]}`)
-            : incompleteBanks.length > 0
-              ? t('setup.questionsBlock', { count: incompleteBanks.length })
-              : missingBadges.length > 0
-                ? t('badgeGate.title')
-                : null;
+    const publishBlockReason: string | null = dateBlockers.length > 0
+        ? t(`validation.${dateBlockers[0]}`)
+        : incompleteBanks.length > 0
+            ? t('setup.questionsBlock', { count: incompleteBanks.length })
+            : missingBadges.length > 0
+              ? t('badgeGate.title')
+              : null;
     const canPublish = publishBlockReason === null;
     const showFandiCountdown =
         !!event.fandiOpensAt && (event.status === 'published' || event.status === 'draft');
@@ -287,18 +278,12 @@ export default function EventDetailShell({ children }: { children: React.ReactNo
     const hideFandiReady =
         event.status !== 'published' || !preLive || missingBadges.length > 0 || incompleteBanks.length > 0;
 
-    const detailsDone = !!event.cityId && !!event.eventEndDate && dateViolations.length === 0;
+    const detailsDone = dateBlockers.length === 0;
     const setupSteps: SetupStep[] = [
         {
             key: 'details',
             done: detailsDone,
-            detail: detailsDone
-                ? undefined
-                : !event.cityId
-                  ? t('form.cityRequired')
-                  : !event.eventEndDate
-                    ? t('validation.EVENT_END_REQUIRED')
-                    : t(`validation.${dateViolations[0]}`),
+            detail: detailsDone ? undefined : t(`validation.${dateBlockers[0]}`),
             href: `/dashboard/events/edit/${eventId}`,
         },
         {
@@ -327,13 +312,15 @@ export default function EventDetailShell({ children }: { children: React.ReactNo
     ];
     const showSetup = event.status === 'draft' && isWriteRole;
 
-    // Mono meta line under the title: date · time · venue, city.
+    // Mono meta line under the title: start → end (multi-day: its day too) ·
+    // venue, city · "Hora de Medellín (UTC-5)", all on the event's clock.
+    const city = eventCityName(event);
     const place = event.venue
-        ? event.city
-            ? `${event.venue}, ${event.city}`
+        ? city
+            ? `${event.venue}, ${city}`
             : event.venue
-        : event.city;
-    const metaLine = [formatMetaDate(event.eventDate), place]
+        : city;
+    const metaLine = [formatMetaRange(event.eventDate, event.eventEndDate, eventTime), place, eventTime.label(event.eventDate)]
         .filter(Boolean)
         .join(' · ');
 
@@ -541,27 +528,34 @@ function BackToEvents({ label, onClick }: { label: string; onClick: () => void }
     );
 }
 
-/** "sáb 26 sep 2026 · 21:00" (rendered uppercase by the meta line). */
-function formatMetaDate(iso: string | null | undefined): string | null {
-    if (!iso) return null;
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return null;
-    const date = new Intl.DateTimeFormat('es-CO', {
+/** "sáb 26 sep 2026 · 21:00" on the event's clock (rendered uppercase by the meta line). */
+function formatMetaDate(iso: string | null | undefined, time: EventTime, withYear = true): string | null {
+    const date = time.format(iso, {
         weekday: 'short',
         day: 'numeric',
         month: 'short',
-        year: 'numeric',
-    })
-        .format(d)
-        .replace(/\./g, '')
-        .replace(/,/g, '')
-        .replace(/ de /g, ' ');
-    const time = d.toLocaleTimeString('es-CO', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
+        ...(withYear ? { year: 'numeric' as const } : {}),
     });
-    return `${date} · ${time}`;
+    const clock = time.format(iso, { hour: '2-digit', minute: '2-digit', hour12: false });
+    if (!date || !clock) return null;
+    return `${date.replace(/\./g, '').replace(/,/g, '').replace(/ de /g, ' ')} · ${clock}`;
+}
+
+/**
+ * "sáb 26 sep 2026 · 21:00 → 23:30" (same day), or with the end's day
+ * when the event spans several: "… → dom 27 sep · 02:00".
+ */
+function formatMetaRange(
+    start: string | null | undefined,
+    end: string | null | undefined,
+    time: EventTime,
+): string | null {
+    const from = formatMetaDate(start, time);
+    if (!from || !end) return from;
+    const to = time.sameDay(start, end)
+        ? time.format(end, { hour: '2-digit', minute: '2-digit', hour12: false })
+        : formatMetaDate(end, time, false);
+    return to ? `${from} → ${to}` : from;
 }
 
 // ── Go Live Button with Pre-live Checklist Dialog ──

@@ -21,6 +21,8 @@ import { supabase } from '@/lib/supabase';
 import {
     PASSWORD_MIN_LENGTH, currentPasswordErrorKey, passwordUpdateErrorKey, validatePasswordChange,
 } from '@/lib/auth-flow';
+import { sessionNeedsCode } from '@/lib/two-step-client';
+import { TotpVerifyForm } from '@/components/security/two-step-forms';
 
 const FIELD_LABEL = 'label-mono block text-[11px] text-muted-white';
 const FIELD_INPUT = 'h-12 rounded-[10px] px-3 text-base md:text-sm';
@@ -28,7 +30,7 @@ const FIELD_INPUT = 'h-12 rounded-[10px] px-3 text-base md:text-sm';
 export function ChangePasswordCard() {
     const t = useTranslations('settings.security');
     const tAuth = useTranslations('auth');
-    const { user } = useAuth();
+    const { user, refreshAssurance } = useAuth();
     const [current, setCurrent] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
@@ -36,6 +38,7 @@ export function ChangePasswordCard() {
     const [triedSubmit, setTriedSubmit] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentInvalid, setCurrentInvalid] = useState(false);
+    const [needsCode, setNeedsCode] = useState(false);
 
     function fail(message: string, onCurrent = false) {
         setError(message);
@@ -68,6 +71,18 @@ export function ChangePasswordCard() {
             return fail(key === 'currentWrong' ? t('currentWrong') : tAuth(key), key === 'currentWrong');
         }
 
+        // The fresh session is aal1: with two-step verification on,
+        // Supabase changes the password only after the app's code.
+        if (await sessionNeedsCode()) {
+            setSaving(false);
+            setNeedsCode(true);
+            return;
+        }
+        await saveNewPassword();
+    }
+
+    async function saveNewPassword() {
+        setSaving(true);
         // 2. Save the new one.
         const { error: updateError } = await supabase.auth.updateUser({ password });
         if (updateError) {
@@ -92,6 +107,21 @@ export function ChangePasswordCard() {
                 <h2 id="settings-password-title" className="font-display text-[17px]">{t('title')}</h2>
             </div>
 
+            {needsCode ? (
+                <div className="flex max-w-[520px] flex-col gap-5 px-6 py-6" data-testid="password-two-step">
+                    <p className="text-sm leading-relaxed text-body-white">{t('twoStepCode')}</p>
+                    <TotpVerifyForm
+                        idPrefix="settings-password-code"
+                        submitLabel={t('submit')}
+                        onVerified={async () => {
+                            setNeedsCode(false);
+                            await refreshAssurance();
+                            await saveNewPassword();
+                        }}
+                    />
+                    <FormAlert>{error}</FormAlert>
+                </div>
+            ) : (
             <form onSubmit={onSubmit} noValidate className="flex flex-col">
                 <div className="flex max-w-[520px] flex-col gap-5 px-6 py-6">
                     <p className="text-sm leading-relaxed text-body-white">{t('subtitle')}</p>
@@ -143,6 +173,7 @@ export function ChangePasswordCard() {
                     </Button>
                 </div>
             </form>
+            )}
         </section>
     );
 }

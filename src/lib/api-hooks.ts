@@ -7,7 +7,8 @@ import type {
     Experience, CreateExperienceDto, Impactor,
     ExperienceSlot, CreateSlotDto,
     Auction, CreateAuctionDto, UpdateAuctionDto, BidListItem,
-    Organization, UpdateOrganizationDto, OrganizationMember, InviteMemberDto, UpdateMemberRoleDto,
+    Organization, UpdateOrganizationDto, OrganizationMember, UpdateMemberRoleDto,
+    CreateInvitationDto, TeamInvitation, InvitationPreview, AcceptInvitationResult,
     ArtistLeaderboard, FanAnalytics, RichTopFans, FanPublicProfile, FanTier,
     EventSummaryResponse, ExperienceBreakdownItem,
     LivePulseResponse, WinnersListItem, WinnersListQuery,
@@ -26,6 +27,7 @@ import type {
     DynamicType,
     IdolSearchResult,
     PendingInvitationsSummary,
+    SentCollaboration,
     SharedEvent,
     SharedEventTotals,
     SharedParticipants,
@@ -170,12 +172,16 @@ export const collaborationsApi = {
     listForEvent: (eventId: string) =>
         unwrap(api.get<Collaboration[]>(`/dashboard/events/${eventId}/collaborations`)),
     inbox: () => unwrap(api.get<Collaboration[]>('/dashboard/collaborations/inbox')),
-    // Nav badge + Home banner: invitations awaiting an answer (0 if I cannot answer).
+    // Enviadas (host side, across events, newest first) and its badge reset.
+    sent: () => unwrap(api.get<SentCollaboration[]>('/dashboard/collaborations/sent')),
+    markSentSeen: () => unwrap(api.post<{ marked: number }>('/dashboard/collaborations/sent/seen')),
+    // Nav badge + Home banner: invitations awaiting my answer and unseen answers to mine.
     pendingSummary: () =>
         unwrap(api.get<PendingInvitationsSummary>('/dashboard/collaborations/pending-summary')),
     accept: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/accept`)),
     decline: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/decline`)),
     end: (id: string) => unwrap(api.post<Collaboration>(`/dashboard/collaborations/${id}/end`)),
+    // Legacy: email links sent before invitations were linked by id.
     respondByToken: (token: string, action: 'accept' | 'decline') =>
         unwrap(api.post<Collaboration>('/dashboard/collaborations/respond', { token, action })),
     sharedEvents: () => unwrap(api.get<SharedEvent[]>('/dashboard/shared/events')),
@@ -266,16 +272,33 @@ export const orgApi = {
     // Per-fan drill-down — reuses the public artist-scoped fan profile.
     getFanDetail: (userId: string, orgId: string) =>
         unwrap(api.get<FanPublicProfile>(`/fans/${userId}`, { params: { orgId } })),
+    // Active members only; emails for owners and admins.
     getMembers: () =>
         unwrap(api.get<OrganizationMember[]>('/dashboard/organization/members')),
-    inviteMember: (dto: InviteMemberDto) =>
-        unwrap(api.post<OrganizationMember>('/dashboard/organization/members', dto)),
     updateMember: (id: string, dto: UpdateMemberRoleDto) =>
         unwrap(api.put(`/dashboard/organization/members/${id}`, dto)),
     removeMember: (id: string) =>
         unwrap(api.delete(`/dashboard/organization/members/${id}`)),
-    resendInvite: (id: string) =>
-        unwrap(api.post(`/dashboard/organization/members/${id}/resend-invite`, {})),
+    // Team invitations (owner/admin of the whole org). The create answer is
+    // the same whatever the email is.
+    listInvitations: () =>
+        unwrap(api.get<TeamInvitation[]>('/dashboard/organization/invitations')),
+    createInvitation: (dto: CreateInvitationDto) =>
+        unwrap(api.post<{ id: string; status: 'pending' }>('/dashboard/organization/invitations', dto)),
+    resendInvitation: (id: string) =>
+        unwrap(api.post<TeamInvitation>(`/dashboard/organization/invitations/${id}/resend`)),
+    revokeInvitation: (id: string) =>
+        unwrap(api.post<TeamInvitation>(`/dashboard/organization/invitations/${id}/revoke`)),
+};
+
+// ── /invitacion (preview and claim-account are public; accept needs the invited person's session) ──
+export const invitationsApi = {
+    preview: (token: string) =>
+        unwrap(api.post<InvitationPreview>('/invitations/preview', { token })),
+    claimAccount: (token: string, password: string) =>
+        unwrap(api.post<{ email: string }>('/invitations/claim-account', { token, password })),
+    accept: (token: string) =>
+        unwrap(api.post<AcceptInvitationResult>('/invitations/accept', { token, acceptedTerms: true })),
 };
 
 // ── Analytics ──

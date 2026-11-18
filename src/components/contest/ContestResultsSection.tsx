@@ -12,7 +12,6 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { format, parseISO } from 'date-fns';
 import { Download, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ApiError } from '@/types/api';
@@ -22,6 +21,7 @@ import { escuadraColors, escuadraDefaultNames } from '@/lib/chart-colors';
 import { formatSeconds } from '@/lib/contest-bank';
 import { slugifyForFilename } from '@/lib/slugify';
 import { triggerBrowserDownload } from '@/lib/download';
+import { useEventTime } from '@/components/events/EventZone';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,10 +33,15 @@ export function ContestResultsSection({
     eventId,
     eventName,
     canExport,
+    timeZone,
+    city,
 }: {
     eventId: string;
     eventName?: string;
     canExport: boolean;
+    /** The event's zone and city: the aporte times are its clock. */
+    timeZone?: string | null;
+    city?: string | null;
 }) {
     const t = useTranslations('winners.contest');
     const { data: experiences = [] } = useQuery({
@@ -118,15 +123,29 @@ export function ContestResultsSection({
                             key={category.level}
                             category={category}
                             name={experience?.escuadraNames?.[String(category.level)] || category.name}
+                            timeZone={timeZone}
+                            city={city}
                         />
                     ))}
         </section>
     );
 }
 
-export function CategoryResult({ category, name }: { category: ContestCategoryResult; name: string }) {
+export function CategoryResult({
+    category,
+    name,
+    timeZone,
+    city,
+}: {
+    category: ContestCategoryResult;
+    name: string;
+    /** The event's zone (Bogotá when unknown, e.g. a guest's shared view). */
+    timeZone?: string | null;
+    city?: string | null;
+}) {
     const t = useTranslations('winners.contest');
     const tCommon = useTranslations('common');
+    const eventTime = useEventTime(timeZone, city);
     const level = (category.level === 4 || category.level === 3 || category.level === 2 ? category.level : 1) as
         | 1
         | 2
@@ -158,7 +177,10 @@ export function CategoryResult({ category, name }: { category: ContestCategoryRe
                         <TableHead className="w-20 pl-4">{t('position')}</TableHead>
                         <TableHead>{t('fan')}</TableHead>
                         <TableHead className="text-right">{t('time')}</TableHead>
-                        <TableHead className="pr-4 text-right">{t('firstAporte')}</TableHead>
+                        <TableHead className="pr-4 text-right">
+                            {t('firstAporte')}
+                            <span className="ml-1 normal-case">· {eventTime.label(category.winners[0]?.firstContributionAt)}</span>
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -170,7 +192,9 @@ export function CategoryResult({ category, name }: { category: ContestCategoryRe
                             </TableCell>
                             <TableCell className="text-right tabular font-black">{formatSeconds(w.responseMs)}</TableCell>
                             <TableCell className="pr-4 text-right font-space-mono text-xs text-muted-white">
-                                {format(parseISO(w.firstContributionAt), 'HH:mm:ss')}
+                                {eventTime.format(w.firstContributionAt, {
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+                                })}
                             </TableCell>
                         </TableRow>
                     ))}

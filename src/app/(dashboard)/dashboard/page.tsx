@@ -9,6 +9,8 @@ import { Calendar, AlertCircle, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi, orgApi } from '@/lib/api-hooks';
 import type { Event } from '@/types/api';
+import { eventCityName } from '@/lib/event-time-zone';
+import { EventWhen, useEventTime } from '@/components/events/EventZone';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import {
@@ -116,19 +118,8 @@ export default function DashboardHomePage() {
         null;
 
     const dateLocale = locale === 'es' ? 'es-CO' : locale;
-
-    // ── Date formatter ──
-    const formatDate = (dateStr: string) => {
-        try {
-            return new Date(dateStr).toLocaleDateString(dateLocale, {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-            });
-        } catch {
-            return dateStr;
-        }
-    };
+    // The hero's day and time are the event city's ("Hoy" = today there).
+    const heroTime = useEventTime(heroEvent?.timezone, eventCityName(heroEvent));
 
     // ── Current date subtitle ──
     const todayStr = new Date().toLocaleDateString(dateLocale, {
@@ -143,12 +134,11 @@ export default function DashboardHomePage() {
     let heroIsToday = false;
     let countdown: { label: string; value: string } | null = null;
     if (heroEvent) {
-        const start = new Date(heroEvent.eventDate);
-        const time = start.toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit', hour12: false });
-        heroIsToday = start.toDateString() === new Date(now).toDateString();
+        const time = heroTime.format(heroEvent.eventDate, { hour: '2-digit', minute: '2-digit', hour12: false }) ?? '';
+        heroIsToday = heroTime.sameDay(heroEvent.eventDate, now);
         heroPill = heroIsToday
             ? `${t('home.today')} · ${time}`
-            : `${start.toLocaleDateString(dateLocale, { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '')} · ${time}`;
+            : `${(heroTime.format(heroEvent.eventDate, { weekday: 'short', day: 'numeric', month: 'short' }) ?? '').replace(/\./g, '')} · ${time}`;
 
         const closes = toMs(heroEvent.fandiClosesAt);
         const opens = toMs(heroEvent.fandiOpensAt);
@@ -210,15 +200,20 @@ export default function DashboardHomePage() {
                                 {heroPill}
                             </span>
                         )}
+                        {heroEvent.status !== 'live' && (
+                            <span className="label-mono ml-2.5 align-middle text-[10px] text-lilac" data-testid="hero-zone">
+                                {heroTime.label(heroEvent.eventDate)}
+                            </span>
+                        )}
                         <Link
                             href={`/dashboard/events/${heroEvent.id}`}
                             className="font-hero mt-3 block break-words text-[40px] leading-[0.95] text-white hover:underline hover:decoration-2 hover:underline-offset-4"
                         >
                             {heroEvent.name}
                         </Link>
-                        {(heroEvent.venue || heroEvent.city) && (
+                        {(heroEvent.venue || eventCityName(heroEvent)) && (
                             <div className="mt-2 font-space-mono text-[11px] uppercase text-muted-ink">
-                                {[heroEvent.venue, heroEvent.city].filter(Boolean).join(', ')}
+                                {[heroEvent.venue, eventCityName(heroEvent)].filter(Boolean).join(', ')}
                             </div>
                         )}
                     </div>
@@ -342,7 +337,7 @@ export default function DashboardHomePage() {
                                                 {event.venue || tCommon('noVenue')}
                                             </TableCell>
                                             <TableCell className="font-space-mono text-[11px] uppercase text-muted-white">
-                                                {formatDate(event.eventDate)}
+                                                <EventWhen iso={event.eventDate} zone={event.timezone} city={eventCityName(event)} />
                                             </TableCell>
                                             <TableCell>
                                                 <ChevronRight size={16} className="text-muted-white transition-transform group-hover:translate-x-0.5" />
@@ -384,7 +379,6 @@ export default function DashboardHomePage() {
                                                 <div className="truncate text-sm font-bold text-white">{name}</div>
                                                 <div className="font-space-mono text-[9px] uppercase tracking-[0.14em] text-tier-vip">
                                                     {tTeam(`roles.${m.role}`)}
-                                                    {m.status === 'pending' ? ` · ${tTeam('pending')}` : ''}
                                                 </div>
                                             </div>
                                         </div>

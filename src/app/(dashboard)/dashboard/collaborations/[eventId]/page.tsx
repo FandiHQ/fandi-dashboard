@@ -2,7 +2,8 @@
 
 /**
  * A shared event, seen by a GUEST idol — view only (fandi-api RFC §3).
- * Event totals (aggregates), and for each dynamic my org was tagged on:
+ * How many fans take part (never money: the invitation promises "No verás
+ * montos"), and for each dynamic my org was tagged on:
  * every participating fan by name (never a per-fan amount), and the
  * contest results once final (oportunidades only). Nothing of the host's
  * other dynamics. An ended collaboration shows data up to its end. Plus
@@ -12,24 +13,29 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
-import { format, parseISO } from 'date-fns';
-import { enUS as enLocale, es as esLocale } from 'date-fns/locale';
 import { ApiError } from '@/types/api';
 import type { Collaboration } from '@/types/api';
 import { collaborationsApi, contestApi } from '@/lib/api-hooks';
 import { showSharedResults } from '@/lib/collaborations';
-import { formatCop, formatFandis } from '@/lib/currency';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CategoryResult } from '@/components/contest/ContestResultsSection';
 import { CollaborationStatusPill } from '@/components/collaborations/CollaborationStatusPill';
 import { SharedSegmentsSection } from '@/components/collaborations/SegmentsSection';
+import { useEventTime } from '@/components/events/EventZone';
+
+// Times here are the event's clock. A collaboration does not carry the
+// event's zone and venues are Colombia-only, so it is Colombia's
+// ("Hora de Colombia (UTC-5)"), never the computer's.
+const SHORT_DATE_TIME: Intl.DateTimeFormatOptions = {
+    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false,
+};
 
 export default function SharedEventPage() {
     const { eventId } = useParams() as { eventId: string };
     const t = useTranslations('collaborations');
     const locale = useLocale();
-    const dateLocale = locale === 'en' ? enLocale : esLocale;
+    const eventTime = useEventTime(null, null);
     const totals = useQuery({
         queryKey: ['collaborations', 'shared', eventId],
         queryFn: () => collaborationsApi.sharedEvent(eventId),
@@ -55,23 +61,16 @@ export default function SharedEventPage() {
                 <h1 className="mt-2 font-hero text-4xl text-white">{totals.data.eventName}</h1>
                 <p className="mt-1 font-space-mono text-[11px] uppercase text-lilac">
                     {t('hostedBy', { host: totals.data.hostOrgName })} · {t('viewOnly')}
-                    {totals.data.until && ` · ${t('until', { date: format(parseISO(totals.data.until), 'd MMM HH:mm', { locale: dateLocale }) })}`}
+                    {totals.data.until && ` · ${t('until', { date: eventTime.format(totals.data.until, SHORT_DATE_TIME) ?? '' })} · ${eventTime.label(totals.data.until)}`}
                 </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-[18px]">
+            <div className="grid gap-[18px] sm:grid-cols-2">
                 <div className="block-white px-5 py-4 text-ink">
                     <p className="label-mono text-muted-white">{t('participants')}</p>
                     <p className="font-display tabular mt-2 text-[36px]">
                         {new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'es-CO').format(totals.data.participants)}
                     </p>
-                </div>
-                <div className="block-white px-5 py-4 text-ink">
-                    <p className="label-mono text-muted-white">{t('contributed')}</p>
-                    <p className="font-display tabular mt-2 text-[36px]">
-                        {formatFandis(totals.data.contributedCop)} <span className="text-blue">F</span>
-                    </p>
-                    <p className="font-space-mono text-[10px] text-muted-white">{formatCop(totals.data.contributedCop)}</p>
                 </div>
             </div>
 
@@ -87,8 +86,7 @@ export default function SharedEventPage() {
 function SharedDynamic({ collaboration }: { collaboration: Collaboration }) {
     const t = useTranslations('collaborations');
     const tCommon = useTranslations('common');
-    const locale = useLocale();
-    const dateLocale = locale === 'en' ? enLocale : esLocale;
+    const eventTime = useEventTime(null, null);
     const participants = useQuery({
         queryKey: ['collaborations', 'shared', collaboration.dynamicType, collaboration.dynamicId],
         queryFn: () => collaborationsApi.sharedParticipants(collaboration.dynamicType, collaboration.dynamicId),
@@ -125,7 +123,10 @@ function SharedDynamic({ collaboration }: { collaboration: Collaboration }) {
                                 <TableRow className="hover:bg-transparent">
                                     <TableHead>{t('fan')}</TableHead>
                                     <TableHead>{t('instagram')}</TableHead>
-                                    <TableHead className="text-right">{t('since')}</TableHead>
+                                    <TableHead className="text-right">
+                                        {t('since')}
+                                        <span className="ml-1 normal-case">· {eventTime.label()}</span>
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -136,7 +137,7 @@ function SharedDynamic({ collaboration }: { collaboration: Collaboration }) {
                                             {f.instagramHandle ? `@${f.instagramHandle}` : t('noInstagram')}
                                         </TableCell>
                                         <TableCell className="text-right font-space-mono text-xs tabular">
-                                            {format(parseISO(f.firstAt), 'd MMM HH:mm', { locale: dateLocale })}
+                                            {eventTime.format(f.firstAt, SHORT_DATE_TIME)}
                                         </TableCell>
                                     </TableRow>
                                 ))}

@@ -16,7 +16,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { CheckCircle, KeyRound, Loader2, Lock, UserPlus } from 'lucide-react';
+import { CheckCircle, KeyRound, Loader2, Lock, ShieldCheck, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AuthShellChecking, AuthShellHeader } from '@/components/auth/auth-shell';
 import { FormAlert, NewPasswordFields } from '@/components/auth/password-fields';
@@ -24,8 +24,10 @@ import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
 import { useEmailLinkSession } from '@/components/auth/use-email-link-session';
 import { useAuth } from '@/contexts/auth-context';
 import {
-    PASSWORD_MIN_LENGTH, loginErrorKey, passwordUpdateErrorKey, validateNewPassword,
+    PASSWORD_MIN_LENGTH, loginErrorKey, passwordUpdateErrorKey, postLoginPath, validateNewPassword,
 } from '@/lib/auth-flow';
+import { TotpVerifyForm } from '@/components/security/two-step-forms';
+import { sessionNeedsCode, verifyAccountCode } from '@/lib/two-step-client';
 
 type Variant = 'reset' | 'invite';
 type DoneStage = 'entering' | 'signIn' | 'fan' | 'noOrg';
@@ -43,6 +45,9 @@ export function SetPasswordFlow({ variant }: { variant: Variant }) {
     const [error, setError] = useState<string | null>(null);
     const [triedSubmit, setTriedSubmit] = useState(false);
     const [done, setDone] = useState<DoneStage | null>(null);
+    // The account has two-step verification: Supabase changes the password
+    // only after the code of the authenticator app.
+    const [needsCode, setNeedsCode] = useState(false);
 
     const copy = (key: string) => t(`${variant}.${key}`);
 
@@ -63,6 +68,22 @@ export function SetPasswordFlow({ variant }: { variant: Variant }) {
 
         setError(null);
         setSaving(true);
+        if (await sessionNeedsCode(client)) {
+            setSaving(false);
+            setNeedsCode(true);
+            return;
+        }
+        await savePassword();
+    }
+
+    async function savePassword() {
+        const client = getClient();
+        if (!client || state.status !== 'ready') {
+            setState({ status: 'invalid' });
+            return;
+        }
+        const email = state.email;
+        setSaving(true);
         const { error: updateError } = await client.auth.updateUser({ password });
         if (updateError) {
             setSaving(false);
@@ -80,13 +101,13 @@ export function SetPasswordFlow({ variant }: { variant: Variant }) {
         // Saved. Close the link session and enter with the new password.
         await closeSession();
         setDone('entering');
-        if (!state.email) {
+        if (!email) {
             setDone('signIn');
             return;
         }
         try {
-            const me = await login(state.email, password);
-            router.replace(me.organization?.memberRole === 'staff' ? '/staff' : '/dashboard');
+            const me = await login(email, password);
+            router.replace(postLoginPath(me, '/dashboard'));
         } catch (err) {
             const key = loginErrorKey(err);
             setDone(key === 'noAccessFan' ? 'fan' : key === 'noAccessNoOrg' ? 'noOrg' : 'signIn');
@@ -120,6 +141,27 @@ export function SetPasswordFlow({ variant }: { variant: Variant }) {
                 <Button asChild size="lg" className="h-[54px] w-full rounded-[14px]">
                     <Link href="/login">{t('goToLogin')}</Link>
                 </Button>
+            </>
+        );
+    }
+
+    // ── Two-step verification before the change ──
+    if (needsCode && state.status === 'ready') {
+        const client = getClient();
+        return (
+            <>
+                <AuthShellHeader icon={<ShieldCheck size={22} />} title={t('twoStepCode.title')}>
+                    <p className="text-[15px] leading-relaxed text-body-white">{t('twoStepCode.body')}</p>
+                </AuthShellHeader>
+                <TotpVerifyForm
+                    idPrefix={`${variant}-code`}
+                    verify={(code) => (client ? verifyAccountCode(code, client) : Promise.resolve({ error: { status: 401 } }))}
+                    onVerified={async () => {
+                        setNeedsCode(false);
+                        await savePassword();
+                    }}
+                    submitLabel={copy('submit')}
+                />
             </>
         );
     }

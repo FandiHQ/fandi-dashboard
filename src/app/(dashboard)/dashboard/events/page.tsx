@@ -3,13 +3,15 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Calendar, AlertCircle, ChevronRight, Copy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/auth-context';
 import { eventsApi } from '@/lib/api-hooks';
 import { apiErrorKind } from '@/lib/api-error-kind';
+import { eventCityName } from '@/lib/event-time-zone';
+import { EventWhen } from '@/components/events/EventZone';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -26,7 +28,6 @@ export default function EventsListPage() {
     const router = useRouter();
     const t = useTranslations('events');
     const tCommon = useTranslations('common');
-    const locale = useLocale();
     const { memberRole } = useAuth();
     const isWriteRole = memberRole === 'owner' || memberRole === 'admin';
     const queryClient = useQueryClient();
@@ -47,13 +48,6 @@ export default function EventsListPage() {
             (a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime(),
         );
     }, [data]);
-
-    const formatDate = (iso: string) =>
-        new Intl.DateTimeFormat(locale, {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-        }).format(new Date(iso));
 
     const eventTypeBadge = (type: string | null) => {
         if (!type) return null;
@@ -199,7 +193,8 @@ export default function EventsListPage() {
                                         {event.venue || tCommon('noVenue')}
                                     </TableCell>
                                     <TableCell className="font-space-mono text-[11px] uppercase text-muted-white">
-                                        {formatDate(event.eventDate)}
+                                        {/* On the event's clock, with its label (not the computer's). */}
+                                        <EventWhen iso={event.eventDate} zone={event.timezone} city={eventCityName(event)} />
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center justify-end gap-1">

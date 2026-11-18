@@ -1,5 +1,5 @@
 import {
-    LayoutDashboard, Calendar, Users, Settings, Trophy, Handshake, FolderTree, Banknote,
+    LayoutDashboard, Calendar, Users, Settings, Trophy, Handshake, ShieldCheck,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -49,18 +49,13 @@ export const navItems: NavItem[] = [
         labelKey: 'settings',
     },
     {
-        // Idol classification tree (fandi-api RFC §4). The API checks the
-        // persisted role; this only hides the entry.
-        href: '/dashboard/admin/classification',
-        icon: FolderTree,
-        labelKey: 'classification',
-        platformAdmin: true,
-    },
-    {
-        // Fan withdrawals that need a person (recent top-ups) — Terms §6.
-        href: '/dashboard/admin/withdrawals',
-        icon: Banknote,
-        labelKey: 'withdrawals',
+        // A Fandi admin who also belongs to an idol team: the way across to
+        // the Fandi Admin area (Retiros, Clasificación and the rest live
+        // there now, see admin-nav-config.ts). The API checks the persisted
+        // role; this only hides the entry.
+        href: '/admin',
+        icon: ShieldCheck,
+        labelKey: 'fandiAdmin',
         platformAdmin: true,
     },
 ];

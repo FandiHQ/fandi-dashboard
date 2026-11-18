@@ -21,6 +21,15 @@ export interface UserSyncResponse {
         avatarUrl?: string | null;
         memberRole: string; // "owner" | "admin" | "viewer" | "staff"
     } | null;
+    /**
+     * Two-step verification (lib/two-step.ts): required for Fandi admins
+     * (requiredAfter null) and idol owners/admins from `requiredAfter`
+     * (after 14 days of reminders). Absent on older API builds.
+     */
+    mfa?: {
+        required: boolean;
+        requiredAfter: string | null;
+    };
 }
 
 // ── Organization ──
@@ -170,6 +179,9 @@ export interface Event {
     venue: string | null;
     city: string | null;
     cityId: string | null;
+    /** The cities row (name for "Hora de {ciudad}"); null without a city. */
+    cityRef?: { id: string; name: string; stateName?: string } | null;
+    /** IANA zone of the event's city: every time is read and typed in it. */
     timezone: string | null;
     description: string | null;
     eventDate: string;
@@ -346,11 +358,24 @@ export interface IdolSearchResult {
     avatarUrl: string | null;
 }
 
-/** Invitations awaiting my org's answer (nav badge, Home banner). 0 for members who cannot answer. */
+/**
+ * The Colaboraciones nav badge and the Home banner, both sides:
+ * invitations awaiting my org's answer (guest owner/admin) and answers to
+ * my org's invitations not seen yet in Enviadas (host readers). Zeros for
+ * members who cannot see them (older api builds omit the host fields).
+ */
 export interface PendingInvitationsSummary {
     count: number;
     /** The newest pending invitation. */
     latest: Collaboration | null;
+    /** Host side: answers (accepted/declined) not seen yet in Enviadas. */
+    responses?: number;
+    latestResponse?: Collaboration | null;
+}
+
+/** Enviadas: an invitation my org sent, with whether its answer is still unseen. */
+export interface SentCollaboration extends Collaboration {
+    unseenResponse: boolean;
 }
 
 export interface SharedEvent {
@@ -367,8 +392,8 @@ export interface SharedEventTotals {
     eventDate: string | null;
     status: string | null;
     hostOrgName: string;
+    /** Fans with an aporte or puja in the event (a guest never sees amounts). */
     participants: number;
-    contributedCop: number;
     /** Ended collaboration: data up to here. */
     until: string | null;
 }
@@ -679,13 +704,13 @@ export interface BidStatusResponse {
 // ── Organization Members ──
 export type OrgRole = 'owner' | 'admin' | 'viewer' | 'staff';
 
+/** Active members only (people join by accepting an invitation). */
 export interface OrganizationMember {
-    /** Invite response only: the email already had a Fandi account (no email sent; joins on next sign-in). */
-    existingAccount?: boolean;
     organizationId: string;
     userId: string;
     role: OrgRole;
-    status: 'pending' | 'active';
+    status: 'active';
+    /** Owners and admins only; null for viewers and staff. */
     email: string | null;
     displayName: string | null;
     avatarUrl: string | null;
@@ -695,11 +720,67 @@ export interface OrganizationMember {
     invitedBy: string | null;
 }
 
-export interface InviteMemberDto {
+// ── Team invitations (fandi-api RFC invitations-and-admin) ──
+
+/** Roles Equipo can invite (owner invitations come from Fandi Admin). */
+export type InvitableRole = Exclude<OrgRole, 'owner'>;
+
+export interface CreateInvitationDto {
     email: string;
-    role: OrgRole;
-    displayName?: string;
+    role: InvitableRole;
+    /** Viewer/staff only: limit to these events of the org. */
     eventIds?: string[];
+    /** How to greet them in the email. */
+    name?: string;
+}
+
+export type TeamInvitationStatus = 'pending' | 'accepted' | 'revoked' | 'expired';
+
+export interface TeamInvitation {
+    id: string;
+    email: string;
+    name: string | null;
+    role: OrgRole;
+    eventIds: string[] | null;
+    /** Falls back to the raw id when the event is gone. */
+    eventNames: string[] | null;
+    status: TeamInvitationStatus;
+    /** Pending without a live link (migrated from the old system): show Reenviar. */
+    needsResend: boolean;
+    expiresAt: string;
+    lastSentAt: string | null;
+    sendCount: number;
+    createdAt: string;
+    acceptedAt: string | null;
+    revokedAt: string | null;
+    invitedBy: { userId: string; displayName: string | null } | null;
+    canResend: boolean;
+    canRevoke: boolean;
+    /** 3 emails per 24 h reached: the next resend is allowed from here. */
+    resendAvailableAt: string | null;
+}
+
+/** The /invitacion page (public). Unknown and malformed tokens read 'invalid'. */
+export type InvitationPreviewState = 'valid' | 'expired' | 'revoked' | 'accepted' | 'invalid';
+
+export interface InvitationPreview {
+    state: InvitationPreviewState;
+    orgName: string | null;
+    orgAvatarUrl: string | null;
+    role: OrgRole | null;
+    /** 'Fandi' when Fandi invited (Crear ídolo). */
+    inviterName: string | null;
+    /** "j***@gmail.com": never the full address. */
+    emailHint: string | null;
+    /** state=valid only: true = sign in; false = create a password. */
+    accountExists: boolean | null;
+    expiresAt: string | null;
+}
+
+export interface AcceptInvitationResult {
+    organizationId: string;
+    organizationName: string;
+    role: OrgRole;
 }
 
 export interface UpdateMemberRoleDto {

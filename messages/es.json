@@ -27,6 +27,10 @@
         "password": "Contraseña",
         "invalidCredentials": "Credenciales inválidas",
         "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo.",
+        "twoStepCode": {
+            "title": "Escribe tu código",
+            "body": "Tu cuenta tiene verificación en dos pasos. Escribe el código de 6 dígitos de tu app para guardar la contraseña nueva."
+        },
         "noAccount": "¿Aún no tienes cuenta? Pídele a tu organizador que te invite a su equipo.",
         "noDashboardAccess": "Esta cuenta no tiene acceso al dashboard.",
         "invalidEmail": "Correo electrónico inválido",
@@ -43,7 +47,7 @@
         "showPassword": "Mostrar contraseña",
         "hidePassword": "Ocultar contraseña",
         "forgotPassword": "¿Olvidaste tu contraseña?",
-        "noAccessNoOrg": "Tu cuenta aún no tiene acceso a un panel. Pídele al propietario de tu equipo que te invite.",
+        "noAccessNoOrg": "Tu cuenta aún no está en un equipo. Abre la invitación que te llegó por correo o pídele al propietario de tu equipo que te invite.",
         "noAccessFan": "Esta cuenta es de fan. El panel es para ídolos y sus equipos.",
         "emailNotConfirmed": "Aún no confirmas tu correo. Abre el enlace que te enviamos y vuelve a intentarlo.",
         "tooManyAttempts": "Demasiados intentos seguidos. Espera unos minutos y vuelve a intentarlo.",
@@ -112,12 +116,193 @@
             "doneEntering": "Entrando a tu panel...",
             "doneSignIn": "Ya puedes entrar con tu correo y tu contraseña nueva."
         },
+        "loginContext": {
+            "collabInvite": "Inicia sesión con la cuenta de tu equipo para responder la invitación.",
+            "collabSent": "Inicia sesión con la cuenta de tu equipo para ver la respuesta."
+        },
         "loginHero": {
             "line1": "Tu show.",
             "line2": "Tus fans.",
             "line3": "En vivo.",
             "body": "Crea oportunidades, controla cada dinámica durante el concierto y premia a quienes estuvieron ahí.",
             "footer": "Fandi para artistas, equipos y organizadores"
+        }
+    },
+    "twoStep": {
+        "title": "Verificación en dos pasos",
+        "why": "Protege los eventos y los datos de tus fans.",
+        "whyAdmin": "Protege los pagos y los datos de los fans.",
+        "checking": "Revisando tu sesión...",
+        "verifyTitle": "Escribe tu código",
+        "verifyBody": "Abre tu app de autenticación y escribe el código de 6 dígitos de Fandi.",
+        "verifyEnter": "Entrar",
+        "verifySubmit": "Confirmar código",
+        "verifying": "Revisando...",
+        "lostDevice": "¿Ya no tienes la app o cambiaste de celular? Escríbenos a hola@fandi.app desde el correo de tu cuenta.",
+        "otherAccount": "Usar otra cuenta (entraste como {email})",
+        "enrolTitle": "Activa la verificación en dos pasos",
+        "enrolReasonAdmin": "Fandi Admin siempre la pide.",
+        "enrolReasonRequired": "Tu rol de propietario o administrador la necesita para usar el panel.",
+        "enrolReasonGrace": "Tu rol la necesita desde el {date}. Actívala ahora y listo.",
+        "enrolStep1": "Instala en tu celular una app de autenticación: Google Authenticator, Microsoft Authenticator o 1Password.",
+        "enrolStep2": "En la app, escanea este código QR. Si no puedes, escribe la clave.",
+        "enrolStep3": "Escribe el código de 6 dígitos que te muestra la app.",
+        "qrAlt": "Código QR para tu app de autenticación",
+        "secretLabel": "Clave para escribirla a mano",
+        "secretHint": "No compartas esta clave con nadie.",
+        "copySecret": "Copiar clave",
+        "copied": "Copiada",
+        "enrolSubmit": "Activar",
+        "preparing": "Preparando tu código QR...",
+        "retry": "Intentar de nuevo",
+        "cancel": "Cancelar",
+        "codeLabel": "Código de 6 dígitos",
+        "codeHint": "Cambia cada 30 segundos.",
+        "statusOn": "Activada",
+        "statusOff": "Desactivada",
+        "loading": "Cargando...",
+        "activeSince": "Activada el {date} con tu app de autenticación.",
+        "enable": "Activar verificación",
+        "remove": "Quitar",
+        "removeConfirmTitle": "¿Quitar la verificación en dos pasos?",
+        "removeConfirmRequired": "Tu rol la necesita: tendrás que activarla otra vez para seguir usando el panel.",
+        "removeConfirmOptional": "Tu cuenta quedará protegida solo con la contraseña.",
+        "removeConfirm": "Quitar",
+        "enabledToast": "Listo. La verificación en dos pasos quedó activada.",
+        "removedToast": "Quitaste la verificación en dos pasos.",
+        "requirement": {
+            "admin": "Obligatoria en Fandi Admin.",
+            "required": "Obligatoria para tu rol.",
+            "requiredFrom": "Obligatoria para tu rol desde el {date}.",
+            "optional": "Opcional para tu rol. Te la recomendamos."
+        },
+        "banner": {
+            "title": "Activa la verificación en dos pasos antes del {date}",
+            "why": "Protege los eventos y los datos de tus fans. Te toma 2 minutos con una app en tu celular.",
+            "cta": "Activar ahora"
+        },
+        "errors": {
+            "disabled": "La verificación en dos pasos todavía no está habilitada en Fandi. Avísale al equipo de Fandi en hola@fandi.app.",
+            "wrongCode": "Ese código no es correcto. Revisa la app y escribe el código que muestra ahora.",
+            "codeExpired": "El código venció. Escribe el que muestra la app ahora.",
+            "tooManyFactors": "Ya tienes demasiadas apps registradas. Quita una antes de agregar otra.",
+            "needsCode": "Primero escribe el código de tu app.",
+            "sessionExpired": "Tu sesión venció. Vuelve a entrar.",
+            "tooManyAttempts": "Demasiados intentos. Espera un momento y vuelve a intentar.",
+            "networkError": "No pudimos conectarnos. Revisa tu internet.",
+            "failed": "No pudimos completar la verificación. Intenta de nuevo."
+        }
+    },
+    "adminNav": {
+        "label": "Fandi Admin",
+        "navAria": "Navegación de Fandi Admin",
+        "organizations": "Ídolos",
+        "withdrawals": "Retiros",
+        "topups": "Recargas",
+        "fans": "Fans",
+        "classification": "Clasificación",
+        "audit": "Auditoría",
+        "security": "Seguridad",
+        "idolDashboard": "Panel del ídolo",
+        "role": "Equipo Fandi",
+        "menu": "Menú",
+        "securityTitle": "Seguridad",
+        "securitySubtitle": "Tu acceso a Fandi Admin"
+    },
+    "invitation": {
+        "checking": "Revisando tu invitación...",
+        "joining": "Entrando a tu panel...",
+        "invitedBy": "{inviter} te invitó al equipo de",
+        "invitedByUnknown": "Te invitaron al equipo de",
+        "invitationTo": "Invitación al equipo de",
+        "roleLabel": "Rol",
+        "allows": {
+            "owner": "Tendrás control total: perfil, eventos, dinámicas, resultados y equipo.",
+            "admin": "Podrás crear y editar eventos y dinámicas, ver resultados e invitar a observadores y staff.",
+            "viewer": "Podrás ver eventos, dinámicas y resultados, sin editar nada.",
+            "staff": "Podrás validar premios con el escáner QR el día del evento."
+        },
+        "expires": "Vence el {date} a las {time} (hora de Colombia).",
+        "sentTo": "Enviada a {hint}",
+        "terms": "Acepto los <terms>Términos y Condiciones</terms> y la <privacy>Política de Privacidad</privacy> de Fandi.",
+        "create": {
+            "title": "Crea tu contraseña",
+            "body": "Con ella entrarás al panel de tu equipo. Este enlace ya confirma tu correo.",
+            "submit": "Crear contraseña y unirme",
+            "saving": "Creando tu acceso..."
+        },
+        "signIn": {
+            "title": "Entra para unirte",
+            "body": "El correo invitado ({hint}) ya tiene una cuenta en Fandi. Entra con ella para unirte al equipo.",
+            "accountExistsNote": "Ese correo ya tiene una cuenta en Fandi. Entra con tu contraseña para unirte.",
+            "submit": "Entrar y unirme",
+            "saving": "Entrando...",
+            "emailMismatch": "Ese no es el correo de la invitación ({hint}). Escribe el correo al que te llegó."
+        },
+        "accept": {
+            "title": "Únete al equipo",
+            "signedInAs": "Entraste como {email}.",
+            "submit": "Unirme al equipo",
+            "saving": "Uniéndote...",
+            "notYou": "¿No eres tú? Cerrar sesión"
+        },
+        "otherAccount": {
+            "title": "Entraste con otra cuenta",
+            "body": "Estás en Fandi como {email}, pero esta invitación es para {hint}. Cierra sesión y entra con el correo invitado.",
+            "bodyUnknown": "Esta invitación es para {hint}, no para la cuenta con la que entraste. Cierra sesión y entra con el correo invitado.",
+            "action": "Cerrar sesión y continuar"
+        },
+        "expired": {
+            "title": "Esta invitación venció",
+            "body": "Las invitaciones duran 7 días. Pídele a {inviter} que te la reenvíe desde Equipo.",
+            "bodyUnknown": "Las invitaciones duran 7 días. Pídele a quien te invitó que te la reenvíe desde Equipo."
+        },
+        "revoked": {
+            "title": "Esta invitación fue cancelada",
+            "body": "Quien te invitó la canceló, así que el enlace ya no funciona. Si crees que es un error, pídele una nueva."
+        },
+        "accepted": {
+            "title": "Ya aceptaste esta invitación",
+            "body": "Ya eres parte del equipo. Entra a tu panel con tu correo y tu contraseña."
+        },
+        "alreadyMember": {
+            "title": "Ya estás en este equipo",
+            "body": "Tu cuenta ya es parte del equipo de {org}. No tienes que hacer nada más."
+        },
+        "otherTeam": {
+            "title": "Ya estás en otro equipo",
+            "body": "En Fandi cada persona está en un solo equipo, y tu cuenta ya pertenece al de otro ídolo. Para unirte a {org}, pide la invitación a otro correo."
+        },
+        "fanAccount": {
+            "title": "Este correo es de una cuenta de fan",
+            "body": "El panel es para ídolos y sus equipos, y una cuenta de fan no puede unirse. Pídele a quien te invitó que use otro correo."
+        },
+        "notEligible": {
+            "title": "Esta cuenta no puede unirse",
+            "body": "La cuenta de ese correo no puede entrar al panel de un equipo. Pídele a quien te invitó que use otro correo."
+        },
+        "invalid": {
+            "title": "Este enlace no funciona",
+            "body": "Puede que esté incompleto o que ya no sirva. Abre otra vez el botón del correo o pide una invitación nueva."
+        },
+        "loadError": {
+            "title": "No pudimos abrir tu invitación",
+            "body": "Revisa tu conexión e intenta de nuevo."
+        },
+        "goToPanel": "Ir a tu panel",
+        "goHome": "Ir al inicio",
+        "retry": "Reintentar",
+        "joinedToast": "Ya eres parte del equipo de {org}",
+        "errors": {
+            "weakPassword": "Elige una contraseña más segura: al menos 8 caracteres, con letras y números.",
+            "tooLong": "La contraseña es muy larga. Usa una más corta.",
+            "termsRequired": "Marca la casilla para aceptar los Términos y la Política de Privacidad.",
+            "authUnavailable": "No pudimos crear tu acceso en este momento. Intenta de nuevo en unos minutos.",
+            "accountConflict": "No pudimos vincular esta cuenta. Escríbenos a hola@fandi.app.",
+            "tooManyAttempts": "Demasiados intentos seguidos. Espera un minuto e intenta de nuevo.",
+            "network": "Sin conexión. Revisa tu internet e intenta de nuevo.",
+            "server": "Fandi no respondió. Intenta de nuevo en un momento.",
+            "generic": "Algo salió mal. Intenta de nuevo."
         }
     },
     "dashboardNav": {
@@ -129,7 +314,8 @@
         "settings": "Configuración",
         "collaborations": "Colaboraciones",
         "classification": "Clasificación",
-        "withdrawals": "Retiros"
+        "withdrawals": "Retiros",
+        "fandiAdmin": "Fandi Admin"
     },
     "pageTitles": {
         "newEvent": "Nuevo evento",
@@ -179,6 +365,389 @@
         "rejected": "Retiro rechazado; el saldo volvió al fan",
         "empty": "No hay retiros en este estado.",
         "error": "No pudimos completar la acción"
+    },
+    "fandiAdmin": {
+        "colombiaTime": "hora de Colombia",
+        "dateTime": "{date}, {time}",
+        "titles": {
+            "organizations": "Ídolos",
+            "topups": "Recargas",
+            "fans": "Fans",
+            "fan": "Fan",
+            "audit": "Auditoría"
+        },
+        "common": {
+            "retry": "Reintentar",
+            "refresh": "Actualizar",
+            "cancel": "Cancelar",
+            "close": "Cerrar",
+            "save": "Guardar",
+            "saving": "Guardando...",
+            "noName": "Sin nombre",
+            "yes": "Sí",
+            "no": "No",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "pageOf": "Página {page} de {pages}",
+            "range": "{from} a {to} de {total}",
+            "pagination": "Paginación",
+            "search": "Buscar",
+            "clear": "Limpiar"
+        },
+        "errors": {
+            "adminRequired": "Esta sección es solo para el equipo de Fandi.",
+            "mfaRequired": "Confirma tu código de verificación en dos pasos para seguir.",
+            "unknownCategory": "Esa categoría ya no existe. Elige otra.",
+            "nothingToUpdate": "No cambiaste nada.",
+            "organizationNotFound": "Ese ídolo ya no existe. Recarga la lista.",
+            "emailRequired": "Escribe el correo del propietario.",
+            "resendLimit": "Ya enviaste esta invitación 3 veces hoy. Inténtalo más tarde.",
+            "resendLimitAt": "Ya enviaste esta invitación 3 veces hoy. Podrás reenviarla el {date} a las {time} (hora de Colombia).",
+            "invitationPending": "Ya hay una invitación pendiente para ese correo.",
+            "invitationNotPending": "Esa invitación ya no está pendiente. Recarga la lista.",
+            "queryTooShort": "Escribe al menos 3 caracteres.",
+            "userNotFound": "Esa cuenta no existe.",
+            "verificationNotFound": "Esa verificación ya no existe.",
+            "notFound": "No encontramos lo que buscabas. Recarga la lista.",
+            "tooManyRequests": "Demasiados intentos seguidos. Espera un minuto.",
+            "invalid": "Revisa los datos e inténtalo de nuevo.",
+            "network": "No pudimos conectar con Fandi. Revisa tu conexión.",
+            "server": "Fandi no respondió. Inténtalo de nuevo en un momento.",
+            "generic": "Algo salió mal. Inténtalo de nuevo."
+        },
+        "fields": {
+            "required": "Este campo es obligatorio.",
+            "invalid": "Escribe un correo válido.",
+            "tooLong": "Es demasiado largo."
+        },
+        "organizations": {
+            "title": "Ídolos",
+            "lead": "Todos los ídolos de Fandi. Crea uno con su propietario, o reenvía la invitación si todavía no entra.",
+            "searchLabel": "Buscar ídolo",
+            "searchPlaceholder": "Nombre del ídolo",
+            "create": "Crear ídolo",
+            "empty": "Todavía no hay ídolos. Crea el primero.",
+            "emptySearch": "Ningún ídolo coincide con \"{q}\".",
+            "cols": {
+                "idol": "Ídolo",
+                "visibility": "Visibilidad",
+                "members": "Equipo",
+                "events": "Eventos",
+                "owner": "Propietario",
+                "invitation": "Invitación del propietario",
+                "created": "Creado (hora de Colombia)"
+            },
+            "public": "Público",
+            "private": "Oculto",
+            "noOwner": "Sin propietario",
+            "invitation": {
+                "none": "Sin invitación",
+                "pending": "Pendiente, vence el {date}",
+                "needsResend": "Sin enlace activo: reenvíala",
+                "expired": "Vencida el {date}"
+            },
+            "lastSent": "Último envío: {date}",
+            "resend": "Reenviar",
+            "changeOwner": "Cambiar correo",
+            "inviteOwner": "Invitar propietario",
+            "edit": "Editar",
+            "actionsFor": "Acciones de {name}"
+        },
+        "createIdol": {
+            "title": "Crear ídolo",
+            "hint": "Creamos el perfil del ídolo y le enviamos la invitación a su propietario.",
+            "name": "Nombre del ídolo",
+            "namePlaceholder": "Yalí",
+            "category": "Categoría",
+            "categoryNone": "Sin clasificar",
+            "categoryHint": "Puedes cambiarla después en Clasificación.",
+            "categoriesUnavailable": "No pudimos cargar las categorías. Queda Sin clasificar.",
+            "isPublic": "Visible para los fans",
+            "isPublicHint": "Déjalo apagado hasta que el perfil esté listo.",
+            "ownerEmail": "Correo del propietario",
+            "ownerEmailPlaceholder": "manager@ejemplo.com",
+            "ownerName": "Nombre del propietario (opcional)",
+            "ownerNamePlaceholder": "María García",
+            "ownerHint": "Le llega un enlace para unirse como propietario. Vence en 7 días.",
+            "submit": "Crear e invitar",
+            "submitting": "Creando...",
+            "sentTitle": "Ídolo creado",
+            "sentBody": "Invitación enviada a {email}.",
+            "notSentTitle": "Ídolo creado, pero el correo no salió",
+            "notSentBody": "No se pudo enviar el correo a {email}. La invitación quedó lista: reenvíala en un momento.",
+            "resendNow": "Reenviar invitación",
+            "resent": "Invitación reenviada a {email}.",
+            "createAnother": "Crear otro ídolo",
+            "done": "Listo"
+        },
+        "ownerInvite": {
+            "title": "Invitación del propietario",
+            "hintResend": "Enviamos un enlace nuevo a {email}. El anterior deja de funcionar y el nuevo vence en 7 días.",
+            "hintNew": "Este ídolo no tiene una invitación de propietario activa. Escribe a quién invitar.",
+            "email": "Correo del propietario",
+            "emailHint": "Déjalo igual para reenviar. Si escribes otro correo, cancelamos la invitación actual e invitamos a ese.",
+            "name": "Nombre (opcional)",
+            "resend": "Reenviar invitación",
+            "invite": "Invitar a este correo",
+            "sending": "Enviando...",
+            "done": "Invitación enviada a {email}.",
+            "notEmailed": "La invitación para {email} quedó lista, pero el correo no salió. Revisa la configuración de correo o reenvíala más tarde.",
+            "limit": "Máximo 3 envíos al día por invitación."
+        },
+        "editIdol": {
+            "title": "Editar ídolo",
+            "name": "Nombre",
+            "isPublic": "Visible para los fans",
+            "isPublicHint": "Apagado, los fans no lo ven en la app.",
+            "saved": "Cambios guardados."
+        },
+        "topups": {
+            "title": "Recargas con problemas",
+            "lead": "Recargas con OnePay que llevan más de 10 minutos pendientes y no se acreditaron. Reconciliar le pregunta a OnePay por el pago y acredita los Fandis si ya está aprobado.",
+            "empty": "No hay recargas atascadas. Todo está al día.",
+            "cols": {
+                "fan": "Fan",
+                "amount": "Monto",
+                "reference": "Referencia",
+                "provider": "OnePay",
+                "waiting": "Esperando",
+                "attempts": "Intentos automáticos",
+                "next": "Próximo intento (hora de Colombia)",
+                "created": "Creada (hora de Colombia)"
+            },
+            "reported": "Reportó el pago",
+            "notReported": "Sin reporte",
+            "noNextAttempt": "Sin programar",
+            "reconcile": "Reconciliar",
+            "confirmTitle": "¿Reconciliar la recarga de {amount}?",
+            "confirmBody": "Le preguntamos a OnePay por la referencia {reference}. Si el pago está aprobado, acreditamos los Fandis a {fan}. Queda en la auditoría.",
+            "confirm": "Reconciliar",
+            "outcome": {
+                "completed": "Recarga acreditada.",
+                "failed": "OnePay rechazó el pago. La recarga quedó fallida.",
+                "expired": "La recarga venció sin pago.",
+                "pending": "OnePay aún no confirma el pago. Sigue pendiente."
+            },
+            "openFan": "Ver fan"
+        },
+        "fans": {
+            "title": "Fans",
+            "lead": "Busca una cuenta por celular, correo, nombre o ID para dar soporte.",
+            "recordedNote": "Cada búsqueda y cada perfil que abres queda registrado en la auditoría (Ley 1581).",
+            "searchLabel": "Buscar cuenta",
+            "searchPlaceholder": "Celular, correo, nombre o ID",
+            "idle": "Escribe al menos 3 caracteres. Mostramos hasta 20 cuentas.",
+            "empty": "Ninguna cuenta coincide con \"{q}\".",
+            "max": "Mostramos las primeras 20. Escribe algo más preciso para afinar.",
+            "cols": {
+                "name": "Nombre",
+                "email": "Correo",
+                "phone": "Celular",
+                "role": "Tipo",
+                "created": "Creada (hora de Colombia)",
+                "state": "Estado"
+            },
+            "roles": {
+                "fan": "Fan",
+                "organizer": "Equipo de ídolo",
+                "admin": "Fandi Admin",
+                "staff": "Staff",
+                "sponsor": "Patrocinador"
+            },
+            "active": "Activa",
+            "deleted": "Eliminada",
+            "open": "Abrir"
+        },
+        "fanDetail": {
+            "back": "Volver a Fans",
+            "recordedNote": "Abrir este perfil quedó registrado en la auditoría (Ley 1581).",
+            "viewAudit": "Ver su historial en Auditoría",
+            "profile": "Perfil",
+            "fields": {
+                "id": "ID",
+                "email": "Correo",
+                "phone": "Celular",
+                "role": "Tipo de cuenta",
+                "instagram": "Instagram",
+                "birthDate": "Fecha de nacimiento",
+                "city": "Ciudad",
+                "publicProfile": "Perfil público en rankings",
+                "terms": "Términos aceptados",
+                "created": "Cuenta creada",
+                "deleted": "Eliminada"
+            },
+            "termsValue": "{date} (versión {version})",
+            "notSet": "Sin dato",
+            "deletedBanner": "Esta cuenta se eliminó el {date}. Sus datos personales se anonimizaron.",
+            "organization": "Equipo",
+            "orgRoles": {
+                "owner": "Propietario",
+                "admin": "Administrador",
+                "viewer": "Lector",
+                "staff": "Staff"
+            },
+            "noOrganization": "No pertenece a ningún equipo.",
+            "balance": "Saldo",
+            "balanceFandis": "{fandis} F",
+            "ledger": "Movimientos (últimos 50)",
+            "ledgerEmpty": "Sin movimientos.",
+            "ledgerCols": {
+                "date": "Fecha (hora de Colombia)",
+                "type": "Tipo",
+                "amount": "Monto",
+                "balanceAfter": "Saldo después",
+                "status": "Estado",
+                "reference": "Referencia"
+            },
+            "ledgerTypes": {
+                "topup": "Recarga",
+                "contribution": "Aporte",
+                "bid_reserve": "Reserva de puja",
+                "bid_release": "Puja liberada",
+                "bid_charge": "Puja cobrada",
+                "refund": "Reembolso",
+                "withdrawal": "Retiro",
+                "withdrawal_reversal": "Retiro devuelto"
+            },
+            "ledgerStatus": {
+                "pending": "Pendiente",
+                "completed": "Completado",
+                "failed": "Fallido"
+            },
+            "kyc": "Verificación de identidad",
+            "kycLevels": {
+                "prize": "Para premios",
+                "stepup": "Reforzada"
+            },
+            "kycApproved": "Aprobada",
+            "kycStatus": {
+                "none": "Sin iniciar",
+                "not_started": "Sin iniciar",
+                "in_progress": "En curso",
+                "in_review": "En revisión",
+                "approved": "Aprobada",
+                "declined": "Rechazada",
+                "expired": "Vencida",
+                "abandoned": "Abandonada"
+            },
+            "kycThreshold": "La reforzada se pide al llegar a {amount} en recargas de 30 días, o si la marcas aquí.",
+            "flagged": "Marcada: necesita la verificación reforzada antes de recargar",
+            "flaggedSince": "Desde el {date}. Motivo: {reason}",
+            "notFlagged": "Sin marca.",
+            "flag": "Pedir verificación reforzada",
+            "flagTitle": "Pedir verificación reforzada",
+            "flagHint": "Antes de su próxima recarga, el fan tendrá que pasar la verificación reforzada. Queda en la auditoría.",
+            "flagReason": "Motivo (lo ve el equipo de Fandi, no el fan)",
+            "flagPlaceholder": "Ej.: pagos rechazados seguidos con tarjetas distintas",
+            "flagReasonHint": "Entre 3 y 500 caracteres.",
+            "flagSubmit": "Marcar la cuenta",
+            "flagDone": "Marcamos la cuenta.",
+            "unflag": "Quitar la marca",
+            "unflagTitle": "¿Quitar la marca?",
+            "unflagBody": "El fan podrá recargar sin la verificación reforzada hasta el umbral de 30 días. Queda en la auditoría.",
+            "unflagDone": "Quitamos la marca.",
+            "verifications": "Verificaciones",
+            "noVerifications": "Aún no ha verificado su identidad.",
+            "verificationTitle": "{level}: {status}",
+            "verificationMeta": "{date} · {reason}",
+            "approve": "Aprobar",
+            "decline": "Rechazar",
+            "approveTitle": "Aprobar verificación",
+            "declineTitle": "Rechazar verificación",
+            "decideHint": "Didit la dejó en revisión. Explica tu decisión: queda en la auditoría.",
+            "decideNotes": "Nota de la decisión",
+            "approveSubmit": "Aprobar",
+            "declineSubmit": "Rechazar",
+            "decideApproved": "Verificación aprobada.",
+            "decideDeclined": "Verificación rechazada.",
+            "kycReasons": {"prize": "Premio ganado", "topup_threshold": "Recargas sobre el umbral", "manual": "Marca manual"},
+            "withdrawals": "Retiros (últimos 20)",
+            "withdrawalsEmpty": "Sin retiros.",
+            "withdrawalCols": {
+                "date": "Solicitado (hora de Colombia)",
+                "gross": "Retira",
+                "fee": "Costo",
+                "net": "Recibe",
+                "status": "Estado",
+                "detail": "Detalle"
+            },
+            "withdrawalStatus": {
+                "in_review": "En revisión",
+                "approved": "Aprobado",
+                "processing": "Enviando",
+                "paid": "Pagado",
+                "failed": "Falló",
+                "rejected": "Rechazado"
+            },
+            "withdrawalReason": {
+                "recent_topup_30d": "Recarga de los últimos 30 días",
+                "identity_check": "Identidad sin cruzar con la verificación"
+            },
+            "topups": "Recargas (últimas 20)",
+            "topupsEmpty": "Sin recargas.",
+            "topupCols": {
+                "date": "Creada (hora de Colombia)",
+                "amount": "Monto",
+                "reference": "Referencia",
+                "status": "Estado",
+                "detail": "Detalle"
+            },
+            "topupStatus": {
+                "pending": "Pendiente",
+                "completed": "Acreditada",
+                "failed": "Fallida",
+                "expired": "Vencida"
+            }
+        },
+        "audit": {
+            "title": "Auditoría",
+            "lead": "Lo que hace el equipo de Fandi en este panel queda aquí: quién, qué, sobre qué y desde dónde. No se puede editar ni borrar.",
+            "action": "Acción",
+            "allActions": "Todas las acciones",
+            "targetType": "Sobre",
+            "allTargets": "Todo",
+            "targetId": "ID",
+            "targetIdPlaceholder": "Pega un ID",
+            "apply": "Filtrar",
+            "clear": "Quitar filtros",
+            "empty": "No hay registros con estos filtros.",
+            "cols": {
+                "time": "Cuándo (hora de Colombia)",
+                "actor": "Quién",
+                "action": "Acción",
+                "target": "Sobre",
+                "details": "Detalles",
+                "ip": "IP"
+            },
+            "script": "Script del servidor",
+            "onlyThis": "Filtrar por este",
+            "actions": {
+                "org_create": "Creó un ídolo",
+                "org_update": "Editó un ídolo",
+                "org_owner_invite": "Invitó al propietario",
+                "user_search": "Buscó cuentas",
+                "user_view": "Abrió un perfil",
+                "kyc_flag": "Pidió verificación reforzada",
+                "kyc_unflag": "Quitó la marca de verificación",
+                "kyc_decide": "Decidió una verificación",
+                "topup_reconcile": "Reconcilió una recarga",
+                "withdrawal_approve": "Aprobó un retiro",
+                "withdrawal_reject": "Rechazó un retiro",
+                "withdrawal_reconcile": "Reconcilió retiros",
+                "classification_category_create": "Creó una categoría",
+                "classification_category_rename": "Renombró una categoría",
+                "classification_category_delete": "Borró una categoría",
+                "classification_idol_set": "Clasificó un ídolo"
+            },
+            "targets": {
+                "organization": "Ídolo",
+                "user": "Cuenta",
+                "kyc_verification": "Verificación",
+                "topup": "Recarga",
+                "withdrawal": "Retiro",
+                "category": "Categoría"
+            }
+        }
     },
     "fanTiers": {
         "leyenda": "Leyenda",
@@ -410,7 +979,8 @@
             "currentRequired": "Escribe tu contraseña actual.",
             "currentWrong": "La contraseña actual no es correcta.",
             "sameAsCurrent": "La contraseña nueva debe ser distinta a la actual.",
-            "forgotHint": "¿No recuerdas la actual? Cierra sesión y usa «¿Olvidaste tu contraseña?»."
+            "forgotHint": "¿No recuerdas la actual? Cierra sesión y usa «¿Olvidaste tu contraseña?».",
+            "twoStepCode": "Tu cuenta tiene verificación en dos pasos: escribe el código de tu app para cambiar la contraseña."
         }
     },
     "dashboard": {
@@ -505,7 +1075,11 @@
             "invalidUrl": "URL inválida",
             "maxLength": "Máximo {max} caracteres",
             "required": "Este campo es obligatorio",
-            "CONTEST_BANK_INCOMPLETE": "Cada oportunidad necesita al menos 20 preguntas antes de publicar el evento."
+            "CONTEST_BANK_INCOMPLETE": "Cada oportunidad necesita al menos 20 preguntas antes de publicar el evento.",
+            "EVENT_CITY_REQUIRED": "Elige la ciudad del evento para publicarlo: de ella sale la zona horaria con la que los fans ven cada hora.",
+            "EVENT_TIMEZONE_REQUIRED": "El evento no tiene zona horaria. Vuelve a elegir la ciudad del evento para publicarlo.",
+            "FANDI_WINDOW_REQUIRED": "Define cuándo abre y cuándo cierra Fandi (fecha y hora) para publicar el evento.",
+            "INVALID_INSTANT": "Una fecha llegó sin su zona horaria. Recarga la página e intenta de nuevo."
         },
         "form": {
             "city": "Ciudad",
@@ -804,6 +1378,15 @@
         "legacyTags": "Etiquetas anteriores (texto)",
         "privateMark": "Oculto a otros fans"
     },
+    "eventTime": {
+        "zoneLabel": "Hora de {city} ({offset})",
+        "zoneLabelColombia": "Hora de Colombia ({offset})",
+        "zoneLabelEvent": "Hora del evento ({offset})",
+        "browserDiffers": "Tu computador está en otra zona horaria; estas horas son de {city}.",
+        "browserDiffersColombia": "Tu computador está en otra zona horaria; estas horas son de Colombia.",
+        "browserDiffersEvent": "Tu computador está en otra zona horaria; estas horas son las del lugar del evento.",
+        "invalidInstant": "Una fecha llegó sin su zona horaria. Recarga la página e intenta de nuevo."
+    },
     "franjas": {
         "title": "Franjas",
         "add": "Crear Franja",
@@ -928,15 +1511,12 @@
         "actions": "Acciones",
         "allEvents": "Todos los eventos",
         "pending": "Pendiente",
-        "active": "Activo",
-        "invitedOn": "Invitado",
         "displayName": "Nombre (Opcional)",
         "empty": "No hay miembros en tu equipo.",
         "error": "Error al cargar el equipo.",
         "inviteMember": "INVITAR MIEMBRO",
         "invite": "Enviar Invitación",
-        "invited": "Miembro invitado exitosamente",
-        "invitedExisting": "Esa persona ya tiene cuenta en Fandi: verá tu equipo la próxima vez que inicie sesión.",
+        "invitationSent": "Invitación enviada a {email}",
         "changeRole": "Cambiar Rol",
         "changeRoleFor": "Cambiar rol para {name}",
         "newRole": "Nuevo Rol",
@@ -948,10 +1528,9 @@
         "confirmRemove": "¿Eliminar a {name} del equipo? Esta acción no se puede deshacer.",
         "cancel": "Cancelar",
         "eventRestriction": "Restricción de Eventos",
-        "eventRestrictionHint": "Si no seleccionas ningún evento, el staff tendrá acceso a todos.",
+        "eventRestrictionHint": "Si no eliges ningún evento, esta persona tendrá acceso a todos.",
         "noEvents": "No hay eventos disponibles",
-        "resendInvite": "Reenviar Invitación",
-        "inviteResent": "Invitación reenviada",
+        "inviteResent": "Invitación reenviada a {email}",
         "roles": {
             "owner": "Propietario",
             "admin": "Administrador",
@@ -959,12 +1538,12 @@
             "staff": "Staff"
         },
         "membersTitle": "Miembros",
-        "invitePanelHint": "Le llegará un correo con el enlace para unirse a tu equipo.",
+        "invitePanelHint": "Le llegará un correo con un enlace para unirse a tu equipo. El enlace dura 7 días y sirve una sola vez.",
         "roleHints": {
-            "owner": "Controla todo: eventos, equipo y perfil público.",
-            "admin": "Crea y edita eventos y dinámicas. Puede invitar observadores y staff.",
-            "viewer": "Ve eventos y resultados. No puede cambiar nada.",
-            "staff": "Entrega los premios a los ganadores el día del evento, desde su celular."
+            "owner": "Controla todo: perfil público, eventos, dinámicas, resultados y equipo.",
+            "admin": "Crea y edita eventos y dinámicas, ve resultados e invita observadores y staff.",
+            "viewer": "Ve eventos, dinámicas y resultados, sin cambiar nada.",
+            "staff": "Valida los premios de los ganadores con el escáner QR el día del evento."
         },
         "rolesGuideTitle": "Qué puede hacer cada rol",
         "eventsCount": "{count, plural, one {# evento} other {# eventos}}",
@@ -973,16 +1552,43 @@
         "emptyBody": "Invita a las personas que te ayudan con tus eventos.",
         "invalidEmail": "Escribe un correo válido, por ejemplo nombre@correo.com.",
         "emailRequired": "Escribe el correo de la persona.",
-        "inviteMayHaveExpired": "El enlace pudo vencer",
         "resendShort": "Reenviar",
         "resendFor": "Reenviar la invitación a {name}",
         "sending": "Enviando...",
+        "invitationsTitle": "Invitaciones",
+        "invitationsEmpty": "No hay invitaciones pendientes.",
+        "invitationsError": "No pudimos cargar las invitaciones.",
+        "invitationState": {
+            "pending": "Pendiente",
+            "expired": "Vencida",
+            "needsResend": "Necesita reenvío"
+        },
+        "expiresOn": "Vence el {date} a las {time} (hora de Colombia)",
+        "expiredOn": "Venció el {date} a las {time} (hora de Colombia)",
+        "needsResendHint": "Su enlace anterior ya no sirve. Reenvíala para que le llegue uno nuevo.",
+        "sentBy": "Enviada por {name}",
+        "sentByFandi": "Enviada por Fandi",
+        "resendAvailable": "Podrás reenviarla el {date} a las {time} (hora de Colombia)",
+        "cancelShort": "Cancelar",
+        "cancelFor": "Cancelar la invitación a {name}",
+        "cancelInvitationTitle": "¿Cancelar la invitación?",
+        "cancelInvitationBody": "El enlace que le llegó a {email} dejará de funcionar. Puedes volver a invitar a esa persona cuando quieras.",
+        "cancelInvitationConfirm": "Cancelar invitación",
+        "keepInvitation": "Volver",
+        "invitationCancelled": "Invitación cancelada",
         "errors": {
             "alreadyMember": "Esa persona ya está en tu equipo.",
-            "fanAccount": "Ese correo es de una cuenta de fan. Usa otro correo para el equipo.",
-            "otherTeam": "Esa cuenta ya pertenece al equipo de otro ídolo.",
-            "accountActive": "Esa persona ya tiene cuenta: solo debe iniciar sesión para unirse.",
-            "emailRegistered": "Ese correo ya tiene cuenta en Fandi y no pudimos invitarlo. Escríbenos a soporte.",
+            "noOrg": "Tu cuenta ya no pertenece a este equipo. Recarga la página.",
+            "roleNotAllowed": "Como administrador puedes invitar y gestionar observadores y staff. A los administradores los invita el propietario.",
+            "eventScope": "Solo observadores y staff pueden limitarse a ciertos eventos.",
+            "eventNotInOrg": "Uno de los eventos elegidos ya no está disponible. Recarga la página y elige de nuevo.",
+            "invitationPending": "Ya hay una invitación pendiente para ese correo. Puedes reenviarla desde Invitaciones.",
+            "orgRateLimited": "Tu equipo ya envió {limit} invitaciones en las últimas 24 horas. Intenta más tarde.",
+            "tooFast": "Vas muy rápido. Espera un minuto e intenta de nuevo.",
+            "invitationNotFound": "Esa invitación ya no existe. Recarga la página.",
+            "invitationNotPending": "Esa invitación ya fue aceptada o cancelada. Recarga la página.",
+            "resendLimit": "Ya enviaste esta invitación 3 veces en 24 horas. Podrás reenviarla el {date} a las {time} (hora de Colombia).",
+            "resendLimitSoon": "Ya enviaste esta invitación 3 veces en 24 horas. Intenta más tarde.",
             "noPermission": "Tu rol no permite hacer esto. Pídeselo al propietario del equipo.",
             "notFound": "Esa persona ya no está en tu equipo. Recarga la página.",
             "invalid": "Revisa los datos e intenta de nuevo.",
@@ -1539,7 +2145,7 @@
     },
     "collaborations": {
         "title": "Ídolos invitados",
-        "howItWorks": "Busca al ídolo · le llega una invitación a su panel · cuando acepte, verá los datos de sus fans en esta dinámica",
+        "howItWorks": "Busca al ídolo · su equipo recibe la invitación en su panel · si acepta, aparece ante los fans en esta dinámica y ve sus fans y resultados, nunca montos",
         "queued": "Se invitará al guardar",
         "queuedListLabel": "Ídolos que se invitarán al guardar",
         "removeQueued": "Quitar a {name}",
@@ -1568,19 +2174,70 @@
             "expired": "Vencida"
         },
         "pageTitle": "Colaboraciones",
-        "pageLead": "Otros ídolos pueden invitarte a sus dinámicas. Si aceptas, las ves aquí en modo lectura y los fans te ven en ellas.",
+        "pageLead": "Invita a otros ídolos a tus dinámicas y responde las invitaciones que te envíen.",
+        "howTitle": "Cómo funcionan",
+        "howSteps": {
+            "invite": {
+                "title": "Invita",
+                "body": "Desde una dinámica de tu evento, busca al otro ídolo y envíale la invitación."
+            },
+            "answer": {
+                "title": "Responden",
+                "body": "Su equipo acepta o rechaza desde Colaboraciones. Te avisamos por correo."
+            },
+            "share": {
+                "title": "Colaboran",
+                "body": "Si acepta, los fans lo ven en esa dinámica y su equipo ve sus fans y resultados en modo lectura, nunca montos."
+            }
+        },
+        "tabs": {
+            "received": "Recibidas",
+            "sent": "Enviadas",
+            "active": "Activas",
+            "history": "Historial",
+            "label": "Colaboraciones"
+        },
+        "empty": {
+            "received": "No tienes invitaciones por responder.",
+            "receivedBody": "Cuando otro ídolo te invite a una de sus dinámicas, la verás aquí y te llegará un correo.",
+            "sent": "Aún no has invitado a otros ídolos.",
+            "sentBody": "Invita a un ídolo desde una dinámica de tu evento: su equipo verá la invitación en su panel.",
+            "active": "Aún no colaboras en eventos de otros ídolos.",
+            "activeBody": "Cuando aceptes una invitación, la colaboración aparecerá aquí.",
+            "history": "Aún no hay historial.",
+            "historyBody": "Aquí verás las invitaciones que respondiste, las que vencieron y las colaboraciones que terminaron."
+        },
+        "emptyCta": "Invita a un ídolo desde una dinámica",
+        "highlight": {
+            "fromEmail": "Esta es la invitación de tu correo",
+            "answered": "Esa invitación ya fue respondida. Aquí está su estado.",
+            "expired": "Esa invitación venció. Pídele a {host} que te la reenvíe.",
+            "notFound": "No encontramos esa invitación en tu panel. Puede que sea para el equipo de otro ídolo o que ya no exista.",
+            "sentNotFound": "No encontramos esa invitación entre las que envió tu equipo."
+        },
+        "sentTo": "Invitaste a {guest}",
+        "newResponse": "Nueva respuesta",
+        "goToDynamic": "Ir a la dinámica",
+        "resendFor": "Reenviar la invitación a {name}",
+        "cancelFor": "Cancelar la invitación a {name}",
+        "endFor": "Terminar la colaboración con {name}",
+        "loadError": "No pudimos cargar tus colaboraciones.",
+        "scopedInbox": "Tu acceso está limitado a ciertos eventos, así que aquí no ves las invitaciones que recibe tu equipo.",
+        "declineConfirm": "¿Rechazar la invitación de {host}?",
+        "declineConfirmBody": "{host} no podrá invitarte de nuevo durante 7 días.",
         "tokenTitle": "Te invitaron a colaborar",
-        "tokenBody": "Acepta para ver esa dinámica en tu panel y aparecer ante los fans; rechaza si no quieres participar.",
-        "tokenInvite": "{host} te invita a «{dynamic}» en {event}.",
+        "tokenBody": "Si aceptas, apareces ante los fans en esa dinámica y la ves en modo lectura, sin montos. Rechaza si no quieres participar.",
+        "tokenInvite": "{host} te invitó a «{dynamic}» en {event}.",
         "onlyAuthors": "Solo propietarios o administradores pueden responder",
         "invitedYou": "{host} te invitó",
-        "grants": "Verás los fans y resultados de esta dinámica. No verás montos.",
+        "grants": "Si aceptas, apareces ante los fans en esta dinámica y ves en modo lectura sus fans y resultados. No verás montos.",
         "kind": {
             "oportunidad": "Oportunidad",
             "impacto": "Impacto",
             "auction": "Subasta"
         },
         "pendingBadge": "{count, plural, one {# invitación pendiente} other {# invitaciones pendientes}}",
+        "responsesBadge": "{count, plural, one {# respuesta nueva} other {# respuestas nuevas}}",
         "banner": "{host} te invitó a {dynamic} de {event}",
         "bannerMore": "y {count, plural, one {# invitación más} other {# invitaciones más}}",
         "bannerCta": "{count, plural, one {Ver invitación} other {Ver invitaciones}}",
@@ -1588,20 +2245,14 @@
         "decline": "Rechazar",
         "acceptedToast": "Colaboración aceptada en {name}",
         "declinedToast": "Invitación rechazada",
-        "pendingTitle": "Invitaciones ({count})",
-        "pendingEmpty": "No tienes invitaciones pendientes.",
-        "activeTitle": "Colaboraciones activas ({count})",
-        "activeEmpty": "Aún no colaboras en eventos de otros ídolos.",
-        "historyTitle": "Historial",
         "open": "Ver",
         "from": "De {host}",
-        "expires": "vence el {date}",
+        "expiresAt": "Vence el {date} a las {time} (hora de Colombia)",
         "hostedBy": "Evento de {host}",
         "viewOnly": "Solo lectura",
         "until": "datos hasta el {date}",
         "sharedNotFound": "No tienes acceso a este evento.",
         "participants": "Fans participando",
-        "contributed": "Aportes del evento",
         "participantsLine": "{total, plural, one {# fan} other {# fans}}",
         "fan": "Fan",
         "instagram": "Instagram",
@@ -1627,7 +2278,28 @@
             "pending": "Aún sin datos: el reparto se calcula cada noche."
         },
         "since": "Desde",
-        "moreFans": "Se muestran los primeros 500 fans en llegar; los totales incluyen a todos."
+        "moreFans": "Se muestran los primeros 500 fans en llegar; los totales incluyen a todos.",
+        "errors": {
+            "self": "No puedes invitar a tu propio ídolo.",
+            "idolNotFound": "No encontramos ese ídolo. Puede que ya no sea público en Fandi.",
+            "idolNoAccount": "Ese ídolo aún no tiene quién responda en su panel de Fandi.",
+            "exists": "Ese ídolo ya está invitado o colabora en esta dinámica.",
+            "notPending": "Esa invitación ya fue respondida. Recarga la página.",
+            "expired": "Esa invitación venció. Pide que te la reenvíen.",
+            "linkUsed": "Ese enlace ya no sirve. Busca la invitación en Recibidas.",
+            "notActive": "Esa colaboración ya terminó.",
+            "noPermission": "Tu rol no permite hacer esto. Pídeselo al propietario o a un administrador.",
+            "notFound": "Esa colaboración ya no existe. Recarga la página.",
+            "dynamicNotFound": "Esa dinámica ya no existe. Recarga la página.",
+            "cooldown": "Este ídolo rechazó una invitación tuya hace poco. Podrás invitarlo de nuevo el {date} a las {time} (hora de Colombia).",
+            "cooldownSoon": "Este ídolo rechazó una invitación tuya hace poco. Podrás invitarlo de nuevo en unos días.",
+            "inviteLimit": "Ya enviaste {limit} invitaciones a este ídolo en las últimas 24 horas. Intenta más tarde.",
+            "tooFast": "Vas muy rápido. Espera un minuto e intenta de nuevo.",
+            "notSynced": "Tu sesión no está lista. Recarga la página.",
+            "noOrg": "Tu cuenta ya no pertenece a un equipo. Recarga la página.",
+            "network": "Sin conexión. Revisa tu internet e intenta de nuevo.",
+            "generic": "Algo salió mal. Intenta de nuevo."
+        }
     },
     "classification": {
         "title": "Clasificación de ídolos",

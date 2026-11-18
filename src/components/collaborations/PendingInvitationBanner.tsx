@@ -42,7 +42,11 @@ export function PendingInvitationBanner() {
                 </p>
             </div>
             <Button asChild variant="secondary">
-                <Link href={COLLABORATIONS_HREF} data-testid="pending-invitation-cta">
+                {/* One invitation: open it highlighted; several: the Recibidas list. */}
+                <Link
+                    href={summary.count === 1 ? `${COLLABORATIONS_HREF}?invite=${latest.id}` : COLLABORATIONS_HREF}
+                    data-testid="pending-invitation-cta"
+                >
                     {t('bannerCta', { count: summary.count })} ›
                 </Link>
             </Button>

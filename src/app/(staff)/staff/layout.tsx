@@ -7,29 +7,35 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/auth-context';
 import { SessionUnreachable } from '@/components/auth/session-unreachable';
 import { useRouter } from 'next/navigation';
+import { verificationUrl } from '@/lib/two-step';
 
 export default function StaffLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated, isUnreachable, retrySession, memberRole, user, logout } = useAuth();
+    const { isLoading, isAuthenticated, isUnreachable, retrySession, memberRole, user, logout, twoStep } = useAuth();
     const router = useRouter();
     const t = useTranslations('redemption');
+    // Staff may turn two-step verification on (optional for the role):
+    // then the code comes first, like everywhere else.
+    const mustVerify = isAuthenticated && (twoStep.kind === 'verify' || twoStep.kind === 'enrol');
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated && !isUnreachable) {
             router.replace('/login');
         } else if (!isLoading && isAuthenticated && memberRole !== 'staff') {
             router.replace('/dashboard');
+        } else if (mustVerify) {
+            router.replace(verificationUrl('/staff'));
         }
-    }, [isLoading, isAuthenticated, isUnreachable, memberRole, router]);
+    }, [isLoading, isAuthenticated, isUnreachable, memberRole, mustVerify, router]);
 
     if (!isLoading && isUnreachable) {
         return <SessionUnreachable onRetry={retrySession} />;
     }
 
-    if (isLoading || !isAuthenticated || memberRole !== 'staff') {
+    if (isLoading || !isAuthenticated || memberRole !== 'staff' || mustVerify) {
         return (
             <div className="flex h-screen items-center justify-center bg-blue text-lime">
                 <span className="live-dot size-3" aria-hidden="true" />

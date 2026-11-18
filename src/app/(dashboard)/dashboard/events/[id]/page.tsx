@@ -12,6 +12,8 @@ import { formatFandis, formatCop } from '@/lib/currency';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import type { Event } from '@/types/api';
+import { eventCityName } from '@/lib/event-time-zone';
+import { useEventTime, type EventTime } from '@/components/events/EventZone';
 
 const MONO_11 = 'font-space-mono text-[11px] uppercase tracking-[0.14em]';
 
@@ -40,6 +42,9 @@ export default function EventOverviewPage() {
         enabled: event?.status === 'draft',
     });
 
+    // Every time on this page is on the event's clock, with its label.
+    const eventTime = useEventTime(event?.timezone, eventCityName(event));
+
     const eventTypeLabels: Record<string, string> = {
         football: t('typeFootball'),
         concert: t('typeConcert'),
@@ -48,23 +53,18 @@ export default function EventOverviewPage() {
 
     // "Martes, 17 de noviembre de 2026": only the first letter goes up
     // (Spanish style). CSS `capitalize` raised every word.
-    const formatDate = (iso: string) => {
-        const text = new Intl.DateTimeFormat('es', {
+    const formatDate = (iso: string | null | undefined) => {
+        const text = eventTime.format(iso, {
             weekday: 'long',
             day: 'numeric',
             month: 'long',
             year: 'numeric',
-        }).format(new Date(iso));
-        return text.charAt(0).toLocaleUpperCase('es') + text.slice(1);
+        });
+        return text ? text.charAt(0).toLocaleUpperCase('es') + text.slice(1) : null;
     };
 
-    const formatTime = (iso: string | null | undefined) => {
-        if (!iso) return null;
-        try {
-            const d = new Date(iso);
-            return d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: false });
-        } catch { return null; }
-    };
+    const formatTime = (iso: string | null | undefined) =>
+        eventTime.format(iso, { hour: '2-digit', minute: '2-digit', hour12: false });
 
     if (isLoading) {
         return (
@@ -102,12 +102,15 @@ export default function EventOverviewPage() {
         );
     const impactoCount = (isDraft ? preLive?.impactoCount : summary?.impactoCount) ?? 0;
 
-    const timeline = buildTimeline(event, (from, to) => t('overview.timeRange', { from, to }));
+    const timeline = buildTimeline(event, (from, to) => t('overview.timeRange', { from, to }), eventTime);
+    const city = eventCityName(event);
     const place = event.venue
-        ? event.city
-            ? `${event.venue}, ${event.city}`
+        ? city
+            ? `${event.venue}, ${city}`
             : event.venue
         : null;
+    // A multi-day event shows its end too (its day when it is another one).
+    const endsOtherDay = !!event.eventEndDate && !eventTime.sameDay(event.eventDate, event.eventEndDate);
 
     return (
         <div className="flex flex-col gap-6">
@@ -210,11 +213,21 @@ export default function EventOverviewPage() {
                                 {eventTypeLabels[event.eventType] || event.eventType}
                             </DetailField>
                         )}
-                        <DetailField label={t('date')}>
+                        <DetailField label={t('date')} wide={endsOtherDay}>
                             <span>{formatDate(event.eventDate)}</span>
                             {formatTime(event.eventDate) && (
                                 <span className="tabular"> · {formatTime(event.eventDate)}</span>
                             )}
+                            {event.eventEndDate && formatTime(event.eventEndDate) && (
+                                <span className="tabular">
+                                    {' → '}
+                                    {endsOtherDay ? `${formatDate(event.eventEndDate)} · ` : ''}
+                                    {formatTime(event.eventEndDate)}
+                                </span>
+                            )}
+                            <span className="mt-1 block font-space-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-white">
+                                {eventTime.label(event.eventDate)}
+                            </span>
                         </DetailField>
                         {place && (
                             <DetailField label={t('venue')} wide>
@@ -226,7 +239,9 @@ export default function EventOverviewPage() {
                     {/* One timeline, two tracks (§7) */}
                     {timeline && (
                         <div className="border-t-2 border-line-white pt-3.5">
-                            <span className="label-mono text-muted-white">{t('overview.schedule')}</span>
+                            <span className="label-mono text-muted-white">
+                                {t('overview.schedule')} · {eventTime.label(event.eventDate)}
+                            </span>
                             <div className="mt-2.5 flex justify-between font-space-mono text-[9px] text-muted-white">
                                 {timeline.ticks.map((tick, i) => (
                                     <span key={i}>{tick}</span>
@@ -333,6 +348,7 @@ type TimelineSpan = { left: number; width: number; range: string };
 function buildTimeline(
     event: Event,
     rangeLabel: (from: string, to: string) => string,
+    time: EventTime,
 ): {
     ticks: string[];
     ticket: TimelineSpan | null;
@@ -354,19 +370,16 @@ function buildTimeline(
     const min = Math.min(...points);
     const max = Math.max(...points);
     const span = max - min;
-    const multiDay =
-        span > 24 * 60 * 60 * 1000 ||
-        new Date(min).toDateString() !== new Date(max).toDateString();
+    // Days and hours on the event's clock, not the computer's.
+    const multiDay = span > 24 * 60 * 60 * 1000 || !time.sameDay(min, max);
 
     const fmt = (v: number) => {
-        const d = new Date(v);
-        const time = d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: false });
-        if (!multiDay) return time;
-        const day = new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'short' })
-            .format(d)
+        const clock = time.format(v, { hour: '2-digit', minute: '2-digit', hour12: false }) ?? '';
+        if (!multiDay) return clock;
+        const day = (time.format(v, { day: 'numeric', month: 'short' }) ?? '')
             .replace(/\./g, '')
             .replace(/ de /g, ' ');
-        return `${day} ${time}`;
+        return `${day} ${clock}`;
     };
     const place = (a: number, b: number): TimelineSpan => ({
         left: ((a - min) / span) * 100,

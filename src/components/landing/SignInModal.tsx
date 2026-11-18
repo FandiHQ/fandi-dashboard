@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { LoginForm } from '@/components/auth/login-form';
+import { postLoginPath } from '@/lib/auth-flow';
 import type { UserSyncResponse } from '@/types/api';
 
 interface Props {
@@ -67,10 +68,7 @@ export default function SignInModal({ open, onClose }: Props) {
                             showLogo={true}
                             onSuccess={(me: UserSyncResponse) => {
                                 onClose();
-                                const destination = me.organization?.memberRole === 'staff'
-                                    ? '/staff'
-                                    : '/dashboard';
-                                router.push(destination);
+                                router.push(postLoginPath(me, '/dashboard'));
                             }}
                         />
                     </motion.div>

@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v3';
@@ -18,9 +18,12 @@ import type { UpdateEventDto, LineupEntry } from '@/types/api';
 import { LineupEditor } from '@/components/events/LineupEditor';
 import {
     datetimeLocalToIso,
+    eventDateViolations,
     isoToDatetimeLocal,
     eventDurationParts,
 } from '@/lib/event-datetime';
+import { eventCityName, resolveEventZone } from '@/lib/event-time-zone';
+import { BrowserZoneWarning, ZoneHint, useEventTime } from '@/components/events/EventZone';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,7 +40,6 @@ export default function EditEventPage() {
     const router = useRouter();
     const t = useTranslations('events');
     const tCommon = useTranslations('common');
-    const locale = useLocale();
     const { memberRole } = useAuth();
     const queryClient = useQueryClient();
     const eventId = params.id as string;
@@ -55,12 +57,21 @@ export default function EditEventPage() {
         queryFn: () => eventsApi.get(eventId),
     });
 
+    const [selectedCity, setSelectedCity] = useState<CityAutocompleteValue | null>(null);
+    // Every datetime input is the wall clock of the event's zone (the
+    // newly chosen city's, else event.timezone, else Bogotá), never the
+    // computer's. The saved values are read on the saved zone.
+    const savedZone = resolveEventZone(event?.timezone);
+    const zone = resolveEventZone(selectedCity?.timezone ?? event?.timezone);
+    const cityName = selectedCity?.name || eventCityName(event);
+    const eventTime = useEventTime(zone, cityName);
+
     const schema = useMemo(
         () =>
             z.object({
                 name: z.string().trim().min(1, t('validation.required')).max(255, t('validation.maxLength', { max: 255 })),
                 eventType: z.string().optional(),
-                // Full datetimes (Step 6.1) — datetime-local "YYYY-MM-DDTHH:MM".
+                // Full datetimes (Step 6.1): datetime-local "YYYY-MM-DDTHH:MM" on the event zone's clock.
                 eventDate: z.string().min(1, t('validation.required')),
                 eventEndDate: z.string().optional().or(z.literal('')),
                 fandiOpensAt: z.string().optional().or(z.literal('')),
@@ -75,15 +86,14 @@ export default function EditEventPage() {
                     .optional()
                     .or(z.literal('')),
             }).superRefine((data, ctx) => {
-                // Mirror the backend invariants (events.service assertEventDatesValid).
-                const { eventDate, eventEndDate, fandiOpensAt, fandiClosesAt } = data;
-                if (eventEndDate && eventDate && eventEndDate <= eventDate) {
-                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'EVENT_END_BEFORE_START', path: ['eventEndDate'] });
-                }
-                // The Fandi window may open before / close after the event; only
-                // its own span must be positive.
-                if (fandiOpensAt && fandiClosesAt && fandiOpensAt >= fandiClosesAt) {
-                    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'FANDI_WINDOW_INVALID', path: ['fandiClosesAt'] });
+                // Mirror the backend invariants (events.service assertEventDatesValid),
+                // comparing instants in the event zone.
+                for (const violation of eventDateViolations(data, zone)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: violation,
+                        path: [violation === 'EVENT_END_BEFORE_START' ? 'eventEndDate' : 'fandiClosesAt'],
+                    });
                 }
                 if ((data.status === 'published' || data.status === 'live') && !data.cityId) {
                     ctx.addIssue({
@@ -93,7 +103,7 @@ export default function EditEventPage() {
                     });
                 }
             }),
-        [t],
+        [t, zone],
     );
 
     type FormValues = z.infer<typeof schema>;
@@ -122,7 +132,6 @@ export default function EditEventPage() {
         },
     });
 
-    const [selectedCity, setSelectedCity] = useState<CityAutocompleteValue | null>(null);
     // Lineup (Step 6.4) — array editor kept outside the RHF schema.
     const [lineup, setLineup] = useState<LineupEntry[]>([]);
     // The lineup lives outside react-hook-form, so its changes must count as
@@ -152,10 +161,10 @@ export default function EditEventPage() {
             reset({
                 name: event.name,
                 eventType: event.eventType || undefined,
-                eventDate: isoToDatetimeLocal(event.eventDate),
-                eventEndDate: isoToDatetimeLocal(event.eventEndDate),
-                fandiOpensAt: isoToDatetimeLocal(event.fandiOpensAt),
-                fandiClosesAt: isoToDatetimeLocal(event.fandiClosesAt),
+                eventDate: isoToDatetimeLocal(event.eventDate, savedZone),
+                eventEndDate: isoToDatetimeLocal(event.eventEndDate, savedZone),
+                fandiOpensAt: isoToDatetimeLocal(event.fandiOpensAt, savedZone),
+                fandiClosesAt: isoToDatetimeLocal(event.fandiClosesAt, savedZone),
                 venue: event.venue || '',
                 cityId: event.cityId ?? null,
                 status: event.status,
@@ -170,11 +179,11 @@ export default function EditEventPage() {
             // until the user picks one).
             setSelectedCity(
                 event.cityId
-                    ? { id: event.cityId, name: event.city || '' }
+                    ? { id: event.cityId, name: eventCityName(event) || '', timezone: event.timezone }
                     : null,
             );
         }
-    }, [event, reset]);
+    }, [event, reset, savedZone]);
 
     // When the lookup resolves, upgrade the chip's label from the
     // optimistic placeholder to the canonical city name. Identity
@@ -187,9 +196,11 @@ export default function EditEventPage() {
             setSelectedCity({
                 id: cityFromLookup.id,
                 name: cityFromLookup.name,
+                // The event's own zone wins: it is what the saved times mean.
+                timezone: event?.timezone ?? cityFromLookup.timezone,
             });
         }
-    }, [cityFromLookup]);
+    }, [cityFromLookup, event?.timezone]);
 
     const watchAll = watch();
     const coverImageUrl = watchAll.coverImageUrl;
@@ -211,7 +222,7 @@ export default function EditEventPage() {
     });
 
     const onSubmit = (data: FormValues) => {
-        const eventDateTime = datetimeLocalToIso(data.eventDate);
+        const eventDateTime = datetimeLocalToIso(data.eventDate, zone);
         if (!eventDateTime) return;
 
         const dto: UpdateEventDto = {
@@ -222,9 +233,10 @@ export default function EditEventPage() {
             eventType: (data.eventType || undefined) as UpdateEventDto['eventType'],
             description: data.description || undefined,
             coverImageUrl: data.coverImageUrl || undefined,
-            eventEndDate: datetimeLocalToIso(data.eventEndDate),
-            fandiOpensAt: datetimeLocalToIso(data.fandiOpensAt),
-            fandiClosesAt: datetimeLocalToIso(data.fandiClosesAt),
+            // Instants with Z, read on the event zone's clock.
+            eventEndDate: datetimeLocalToIso(data.eventEndDate, zone),
+            fandiOpensAt: datetimeLocalToIso(data.fandiOpensAt, zone),
+            fandiClosesAt: datetimeLocalToIso(data.fandiClosesAt, zone),
             lineup: lineup.map((e) => ({ id: e.id, name: e.name })),
         };
         updateEvent(dto);
@@ -236,21 +248,20 @@ export default function EditEventPage() {
         other: t('typeOther'),
     };
 
-    // Format a datetime-local value ("YYYY-MM-DDTHH:MM") for the preview.
-    const formatDateTime = (local: string) => {
-        if (!local) return null;
-        const d = new Date(local);
-        if (isNaN(d.getTime())) return null;
-        return new Intl.DateTimeFormat(locale, {
+    // Format a datetime-local value ("YYYY-MM-DDTHH:MM", event clock) for the preview.
+    const formatDateTime = (local: string) =>
+        eventTime.format(eventTime.toUtc(local), {
             day: 'numeric',
             month: 'short',
             hour: 'numeric',
             minute: '2-digit',
-        }).format(d);
-    };
+        });
+    // For the "your computer is elsewhere" check on the typed dates.
+    const typedInstants = [watchAll.eventDate, watchAll.eventEndDate, watchAll.fandiOpensAt, watchAll.fandiClosesAt]
+        .map((local) => eventTime.toUtc(local));
 
     // Live duration readout ("Dura 2 días 3 h").
-    const durationParts = eventDurationParts(watchAll.eventDate, watchAll.eventEndDate);
+    const durationParts = eventDurationParts(watchAll.eventDate, watchAll.eventEndDate, zone);
     const durationText = durationParts
         ? t('durationLabel', {
               value: [
@@ -451,6 +462,7 @@ export default function EditEventPage() {
                             <h2 className="font-display text-[17px]">{t('infoTimezoneSection')}</h2>
                         </div>
                         <div className="p-5">
+                            <BrowserZoneWarning zone={zone} city={cityName} instants={typedInstants} className="mb-5" />
                             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                                 <div className="flex flex-col gap-1.5">
                                     <label htmlFor="event-start" className="label-mono text-muted-white">
@@ -463,6 +475,7 @@ export default function EditEventPage() {
                                         {...register('eventDate')}
                                         className="h-12 font-space-mono text-sm"
                                     />
+                                    <ZoneHint zone={zone} city={cityName} local={watchAll.eventDate} />
                                     {errors.eventDate && (
                                         <span className="font-space-mono text-[11px] text-alert-white">
                                             {formatFieldError(errors.eventDate.message)}
@@ -480,6 +493,7 @@ export default function EditEventPage() {
                                         {...register('eventEndDate')}
                                         className="h-12 font-space-mono text-sm"
                                     />
+                                    <ZoneHint zone={zone} city={cityName} local={watchAll.eventEndDate} />
                                     {errors.eventEndDate && (
                                         <span className="font-space-mono text-[11px] text-alert-white">
                                             {formatFieldError(errors.eventEndDate.message)}
@@ -513,6 +527,7 @@ export default function EditEventPage() {
                                     {...register('fandiOpensAt')}
                                     className="h-12 font-space-mono text-sm"
                                 />
+                                <ZoneHint zone={zone} city={cityName} local={watchAll.fandiOpensAt} />
                                 {errors.fandiOpensAt && (
                                     <span className="font-space-mono text-[11px] text-alert-white">
                                         {formatFieldError(errors.fandiOpensAt.message)}
@@ -533,6 +548,7 @@ export default function EditEventPage() {
                                     {...register('fandiClosesAt')}
                                     className="h-12 font-space-mono text-sm"
                                 />
+                                <ZoneHint zone={zone} city={cityName} local={watchAll.fandiClosesAt} />
                                 {errors.fandiClosesAt && (
                                     <span className="font-space-mono text-[11px] text-alert-white">
                                         {formatFieldError(errors.fandiClosesAt.message)}
@@ -667,6 +683,12 @@ export default function EditEventPage() {
                                         </div>
                                     )}
                                 </div>
+
+                                {(watchAll.eventDate || watchAll.fandiOpensAt) && (
+                                    <span className="font-space-mono text-[10px] uppercase text-lilac">
+                                        {eventTime.label(eventTime.toUtc(watchAll.eventDate || watchAll.fandiOpensAt) ?? undefined)}
+                                    </span>
+                                )}
 
                                 {/* Time previews */}
                                 {durationText && (

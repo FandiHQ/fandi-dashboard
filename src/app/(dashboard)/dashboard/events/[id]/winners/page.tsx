@@ -47,6 +47,7 @@ import {
 } from '@/components/ui/select';
 import type { WinnersListItem, WinnersListQuery } from '@/types/api';
 import { ContestResultsSection } from '@/components/contest/ContestResultsSection';
+import { eventCityName } from '@/lib/event-time-zone';
 
 // ─── Local types ─────────────────────────────────────────────
 
@@ -297,7 +298,13 @@ export default function WinnersPage() {
             </div>
 
             {/* ─── Knowledge contest: per-category results ─── */}
-            <ContestResultsSection eventId={eventId} eventName={event?.name} canExport={isWriteRole} />
+            <ContestResultsSection
+                eventId={eventId}
+                eventName={event?.name}
+                canExport={isWriteRole}
+                timeZone={event?.timezone}
+                city={eventCityName(event)}
+            />
 
             {/* ─── Pagination ─── */}
             {winners && winners.total > winners.limit && (

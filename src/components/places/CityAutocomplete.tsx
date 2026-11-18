@@ -16,6 +16,12 @@ import { placesApi } from '@/lib/api-hooks';
 export interface CityAutocompleteValue {
     id: string;
     name: string;
+    /**
+     * IANA zone of the city (from /places/search). The event forms read
+     * every datetime input on this clock. Null/undefined when unknown
+     * (some dr5hn rows have none): the forms fall back to Bogotá.
+     */
+    timezone?: string | null;
 }
 
 interface CityAutocompleteProps {
@@ -119,7 +125,7 @@ export function CityAutocomplete({
                                         key={city.id}
                                         value={`${city.name}-${city.stateName}-${city.id}`}
                                         onSelect={() => {
-                                            onChange({ id: city.id, name: city.name });
+                                            onChange({ id: city.id, name: city.name, timezone: city.timezone });
                                             setQuery('');
                                             setOpen(false);
                                         }}

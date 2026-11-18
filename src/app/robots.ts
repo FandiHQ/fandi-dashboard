@@ -23,6 +23,7 @@ export default function robots(): MetadataRoute.Robots {
                     '/login',
                     '/staff',
                     '/invite/',
+                    '/invitacion',
                     '/api/',
                 ],
             },

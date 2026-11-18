@@ -1,17 +1,37 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { authApi } from '@/lib/api-hooks';
 import {
-    DashboardAccessError, SyncFailedError, dashboardAccessOf, sessionSyncFailure, withOneRetry,
+    DashboardAccessError, SyncFailedError, dashboardAccessOf, hasPanelAccess, sessionSyncFailure, withOneRetry,
 } from '@/lib/auth-flow';
+import { twoStepGate, type TwoStepGate } from '@/lib/two-step';
 import type { UserSyncResponse } from '@/types/api';
 
 // Closing a session the panel can't use is LOCAL on purpose: the default
 // (global) scope revokes every session of that account, which would also
 // log a fan out of the mobile app just for trying the dashboard.
 const signOutHere = () => supabase.auth.signOut({ scope: 'local' });
+
+/** The session's two-step state, from Supabase (decoded locally, no API call). */
+export interface SessionAssurance {
+    /** 'aal2' once this session verified the 6-digit code. */
+    currentLevel: string | null;
+    /** The account has a verified authenticator (Supabase nextLevel 'aal2'). */
+    hasVerifiedFactor: boolean;
+}
+
+async function readAssurance(): Promise<SessionAssurance> {
+    try {
+        const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (error || !data) return { currentLevel: null, hasVerifiedFactor: false };
+        return { currentLevel: data.currentLevel ?? null, hasVerifiedFactor: data.nextLevel === 'aal2' };
+    } catch {
+        // Unknown: the API still answers 403 MFA_REQUIRED when it matters.
+        return { currentLevel: null, hasVerifiedFactor: false };
+    }
+}
 
 interface AuthContextType {
     user: UserSyncResponse | null;
@@ -26,6 +46,14 @@ interface AuthContextType {
     retrySession: () => Promise<void>;
     organization: UserSyncResponse['organization'];
     memberRole: string | null;
+    /** Fandi Admin (persisted users.role; the API checks it on every call). */
+    isPlatformAdmin: boolean;
+    /** Two-step verification of this session (null until known). */
+    assurance: SessionAssurance | null;
+    /** What a protected area must do first (verify / enrol / remind / ok). */
+    twoStep: TwoStepGate;
+    /** Re-read the assurance after a verify, enrol or removal. */
+    refreshAssurance: () => Promise<SessionAssurance>;
     login: (email: string, password: string) => Promise<UserSyncResponse>;
     logout: () => Promise<void>;
     refreshUser: () => Promise<void>;
@@ -35,15 +63,23 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserSyncResponse | null>(null);
+    const [assurance, setAssurance] = useState<SessionAssurance | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isUnreachable, setIsUnreachable] = useState(false);
+
+    const refreshAssurance = useCallback(async () => {
+        const next = await readAssurance();
+        setAssurance(next);
+        return next;
+    }, []);
 
     const loadSession = useCallback(() => {
         return supabase.auth.getSession().then(async ({ data: { session } }) => {
             if (session) {
                 const syncResponse = await withOneRetry(() => authApi.sync());
-                // Only store if user has dashboard access
-                if (dashboardAccessOf(syncResponse) === 'ok') {
+                // Only store if user has dashboard access (an org, or Fandi Admin)
+                if (hasPanelAccess(dashboardAccessOf(syncResponse))) {
+                    setAssurance(await readAssurance());
                     setUser(syncResponse);
                 } else {
                     // Fan or no org — sign out silently
@@ -80,16 +116,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Subscribe to Supabase auth state changes
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event) => {
+            (event) => {
                 if (event === 'SIGNED_OUT') {
                     setUser(null);
+                    setAssurance(null);
+                }
+                if (event === 'MFA_CHALLENGE_VERIFIED') {
+                    // Outside the callback: Supabase holds its lock while it runs.
+                    setTimeout(() => { void refreshAssurance(); }, 0);
                 }
                 // TOKEN_REFRESHED: no action needed — request interceptor
                 // calls getSession() each time, picks up refreshed token.
             }
         );
         return () => subscription.unsubscribe();
-    }, []);
+    }, [refreshAssurance]);
 
     // login() returns Promise<UserSyncResponse> so callers can read role
     // for routing decisions without stale closures.
@@ -110,14 +151,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             throw new SyncFailedError(syncError);
         }
 
-        // Check dashboard access: fans and users without an org cannot access.
-        // The error says which (safe: the caller proved the password).
+        // Check dashboard access: fans and users without an org cannot access
+        // (a Fandi admin can, to /admin). The error says which (safe: the
+        // caller proved the password).
         const access = dashboardAccessOf(syncResponse);
-        if (access !== 'ok') {
+        if (!hasPanelAccess(access)) {
             await signOutHere();
             throw new DashboardAccessError(access);
         }
 
+        // A password sign-in is aal1: with a verified authenticator the
+        // layouts send the person to the 6-digit code step first.
+        setAssurance(await readAssurance());
         setIsUnreachable(false);
         setUser(syncResponse);
         return syncResponse;
@@ -128,6 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // the global default would also log the person out of the app).
         await signOutHere();
         setUser(null);
+        setAssurance(null);
         // Small delay to let Supabase clear cookies before hard navigation
         // prevents Turbopack module-factory race condition on SSR
         if (typeof window !== 'undefined') {
@@ -138,7 +184,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const refreshUser = useCallback(async () => {
         try {
             const syncResponse = await authApi.sync();
-            if (dashboardAccessOf(syncResponse) === 'ok') {
+            if (hasPanelAccess(dashboardAccessOf(syncResponse))) {
                 setUser(syncResponse);
             }
         } catch { /* silently fail */ }
@@ -147,11 +193,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isAuthenticated = user !== null;
     const organization = user?.organization ?? null;
     const memberRole = user?.organization?.memberRole ?? null;
+    const isPlatformAdmin = user?.role === 'admin';
+    const twoStep = useMemo<TwoStepGate>(() => {
+        if (!user || !assurance) return { kind: 'ok' };
+        return twoStepGate({
+            role: user.role,
+            mfa: user.mfa ?? null,
+            currentLevel: assurance.currentLevel,
+            hasVerifiedFactor: assurance.hasVerifiedFactor,
+        });
+    }, [user, assurance]);
 
     return (
         <AuthContext.Provider value={{
             user, isLoading, isAuthenticated, isUnreachable, retrySession,
-            organization, memberRole, login, logout, refreshUser
+            organization, memberRole, isPlatformAdmin, assurance, twoStep, refreshAssurance,
+            login, logout, refreshUser,
         }}>
             {children}
         </AuthContext.Provider>

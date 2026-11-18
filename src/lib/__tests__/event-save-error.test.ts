@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { eventSaveErrorKey, isEventValidationCode } from '../event-save-error.ts';
+import { eventDateErrorCode, eventSaveErrorKey, isEventValidationCode, isInstantFormatError } from '../event-save-error.ts';
 
 describe('eventSaveErrorKey', () => {
     test('typed API codes get their own copy', () => {
@@ -23,5 +23,26 @@ describe('isEventValidationCode', () => {
         assert.equal(isEventValidationCode('FANDI_WINDOW_INVALID'), true);
         assert.equal(isEventValidationCode('Este campo es obligatorio'), false);
         assert.equal(isEventValidationCode(undefined), false);
+    });
+});
+
+describe('publish gate and instant-format errors', () => {
+    test('the publish gate codes have their own copy', () => {
+        assert.equal(eventSaveErrorKey({ code: 'EVENT_CITY_REQUIRED', status: 400 }), 'validation.EVENT_CITY_REQUIRED');
+        assert.equal(eventSaveErrorKey({ code: 'EVENT_TIMEZONE_REQUIRED', status: 400 }), 'validation.EVENT_TIMEZONE_REQUIRED');
+        assert.equal(eventSaveErrorKey({ code: 'FANDI_WINDOW_REQUIRED', status: 400 }), 'validation.FANDI_WINDOW_REQUIRED');
+    });
+
+    test('a datetime without a zone (IsIsoInstant 400) reads as INVALID_INSTANT', () => {
+        const err = {
+            code: 'ERROR',
+            status: 400,
+            message: 'eventDate debe ser una fecha y hora ISO 8601 con zona horaria explícita (Z o ±hh:mm), por ejemplo 2026-12-05T10:00:00-05:00.',
+        };
+        assert.equal(isInstantFormatError(err), true);
+        assert.equal(eventDateErrorCode(err), 'INVALID_INSTANT');
+        assert.equal(eventSaveErrorKey(err), 'validation.INVALID_INSTANT');
+        assert.equal(isInstantFormatError({ code: 'ERROR', status: 400, message: 'name must be shorter' }), false);
+        assert.equal(eventDateErrorCode({ code: 'ROLE_FORBIDDEN', status: 403 }), null);
     });
 });

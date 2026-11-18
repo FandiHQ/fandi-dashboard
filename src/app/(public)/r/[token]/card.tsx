@@ -31,6 +31,7 @@ import {
     type ShareCardPayload,
 } from '@/lib/share-card';
 import { fetchArtistImage } from '@/lib/artist-image';
+import { DEFAULT_EVENT_ZONE } from '@/lib/event-time-zone';
 
 export const CARD_SIZE = { width: 1200, height: 630 };
 
@@ -627,7 +628,10 @@ export async function renderShareCard(token: string): Promise<ImageResponse> {
     ]);
     const pct = topPercent(payload.r, payload.t);
     const tier = payload.ti ? TIER_LABEL[payload.ti] ?? null : null;
+    // The day it was issued in Bogotá, not the server's zone (UTC in prod):
+    // a card made at 8 p. m. in Colombia must not say tomorrow.
     const issued = new Date(payload.iat * 1000).toLocaleDateString('es-CO', {
+        timeZone: DEFAULT_EVENT_ZONE,
         day: 'numeric',
         month: 'short',
         year: 'numeric',

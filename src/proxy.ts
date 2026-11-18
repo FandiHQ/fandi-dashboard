@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { validateSession } from '@/lib/supabase-middleware';
 
-const protectedPrefixes = ['/dashboard', '/staff'];
+const protectedPrefixes = ['/dashboard', '/staff', '/admin', '/verificacion'];
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
@@ -35,7 +35,11 @@ export const config = {
     // SCOPED to protected routes only.
     // Do NOT run proxy on public pages (/, /login, landing assets) nor on the
     // email-link pages, which must open WITHOUT a session: /reset-password
-    // (recovery email) and /invite/accept (team invitation). Their tokens
-    // live in the URL hash and are verified in the browser.
-    matcher: ['/dashboard/:path*', '/staff/:path*'],
+    // (recovery email), /invitacion (team invitation, #t=<token>) and the
+    // old /invite/accept. Their tokens live in the URL hash and are used
+    // from the browser.
+    // /admin is the Fandi Admin area; /verificacion the two-step step,
+    // both need a session (the role and the code are checked client side
+    // and, for real, by the API).
+    matcher: ['/dashboard/:path*', '/staff/:path*', '/admin/:path*', '/verificacion'],
 };

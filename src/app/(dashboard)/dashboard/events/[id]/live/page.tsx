@@ -12,6 +12,9 @@ import { eventsApi, analyticsApi, auctionsApi, experiencesApi } from '@/lib/api-
 import { showsAnswered } from '@/lib/impacto';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { formatFandis, formatCop } from '@/lib/currency';
+import { formatRemaining } from '@/lib/event-datetime';
+import { eventCityName } from '@/lib/event-time-zone';
+import { useEventTime } from '@/components/events/EventZone';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import type { WsConnectionStatus, Auction, LivePulseResponse } from '@/types/api';
@@ -39,16 +42,7 @@ function useNow(): number | null {
     );
 }
 
-function pad2(n: number) {
-    return String(n).padStart(2, '0');
-}
-
-function formatRemaining(totalSeconds: number) {
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
-}
+// formatRemaining (lib/event-datetime): "6d 06:00:00" beyond a day.
 
 // ── Reloj Fandi (top bar) ──
 function FandiClock({ timeZone }: { timeZone: string }) {
@@ -284,6 +278,9 @@ export default function LiveDashboardPage() {
         queryKey: ['events', eventId],
         queryFn: () => eventsApi.get(eventId),
     });
+    // The Fandi clock and the queued start times are the event city's,
+    // labelled "Hora de Medellín (UTC-5)", not the computer's.
+    const eventTime = useEventTime(event?.timezone, eventCityName(event));
 
     // Guard: redirect if not live
     useEffect(() => {
@@ -373,7 +370,7 @@ export default function LiveDashboardPage() {
         );
     }
 
-    const timeZone = event?.timezone || 'America/Bogota';
+    const timeZone = eventTime.zone;
 
     return (
         <div className="flex flex-col gap-6">
@@ -394,7 +391,10 @@ export default function LiveDashboardPage() {
                     <ConnectionDot status={connectionStatus} />
                 </div>
                 <div className="flex items-center gap-3.5">
-                    <span className="label-mono text-[11px] text-muted-ink">{t('fandiClock')}</span>
+                    <span className="label-mono text-[11px] text-muted-ink">
+                        {t('fandiClock')}
+                        <span className="ml-1.5 text-[10px] text-lilac" data-testid="live-zone">{eventTime.label()}</span>
+                    </span>
                     <FandiClock timeZone={timeZone} />
                     <Link
                         href={`/dashboard/events/${eventId}`}

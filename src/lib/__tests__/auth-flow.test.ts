@@ -7,6 +7,7 @@ import {
     authLinkProblem,
     currentPasswordErrorKey,
     dashboardAccessOf,
+    loginContextFor,
     loginErrorKey,
     newPasswordChecks,
     parseAuthLink,
@@ -248,5 +249,19 @@ describe('sessionSyncFailure (page load with a session)', () => {
         assert.equal(sessionSyncFailure({ status: 401, code: 'UNAUTHORIZED' }), 'signOut');
         assert.equal(sessionSyncFailure({ status: 403, code: 'FORBIDDEN' }), 'signOut');
         assert.equal(sessionSyncFailure({ status: 404 }), 'signOut');
+    });
+});
+
+describe('loginContextFor (one line on /login for collaboration links)', () => {
+    test('an invitation to answer, or the answer to one we sent', () => {
+        assert.equal(loginContextFor('/dashboard/collaborations?invite=11111111-1111-4111-8111-111111111111'), 'collabInvite');
+        assert.equal(loginContextFor('/dashboard/collaborations?token=abc'), 'collabInvite');
+        assert.equal(loginContextFor('/dashboard/collaborations/?sent=11111111-1111-4111-8111-111111111111'), 'collabSent');
+    });
+
+    test('anything else gets no line', () => {
+        for (const next of [null, '', '/dashboard', '/dashboard/collaborations', '/dashboard/collaborations/e1', '//evil.com/dashboard/collaborations?invite=x', 'https://x.co/dashboard/collaborations?invite=x']) {
+            assert.equal(loginContextFor(next), null, String(next));
+        }
     });
 });

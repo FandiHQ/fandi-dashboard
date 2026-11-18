@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { collaborationsApi } from '@/lib/api-hooks';
+import { useCollabErrorMessage } from './useCollabErrorMessage';
 import {
     MAX_QUEUED_IDOLS,
     sendQueuedInvites,
@@ -28,7 +29,7 @@ export interface QueuedIdols {
 
 export function useQueuedInvites(eventId: string, dynamicType: DynamicType) {
     const t = useTranslations('collaborations');
-    const tCommon = useTranslations('common');
+    const describeError = useCollabErrorMessage();
     const queryClient = useQueryClient();
     const [items, setItems] = useState<IdolSearchResult[]>([]);
 
@@ -47,7 +48,7 @@ export function useQueuedInvites(eventId: string, dynamicType: DynamicType) {
         const outcomes = await sendQueuedInvites(
             (guestOrgId) => collaborationsApi.invite({ dynamicType, dynamicId, guestOrgId }),
             items,
-            tCommon('error'),
+            describeError,
         );
         // Sent or not, the panel now has an id: the edit view lists them.
         setItems([]);

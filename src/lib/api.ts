@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { supabase } from './supabase';
+import { VERIFICATION_PATH, verificationUrl } from './two-step';
 
 // ── Typed API error for TanStack Query error handling ──
 export class ApiError extends Error {
@@ -62,6 +63,19 @@ api.interceptors.response.use(
                   message?: string | string[];
               }
             | undefined;
+
+        // Two-step verification is required for this session (Fandi Admin,
+        // or an idol owner/admin after the reminder period): go to the code
+        // / enrol step and come back here afterwards. Like the 401 above,
+        // a hard redirect: this file cannot use the Next router.
+        const errorCode =
+            body && typeof body === 'object'
+                ? (body.error && typeof body.error === 'object' ? body.error.code : body.code)
+                : undefined;
+        if (status === 403 && errorCode === 'MFA_REQUIRED' && typeof window !== 'undefined'
+            && !window.location.pathname.startsWith(VERIFICATION_PATH)) {
+            window.location.href = verificationUrl(window.location.pathname + window.location.search);
+        }
 
         if (body && typeof body === 'object') {
             // Shape A — standard envelope: { success: false, error: { code, message } }

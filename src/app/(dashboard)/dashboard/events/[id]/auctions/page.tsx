@@ -14,6 +14,9 @@ import { useAuth } from '@/contexts/auth-context';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { auctionsApi, eventsApi } from '@/lib/api-hooks';
 import { ApiError } from '@/lib/api';
+import { isInstantFormatError } from '@/lib/event-save-error';
+import { eventCityName, utcToZonedLocal, zonedLocalToUtc } from '@/lib/event-time-zone';
+import { BrowserZoneWarning, ZoneHint, useEventTime } from '@/components/events/EventZone';
 import type { Auction, CreateAuctionDto, UpdateAuctionDto, AuctionStatus, Event } from '@/types/api';
 import { ArtistMultiSelect } from '@/components/events/ArtistMultiSelect';
 import { IdolCollaborationsSection } from '@/components/collaborations/IdolCollaborationsSection';
@@ -79,23 +82,17 @@ function formatMMS(totalSeconds: number): string {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function toLocalScheduledParts(value?: string | null): { date: string; time: string } {
-    if (!value) return { date: '', time: '' };
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return { date: '', time: '' };
-
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return {
-        date: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,
-        time: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
-    };
+/** The scheduled start as the date + time inputs show it, on the event zone's clock. */
+function toLocalScheduledParts(value: string | null | undefined, timeZone: string | null | undefined): { date: string; time: string } {
+    const local = utcToZonedLocal(value, timeZone);
+    if (!local) return { date: '', time: '' };
+    return { date: local.slice(0, 10), time: local.slice(11, 16) };
 }
 
-function combineScheduledStart(date: string, time: string): string | undefined {
+/** The date + time inputs (event zone's clock) → ISO instant with Z. */
+function combineScheduledStart(date: string, time: string, timeZone: string | null | undefined): string | undefined {
     if (!date || !time) return undefined;
-    const value = new Date(`${date}T${time}:00`);
-    if (Number.isNaN(value.getTime())) return undefined;
-    return value.toISOString();
+    return zonedLocalToUtc(`${date}T${time}`, timeZone) ?? undefined;
 }
 
 /** Two-letter avatar for the winner row (presentation only). */
@@ -178,11 +175,17 @@ function CountdownTimer({ endsAt }: { endsAt: string }) {
 function ScheduledStartCountdown({
     scheduledStart,
     onExpire,
+    timeZone,
+    city,
 }: {
     scheduledStart: string;
     onExpire: () => void;
+    /** The event's zone: the date label is its wall clock. */
+    timeZone: string | null | undefined;
+    city: string | null;
 }) {
     const t = useTranslations('auctions');
+    const eventTime = useEventTime(timeZone, city);
     const [remaining, setRemaining] = useState<number>(() =>
         Math.max(0, Math.floor((new Date(scheduledStart).getTime() - Date.now()) / 1000)),
     );
@@ -210,15 +213,16 @@ function ScheduledStartCountdown({
         return formatMMS(secs);
     }
 
-    // Localized date label — e.g. "Sáb, 5 de mayo · 22:00"
-    const dateLabel = new Intl.DateTimeFormat('es-CO', {
+    // Localized date label on the event's clock, e.g. "sáb, 5 de mayo, 22:00"
+    // (the zone label goes under it).
+    const dateLabel = eventTime.format(scheduledStart, {
         weekday: 'short',
         day: 'numeric',
         month: 'long',
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
-    }).format(new Date(scheduledStart));
+    });
 
     if (remaining === 0) {
         return (
@@ -238,6 +242,7 @@ function ScheduledStartCountdown({
                     {t('scheduledStartLabel')}
                 </span>
                 <span className="font-space-mono text-[10px] uppercase text-lilac">{dateLabel}</span>
+                <span className="font-space-mono text-[10px] uppercase text-lilac/80">· {eventTime.label(scheduledStart)}</span>
             </div>
             <div className="flex items-center gap-2 text-white">
                 <Timer size={16} />
@@ -381,8 +386,13 @@ function AuctionFormDialog({
     onClose: () => void;
 }) {
     const t = useTranslations('auctions');
+    const tTime = useTranslations('eventTime');
     const queryClient = useQueryClient();
     const isEditing = !!existing;
+    // The scheduled start is typed and read on the event's clock.
+    const timeZone = event?.timezone ?? null;
+    const city = eventCityName(event);
+    const eventTime = useEventTime(timeZone, city);
     // Idols picked before the first save, invited once it exists (RFC §3).
     const queuedInvites = useQueuedInvites(eventId, 'auction');
 
@@ -396,7 +406,7 @@ function AuctionFormDialog({
     const [minIncrementFandies, setMinIncrementFandies] = useState<number>(existing?.minIncrementFandies ?? 5);
     const [softCloseSeconds, setSoftCloseSeconds] = useState<number>(existing?.softCloseSeconds ?? 60);
     const [extensionSeconds, setExtensionSeconds] = useState<number>(existing?.extensionSeconds ?? 60);
-    const initialScheduledStart = toLocalScheduledParts(existing?.scheduledStart);
+    const initialScheduledStart = toLocalScheduledParts(existing?.scheduledStart, timeZone);
     const [scheduledDate, setScheduledDate] = useState(initialScheduledStart.date);
     const [scheduledTime, setScheduledTime] = useState(initialScheduledStart.time);
     const [redemptionInstructions, setRedemptionInstructions] = useState(existing?.redemptionInstructions ?? '');
@@ -405,11 +415,10 @@ function AuctionFormDialog({
     // Fandi-clock window for the scheduled-start tooltip — the auction must
     // start within it, so showing the organizer the exact window saves a
     // round-trip to the event page (and a 400 from the backend).
-    const fmtDt = (iso: string) =>
-        new Intl.DateTimeFormat('es-CO', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(iso));
+    const fmtDt = (iso: string) => eventTime.format(iso, { dateStyle: 'short', timeStyle: 'short' }) ?? '';
     const fandiWindowLabel =
         event?.fandiOpensAt && event?.fandiClosesAt
-            ? t('fandiWindowTooltip', { opens: fmtDt(event.fandiOpensAt), closes: fmtDt(event.fandiClosesAt) })
+            ? `${t('fandiWindowTooltip', { opens: fmtDt(event.fandiOpensAt), closes: fmtDt(event.fandiClosesAt) })} ${eventTime.label(event.fandiOpensAt)}.`
             : t('fandiWindowUnknown');
 
     // Map backend error codes to friendly localized toasts. The Fandi-clock
@@ -421,6 +430,7 @@ function AuctionFormDialog({
         'EVENT_MISSING_FANDI_CLOCK',
     ];
     const toErrorMessage = (err: unknown): string => {
+        if (isInstantFormatError(err)) return tTime('invalidInstant');
         if (err instanceof ApiError) {
             if (KNOWN_CODES.includes(err.code)) return t(`errors.${err.code}`);
             return err.message;
@@ -469,7 +479,7 @@ function AuctionFormDialog({
         e.preventDefault();
         if (!canSubmit) return;
 
-        const scheduledStart = combineScheduledStart(scheduledDate, scheduledTime);
+        const scheduledStart = combineScheduledStart(scheduledDate, scheduledTime, timeZone);
         const dto: CreateAuctionDto = {
             name: name.trim(),
             ...(description && { description }),
@@ -697,6 +707,16 @@ function AuctionFormDialog({
                                         className="h-12 px-3.5 text-base md:text-base"
                                     />
                                 </div>
+                                <ZoneHint
+                                    zone={timeZone}
+                                    city={city}
+                                    local={scheduledDate && scheduledTime ? `${scheduledDate}T${scheduledTime}` : null}
+                                />
+                                <BrowserZoneWarning
+                                    zone={timeZone}
+                                    city={city}
+                                    instants={[combineScheduledStart(scheduledDate, scheduledTime, timeZone), event?.fandiOpensAt]}
+                                />
                                 <p className="font-space-mono text-[10px] leading-relaxed text-muted-white">{t('scheduledStartHint')}</p>
                             </div>
 
@@ -792,9 +812,11 @@ function AuctionFormDialog({
 
 // ── Auction Card ──
 function AuctionCard({
-    auction, isWrite, onEdit, onDelete, onAction, onScheduledExpire, index,
+    auction, event, isWrite, onEdit, onDelete, onAction, onScheduledExpire, index,
 }: {
     auction: Auction;
+    /** For the scheduled start's zone (the event's clock). */
+    event?: Event;
     isWrite: boolean;
     onEdit: (a: Auction) => void;
     onDelete: (a: Auction) => void;
@@ -961,6 +983,8 @@ function AuctionCard({
                         <ScheduledStartCountdown
                             scheduledStart={auction.scheduledStart}
                             onExpire={onScheduledExpire}
+                            timeZone={event?.timezone}
+                            city={eventCityName(event)}
                         />
                     ) : (
                         <span className="label-mono text-lilac">
@@ -1180,7 +1204,7 @@ export default function AuctionsPage() {
 
     const renderCards = (list: Auction[]) => list.map((a, idx) => (
         <AuctionCard
-            key={a.id} auction={a} isWrite={isWrite}
+            key={a.id} auction={a} event={event} isWrite={isWrite}
             onEdit={handleEdit} onDelete={handleDelete} onAction={handleAction}
             onScheduledExpire={handleScheduledExpire}
             index={idx}

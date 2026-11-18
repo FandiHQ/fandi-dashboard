@@ -1,11 +1,22 @@
 'use client';
 
+/**
+ * Equipo (fandi-api RFC invitations-and-admin). Our own invitations: an
+ * email with a 7-day single-use link, an explicit accept step, one team
+ * per person. People join only by accepting, so:
+ *  - Invitaciones: pending (Vence el … a las … hora de Colombia), expired,
+ *    or moved from the old system without a live link ("Necesita
+ *    reenvío"), with Reenviar (3 emails per 24 h) and Cancelar. Admins
+ *    manage the viewer/staff ones (the API says so per row).
+ *  - Miembros: active members only.
+ *  - What each role can do.
+ */
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { orgApi, eventsApi } from '@/lib/api-hooks';
 import { useAuth } from '@/contexts/auth-context';
-import { AlertCircle, Loader2, MoreHorizontal, RotateCw, UserPlus, Users } from 'lucide-react';
+import { AlertCircle, Loader2, MailPlus, MoreHorizontal, RotateCw, Send, UserPlus, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,11 +24,15 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
-import type { OrganizationMember, OrgRole, InviteMemberDto, UpdateMemberRoleDto } from '@/types/api';
+import type {
+    CreateInvitationDto, InvitableRole, OrganizationMember, OrgRole, TeamInvitation, UpdateMemberRoleDto,
+} from '@/types/api';
 import { useConfirmDialog } from '@/components/ui/confirm-dialog';
-import { apiErrorCode, apiErrorKind } from '@/lib/api-error-kind';
 import { looksLikeEmail } from '@/lib/auth-flow';
-import { inviteLikelyExpired } from '@/lib/team-invites';
+import { colombiaDateTime } from '@/lib/colombia-time';
+import {
+    invitationRowState, resendBlockedUntil, teamErrorCopy, visibleInvitations, type InvitationRowState,
+} from '@/lib/team-invites';
 
 import {
     Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,
@@ -27,6 +42,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 type T = ReturnType<typeof useTranslations>;
+
+const MEMBERS_KEY = ['organization', 'members'] as const;
+const INVITATIONS_KEY = ['organization', 'invitations'] as const;
 
 // ── Helpers ──
 
@@ -67,24 +85,19 @@ function relativeTime(dateStr: string, locale: string): string {
     return rtf.format(-Math.floor(diffMonths / 12), 'year');
 }
 
-/** Plain copy for a failed team action (the API's messages are developer English). */
-function teamErrorMessage(t: T, err: unknown, sendsEmail = false): string {
-    // Typed codes first: an existing Fandi account is never re-created.
-    switch (apiErrorCode(err)) {
-        case 'EMAIL_IS_FAN_ACCOUNT': return t('errors.fanAccount');
-        case 'ALREADY_IN_ANOTHER_TEAM': return t('errors.otherTeam');
-        case 'ACCOUNT_ALREADY_ACTIVE': return t('errors.accountActive');
-        case 'EMAIL_ALREADY_REGISTERED': return t('errors.emailRegistered');
-    }
-    switch (apiErrorKind(err)) {
-        case 'conflict': return t('errors.alreadyMember');
-        case 'forbidden': return t('errors.noPermission');
-        case 'notFound': return t('errors.notFound');
-        case 'invalid': return t('errors.invalid');
-        case 'server': return sendsEmail ? t('errors.emailFailed') : t('errors.generic');
-        case 'network': return t('errors.network');
-        default: return t('errors.generic');
-    }
+/** Plain copy for a failed team action (never the API's own text). */
+function useTeamErrorMessage() {
+    const t = useTranslations('team');
+    const locale = useLocale();
+    return (err: unknown, sendsEmail = false): string => {
+        const copy = teamErrorCopy(err, sendsEmail);
+        if (copy.key === 'resendLimit') {
+            const when = colombiaDateTime(copy.retryAt, locale);
+            return when ? t('errors.resendLimit', { date: when.date, time: when.time }) : t('errors.resendLimitSoon');
+        }
+        if (copy.key === 'orgRateLimited') return t('errors.orgRateLimited', { limit: copy.limit ?? 30 });
+        return t(`errors.${copy.key}`);
+    };
 }
 
 /**
@@ -102,11 +115,21 @@ function useOrgEvents(enabled = true) {
 
 const EVENT_CHIP = 'inline-flex max-w-[220px] items-center rounded-[8px] border-2 px-2 py-0.5 text-[12px] font-bold leading-tight';
 
-function useResendInvite(member: OrganizationMember, t: T) {
+/** Resend one invitation (row button, or the toast after "already pending"). */
+function useResendInvitation() {
+    const t = useTranslations('team');
+    const queryClient = useQueryClient();
+    const errorMessage = useTeamErrorMessage();
     return useMutation({
-        mutationFn: () => orgApi.resendInvite(member.userId),
-        onSuccess: () => toast.success(t('inviteResent')),
-        onError: (err: unknown) => toast.error(teamErrorMessage(t, err, true)),
+        mutationFn: (id: string) => orgApi.resendInvitation(id),
+        onSuccess: (inv) => {
+            queryClient.invalidateQueries({ queryKey: INVITATIONS_KEY });
+            toast.success(t('inviteResent', { email: inv.email }));
+        },
+        onError: (err: unknown) => {
+            queryClient.invalidateQueries({ queryKey: INVITATIONS_KEY });
+            toast.error(errorMessage(err, true));
+        },
     });
 }
 
@@ -120,12 +143,18 @@ export default function TeamPage() {
     const canInvite = memberRole === 'owner' || memberRole === 'admin';
 
     const { data: members, isLoading, error, refetch, isRefetching } = useQuery({
-        queryKey: ['organization', 'members'],
+        queryKey: MEMBERS_KEY,
         queryFn: () => orgApi.getMembers(),
     });
-    const someoneRestricted = !!members?.some(
-        (m) => (m.role === 'staff' || m.role === 'viewer') && (m.eventIds?.length ?? 0) > 0,
-    );
+    const invitations = useQuery({
+        queryKey: INVITATIONS_KEY,
+        queryFn: () => orgApi.listInvitations(),
+        enabled: canInvite,
+    });
+    const shownInvitations = visibleInvitations(invitations.data ?? []);
+    const someoneRestricted =
+        !!members?.some((m) => (m.role === 'staff' || m.role === 'viewer') && (m.eventIds?.length ?? 0) > 0) ||
+        shownInvitations.some((i) => (i.eventIds?.length ?? 0) > 0);
     const eventsQuery = useOrgEvents(someoneRestricted);
     const eventNames = new Map((eventsQuery.data?.items ?? []).map((e) => [e.id, e.name]));
 
@@ -154,7 +183,21 @@ export default function TeamPage() {
                 {canInvite && <InviteMemberDialog t={t} isOwner={isOwner} />}
             </div>
 
-            {/* Table */}
+            {/* Invitations (owners and admins) */}
+            {canInvite && (
+                <InvitationsSection
+                    items={shownInvitations}
+                    isLoading={invitations.isLoading}
+                    isError={invitations.isError}
+                    onRetry={() => invitations.refetch()}
+                    retrying={invitations.isRefetching}
+                    eventNames={eventNames}
+                    eventsLoading={eventsQuery.isLoading}
+                    t={t}
+                />
+            )}
+
+            {/* Members */}
             {!members || members.length === 0 ? (
                 <div className="block-white flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
                     <Users size={36} className="text-muted-white" aria-hidden="true" />
@@ -162,9 +205,9 @@ export default function TeamPage() {
                     {canInvite && <p className="max-w-[380px] text-sm text-muted-white">{t('emptyBody')}</p>}
                 </div>
             ) : (
-                <div className="block-white overflow-hidden">
+                <section className="block-white overflow-hidden" aria-labelledby="team-members-title">
                     <div className="flex items-center justify-between border-b-2 border-ink px-5 py-3.5">
-                        <h2 className="font-display text-[17px]">{t('membersTitle')}</h2>
+                        <h2 id="team-members-title" className="font-display text-[17px]">{t('membersTitle')}</h2>
                         <span className="font-space-mono text-[10px] text-muted-white tabular">{members.length}</span>
                     </div>
                     <Table>
@@ -174,8 +217,7 @@ export default function TeamPage() {
                                 <TableHead className="hidden md:table-cell">{t('email')}</TableHead>
                                 <TableHead>{t('role')}</TableHead>
                                 <TableHead className="hidden sm:table-cell">{t('eventAccess')}</TableHead>
-                                <TableHead>{t('status')}</TableHead>
-                                {canInvite && (
+                                {isOwner && (
                                     <TableHead className="pr-5 text-right">
                                         <span className="sr-only">{t('actions')}</span>
                                     </TableHead>
@@ -189,7 +231,6 @@ export default function TeamPage() {
                                     member={member}
                                     index={index}
                                     isOwner={isOwner}
-                                    canInvite={canInvite}
                                     eventNames={eventNames}
                                     eventsLoading={eventsQuery.isLoading}
                                     t={t}
@@ -197,7 +238,7 @@ export default function TeamPage() {
                             ))}
                         </TableBody>
                     </Table>
-                </div>
+                </section>
             )}
 
             {/* What each role can do (one line each) */}
@@ -228,13 +269,271 @@ function RolePill({ role, t }: { role: OrgRole; t: T }) {
     );
 }
 
+/** Event access: owner/admin see everything; staff/viewer every event (no list) or one chip per event. */
+function EventAccess({
+    role,
+    eventIds,
+    apiNames,
+    eventNames,
+    eventsLoading,
+    t,
+}: {
+    role: OrgRole;
+    eventIds: string[] | null;
+    apiNames: string[] | null;
+    eventNames: Map<string, string>;
+    eventsLoading: boolean;
+    t: T;
+}) {
+    const ids = eventIds ?? [];
+    if (role === 'owner' || role === 'admin' || ids.length === 0) {
+        return <span className="font-bold text-blue">{t('allEvents')}</span>;
+    }
+    const resolved: { id: string; name: string }[] = [];
+    let unresolved = 0;
+    ids.forEach((id, i) => {
+        // The API sends the id itself when it could not find the event.
+        const apiName = apiNames?.[i];
+        const eventName = eventNames.get(id) ?? (apiName && apiName !== id ? apiName : null);
+        if (eventName) resolved.push({ id, name: eventName });
+        else unresolved += 1;
+    });
+    return (
+        <ul className="flex max-w-[320px] flex-wrap gap-1.5" aria-label={t('eventAccess')}>
+            {resolved.map(({ id, name: eventName }) => (
+                <li key={id} className="min-w-0">
+                    <span title={eventName} className={`${EVENT_CHIP} border-ink bg-white text-ink`}>
+                        <span className="truncate">{eventName}</span>
+                    </span>
+                </li>
+            ))}
+            {unresolved > 0 && (
+                <li>
+                    {eventsLoading ? (
+                        <Skeleton className="h-6 w-24 rounded-[8px] bg-line-white" />
+                    ) : (
+                        // Events that are gone: one plain chip, never the ids.
+                        <span className={`${EVENT_CHIP} border-dashed border-muted-white bg-white text-muted-white`}>
+                            {t('eventUnavailable', { count: unresolved })}
+                        </span>
+                    )}
+                </li>
+            )}
+        </ul>
+    );
+}
+
+// ── Invitations ──
+
+const STATE_PILL: Record<InvitationRowState, string> = {
+    pending: 'border-ink bg-white text-ink',
+    expired: 'border-alert-white bg-white text-alert-white',
+    needsResend: 'border-dashed border-alert-white bg-white text-alert-white',
+};
+
+function InvitationsSection({
+    items,
+    isLoading,
+    isError,
+    onRetry,
+    retrying,
+    eventNames,
+    eventsLoading,
+    t,
+}: {
+    items: TeamInvitation[];
+    isLoading: boolean;
+    isError: boolean;
+    onRetry: () => void;
+    retrying: boolean;
+    eventNames: Map<string, string>;
+    eventsLoading: boolean;
+    t: T;
+}) {
+    const tCommon = useTranslations('common');
+    return (
+        <section className="block-white overflow-hidden" aria-labelledby="team-invitations-title" data-testid="team-invitations">
+            <div className="flex items-center justify-between border-b-2 border-ink px-5 py-3.5">
+                <h2 id="team-invitations-title" className="font-display text-[17px]">{t('invitationsTitle')}</h2>
+                {!isLoading && !isError && (
+                    <span className="font-space-mono text-[10px] text-muted-white tabular">{items.length}</span>
+                )}
+            </div>
+            {isLoading ? (
+                <div className="flex flex-col gap-2 px-5 py-4" aria-busy="true">
+                    <div className="h-4 w-56 animate-pulse rounded-full bg-line-white motion-reduce:animate-none" />
+                    <div className="h-4 w-40 animate-pulse rounded-full bg-line-white motion-reduce:animate-none" />
+                </div>
+            ) : isError ? (
+                <div className="flex flex-wrap items-center gap-3 px-5 py-4" role="alert">
+                    <p className="text-sm font-semibold text-ink">{t('invitationsError')}</p>
+                    <Button variant="secondary" size="sm" onClick={onRetry} disabled={retrying}>
+                        {retrying ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <RotateCw size={14} aria-hidden="true" />}
+                        {tCommon('retry')}
+                    </Button>
+                </div>
+            ) : items.length === 0 ? (
+                <p className="px-5 py-4 text-sm text-muted-white">{t('invitationsEmpty')}</p>
+            ) : (
+                <ul className="flex flex-col divide-y-2 divide-line-white">
+                    {items.map((inv) => (
+                        <InvitationRow
+                            key={inv.id}
+                            inv={inv}
+                            eventNames={eventNames}
+                            eventsLoading={eventsLoading}
+                            t={t}
+                        />
+                    ))}
+                </ul>
+            )}
+        </section>
+    );
+}
+
+function InvitationRow({
+    inv,
+    eventNames,
+    eventsLoading,
+    t,
+}: {
+    inv: TeamInvitation;
+    eventNames: Map<string, string>;
+    eventsLoading: boolean;
+    t: T;
+}) {
+    const locale = useLocale();
+    const queryClient = useQueryClient();
+    const errorMessage = useTeamErrorMessage();
+    const { confirm, dialog } = useConfirmDialog();
+    const resend = useResendInvitation();
+    const revoke = useMutation({
+        mutationFn: () => orgApi.revokeInvitation(inv.id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: INVITATIONS_KEY });
+            toast.success(t('invitationCancelled'));
+        },
+        onError: (err: unknown) => {
+            queryClient.invalidateQueries({ queryKey: INVITATIONS_KEY });
+            toast.error(errorMessage(err));
+        },
+    });
+
+    const state = invitationRowState(inv);
+    const label = inv.name || inv.email;
+    const expires = colombiaDateTime(inv.expiresAt, locale);
+    const blockedUntil = resendBlockedUntil(inv);
+    const blocked = blockedUntil ? colombiaDateTime(blockedUntil, locale) : null;
+    const sentAt = inv.lastSentAt ?? inv.createdAt;
+    // No inviter = Fandi (Crear ídolo); an inviter without a name stays unnamed.
+    const senderLine = inv.invitedBy
+        ? (inv.invitedBy.displayName ? t('sentBy', { name: inv.invitedBy.displayName }) : null)
+        : t('sentByFandi');
+    const busy = resend.isPending || revoke.isPending;
+
+    const askRevoke = async () => {
+        const ok = await confirm({
+            title: t('cancelInvitationTitle'),
+            description: t('cancelInvitationBody', { email: inv.email }),
+            confirmLabel: t('cancelInvitationConfirm'),
+            cancelLabel: t('keepInvitation'),
+        });
+        if (ok) revoke.mutate();
+    };
+
+    return (
+        <li className="flex flex-wrap items-center gap-x-5 gap-y-3 px-5 py-3.5" data-testid={`invitation-${inv.id}`}>
+            <div className="flex min-w-[220px] flex-1 items-center gap-3">
+                <span
+                    aria-hidden="true"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-ink bg-white text-[12px] font-black text-ink"
+                >
+                    {initialsOf(inv.name, inv.email)}
+                </span>
+                <div className="flex min-w-0 flex-col">
+                    <span className="truncate text-sm font-extrabold text-ink">{label}</span>
+                    {inv.name && <span className="truncate text-[12px] text-muted-white">{inv.email}</span>}
+                    <span className="font-space-mono text-[10px] text-muted-white">
+                        {[senderLine, relativeTime(sentAt, locale)].filter(Boolean).join(' · ')}
+                    </span>
+                </div>
+            </div>
+
+            <div className="flex min-w-[160px] flex-col items-start gap-1.5">
+                <RolePill role={inv.role} t={t} />
+                <span className="text-[12px] text-body-white">
+                    <EventAccess
+                        role={inv.role}
+                        eventIds={inv.eventIds}
+                        apiNames={inv.eventNames}
+                        eventNames={eventNames}
+                        eventsLoading={eventsLoading}
+                        t={t}
+                    />
+                </span>
+            </div>
+
+            <div className="flex min-w-[220px] flex-1 flex-col items-start gap-1">
+                <span className={`label-mono inline-flex rounded-full border-2 px-2.5 py-0.5 font-bold ${STATE_PILL[state]}`}>
+                    {t(`invitationState.${state}`)}
+                </span>
+                {state === 'needsResend' ? (
+                    <span className="text-[12px] leading-snug text-body-white">{t('needsResendHint')}</span>
+                ) : expires ? (
+                    <span className="text-[12px] leading-snug text-body-white">
+                        {t(state === 'expired' ? 'expiredOn' : 'expiresOn', { date: expires.date, time: expires.time })}
+                    </span>
+                ) : null}
+                {blocked && (
+                    <span className="text-[12px] font-semibold leading-snug text-muted-white">
+                        {t('resendAvailable', { date: blocked.date, time: blocked.time })}
+                    </span>
+                )}
+            </div>
+
+            {(inv.canResend || inv.canRevoke) && (
+                <div className="flex items-center gap-2">
+                    {inv.canResend && (
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            className="h-10"
+                            onClick={() => resend.mutate(inv.id)}
+                            disabled={busy || !!blocked}
+                            aria-label={t('resendFor', { name: label })}
+                        >
+                            {resend.isPending
+                                ? <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+                                : <Send size={14} aria-hidden="true" />}
+                            {t('resendShort')}
+                        </Button>
+                    )}
+                    {inv.canRevoke && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-10 text-alert-white hover:bg-line-white"
+                            onClick={() => { void askRevoke(); }}
+                            disabled={busy}
+                            aria-label={t('cancelFor', { name: label })}
+                        >
+                            {revoke.isPending && <Loader2 size={14} className="animate-spin" aria-hidden="true" />}
+                            {t('cancelShort')}
+                        </Button>
+                    )}
+                </div>
+            )}
+            {dialog}
+        </li>
+    );
+}
+
 // ── Member Row ──
 
 function MemberRow({
     member,
     index,
     isOwner,
-    canInvite,
     eventNames,
     eventsLoading,
     t,
@@ -242,60 +541,12 @@ function MemberRow({
     member: OrganizationMember;
     index: number;
     isOwner: boolean;
-    canInvite: boolean;
     eventNames: Map<string, string>;
     eventsLoading: boolean;
     t: T;
 }) {
-    const locale = useLocale();
     const tCommon = useTranslations('common');
     const canModify = isOwner && member.role !== 'owner';
-    const isPending = member.status === 'pending';
-    const mayHaveExpired = isPending && inviteLikelyExpired(member.invitedAt);
-    const resend = useResendInvite(member, t);
-    const name = member.displayName || member.email || tCommon('noName');
-
-    // Event access: owner/admin see everything; staff/viewer either every
-    // event (no list) or the events they were given, one chip each.
-    const renderEventAccess = () => {
-        const ids = member.eventIds ?? [];
-        if (member.role === 'owner' || member.role === 'admin' || ids.length === 0) {
-            return <span className="font-bold text-blue">{t('allEvents')}</span>;
-        }
-        const resolved: { id: string; name: string }[] = [];
-        let unresolved = 0;
-        ids.forEach((id, i) => {
-            // The API sends the id itself when it could not find the event.
-            const apiName = member.eventNames?.[i];
-            const eventName = eventNames.get(id) ?? (apiName && apiName !== id ? apiName : null);
-            if (eventName) resolved.push({ id, name: eventName });
-            else unresolved += 1;
-        });
-        return (
-            <ul className="flex max-w-[320px] flex-wrap gap-1.5" aria-label={t('eventAccess')}>
-                {resolved.map(({ id, name: eventName }) => (
-                    <li key={id} className="min-w-0">
-                        <span title={eventName} className={`${EVENT_CHIP} border-ink bg-white text-ink`}>
-                            <span className="truncate">{eventName}</span>
-                        </span>
-                    </li>
-                ))}
-                {unresolved > 0 && (
-                    <li>
-                        {eventsLoading ? (
-                            <Skeleton className="h-6 w-24 rounded-[8px] bg-line-white" />
-                        ) : (
-                            // Events that are gone: one plain chip, never the ids.
-                            <span className={`${EVENT_CHIP} border-dashed border-muted-white bg-white text-muted-white`}>
-                                {t('eventUnavailable', { count: unresolved })}
-                            </span>
-                        )}
-                    </li>
-                )}
-            </ul>
-        );
-    };
-
     const avatarColor = AVATAR_COLORS[index % AVATAR_COLORS.length];
 
     return (
@@ -322,52 +573,18 @@ function MemberRow({
                 <RolePill role={member.role} t={t} />
             </TableCell>
             <TableCell className="hidden text-[13px] text-body-white sm:table-cell">
-                {renderEventAccess()}
+                <EventAccess
+                    role={member.role}
+                    eventIds={member.eventIds}
+                    apiNames={member.eventNames}
+                    eventNames={eventNames}
+                    eventsLoading={eventsLoading}
+                    t={t}
+                />
             </TableCell>
-            <TableCell>
-                <div className="flex flex-col items-start gap-1">
-                    <span
-                        className={
-                            isPending
-                                ? 'label-mono inline-flex rounded-full border-2 border-dashed border-ink bg-white px-2.5 py-0.5 font-bold text-ink'
-                                : 'label-mono inline-flex rounded-full border-2 border-ink bg-ink px-2.5 py-0.5 font-bold text-white'
-                        }
-                    >
-                        {isPending ? t('pending') : t('active')}
-                    </span>
-                    <span className="font-space-mono text-[10px] text-muted-white">
-                        {t('invitedOn')} {relativeTime(member.invitedAt, locale)}
-                    </span>
-                    {mayHaveExpired && (
-                        <span className="flex items-center gap-1.5 text-[12px] font-bold text-alert-white">
-                            <span className="inline-block size-1.5 rounded-full bg-alert-white" aria-hidden="true" />
-                            {t('inviteMayHaveExpired')}
-                        </span>
-                    )}
-                    {isPending && canModify && (
-                        <Button
-                            variant="link"
-                            size="xs"
-                            onClick={() => resend.mutate()}
-                            disabled={resend.isPending}
-                            aria-label={t('resendFor', { name })}
-                            className="h-auto px-0 text-[12px] font-bold text-blue"
-                        >
-                            {resend.isPending ? (
-                                <>
-                                    <Loader2 size={12} className="animate-spin" aria-hidden="true" />
-                                    {t('sending')}
-                                </>
-                            ) : t('resendShort')}
-                        </Button>
-                    )}
-                </div>
-            </TableCell>
-            {canInvite && (
+            {isOwner && (
                 <TableCell className="pr-5 text-right">
-                    {canModify ? (
-                        <MemberActions member={member} t={t} />
-                    ) : null}
+                    {canModify ? <MemberActions member={member} t={t} /> : null}
                 </TableCell>
             )}
         </TableRow>
@@ -384,18 +601,18 @@ function MemberActions({
     t: T;
 }) {
     const queryClient = useQueryClient();
+    const errorMessage = useTeamErrorMessage();
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
     const { confirm, dialog } = useConfirmDialog();
-    const resend = useResendInvite(member, t);
     const name = member.displayName || member.email || '';
 
     const remove = useMutation({
         mutationFn: () => orgApi.removeMember(member.userId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['organization', 'members'] });
+            queryClient.invalidateQueries({ queryKey: MEMBERS_KEY });
             toast.success(t('removed'));
         },
-        onError: (err: unknown) => toast.error(teamErrorMessage(t, err)),
+        onError: (err: unknown) => toast.error(errorMessage(err)),
     });
 
     const askRemove = async () => {
@@ -416,7 +633,7 @@ function MemberActions({
                         type="button"
                         aria-label={`${t('actions')}: ${name}`}
                         disabled={remove.isPending}
-                        className="inline-flex size-9 cursor-pointer items-center justify-center rounded-[10px] border-2 border-transparent text-ink transition-colors hover:border-ink hover:bg-line-white focus-visible:border-ink focus-visible:outline-none disabled:opacity-50"
+                        className="inline-flex size-10 cursor-pointer items-center justify-center rounded-[10px] border-2 border-transparent text-ink transition-colors hover:border-ink hover:bg-line-white focus-visible:border-ink focus-visible:outline-none disabled:opacity-50"
                     >
                         {remove.isPending
                             ? <Loader2 size={16} className="animate-spin" aria-hidden="true" />
@@ -424,15 +641,6 @@ function MemberActions({
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    {member.status === 'pending' && (
-                        <DropdownMenuItem
-                            onSelect={() => resend.mutate()}
-                            disabled={resend.isPending}
-                            className="label-mono cursor-pointer rounded-[8px] py-2 text-[11px] font-bold text-blue"
-                        >
-                            {t('resendInvite')}
-                        </DropdownMenuItem>
-                    )}
                     <DropdownMenuItem
                         onSelect={() => setRoleDialogOpen(true)}
                         className="label-mono cursor-pointer rounded-[8px] py-2 text-[11px] font-bold text-ink"
@@ -537,26 +745,16 @@ function EventRestrictionPicker({
 
 function InviteMemberDialog({ t, isOwner }: { t: T; isOwner: boolean }) {
     const queryClient = useQueryClient();
+    const errorMessage = useTeamErrorMessage();
+    const resendExisting = useResendInvitation();
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [displayName, setDisplayName] = useState('');
-    const [role, setRole] = useState<OrgRole>(isOwner ? 'viewer' : 'staff');
+    const [role, setRole] = useState<InvitableRole>(isOwner ? 'viewer' : 'staff');
     const [selectedEventIds, setSelectedEventIds] = useState<string[]>([]);
     const [emailError, setEmailError] = useState<string | null>(null);
 
     const showEventPicker = role === 'staff' || role === 'viewer';
-
-    const invite = useMutation({
-        mutationFn: (dto: InviteMemberDto) => orgApi.inviteMember(dto),
-        onSuccess: (member) => {
-            queryClient.invalidateQueries({ queryKey: ['organization', 'members'] });
-            // An existing account gets no invitation email: it joins on its next sign-in.
-            toast.success(member?.existingAccount ? t('invitedExisting') : t('invited'));
-            resetForm();
-            setOpen(false);
-        },
-        onError: (err: unknown) => toast.error(teamErrorMessage(t, err, true)),
-    });
 
     const resetForm = () => {
         setEmail('');
@@ -566,16 +764,34 @@ function InviteMemberDialog({ t, isOwner }: { t: T; isOwner: boolean }) {
         setEmailError(null);
     };
 
+    const invite = useMutation({
+        mutationFn: (dto: CreateInvitationDto) => orgApi.createInvitation(dto),
+        onSuccess: (_created, dto) => {
+            queryClient.invalidateQueries({ queryKey: INVITATIONS_KEY });
+            // Same answer whatever the email is: it never says whether it has an account.
+            toast.success(t('invitationSent', { email: dto.email }));
+            resetForm();
+            setOpen(false);
+        },
+        onError: (err: unknown) => {
+            const copy = teamErrorCopy(err, true);
+            const pendingId = copy.key === 'invitationPending' ? copy.invitationId : undefined;
+            toast.error(errorMessage(err, true), pendingId ? {
+                action: { label: t('resendShort'), onClick: () => resendExisting.mutate(pendingId) },
+            } : undefined);
+        },
+    });
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const value = email.trim();
         if (!value) { setEmailError(t('emailRequired')); return; }
         if (!looksLikeEmail(value)) { setEmailError(t('invalidEmail')); return; }
         setEmailError(null);
-        const dto: InviteMemberDto = {
+        const dto: CreateInvitationDto = {
             email: value,
             role,
-            ...(displayName.trim() ? { displayName: displayName.trim() } : {}),
+            ...(displayName.trim() ? { name: displayName.trim() } : {}),
             ...(showEventPicker && selectedEventIds.length > 0 ? { eventIds: selectedEventIds } : {}),
         };
         invite.mutate(dto);
@@ -625,13 +841,14 @@ function InviteMemberDialog({ t, isOwner }: { t: T; isOwner: boolean }) {
                             )}
                         </div>
 
-                        {/* Display Name (optional) */}
+                        {/* Name (optional): how the email greets them */}
                         <div className="flex flex-col gap-2">
                             <label htmlFor="invite-name" className={FIELD_LABEL_CLASS}>{t('displayName')}</label>
                             <Input
                                 id="invite-name"
                                 type="text"
                                 autoComplete="off"
+                                maxLength={100}
                                 value={displayName}
                                 onChange={(e) => setDisplayName(e.target.value)}
                                 placeholder="María García"
@@ -645,7 +862,7 @@ function InviteMemberDialog({ t, isOwner }: { t: T; isOwner: boolean }) {
                             <select
                                 id="invite-role"
                                 value={role}
-                                onChange={(e) => { setRole(e.target.value as OrgRole); setSelectedEventIds([]); }}
+                                onChange={(e) => { setRole(e.target.value as InvitableRole); setSelectedEventIds([]); }}
                                 aria-describedby="invite-role-hint"
                                 className={SELECT_CLASS}
                             >
@@ -678,7 +895,12 @@ function InviteMemberDialog({ t, isOwner }: { t: T; isOwner: boolean }) {
                                     <Loader2 size={14} className="animate-spin" aria-hidden="true" />
                                     {t('sending')}
                                 </>
-                            ) : t('invite')}
+                            ) : (
+                                <>
+                                    <MailPlus size={16} aria-hidden="true" />
+                                    {t('invite')}
+                                </>
+                            )}
                         </Button>
                     </SheetFooter>
                 </form>
@@ -701,6 +923,7 @@ function ChangeRoleDialog({
     t: T;
 }) {
     const queryClient = useQueryClient();
+    const errorMessage = useTeamErrorMessage();
     const [newRole, setNewRole] = useState<OrgRole>(member.role === 'owner' ? 'admin' : member.role);
     const [selectedEventIds, setSelectedEventIds] = useState<string[]>(member.eventIds ?? []);
 
@@ -709,11 +932,11 @@ function ChangeRoleDialog({
     const update = useMutation({
         mutationFn: (dto: UpdateMemberRoleDto) => orgApi.updateMember(member.userId, dto),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['organization', 'members'] });
+            queryClient.invalidateQueries({ queryKey: MEMBERS_KEY });
             toast.success(t('roleUpdated'));
             onOpenChange(false);
         },
-        onError: (err: unknown) => toast.error(teamErrorMessage(t, err)),
+        onError: (err: unknown) => toast.error(errorMessage(err)),
     });
 
     const handleSubmit = (e: React.FormEvent) => {

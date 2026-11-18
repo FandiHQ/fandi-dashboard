@@ -1,23 +1,13 @@
-'use client';
+import { redirect } from 'next/navigation';
 
 /**
- * /invite/accept — where the Supabase team-invitation email lands
- * (redirectTo set by the API's inviteUserByEmail). The person creates a
- * password and goes straight into the panel; signing in runs /users/sync,
- * which activates the pending membership.
- *
- * The invitation session lives on an ephemeral, in-memory client (see
- * lib/supabase-ephemeral.ts): the app client is a browser singleton, and the
- * AuthProvider signs it out for accounts without a panel, which used to kill
- * the invitation session before the password was saved.
+ * /invite/accept: where the old Supabase team-invitation email landed.
+ * Team invitations now use Fandi's own links (`/invitacion#t=…`, see
+ * fandi-api docs/rfc/invitations-and-admin.md); a link from an old email
+ * carries a Supabase token that no longer means anything. Send it to the
+ * invitation page, which explains that the link is not valid and how to
+ * get a new one. The fragment of the old link never reaches the server.
  */
-import { AuthShell } from '@/components/auth/auth-shell';
-import { SetPasswordFlow } from '@/components/auth/set-password-flow';
-
-export default function InviteAcceptPage() {
-    return (
-        <AuthShell>
-            <SetPasswordFlow variant="invite" />
-        </AuthShell>
-    );
+export default function LegacyInviteAcceptPage(): never {
+    redirect('/invitacion');
 }

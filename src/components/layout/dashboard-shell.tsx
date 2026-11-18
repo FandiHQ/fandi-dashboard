@@ -9,6 +9,9 @@ import { DashboardHeader } from '@/components/layout/dashboard-header';
 import { SessionUnreachable } from '@/components/auth/session-unreachable';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RouteSkeleton } from '@/components/layout/dashboard-skeletons';
+import { TwoStepBanner } from '@/components/security/two-step-banner';
+import { ADMIN_HOME_PATH } from '@/lib/auth-flow';
+import { verificationUrl } from '@/lib/two-step';
 
 /**
  * The dashboard frame (rail, header, content) behind the session gate.
@@ -20,22 +23,31 @@ export function DashboardShell({
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated, isUnreachable, retrySession } = useAuth();
+    const { isLoading, isAuthenticated, isUnreachable, retrySession, organization, twoStep } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    // A Fandi admin without an idol org has the /admin area only.
+    const adminOnly = isAuthenticated && !organization;
+    // The 6-digit code (an authenticator exists), or turning it on (an
+    // owner/admin past the reminder period), comes before any page.
+    const mustVerify = isAuthenticated && (twoStep.kind === 'verify' || twoStep.kind === 'enrol');
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated && !isUnreachable) {
             // Keep the query too (e.g. a collaboration invitation token).
             router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
+        } else if (adminOnly) {
+            router.replace(ADMIN_HOME_PATH);
+        } else if (mustVerify) {
+            router.replace(verificationUrl(pathname + window.location.search));
         }
-    }, [isLoading, isAuthenticated, isUnreachable, pathname, router]);
+    }, [isLoading, isAuthenticated, isUnreachable, adminOnly, mustVerify, pathname, router]);
 
     if (!isLoading && isUnreachable) {
         return <SessionUnreachable onRetry={retrySession} />;
     }
 
-    if (isLoading || !isAuthenticated) {
+    if (isLoading || !isAuthenticated || adminOnly || mustVerify) {
         return <ShellSkeleton pathname={pathname} />;
     }
 
@@ -52,6 +64,7 @@ export function DashboardShell({
 
                 {/* Content — Azul Bloque web padding (36px) */}
                 <main className="flex-1 px-5 py-7 lg:px-9">
+                    {twoStep.kind === 'remind' && <TwoStepBanner deadline={twoStep.deadline} />}
                     {children}
                 </main>
             </div>
