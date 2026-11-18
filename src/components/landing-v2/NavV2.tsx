@@ -32,15 +32,16 @@ function switchLocale(locale: string) {
 export default function NavV2() {
     const t = useTranslations('landingV2.nav');
     const locale = useLocale();
-    const { scrollYProgress } = useScroll();
+    const { scrollY } = useScroll();
     const [past, setPast] = useState(false);
 
-    // Discrete threshold, NOT a scroll-linked opacity. Tying opacity to
-    // scrollYProgress made the bar dissolve in and out proportionally to how
-    // far you'd scrolled, which reads as a bug. It now snaps in with a fixed
-    // 300ms transition once you're past the hero, at any scroll speed.
-    useMotionValueEvent(scrollYProgress, 'change', (v) => {
-        setPast(v > 0.035);
+    // Discrete threshold, NOT a scroll-linked opacity (a bar dissolving in
+    // proportion to scroll reads as a bug). It snaps in with a fixed 300ms
+    // transition once the hero has mostly scrolled away. Measured in
+    // viewports, not a share of the page: the page length changes, the
+    // hero is always one screen.
+    useMotionValueEvent(scrollY, 'change', (y) => {
+        setPast(y > window.innerHeight * 0.8);
     });
 
     return (
@@ -75,21 +76,21 @@ export default function NavV2() {
                     </a>
 
                     <nav
-                        className="hidden flex-1 items-center justify-center gap-9 md:flex"
+                        className="hidden flex-1 items-center justify-center gap-9 lg:flex"
                         aria-label={t('label')}
                     >
                         {LINKS.map((l) => (
                             <a
                                 key={l.key}
                                 href={l.href}
-                                className="label-mono inline-flex min-h-11 items-center text-[11px] text-muted-ink transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                className="label-mono inline-flex min-h-11 items-center text-[12px] text-muted-ink transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                             >
                                 {t(l.key)}
                             </a>
                         ))}
                     </nav>
 
-                    <div className="ml-auto flex items-center gap-3 md:ml-0">
+                    <div className="ml-auto flex items-center gap-3 lg:ml-0">
                         {/* ES / EN — ES is the app default */}
                         <div
                             className="hidden items-center gap-1.5 sm:flex"
@@ -107,7 +108,7 @@ export default function NavV2() {
                                         type="button"
                                         onClick={() => switchLocale(loc)}
                                         aria-pressed={locale === loc}
-                                        className={`label-mono inline-flex min-h-11 cursor-pointer items-center px-1 text-[11px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                                        className={`label-mono inline-flex min-h-11 cursor-pointer items-center px-1 text-[12px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
                                             locale === loc
                                                 ? 'text-white'
                                                 : 'text-muted-ink hover:text-white'
@@ -121,7 +122,7 @@ export default function NavV2() {
 
                         <a
                             href={DASHBOARD_URL}
-                            className="label-mono hidden min-h-11 items-center px-3 text-[11px] text-muted-ink transition-colors hover:text-white sm:inline-flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                            className="label-mono hidden min-h-11 items-center px-3 text-[12px] text-muted-ink transition-colors hover:text-white sm:inline-flex focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                         >
                             {t('signIn')}
                         </a>

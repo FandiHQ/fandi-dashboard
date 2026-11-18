@@ -16,6 +16,7 @@ export default function SettingsPage() {
     const { user, organization, memberRole, refreshUser } = useAuth();
     const t = useTranslations('settings');
     const tTeam = useTranslations('team');
+    const tCommon = useTranslations('common');
 
     // ── Form state ──
     const [displayName, setDisplayName] = useState(user?.displayName || '');
@@ -123,7 +124,7 @@ export default function SettingsPage() {
               month: 'long',
               year: 'numeric',
           })
-        : '—';
+        : tCommon('noDate');
 
     // Initials fallback
     const initials = (displayName || user?.email || '?')
@@ -225,7 +226,7 @@ export default function SettingsPage() {
                                 {t('role')}
                             </span>
                             <span className="label-mono ml-auto rounded-full border-2 border-ink bg-lilac px-2.5 py-0.5 font-bold text-ink">
-                                {memberRole ? tTeam(`roles.${memberRole}`) : '—'}
+                                {memberRole ? tTeam(`roles.${memberRole}`) : t('noRole')}
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
@@ -234,7 +235,7 @@ export default function SettingsPage() {
                                 {t('organization')}
                             </span>
                             <span className="ml-auto text-right text-[13px] font-extrabold text-ink">
-                                {organization?.name || '—'}
+                                {organization?.name || t('noOrganization')}
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
@@ -281,7 +282,7 @@ export default function SettingsPage() {
                             </span>
                             <div role="group" aria-labelledby="settings-email-label" className="flex h-12 items-center gap-3 rounded-[10px] border-2 border-line-white bg-line-white px-3">
                                 <span className="truncate text-sm font-semibold text-muted-white">
-                                    {user?.email || '—'}
+                                    {user?.email || tCommon('noEmail')}
                                 </span>
                                 <span className="label-mono ml-auto shrink-0 rounded-full border-2 border-muted-white px-2 py-0.5 text-[9px] text-muted-white">
                                     {t('readOnly')}

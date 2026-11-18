@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Iniciar Sesión — Fandi',
+    title: 'Iniciar sesión · Fandi',
 };
 
 export default function LoginLayout({

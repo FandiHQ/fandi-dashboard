@@ -41,6 +41,8 @@ export function Sidebar() {
                         width={46}
                         height={46}
                         unoptimized
+                        // First image on every dashboard page (it is the LCP).
+                        loading="eager"
                         className="size-[46px] rounded-[12px]"
                     />
                 </Link>

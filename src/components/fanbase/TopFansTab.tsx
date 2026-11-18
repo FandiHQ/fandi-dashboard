@@ -20,6 +20,7 @@ import {
 import { useAuth } from '@/contexts/auth-context';
 import { orgApi } from '@/lib/api-hooks';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { FanTier, RichTopFanRow } from '@/types/api';
 
 const PAGE_SIZE = 50;
@@ -56,6 +57,7 @@ const numberFmt = new Intl.NumberFormat('es-CO');
 export function TopFansTab() {
     const t = useTranslations('topFans');
     const tTiers = useTranslations('fanTiers');
+    const tCommon = useTranslations('common');
     const { organization } = useAuth();
     const orgId = organization?.id;
 
@@ -116,19 +118,22 @@ export function TopFansTab() {
                 <StatCard
                     icon={<Users size={14} />}
                     label={t('stats.totalFans')}
-                    value={analytics ? numberFmt.format(analytics.totalRankedFans) : '—'}
+                    value={analytics ? numberFmt.format(analytics.totalRankedFans) : null}
+                    loading={analyticsQuery.isLoading}
                     testId="stat-total"
                 />
                 <StatCard
                     icon={<Trophy size={14} />}
                     label={t('stats.newThisMonth')}
-                    value={analytics ? `+${numberFmt.format(analytics.newFansThisMonth)}` : '—'}
+                    value={analytics ? `+${numberFmt.format(analytics.newFansThisMonth)}` : null}
+                    loading={analyticsQuery.isLoading}
                     testId="stat-new"
                 />
                 <StatCard
                     icon={<MapPin size={14} />}
                     label={t('stats.topCity')}
-                    value={topCity ? `${topCity.cityName ?? topCity.cityId}` : '—'}
+                    value={topCity ? `${topCity.cityName ?? topCity.cityId}` : null}
+                    loading={analyticsQuery.isLoading}
                     sub={topCity ? t('topCityFans', { count: topCity.fanCount }) : undefined}
                     testId="stat-city"
                 />
@@ -153,7 +158,9 @@ export function TopFansTab() {
                                       <span className="tabular">{numberFmt.format(count)}</span>
                                   </span>
                               ))
-                            : <span className="font-display text-[36px] text-ink">—</span>}
+                            : analyticsQuery.isLoading
+                              ? <Skeleton className="h-6 w-40 bg-line-white" />
+                              : <span className="font-display text-[22px] leading-[34px] text-muted-white">{tCommon('noData')}</span>}
                     </div>
                 </div>
             </div>
@@ -441,13 +448,17 @@ function StatCard({
     value,
     sub,
     testId,
+    loading = false,
 }: {
     icon: React.ReactNode;
     label: string;
-    value: string;
+    /** null: nothing to show yet (a word, never a dash). */
+    value: string | null;
     sub?: string;
     testId?: string;
+    loading?: boolean;
 }) {
+    const tCommon = useTranslations('common');
     return (
         <div
             className="block-white flex min-w-0 flex-col px-5 py-4"
@@ -456,7 +467,13 @@ function StatCard({
                 {icon}
                 {label}
             </span>
-            <span className="font-display mt-2 truncate text-[36px] text-ink tabular">{value}</span>
+            {loading ? (
+                <Skeleton className="mt-2 h-[34px] w-24 bg-line-white" />
+            ) : value === null ? (
+                <span className="font-display mt-2 text-[22px] leading-[34px] text-muted-white">{tCommon('noData')}</span>
+            ) : (
+                <span className="font-display mt-2 truncate text-[36px] text-ink tabular">{value}</span>
+            )}
             {sub ? (
                 <span className="mt-1.5 font-space-mono text-[10px] uppercase text-muted-white">{sub}</span>
             ) : null}

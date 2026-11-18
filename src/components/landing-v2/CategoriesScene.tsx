@@ -1,44 +1,33 @@
 'use client';
 
-import { useRef, useEffect, useCallback } from 'react';
-import {
-    motion,
-    useScroll,
-    useTransform,
-    useMotionValueEvent,
-    useReducedMotion,
-} from 'framer-motion';
+import { useRef, useEffect, useCallback, useState } from 'react';
+import { AnimatePresence, motion, useMotionValueEvent } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { escuadraColors } from '@/lib/chart-colors';
+import PhoneFrame from './PhoneFrame';
 import { ScrollCue } from './ScrollAffordance';
+import { reveal, useReducedMotionSafe, useSceneProgress } from './scroll';
 
 /**
- * §3 — CATEGORÍAS. The section the whole landing exists for.
+ * #2 OPORTUNIDADES: "Así se gana". The section the landing exists for.
  *
- * The mechanic is not explained in prose, it is SIMULATED: 600 dots (fans)
- * fly in, sort themselves into four categorías, every categoría receives
- * the SAME prize, and then one dot lights up per categoría — the fan who
- * answered right the fastest (fandi-api knowledge contest, RFC §2).
+ * Two halves:
+ *   1. The mechanic SIMULATED (pinned): 600 dots (fans) fly in, sort into
+ *      four categorías, every categoría shows the SAME prize, then one dot
+ *      per categoría lights up: the fan who answered right the fastest
+ *      (fandi-api knowledge contest, RFC §2). The steps sit beside it in
+ *      readable type, so the canvas never carries the explanation alone.
+ *   2. The PROOF (normal flow): the real live and results screens, then the
+ *      rule in one opaque block. It used to fade in over the dot grid,
+ *      half transparent; now it has its own place.
  *
- * The point it teaches: every categoría has the same number of winners and
- * the same prize, and a fan in BASE competes only with BASE.
- *
- * Deliberately NO statistics on screen and no odds copy (fan-side copy
- * rule, DESIGN_GUIDELINES §6: no "1 de cada N", no percentages, no
- * "más probabilidades"). Category colours are the equal-weight set from
- * chart-colors.ts so no band reads as "better".
- *
- * Faithful to fandi-api: the category is by cumulative aporte, bands are
- * relative to the other participants, and inside a band the fastest right
- * answer wins — contributing more never buys the prize. Nothing random.
- *
- * Bands are NEUTRAL on purpose: the same number of dots each. Categories
- * are placed by each fan's share of the money, not by head count, so a
- * crowd split in fixed fan proportions (e.g. 5/15/30/50 %) would teach a
- * rule that does not exist. Head counts per band vary event to event.
+ * No statistics, no odds copy (DESIGN_GUIDELINES §6). Bands are NEUTRAL on
+ * purpose: the same number of dots each. Categories are placed by each
+ * fan's share of the money, not by head count, so fixed fan proportions
+ * would teach a rule that does not exist. Inside a band the fastest right
+ * answer wins: contributing more never buys the prize. Nothing random.
  */
 
-/** Dots per band — identical for every band (see the note above). */
 const BAND_DOTS = 150;
 
 const BANDS = [
@@ -48,32 +37,33 @@ const BANDS = [
     { key: 'base', count: BAND_DOTS, accent: escuadraColors[1], seed: 0.81 },
 ] as const;
 
-/** Canvas needs literal colours: ink (extrusion/outline) and the
- *  pre-sort "anonymous" dot, white at 45% on the blue canvas. */
+/** Canvas needs literal colours: ink and the pre-sort "anonymous" dot. */
 const INK = '#0B0B0F';
-const DOT_IDLE = 'rgba(255,255,255,0.45)';
+const DOT_IDLE = 'rgba(255,255,255,0.6)';
 
 const TOTAL = BANDS.reduce((s, b) => s + b.count, 0);
 
-/** Scroll phase boundaries. */
+/** Scroll phase boundaries (scene progress). */
 const P = {
-    scatterIn: 0.1,
-    sortStart: 0.2,
-    sortEnd: 0.44,
-    prizes: 0.54,
-    draw: 0.66,
-    payoff: 0.8,
+    scatterIn: 0.08,
+    sortStart: 0.16,
+    sortEnd: 0.4,
+    prizes: 0.46,
+    draw: 0.64,
 } as const;
+
+/** Which step caption is current, by scene progress. */
+const STEPS = ['c1', 'c2', 'c3', 'c4'] as const;
+const STEP_AT = [0, 0.18, 0.44, 0.62];
+const stepFor = (p: number) =>
+    STEP_AT.reduce((cur, at, i) => (p >= at ? i : cur), 0);
 
 interface Dot {
     band: number;
-    /** chaotic starting point */
     sx: number;
     sy: number;
-    /** sorted destination */
     tx: number;
     ty: number;
-    /** per-dot drift so the crowd breathes */
     phase: number;
     isWinner: boolean;
 }
@@ -90,59 +80,58 @@ const easeInOut = (t: number) =>
     t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 const clamp01 = (t: number) => (t < 0 ? 0 : t > 1 ? 1 : t);
 
-export default function CategoriesScene() {
+function Simulation() {
     const t = useTranslations('landingV2.categorias');
-    const wrapRef = useRef<HTMLDivElement>(null);
+    const wrapRef = useRef<HTMLElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const dotsRef = useRef<Dot[]>([]);
     const boxesRef = useRef<BandBox[]>([]);
     const progressRef = useRef(0);
     const rafRef = useRef<number>(0);
-    const reduceMotion = useReducedMotion();
+    const reduceMotion = useReducedMotionSafe();
+    const progress = useSceneProgress(wrapRef);
+    const [step, setStep] = useState(0);
 
-    const { scrollYProgress } = useScroll({
-        target: wrapRef,
-        offset: ['start start', 'end end'],
-    });
-
-    useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    useMotionValueEvent(progress, 'change', (v) => {
         progressRef.current = v;
+        setStep(stepFor(v));
     });
 
-    /** Recompute the sorted layout + scatter field for the current size. */
+    /** Sorted layout + scatter field for the canvas's own box. */
     const buildLayout = useCallback((w: number, h: number) => {
-        // Generous top/bottom padding: the heading block sits above and the
-        // payoff line below, and neither may collide with the bands.
-        const topPad = h * 0.42;
-        const botPad = h * 0.24;
+        const labelRoom = 26; // band label above each grid
+        const prizeRoom = 120; // "1 GANADOR" chip right of each grid
+        const topPad = 20;
+        const botPad = 28;
         const avail = Math.max(120, h - topPad - botPad);
 
-        // Grid shape per band — wide-ish blocks read as "a crowd".
         const shapes = BANDS.map((b) => {
             const cols = Math.max(6, Math.ceil(Math.sqrt(b.count * 3.4)));
             return { cols, rows: Math.ceil(b.count / cols) };
         });
-
         const totalRows = shapes.reduce((s, x) => s + x.rows, 0);
-        const gapRows = (BANDS.length - 1) * 1.9;
-        const spacing = Math.max(
-            4.5,
-            Math.min(15, avail / (totalRows + gapRows))
-        );
+        const maxCols = Math.max(...shapes.map((s) => s.cols));
+        const n = BANDS.length;
+        // Fit both ways: tall enough for the bands and their labels with a
+        // minimum gap, narrow enough to leave the prize chip its room.
+        const byH = (avail - n * labelRoom - (n - 1) * 10) / totalRows;
+        const byW = (w - prizeRoom - 24) / maxCols;
+        const spacing = Math.max(4, Math.min(13, byH, byW));
+        const used = totalRows * spacing + n * labelRoom;
+        const gap = Math.min(28, Math.max(10, (avail - used) / (n - 1)));
+        // Centre the whole stack vertically in the canvas.
+        let y = topPad + labelRoom + Math.max(0, (avail - used - gap * (n - 1)) / 2);
 
-        const cx = w * 0.5;
+        const gridW = maxCols * spacing;
+        const cx = Math.max(12 + gridW / 2, (w - prizeRoom) / 2);
 
         const dots: Dot[] = [];
         const boxes: BandBox[] = [];
-        let y = topPad;
-
         BANDS.forEach((band, bi) => {
             const { cols, rows } = shapes[bi];
             const bandH = rows * spacing;
-            const gridW = cols * spacing;
             const gridLeft = cx - gridW / 2;
             const winnerIdx = Math.floor(band.seed * band.count);
-
             for (let i = 0; i < band.count; i++) {
                 const col = i % cols;
                 const row = Math.floor(i / cols);
@@ -156,15 +145,13 @@ export default function CategoriesScene() {
                     isWinner: i === winnerIdx,
                 });
             }
-
             boxes.push({
-                labelY: y - spacing * 1.1,
+                labelY: y - 9,
                 centerY: y + bandH / 2,
                 gridLeft,
                 gridRight: gridLeft + gridW,
             });
-
-            y += bandH + spacing * 1.9;
+            y += bandH + labelRoom + gap;
         });
 
         dotsRef.current = dots;
@@ -195,19 +182,17 @@ export default function CategoriesScene() {
             canvas.height = Math.round(h * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             buildLayout(w, h);
+            lastP = -1;
         };
 
-        resize();
-        window.addEventListener('resize', resize);
-
-        // This loop previously ran at 60fps for the entire life of the page,
-        // redrawing 600 dots even with the section nowhere near the viewport.
-        // It now runs only while the scene is on (or close to) screen, and
-        // inside that it skips the redraw when neither the scroll position
-        // nor the drift animation has moved.
+        // Runs only while the scene is on (or near) screen, and skips the
+        // repaint when neither the scroll nor the drift has moved.
         let visible = false;
         let running = false;
         let lastP = -1;
+
+        resize();
+        window.addEventListener('resize', resize);
 
         const draw = (time: number) => {
             if (!visible) {
@@ -220,17 +205,12 @@ export default function CategoriesScene() {
             const dots = dotsRef.current;
             const boxes = boxesRef.current;
 
-            // Sorting progress + reveal gates
-            const sort = easeInOut(
-                clamp01((p - P.sortStart) / (P.sortEnd - P.sortStart))
-            );
-            const appear = clamp01(p / P.scatterIn);
+            const sort = easeInOut(clamp01((p - P.sortStart) / (P.sortEnd - P.sortStart)));
+            const appear = clamp01(p / P.scatterIn + 0.15);
             const prizeIn = clamp01((p - P.prizes) / 0.08);
             const drawIn = clamp01((p - P.draw) / 0.1);
             const drift = reduceMotion ? 0 : (1 - sort) * 9;
 
-            // Nothing moved and nothing is drifting: the last frame is still
-            // correct, so don't repaint it.
             if (p === lastP && drift === 0) {
                 rafRef.current = requestAnimationFrame(draw);
                 return;
@@ -239,22 +219,16 @@ export default function CategoriesScene() {
 
             ctx.clearRect(0, 0, w, h);
 
-            // ── dots ──
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
                 const band = BANDS[d.band];
-                const wob = drift
-                    ? Math.sin(time / 900 + d.phase) * drift
-                    : 0;
+                const wob = drift ? Math.sin(time / 900 + d.phase) * drift : 0;
                 const x = lerp(d.sx + wob, d.tx, sort);
                 const y = lerp(d.sy + wob * 0.6, d.ty, sort);
-
                 const won = d.isWinner && drawIn > 0;
-                const r = won ? 2.6 + drawIn * 3 : 1.9;
+                const r = won ? 2.8 + drawIn * 3.4 : 2;
 
-                // Unsorted dots are anonymous; sorted ones take the band
-                // colour — the sort itself is the reveal.
-                ctx.globalAlpha = appear * (won ? 1 : 0.45 + sort * 0.55);
+                ctx.globalAlpha = appear * (won ? 1 : 0.55 + sort * 0.45);
                 if (won) {
                     // Winner: hard ink extrusion + ink outline, no glow.
                     ctx.fillStyle = INK;
@@ -277,43 +251,34 @@ export default function CategoriesScene() {
             }
             ctx.globalAlpha = 1;
 
-            // ── band labels + the identical prize ──
+            // Band labels + the identical prize.
             if (sort > 0.55 && boxes.length === BANDS.length) {
                 BANDS.forEach((band, bi) => {
                     const box = boxes[bi];
                     const a = clamp01((sort - 0.55) / 0.35);
-
                     ctx.globalAlpha = a;
                     ctx.fillStyle = band.accent;
-                    ctx.font = `700 11px ${mono}`;
+                    ctx.font = `700 13px ${mono}`;
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'alphabetic';
-                    ctx.fillText(
-                        t(`band.${band.key}`).toUpperCase(),
-                        box.gridLeft,
-                        box.labelY
-                    );
+                    ctx.fillText(t(`band.${band.key}`).toUpperCase(), box.gridLeft, box.labelY);
 
-                    // identical prize marker per band, right of the grid
                     if (prizeIn > 0) {
-                        const px = Math.min(w - 16, box.gridRight + 26);
+                        const px = box.gridRight + 18;
                         const py = box.centerY;
                         ctx.globalAlpha = prizeIn * a;
-
                         // Prize chip: band colour, ink outline, hard ink
                         // extrusion (no blur).
                         ctx.fillStyle = INK;
-                        ctx.fillRect(px - 5 + 2, py - 5 + 2, 10, 10);
+                        ctx.fillRect(px - 6 + 2, py - 6 + 2, 12, 12);
                         ctx.fillStyle = band.accent;
                         ctx.strokeStyle = INK;
                         ctx.lineWidth = 1.5;
-                        ctx.fillRect(px - 5, py - 5, 10, 10);
-                        ctx.strokeRect(px - 5, py - 5, 10, 10);
-
+                        ctx.fillRect(px - 6, py - 6, 12, 12);
+                        ctx.strokeRect(px - 6, py - 6, 12, 12);
                         ctx.fillStyle = '#FFFFFF';
-                        ctx.font = `700 9px ${mono}`;
-                        ctx.textAlign = 'left';
-                        ctx.fillText(t('onePrize').toUpperCase(), px + 12, py + 3);
+                        ctx.font = `700 12px ${mono}`;
+                        ctx.fillText(t('onePrize').toUpperCase(), px + 14, py + 4);
                     }
                 });
                 ctx.globalAlpha = 1;
@@ -325,12 +290,10 @@ export default function CategoriesScene() {
         const start = () => {
             if (running) return;
             running = true;
-            lastP = -1; // force one repaint on re-entry
+            lastP = -1;
             rafRef.current = requestAnimationFrame(draw);
         };
 
-        // rootMargin gives the loop a screen of lead time so the first
-        // painted frame is already correct when the scene scrolls in.
         const io = new IntersectionObserver(
             ([entry]) => {
                 visible = entry.isIntersecting;
@@ -348,99 +311,168 @@ export default function CategoriesScene() {
         };
     }, [buildLayout, reduceMotion, t]);
 
-    // ── narrative captions, cross-fading over the simulation ──
-    const cap1 = useTransform(scrollYProgress, [0.03, 0.1, 0.19, 0.24], [0, 1, 1, 0]);
-    const cap2 = useTransform(scrollYProgress, [0.24, 0.3, 0.44, 0.5], [0, 1, 1, 0]);
-    const cap3 = useTransform(scrollYProgress, [0.5, 0.56, 0.63, 0.68], [0, 1, 1, 0]);
-    const cap4 = useTransform(scrollYProgress, [0.68, 0.73, 0.78, 0.82], [0, 1, 1, 0]);
-    // Two payoffs: the rule, then the fact that it's all live and moving.
-    const payoff = useTransform(scrollYProgress, [P.payoff, 0.86, 0.9, 0.93], [0, 1, 1, 0]);
-    const payoffY = useTransform(scrollYProgress, [P.payoff, 0.86], [30, 0]);
-    const payoff2 = useTransform(scrollYProgress, [0.93, 0.97], [0, 1]);
-    const payoff2Y = useTransform(scrollYProgress, [0.93, 0.97], [26, 0]);
-    const headOpacity = useTransform(scrollYProgress, [0, 0.04, 0.9, 0.97], [0, 1, 1, 0]);
-
     return (
         <section
             ref={wrapRef}
             id="categorias"
             aria-label={t('title')}
-            className="relative h-[480vh] bg-blue"
+            className="relative bg-blue"
+            style={{ height: reduceMotion ? 'auto' : '210vh' }}
         >
-            <div className="sticky top-0 h-screen w-full overflow-hidden">
-
-                <canvas
-                    ref={canvasRef}
-                    className="absolute inset-0 h-full w-full"
-                    role="img"
-                    aria-label={t('canvasAlt', { total: TOTAL })}
-                />
-
-                {/* Heading. Offset is a fixed px value, not vh: the nav is
-                    72px tall and a vh-based top pushed the kicker underneath
-                    it on shorter viewports. */}
-                <motion.div
-                    style={{ opacity: headOpacity }}
-                    className="pointer-events-none absolute left-0 right-0 top-[96px] z-10 flex flex-col items-center gap-5 px-6 text-center md:top-[108px] md:gap-6"
-                >
-                    <span className="label-mono text-lilac md:text-[12px]">
-                        {t('kicker')}
-                    </span>
-                    <h2 className="font-hero text-[38px] text-white md:text-[82px]">
+            <div
+                className={
+                    reduceMotion
+                        ? 'relative mx-auto flex max-w-6xl flex-col gap-8 px-5 pt-20 md:flex-row md:px-9'
+                        : 'sticky top-0 mx-auto flex h-screen max-w-6xl flex-col px-5 pt-[92px] md:flex-row md:items-center md:gap-10 md:px-9 md:pt-[72px]'
+                }
+            >
+                {/* Steps. Desktop: all four, the current one in a white
+                    block. Phone: one at a time, the old one out before the
+                    new one in (no two lines on top of each other). */}
+                <div className="relative z-10 flex shrink-0 flex-col gap-3 md:w-[44%] md:gap-5">
+                    <span className="label-mono text-[13px] text-lilac">{t('kicker')}</span>
+                    <h2 className="font-hero text-[40px] text-white md:text-[64px] lg:text-[76px]">
                         {t('title')}
                     </h2>
 
-                    {/* captions occupy one reserved block, so no layout shift */}
-                    <div className="relative mt-4 h-20 w-full max-w-3xl md:mt-6 md:h-16">
-                        {[
-                            { o: cap1, k: 'c1' },
-                            { o: cap2, k: 'c2' },
-                            { o: cap3, k: 'c3' },
-                            { o: cap4, k: 'c4' },
-                        ].map(({ o, k }) => (
-                            <motion.p
-                                key={k}
-                                style={{ opacity: o }}
-                                className="absolute inset-0 text-base text-white md:text-2xl"
-                            >
-                                {t(k)}
-                            </motion.p>
-                        ))}
-                    </div>
-                </motion.div>
+                    <ol className="mt-3 hidden flex-col gap-2.5 md:flex">
+                        {STEPS.map((k, i) => {
+                            const on = reduceMotion || i === step;
+                            return (
+                                <li
+                                    key={k}
+                                    aria-current={!reduceMotion && on ? 'step' : undefined}
+                                    className={`flex gap-4 rounded-[14px] border-2 px-4 py-3.5 text-[18px] leading-snug transition-colors duration-300 lg:text-[19px] ${
+                                        on
+                                            ? 'border-ink bg-white text-ink shadow-ext-md'
+                                            : 'border-transparent text-white'
+                                    }`}
+                                >
+                                    <span
+                                        className={`tabular mt-0.5 grid size-7 shrink-0 place-items-center rounded-[8px] font-space-mono text-[14px] font-bold ${
+                                            on ? 'bg-blue text-white' : 'bg-ink text-white'
+                                        }`}
+                                        aria-hidden="true"
+                                    >
+                                        {i + 1}
+                                    </span>
+                                    <span>{t(k)}</span>
+                                </li>
+                            );
+                        })}
+                    </ol>
 
-                {/* payoff 1 — the sentence the whole section is built to earn */}
-                <motion.div
-                    style={{ opacity: payoff, y: payoffY }}
-                    className="pointer-events-none absolute bottom-[7vh] left-0 right-0 z-10 px-6 text-center"
+                    <div className="relative min-h-[104px] md:hidden">
+                        {reduceMotion ? (
+                            <ol className="flex flex-col gap-3">
+                                {STEPS.map((k) => (
+                                    <li key={k} className="text-[17px] leading-snug text-white">{t(k)}</li>
+                                ))}
+                            </ol>
+                        ) : (
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.p
+                                    key={step}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.18 }}
+                                    className="text-[17px] leading-snug text-white"
+                                >
+                                    <span className="font-space-mono font-bold text-lime">
+                                        {step + 1}/4
+                                    </span>{' '}
+                                    {t(STEPS[step])}
+                                </motion.p>
+                            </AnimatePresence>
+                        )}
+                    </div>
+                </div>
+
+                {/* The crowd, sorting itself. */}
+                <div
+                    className={
+                        reduceMotion
+                            ? 'relative h-[520px] w-full md:flex-1'
+                            : // pb clears the phone's sticky action bar (≈70px).
+                            'relative mb-[84px] min-h-0 w-full min-w-0 flex-1 md:mb-0 md:h-[78vh] md:max-h-[640px]'
+                    }
                 >
-                    <p className="block-white font-display mx-auto max-w-3xl px-5 py-4 text-xl text-ink md:px-8 md:py-5 md:text-[32px]">
+                    <canvas
+                        ref={canvasRef}
+                        className="absolute inset-0 h-full w-full"
+                        role="img"
+                        aria-label={t('canvasAlt', { total: TOTAL })}
+                    />
+                </div>
+
+                {!reduceMotion && <ScrollCue targetRef={wrapRef} />}
+            </div>
+        </section>
+    );
+}
+
+/** The real screens, then the rule, in opaque blocks of their own. */
+function Proof() {
+    const t = useTranslations('landingV2.categorias');
+    const rise = (delay = 0) => reveal(delay, 40, 0.25);
+
+    const phones = [
+        { k: 'proof1', src: '/images/app/opportunity-live.webp', alt: t('phone1Alt') },
+        { k: 'proof2', src: '/images/app/winners-question.webp', alt: t('phone2Alt') },
+    ] as const;
+
+    return (
+        <section aria-label={t('proofLabel')} className="bg-blue px-5 pb-16 pt-8 md:px-9 md:pb-28 md:pt-16">
+            <div className="mx-auto flex max-w-6xl flex-col gap-10 md:gap-14">
+                <div className="grid gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
+                    {phones.map((p, i) => (
+                        <motion.figure key={p.k} {...rise(i * 0.12)} className="flex flex-col gap-6">
+                            <div className="mx-auto w-full max-w-[300px] md:max-w-[380px]">
+                                <PhoneFrame
+                                    src={p.src}
+                                    alt={p.alt}
+                                    width={720}
+                                    height={1354}
+                                    sizes="(min-width: 768px) 290px, 72vw"
+                                />
+                            </div>
+                            <figcaption className="mx-auto flex max-w-[440px] flex-col gap-2 text-center">
+                                <span className="font-display text-[24px] text-white md:text-[28px]">
+                                    {t(`${p.k}Title`)}
+                                </span>
+                                <span className="text-[17px] leading-relaxed text-white md:text-[18px]">
+                                    {t(`${p.k}Body`)}
+                                </span>
+                            </figcaption>
+                        </motion.figure>
+                    ))}
+                </div>
+
+                <motion.div {...rise()} className="grid gap-5 lg:grid-cols-[1.25fr_1fr] lg:gap-6">
+                    <p className="block-white font-display px-6 py-6 text-[22px] text-ink md:px-8 md:py-8 md:text-[30px]">
                         {t('payoffA')}{' '}
                         <span className="text-blue">{t('payoffB')}</span>
                     </p>
-                </motion.div>
-
-                {/* payoff 2 — nothing here is fixed; it moves with the crowd */}
-                <motion.div
-                    style={{ opacity: payoff2, y: payoff2Y }}
-                    className="pointer-events-none absolute bottom-[7vh] left-0 right-0 z-10 px-6 text-center"
-                >
                     {/* The live moment: ink block, lime extrusion. */}
-                    <div className="block-ink mx-auto flex max-w-3xl flex-col items-center gap-2 px-5 py-4 shadow-ext-live md:px-8 md:py-5">
-                        <span className="flex items-center gap-2 text-lime">
+                    <div className="block-ink flex flex-col justify-center gap-3 px-6 py-6 shadow-ext-live md:px-8 md:py-8">
+                        <span className="flex items-center gap-2.5 text-lime">
                             <span className="live-dot" aria-hidden="true" />
-                            <span className="font-display text-xl md:text-[32px]">
-                                {t('liveA')}
-                            </span>
+                            <span className="font-display text-[22px] md:text-[26px]">{t('liveA')}</span>
                         </span>
-                        <p className="text-sm text-muted-ink md:text-lg">
-                            {t('liveB')}
-                        </p>
+                        <p className="text-[17px] leading-relaxed text-white md:text-[18px]">{t('liveB')}</p>
                     </div>
                 </motion.div>
-
-                <ScrollCue targetRef={wrapRef} />
             </div>
         </section>
+    );
+}
+
+export default function CategoriesScene() {
+    return (
+        <>
+            <Simulation />
+            <Proof />
+        </>
     );
 }

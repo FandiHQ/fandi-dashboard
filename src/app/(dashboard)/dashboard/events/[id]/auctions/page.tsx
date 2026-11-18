@@ -920,7 +920,7 @@ function AuctionCard({
                         <div className="flex min-w-0 flex-col">
                             <span className="label-mono text-[9px] text-ink">{t('winner')}</span>
                             <span className="truncate text-base font-black">
-                                {auction.currentBidderName ?? '—'}
+                                {auction.currentBidderName ?? t('noWinner')}
                             </span>
                         </div>
                     </div>

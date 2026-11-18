@@ -31,19 +31,32 @@ export default function EventOverviewPage() {
         enabled: !!event && event.status !== 'draft',
     });
 
+    // A draft has no analytics yet. The event layout already reads its
+    // pre-live counts (same key), so the dynamics tiles still show what is
+    // set up instead of an empty mark.
+    const { data: preLive, isLoading: preLiveLoading } = useQuery({
+        queryKey: ['events', eventId, 'pre-live-stats'],
+        queryFn: () => eventsApi.getPreLiveStats(eventId),
+        enabled: event?.status === 'draft',
+    });
+
     const eventTypeLabels: Record<string, string> = {
         football: t('typeFootball'),
         concert: t('typeConcert'),
         other: t('typeOther'),
     };
 
-    const formatDate = (iso: string) =>
-        new Intl.DateTimeFormat('es', {
+    // "Martes, 17 de noviembre de 2026": only the first letter goes up
+    // (Spanish style). CSS `capitalize` raised every word.
+    const formatDate = (iso: string) => {
+        const text = new Intl.DateTimeFormat('es', {
             weekday: 'long',
             day: 'numeric',
             month: 'long',
             year: 'numeric',
         }).format(new Date(iso));
+        return text.charAt(0).toLocaleUpperCase('es') + text.slice(1);
+    };
 
     const formatTime = (iso: string | null | undefined) => {
         if (!iso) return null;
@@ -75,16 +88,21 @@ export default function EventOverviewPage() {
     const isDraft = event.status === 'draft';
     const isLive = event.status === 'live';
 
-    const statValue = (value: ReactNode, skeletonWidth: string) =>
-        isDraft ? (
-            <span className="font-display mt-2 text-[36px] text-muted-white">--</span>
-        ) : summaryLoading ? (
+    // Drafts: money and participants come after publishing (a word, never a
+    // dash); the dynamics counts come from the pre-live stats.
+    const statValue = (value: ReactNode, skeletonWidth: string, draftValue?: ReactNode) =>
+        isDraft && draftValue === undefined ? (
+            <span className="font-display mt-2 text-[22px] leading-[34px] text-muted-white">
+                {t('overview.pendingStat')}
+            </span>
+        ) : (isDraft ? preLiveLoading : summaryLoading) ? (
             <Skeleton className={`mt-2 h-9 ${skeletonWidth}`} />
         ) : (
-            <span className="font-display tabular mt-2 text-[36px] text-ink">{value}</span>
+            <span className="font-display tabular mt-2 text-[36px] text-ink">{isDraft ? draftValue : value}</span>
         );
+    const impactoCount = (isDraft ? preLive?.impactoCount : summary?.impactoCount) ?? 0;
 
-    const timeline = buildTimeline(event);
+    const timeline = buildTimeline(event, (from, to) => t('overview.timeRange', { from, to }));
     const place = event.venue
         ? event.city
             ? `${event.venue}, ${event.city}`
@@ -124,10 +142,14 @@ export default function EventOverviewPage() {
                 >
                     <span className="label-mono text-muted-white">{t('tabs.experiences')}</span>
                     {/* Oportunidades only: an impacto has no winners and is not one. */}
-                    {statValue(summary?.oportunidadCount ?? summary?.experienceCount ?? 0, 'w-16')}
-                    {(summary?.impactoCount ?? 0) > 0 && (
+                    {statValue(
+                        summary?.oportunidadCount ?? summary?.experienceCount ?? 0,
+                        'w-16',
+                        preLive?.oportunidadCount ?? 0,
+                    )}
+                    {impactoCount > 0 && (
                         <span className="mt-1 font-space-mono text-[10px] uppercase text-muted-white">
-                            {t('overview.plusImpactos', { count: summary?.impactoCount ?? 0 })}
+                            {t('overview.plusImpactos', { count: impactoCount })}
                         </span>
                     )}
                     <span className="mt-1.5 font-space-mono text-[10px] uppercase text-blue group-hover:underline">
@@ -141,7 +163,7 @@ export default function EventOverviewPage() {
                     className="block-white press group flex flex-col px-5 py-4 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-lime"
                 >
                     <span className="label-mono text-muted-white">{t('tabs.auctions')}</span>
-                    {statValue(summary?.auctionCount ?? 0, 'w-16')}
+                    {statValue(summary?.auctionCount ?? 0, 'w-16', preLive?.auctionCount ?? 0)}
                     <span className="mt-1.5 font-space-mono text-[10px] uppercase text-blue group-hover:underline">
                         {t('overview.view')}
                     </span>
@@ -189,7 +211,7 @@ export default function EventOverviewPage() {
                             </DetailField>
                         )}
                         <DetailField label={t('date')}>
-                            <span className="capitalize">{formatDate(event.eventDate)}</span>
+                            <span>{formatDate(event.eventDate)}</span>
                             {formatTime(event.eventDate) && (
                                 <span className="tabular"> · {formatTime(event.eventDate)}</span>
                             )}
@@ -308,7 +330,10 @@ function TimelineTrack({
 
 type TimelineSpan = { left: number; width: number; range: string };
 
-function buildTimeline(event: Event): {
+function buildTimeline(
+    event: Event,
+    rangeLabel: (from: string, to: string) => string,
+): {
     ticks: string[];
     ticket: TimelineSpan | null;
     fandi: TimelineSpan | null;
@@ -346,7 +371,7 @@ function buildTimeline(event: Event): {
     const place = (a: number, b: number): TimelineSpan => ({
         left: ((a - min) / span) * 100,
         width: ((b - a) / span) * 100,
-        range: `${fmt(a)} – ${fmt(b)}`,
+        range: rangeLabel(fmt(a), fmt(b)),
     });
 
     return {

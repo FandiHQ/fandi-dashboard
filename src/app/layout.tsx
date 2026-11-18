@@ -21,12 +21,12 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fandi — Experiencias VIP en Eventos en Vivo",
+  title: "Fandi: Experiencias VIP en Eventos en Vivo",
   description:
     "Plataforma de engagement en tiempo real para eventos masivos. Subastas, oportunidades e insignias con tus artistas favoritos.",
   metadataBase: new URL("https://fandi.app"),
   openGraph: {
-    title: "Fandi — Experiencias VIP en Eventos en Vivo",
+    title: "Fandi: Experiencias VIP en Eventos en Vivo",
     description:
       "Interactúa de verdad con tus ídolos. Subastas en vivo, oportunidades VIP e insignias coleccionables.",
     url: "https://fandi.app",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
         url: "/fandi-logo.png",
         width: 1200,
         height: 630,
-        alt: "Fandi — VIP Experiences at Live Events",
+        alt: "Fandi: VIP Experiences at Live Events",
       },
     ],
     locale: "es_CO",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fandi — Experiencias VIP en Eventos en Vivo",
+    title: "Fandi: Experiencias VIP en Eventos en Vivo",
     description:
       "Subastas en vivo, oportunidades VIP e insignias con tus artistas favoritos.",
     images: ["/fandi-logo.png"],
@@ -64,7 +64,9 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="dark">
+    // data-scroll-behavior: Next 16 turns smooth scrolling off during route
+    // changes only when the root element declares it (globals.css sets it).
+    <html lang={locale} className="dark" data-scroll-behavior="smooth">
       <body
         className={`${archivo.variable} ${spaceMono.variable} antialiased`}
       >

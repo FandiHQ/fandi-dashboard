@@ -1,56 +1,23 @@
-'use client';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+import { DashboardShell } from '@/components/layout/dashboard-shell';
+import { TITLE_TEMPLATE } from '@/lib/page-title';
 
-import { useEffect } from 'react';
-import { useAuth } from '@/contexts/auth-context';
-import { useRouter, usePathname } from 'next/navigation';
-import { Sidebar } from '@/components/layout/sidebar';
-import { DashboardHeader } from '@/components/layout/dashboard-header';
-import { SessionUnreachable } from '@/components/auth/session-unreachable';
+/**
+ * Tab titles: "Inicio · Fandi" here, and the " · Fandi" template for every
+ * dashboard route below (each one names itself in its own layout).
+ */
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations('dashboardNav');
+    return {
+        title: { absolute: TITLE_TEMPLATE.replace('%s', t('home')), template: TITLE_TEMPLATE },
+    };
+}
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { isLoading, isAuthenticated, isUnreachable, retrySession } = useAuth();
-    const router = useRouter();
-    const pathname = usePathname();
-
-    useEffect(() => {
-        if (!isLoading && !isAuthenticated && !isUnreachable) {
-            // Keep the query too (e.g. a collaboration invitation token).
-            router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
-        }
-    }, [isLoading, isAuthenticated, isUnreachable, pathname, router]);
-
-    if (!isLoading && isUnreachable) {
-        return <SessionUnreachable onRetry={retrySession} />;
-    }
-
-    if (isLoading || !isAuthenticated) {
-        return (
-            <div className="flex h-screen items-center justify-center" aria-busy="true">
-                <span className="live-dot size-3 text-lime" aria-hidden="true" />
-            </div>
-        );
-    }
-
-    return (
-        <div className="flex min-h-screen bg-blue">
-            {/* Desktop rail (84px ink) — fixed; collapses into the header sheet below lg */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-[84px] lg:flex-col">
-                <Sidebar />
-            </div>
-
-            {/* Main area — offset by the rail on desktop */}
-            <div className="flex min-w-0 flex-1 flex-col lg:pl-[84px]">
-                <DashboardHeader />
-
-                {/* Content — Azul Bloque web padding (36px) */}
-                <main className="flex-1 px-5 py-7 lg:px-9">
-                    {children}
-                </main>
-            </div>
-        </div>
-    );
+    return <DashboardShell>{children}</DashboardShell>;
 }

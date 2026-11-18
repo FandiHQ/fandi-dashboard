@@ -13,6 +13,7 @@
  * Money is rendered as Fandis via `formatFandis` by default. Pass a
  * custom `formatValue` for non-money series (e.g. participant counts).
  */
+import { useTranslations } from 'next-intl';
 import { formatFandis } from '@/lib/currency';
 
 export interface HudTooltipPayloadEntry {
@@ -38,6 +39,7 @@ export function HudTooltip({
     label,
     formatValue = defaultFormatValue,
 }: HudTooltipProps) {
+    const tCommon = useTranslations('common');
     if (!active || !payload || payload.length === 0) return null;
 
     return (
@@ -64,7 +66,7 @@ export function HudTooltip({
                         <span className="tabular ml-auto font-bold text-white">
                             {typeof entry.value === 'number'
                                 ? formatValue(entry.value)
-                                : '—'}
+                                : tCommon('noData')}
                         </span>
                     </div>
                 ))}

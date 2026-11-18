@@ -412,7 +412,7 @@ function WinnerRow({
                         {escuadraDefaultNames[category]}
                     </span>
                 ) : (
-                    <span className="text-muted-white">—</span>
+                    <span className="text-muted-white">{t('noCategory')}</span>
                 )}
             </TableCell>
             <TableCell className="text-right">
@@ -433,7 +433,7 @@ function WinnerRow({
                     ? format(parseISO(winner.redeemedAt), t('dateFormat'), {
                           locale: esLocale,
                       })
-                    : '—'}
+                    : t('notRedeemed')}
             </TableCell>
         </TableRow>
     );

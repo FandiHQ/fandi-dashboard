@@ -1,12 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Cta, DASHBOARD_URL, StoreBadges } from './Cta';
+import { Cta, DASHBOARD_URL, IDOL_MAILTO, StoreBadges } from './Cta';
+import { reveal } from './scroll';
 
 /**
- * The close: download → objections → footer.
+ * The close: download → objections → footer, plus the compact download
+ * moment that follows "AHORA SÍ PASAS." mid-page.
  *
  * The FAQ is doing double duty. It answers the questions that actually
  * stop a fan converting (is it rigged? is my money safe? do I need to be
@@ -18,7 +20,7 @@ const FAQ_ITEMS = [1, 2, 3, 4, 5] as const;
 
 /** 44px tall: on a phone these wrap into rows of small mono text. */
 const FOOTER_LINK =
-    'label-mono inline-flex min-h-11 items-center text-[11px] text-muted-ink transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+    'label-mono inline-flex min-h-11 items-center text-[12px] text-muted-ink transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 
 /**
  * Desktop only: whoever reads this on a computer has the phone in their
@@ -43,16 +45,39 @@ function DownloadQr() {
                 decoding="async"
                 className="block size-[111px]"
             />
-            <span className="label-mono max-w-[14ch] text-left text-[11px] leading-snug text-ink">
+            <span className="label-mono max-w-[14ch] text-left text-[12px] leading-snug text-ink">
                 {t('scanQr')}
             </span>
         </div>
     );
 }
 
+/**
+ * The mid-page download moment, right after "AHORA SÍ PASAS.": the payoff
+ * of the turn is "and it's in your pocket". Compact on purpose: one line,
+ * the badges, no second headline competing with the slam above it.
+ */
+export function MidDownload() {
+    const t = useTranslations('landingV2.descargarMid');
+
+    return (
+        <section aria-label={t('title')} className="bg-blue px-5 py-14 md:px-9 md:py-20">
+            <motion.div
+                {...reveal(0, 26, 0.5)}
+                className="mx-auto flex max-w-5xl flex-col items-center gap-6 rounded-[22px] border-2 border-ink bg-white px-6 py-8 text-center shadow-ext-xl md:flex-row md:justify-between md:gap-10 md:px-10 md:text-left"
+            >
+                <div className="flex flex-col gap-2">
+                    <p className="font-display text-[26px] text-ink md:text-[32px]">{t('title')}</p>
+                    <p className="text-[17px] leading-relaxed text-body-white md:text-[18px]">{t('body')}</p>
+                </div>
+                <StoreBadges className="shrink-0" />
+            </motion.div>
+        </section>
+    );
+}
+
 export function DownloadScene() {
     const t = useTranslations('landingV2.descargar');
-    const reduceMotion = useReducedMotion();
 
     return (
         <section
@@ -61,26 +86,19 @@ export function DownloadScene() {
             // Focus target for the nav's "Descargar" (scrollToDownloadIfNoStore);
             // scroll-mt clears the fixed 72px nav it scrolls under.
             tabIndex={-1}
-            className="relative scroll-mt-[72px] overflow-hidden bg-blue px-5 py-28 outline-none md:px-9 md:py-40"
+            className="relative scroll-mt-[72px] overflow-hidden bg-blue px-5 py-16 outline-none md:px-9 md:py-28"
         >
             <motion.div
-                {...(reduceMotion
-                    ? {}
-                    : {
-                          initial: { opacity: 0, y: 34 },
-                          whileInView: { opacity: 1, y: 0 },
-                          viewport: { once: true, amount: 0.3 },
-                          transition: { duration: 0.65 },
-                      })}
+                {...reveal(0, 34, 0.3)}
                 className="relative mx-auto flex max-w-4xl flex-col items-center gap-8 text-center"
             >
-                <span className="label-mono text-lilac md:text-[12px]">
+                <span className="label-mono text-[13px] text-lilac">
                     {t('kicker')}
                 </span>
                 <h2 className="font-hero text-[48px] text-white md:text-[120px]">
                     {t('title')}
                 </h2>
-                <p className="max-w-xl text-lg text-lilac md:text-xl">
+                <p className="max-w-xl text-[18px] leading-relaxed text-white md:text-[20px]">
                     {t('body')}
                 </p>
 
@@ -90,7 +108,7 @@ export function DownloadScene() {
                 </div>
 
                 <div className="mt-2 flex flex-col items-center gap-3">
-                    <span className="label-mono tabular text-[11px] text-white">
+                    <span className="label-mono tabular text-[13px] text-white">
                         {t('priceNote')}
                     </span>
                 </div>
@@ -101,27 +119,19 @@ export function DownloadScene() {
 
 export function FaqScene() {
     const t = useTranslations('landingV2.faq');
-    const reduceMotion = useReducedMotion();
 
     return (
         <section
             id="faq"
             aria-label={t('title')}
-            className="relative bg-blue px-5 py-24 md:px-9 md:py-32"
+            className="relative bg-blue px-5 py-16 md:px-9 md:py-28"
         >
             <div className="mx-auto max-w-3xl">
                 <motion.div
-                    {...(reduceMotion
-                        ? {}
-                        : {
-                              initial: { opacity: 0, y: 26 },
-                              whileInView: { opacity: 1, y: 0 },
-                              viewport: { once: true, amount: 0.4 },
-                              transition: { duration: 0.6 },
-                          })}
+                    {...reveal(0, 26, 0.4)}
                     className="text-center"
                 >
-                    <span className="label-mono text-lilac md:text-[12px]">
+                    <span className="label-mono text-[13px] text-lilac">
                         {t('kicker')}
                     </span>
                     <h2 className="font-hero mt-4 text-4xl text-white md:text-6xl">
@@ -144,7 +154,7 @@ export function FaqScene() {
                                     +
                                 </span>
                             </summary>
-                            <p className="max-w-[62ch] pb-6 text-base leading-relaxed text-body-white md:pb-7">
+                            <p className="max-w-[62ch] pb-6 text-[17px] leading-relaxed text-body-white md:pb-7 md:text-[18px]">
                                 {t(`a${i}`)}
                             </p>
                         </details>
@@ -200,11 +210,7 @@ export function FooterV2() {
                         <Cta href={DASHBOARD_URL} newTab={false} variant="ghost">
                             {t('signIn')}
                         </Cta>
-                        <Cta
-                            href="mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento"
-                            variant="primary"
-                            onInk
-                        >
+                        <Cta href={IDOL_MAILTO} variant="primary" onInk>
                             {t('idolCta')}
                         </Cta>
                     </div>
@@ -246,11 +252,11 @@ export function FooterV2() {
                         hola@fandi.app
                     </a>
                     {/* muted-ink, not nav-inactive: that one is 3.9:1 on
-                        ink, under AA for 11px text. */}
-                    <span className="label-mono text-[11px] text-muted-ink">
+                        ink, under AA for small text. */}
+                    <span className="label-mono text-[12px] text-muted-ink">
                         {t('madeIn')}
                     </span>
-                    <span className="label-mono text-[11px] text-muted-ink md:ml-auto">
+                    <span className="label-mono text-[12px] text-muted-ink md:ml-auto">
                         {t('copyright')}
                     </span>
                 </nav>

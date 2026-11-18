@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { AlertCircle, Loader2, MoreHorizontal, RotateCw, UserPlus, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
@@ -86,6 +87,21 @@ function teamErrorMessage(t: T, err: unknown, sendsEmail = false): string {
     }
 }
 
+/**
+ * The organization's events, read once for the access column and the
+ * restriction picker (one cache entry). Names come from here, not from the
+ * API's eventNames, which falls back to the raw id when it cannot resolve one.
+ */
+function useOrgEvents(enabled = true) {
+    return useQuery({
+        queryKey: ['events'],
+        queryFn: () => eventsApi.list({ limit: 100 }),
+        enabled,
+    });
+}
+
+const EVENT_CHIP = 'inline-flex max-w-[220px] items-center rounded-[8px] border-2 px-2 py-0.5 text-[12px] font-bold leading-tight';
+
 function useResendInvite(member: OrganizationMember, t: T) {
     return useMutation({
         mutationFn: () => orgApi.resendInvite(member.userId),
@@ -107,6 +123,11 @@ export default function TeamPage() {
         queryKey: ['organization', 'members'],
         queryFn: () => orgApi.getMembers(),
     });
+    const someoneRestricted = !!members?.some(
+        (m) => (m.role === 'staff' || m.role === 'viewer') && (m.eventIds?.length ?? 0) > 0,
+    );
+    const eventsQuery = useOrgEvents(someoneRestricted);
+    const eventNames = new Map((eventsQuery.data?.items ?? []).map((e) => [e.id, e.name]));
 
     if (isLoading) return <TeamSkeleton />;
     if (error) return (
@@ -169,6 +190,8 @@ export default function TeamPage() {
                                     index={index}
                                     isOwner={isOwner}
                                     canInvite={canInvite}
+                                    eventNames={eventNames}
+                                    eventsLoading={eventsQuery.isLoading}
                                     t={t}
                                 />
                             ))}
@@ -212,41 +235,65 @@ function MemberRow({
     index,
     isOwner,
     canInvite,
+    eventNames,
+    eventsLoading,
     t,
 }: {
     member: OrganizationMember;
     index: number;
     isOwner: boolean;
     canInvite: boolean;
+    eventNames: Map<string, string>;
+    eventsLoading: boolean;
     t: T;
 }) {
     const locale = useLocale();
+    const tCommon = useTranslations('common');
     const canModify = isOwner && member.role !== 'owner';
     const isPending = member.status === 'pending';
     const mayHaveExpired = isPending && inviteLikelyExpired(member.invitedAt);
     const resend = useResendInvite(member, t);
-    const name = member.displayName || member.email || '—';
+    const name = member.displayName || member.email || tCommon('noName');
 
-    // Event access display logic
+    // Event access: owner/admin see everything; staff/viewer either every
+    // event (no list) or the events they were given, one chip each.
     const renderEventAccess = () => {
-        if (member.role === 'owner' || member.role === 'admin') {
+        const ids = member.eventIds ?? [];
+        if (member.role === 'owner' || member.role === 'admin' || ids.length === 0) {
             return <span className="font-bold text-blue">{t('allEvents')}</span>;
         }
-        // staff / viewer
-        if (member.eventNames && member.eventNames.length > 0) {
-            return (
-                <div className="flex flex-col gap-0.5">
-                    {member.eventNames.map((eventName, i) => (
-                        <span key={i} className="leading-tight">{eventName}</span>
-                    ))}
-                </div>
-            );
-        }
-        if (member.eventIds && member.eventIds.length > 0) {
-            // Fallback if names aren't resolved
-            return t('eventsCount', { count: member.eventIds.length });
-        }
-        return <span className="font-bold text-blue">{t('allEvents')}</span>;
+        const resolved: { id: string; name: string }[] = [];
+        let unresolved = 0;
+        ids.forEach((id, i) => {
+            // The API sends the id itself when it could not find the event.
+            const apiName = member.eventNames?.[i];
+            const eventName = eventNames.get(id) ?? (apiName && apiName !== id ? apiName : null);
+            if (eventName) resolved.push({ id, name: eventName });
+            else unresolved += 1;
+        });
+        return (
+            <ul className="flex max-w-[320px] flex-wrap gap-1.5" aria-label={t('eventAccess')}>
+                {resolved.map(({ id, name: eventName }) => (
+                    <li key={id} className="min-w-0">
+                        <span title={eventName} className={`${EVENT_CHIP} border-ink bg-white text-ink`}>
+                            <span className="truncate">{eventName}</span>
+                        </span>
+                    </li>
+                ))}
+                {unresolved > 0 && (
+                    <li>
+                        {eventsLoading ? (
+                            <Skeleton className="h-6 w-24 rounded-[8px] bg-line-white" />
+                        ) : (
+                            // Events that are gone: one plain chip, never the ids.
+                            <span className={`${EVENT_CHIP} border-dashed border-muted-white bg-white text-muted-white`}>
+                                {t('eventUnavailable', { count: unresolved })}
+                            </span>
+                        )}
+                    </li>
+                )}
+            </ul>
+        );
     };
 
     const avatarColor = AVATAR_COLORS[index % AVATAR_COLORS.length];
@@ -262,14 +309,14 @@ function MemberRow({
                         {initialsOf(member.displayName, member.email)}
                     </span>
                     <div className="flex min-w-0 flex-col">
-                        <span className="text-sm font-extrabold text-ink">{member.displayName || '—'}</span>
+                        <span className="text-sm font-extrabold text-ink">{member.displayName || tCommon('noName')}</span>
                         {/* Small screens: the email column is hidden, show it here. */}
-                        <span className="truncate text-[12px] text-muted-white md:hidden">{member.email || '—'}</span>
+                        <span className="truncate text-[12px] text-muted-white md:hidden">{member.email || tCommon('noEmail')}</span>
                     </div>
                 </div>
             </TableCell>
             <TableCell className="hidden text-[13px] text-muted-white md:table-cell">
-                {member.email || '—'}
+                {member.email || tCommon('noEmail')}
             </TableCell>
             <TableCell>
                 <RolePill role={member.role} t={t} />
@@ -429,11 +476,14 @@ function EventRestrictionPicker({
     t: T;
 }) {
     const tCommon = useTranslations('common');
-    const { data: eventsData, isLoading } = useQuery({
-        queryKey: ['events'],
-        queryFn: () => eventsApi.list({ limit: 100 }),
-    });
-    const nonDraftEvents = eventsData?.items?.filter(e => e.status !== 'draft') ?? [];
+    const { data: eventsData, isLoading } = useOrgEvents();
+    const allEvents = eventsData?.items ?? [];
+    const nonDraftEvents = allEvents.filter(e => e.status !== 'draft');
+    // Access kept from before (a draft, or an event that is gone): listed so
+    // it can still be unticked, by name or with a plain word, never the id.
+    const keptOutside = selected
+        .filter(id => !nonDraftEvents.some(e => e.id === id))
+        .map(id => ({ id, name: allEvents.find(e => e.id === id)?.name ?? null }));
 
     return (
         <fieldset className="flex flex-col gap-2">
@@ -448,20 +498,35 @@ function EventRestrictionPicker({
                         <Loader2 size={12} className="animate-spin" aria-hidden="true" />
                         {tCommon('loading')}
                     </p>
-                ) : nonDraftEvents.length === 0 ? (
+                ) : nonDraftEvents.length === 0 && keptOutside.length === 0 ? (
                     <p className="px-2 py-3 font-space-mono text-[11px] text-muted-white">{t('noEvents')}</p>
                 ) : (
-                    nonDraftEvents.map(event => (
-                        <label key={event.id} className="flex min-h-9 cursor-pointer items-center gap-2.5 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-line-white">
-                            <input
-                                type="checkbox"
-                                checked={selected.includes(event.id)}
-                                onChange={() => onToggle(event.id)}
-                                className="size-4 accent-blue"
-                            />
-                            <span className="text-sm font-semibold text-ink">{event.name}</span>
-                        </label>
-                    ))
+                    <>
+                        {nonDraftEvents.map(event => (
+                            <label key={event.id} className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-line-white">
+                                <input
+                                    type="checkbox"
+                                    checked={selected.includes(event.id)}
+                                    onChange={() => onToggle(event.id)}
+                                    className="size-4 accent-blue"
+                                />
+                                <span className="text-sm font-semibold text-ink">{event.name}</span>
+                            </label>
+                        ))}
+                        {keptOutside.map(({ id, name }) => (
+                            <label key={id} className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-line-white">
+                                <input
+                                    type="checkbox"
+                                    checked
+                                    onChange={() => onToggle(id)}
+                                    className="size-4 accent-blue"
+                                />
+                                <span className={`text-sm font-semibold ${name ? 'text-ink' : 'text-muted-white'}`}>
+                                    {name ?? t('eventUnavailable', { count: 1 })}
+                                </span>
+                            </label>
+                        ))}
+                    </>
                 )}
             </div>
         </fieldset>
@@ -729,22 +794,22 @@ function TeamSkeleton() {
         <div className="flex flex-col gap-7" aria-busy="true">
             <div className="flex items-end justify-between">
                 <div>
-                    <div className="h-11 w-64 max-w-[60vw] animate-pulse rounded-[12px] bg-white/15" />
-                    <div className="mt-2 h-3.5 w-40 animate-pulse rounded-full bg-white/15" />
+                    <div className="h-11 w-64 max-w-[60vw] animate-pulse motion-reduce:animate-none rounded-[12px] bg-white/15" />
+                    <div className="mt-2 h-3.5 w-40 animate-pulse motion-reduce:animate-none rounded-full bg-white/15" />
                 </div>
-                <div className="h-12 w-48 max-w-[30vw] animate-pulse rounded-[14px] bg-white/15" />
+                <div className="h-12 w-48 max-w-[30vw] animate-pulse motion-reduce:animate-none rounded-[14px] bg-white/15" />
             </div>
             <div className="block-white overflow-hidden">
                 <div className="border-b-2 border-ink px-5 py-3.5">
-                    <div className="h-4 w-28 animate-pulse rounded-full bg-line-white" />
+                    <div className="h-4 w-28 animate-pulse motion-reduce:animate-none rounded-full bg-line-white" />
                 </div>
                 {Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="flex items-center gap-6 border-b border-line-white px-5 py-3 last:border-0">
-                        <div className="size-9 animate-pulse rounded-full bg-line-white" />
-                        <div className="h-4 w-32 animate-pulse rounded-full bg-line-white" />
-                        <div className="hidden h-4 w-48 animate-pulse rounded-full bg-line-white md:block" />
-                        <div className="h-4 w-16 animate-pulse rounded-full bg-line-white" />
-                        <div className="hidden h-4 w-24 animate-pulse rounded-full bg-line-white sm:block" />
+                        <div className="size-9 animate-pulse motion-reduce:animate-none rounded-full bg-line-white" />
+                        <div className="h-4 w-32 animate-pulse motion-reduce:animate-none rounded-full bg-line-white" />
+                        <div className="hidden h-4 w-48 animate-pulse motion-reduce:animate-none rounded-full bg-line-white md:block" />
+                        <div className="h-4 w-16 animate-pulse motion-reduce:animate-none rounded-full bg-line-white" />
+                        <div className="hidden h-4 w-24 animate-pulse motion-reduce:animate-none rounded-full bg-line-white sm:block" />
                     </div>
                 ))}
             </div>

@@ -1,77 +1,59 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { ScrollCue } from './ScrollAffordance';
+import { useRange, useReducedMotionSafe, useSceneProgress } from './scroll';
 
 /**
- * §1 — LA FRUSTRACIÓN.
+ * §1 LA FRUSTRACIÓN.
  *
- * The thesis: as a fan, no matter how much money you spend, you never
- * get past the stage or the screen. That barrier is the problem Fandi
- * exists to break.
+ * The thesis: as a fan, no matter how much you spend, you never get past
+ * the stage or the screen.
  *
- * The motion IS the argument: the crowd photo pushes in toward the stage
- * as you scroll, and deliberately never arrives — it eases out and stops
- * short. You scroll, you strain, you stay in the crowd. The copy lands
- * on top of that failed approach.
- *
- * Local scroll (target ref) rather than a global vh map, so this scene's
- * timing can never be desynced by sections added above or below it.
+ * The crowd photo pushes in toward the stage as you scroll and stops short
+ * of it: you strain, you stay in the crowd. The first line is already on
+ * screen while the scene scrolls in, so the pinned stretch only has to
+ * carry two lines and the slam. Lines stay at full strength once in: a
+ * dimmed line on a photo is a contrast failure, not a mood.
  */
 
-/** Beats: each line owns a slice of the scroll. */
 const LINES = ['l1', 'l2', 'l3'] as const;
+
+/** When each line arrives (scene progress). l1 is there from the start. */
+const LINE_IN = [null, [0.06, 0.18], [0.24, 0.36]] as const;
 
 export default function FrustrationScene() {
     const t = useTranslations('landingV2.frustracion');
-    const ref = useRef<HTMLDivElement>(null);
-    const reduceMotion = useReducedMotion();
+    const ref = useRef<HTMLElement>(null);
+    const progress = useSceneProgress(ref);
+    // Reduced motion: one static screen, nothing to scrub through.
+    const reduceMotion = useReducedMotionSafe();
 
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ['start start', 'end end'],
-    });
-
-    // The push-in that never arrives — decelerating, and capped well
-    // short of the stage.
-    const scale = useTransform(scrollYProgress, [0, 0.75, 1], [1.06, 1.28, 1.3]);
-    const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '-6%']);
-    // Colour drains out of the crowd as the frustration builds.
-    const saturate = useTransform(scrollYProgress, [0, 0.6, 1], [0.9, 0.5, 0.25]);
-    const filter = useTransform(saturate, (s) => `saturate(${s}) contrast(1.1)`);
+    // The push-in that never arrives: decelerating, capped short.
+    const scale = useRange(progress, [0, 0.8, 1], [1.04, 1.2, 1.22]);
     // A flat ink cover closes in (no vignette gradient).
-    const vignette = useTransform(scrollYProgress, [0, 1], [0.45, 0.8]);
+    const cover = useRange(progress, [0, 0.6], [0.62, 0.8]);
 
-    // The slam line arrives last and stays.
-    const slamOpacity = useTransform(scrollYProgress, [0.7, 0.82], [0, 1]);
-    const slamY = useTransform(scrollYProgress, [0.7, 0.82], [40, 0]);
+    const slamOpacity = useRange(progress, [0.46, 0.58], [0, 1]);
+    const slamY = useRange(progress, [0.46, 0.58], [36, 0]);
 
     return (
         <section
             ref={ref}
             aria-label="La frustración del fan"
-            className="relative h-[320vh] bg-ink"
+            className="relative bg-ink"
+            style={{ height: reduceMotion ? '100vh' : '190vh' }}
         >
             <div className="sticky top-0 h-screen w-full overflow-hidden">
-                {/* Crowd plate over flat ink, so the scene still reads if the
-                    photo hasn't loaded yet. */}
                 <motion.div
                     className="absolute inset-0"
-                    style={
-                        reduceMotion
-                            ? undefined
-                            : { scale, y: imageY, filter }
-                    }
+                    style={{ scale }}
                 >
-                    {/* Decorative: the copy carries the meaning.
-                        lazy + async decode: this scene sits several
-                        screens below the fold, and eager-loading it put
-                        the photo on the critical path of the FIRST paint
-                        for something nobody sees until they scroll.
-                        WebP q72 — invisible at 70% opacity behind the
-                        vignette, and 45% smaller than the JPEG. */}
+                    {/* Decorative: the copy carries the meaning. A static
+                        filter (drained colour) is rastered once; animating
+                        it repainted the whole photo every frame. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src="/images/crowd/frustracion.webp"
@@ -79,41 +61,30 @@ export default function FrustrationScene() {
                         aria-hidden="true"
                         loading="lazy"
                         decoding="async"
-                        className="h-full w-full object-cover opacity-70"
+                        className="h-full w-full object-cover saturate-[0.35]"
                     />
                 </motion.div>
-
-                {/* Closing ink cover — flat, not a vignette */}
                 <motion.div
                     className="pointer-events-none absolute inset-0 bg-ink"
-                    style={{ opacity: reduceMotion ? 0.7 : vignette }}
+                    style={{ opacity: cover }}
                     aria-hidden="true"
                 />
 
-                {/* ── Copy ── */}
-                <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-                    {/* Staged lines */}
-                    <div className="flex flex-col gap-1 md:gap-2">
+                <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col justify-center px-6 md:px-10">
+                    <div className="flex flex-col gap-2 md:gap-3">
                         {LINES.map((key, i) => (
                             <Line
                                 key={key}
                                 text={t(key)}
-                                index={i}
-                                total={LINES.length}
-                                progress={scrollYProgress}
-                                reduceMotion={!!reduceMotion}
+                                range={LINE_IN[i]}
+                                progress={progress}
                             />
                         ))}
                     </div>
 
-                    {/* The slam */}
                     <motion.p
-                        style={
-                            reduceMotion
-                                ? undefined
-                                : { opacity: slamOpacity, y: slamY }
-                        }
-                        className="font-hero mt-8 max-w-5xl text-[34px] text-white md:mt-12 md:text-[86px]"
+                        style={{ opacity: slamOpacity, y: slamY }}
+                        className="font-hero mt-8 text-[clamp(34px,9vw,44px)] text-white md:mt-12 md:text-[72px] lg:text-[84px]"
                     >
                         {t('slamA')}{' '}
                         <span className="text-alert">{t('slamB')}</span>
@@ -128,31 +99,21 @@ export default function FrustrationScene() {
 
 function Line({
     text,
-    index,
-    total,
+    range,
     progress,
-    reduceMotion,
 }: {
     text: string;
-    index: number;
-    total: number;
-    progress: ReturnType<typeof useScroll>['scrollYProgress'];
-    reduceMotion: boolean;
+    range: readonly [number, number] | null;
+    progress: ReturnType<typeof useSceneProgress>;
 }) {
-    // Each line fades in over its own slice of the first 65% of scroll,
-    // then dims (but stays) so the stack reads as an accumulating list.
-    const span = 0.65 / total;
-    const start = index * span;
-    const inAt = start + span * 0.25;
-    const dimAt = start + span * 1.4;
-
-    const opacity = useTransform(progress, [start, inAt, dimAt], [0, 1, 0.4]);
-    const y = useTransform(progress, [start, inAt], [24, 0]);
+    const [a, b] = range ?? [0, 1];
+    const opacity = useRange(progress, [a, b], [range ? 0 : 1, 1]);
+    const y = useRange(progress, [a, b], [range ? 24 : 0, 0]);
 
     return (
         <motion.p
-            style={reduceMotion ? undefined : { opacity, y }}
-            className="font-space-mono text-base uppercase tracking-[0.2em] text-white md:text-xl"
+            style={range ? { opacity, y } : undefined}
+            className="text-[24px] font-bold leading-tight text-white md:text-[40px]"
         >
             {text}
         </motion.p>

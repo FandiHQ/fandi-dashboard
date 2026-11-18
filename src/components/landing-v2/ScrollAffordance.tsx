@@ -1,13 +1,8 @@
 'use client';
 
 import { type RefObject } from 'react';
-import {
-    motion,
-    useScroll,
-    useSpring,
-    useTransform,
-    useReducedMotion,
-} from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { useRange, useReducedMotionSafe, useSceneProgress } from './scroll';
 
 /**
  * Scroll affordances for a landing built almost entirely from PINNED
@@ -15,8 +10,8 @@ import {
  *
  * The problem this solves: while a scene is pinned the viewport looks
  * frozen — content animates in place — so a visitor can reasonably think
- * the page is stuck or finished and leave. Across ~2.700vh that risk
- * repeats at every scene.
+ * the page is stuck or finished and leave. That risk repeats at every
+ * pinned scene.
  *
  * Two pieces, deliberately different jobs:
  *   ScrollProgress — "there IS more" (global, always on)
@@ -27,7 +22,7 @@ import {
 /** Solid progress bar pinned to the very top of the viewport. */
 export function ScrollProgress() {
     const { scrollYProgress } = useScroll();
-    const reduceMotion = useReducedMotion();
+    const reduceMotion = useReducedMotionSafe();
     // Spring smooths the jitter of trackpad/inertial scrolling.
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 260,
@@ -58,26 +53,21 @@ export function ScrollCue({
     targetRef: RefObject<HTMLElement | null>;
     label?: string;
 }) {
-    const { scrollYProgress } = useScroll({
-        target: targetRef,
-        offset: ['start start', 'end end'],
-    });
+    const progress = useSceneProgress(targetRef);
 
     // Fade in once the scene is actually pinned, out as it completes.
-    const opacity = useTransform(
-        scrollYProgress,
-        [0, 0.06, 0.82, 0.94],
-        [0, 1, 1, 0]
-    );
+    const opacity = useRange(progress, [0, 0.06, 0.82, 0.94], [0, 1, 1, 0]);
 
     return (
         <motion.div
             style={{ opacity }}
-            className="pointer-events-none absolute inset-x-0 bottom-6 z-30 flex flex-col items-center gap-2"
+            // Phones: hidden. The sticky action bar owns that strip, and a thumb
+            // scrolls without being told to.
+            className="pointer-events-none absolute inset-x-0 bottom-6 z-30 hidden flex-col items-center gap-2 md:flex"
             aria-hidden="true"
         >
             {label ? (
-                <span className="label-mono rounded-full border-2 border-ink bg-ink px-3 py-1 text-[9px] text-white">
+                <span className="label-mono rounded-full border-2 border-ink bg-ink px-3.5 py-1.5 text-[12px] text-white">
                     {label}
                 </span>
             ) : null}

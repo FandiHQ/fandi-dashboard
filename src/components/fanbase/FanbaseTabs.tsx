@@ -491,7 +491,7 @@ export function ValueTab() {
                             <StatBlock label={t('paying')} value={reported(data.payingFans)} sub={t('payingSub')} />
                             <StatBlock
                                 label={t('average')}
-                                value={data.avgPerFanCop === null ? '—' : fandis(data.avgPerFanCop)}
+                                value={data.avgPerFanCop === null ? reported('hidden') : fandis(data.avgPerFanCop)}
                                 sub={
                                     data.avgPerFanCop === null
                                         ? t('averageHidden')
@@ -614,6 +614,7 @@ export function AffinityTab() {
 export function KnowledgeTab() {
     const t = useTranslations('fanbase.knowledge');
     const numbers = useNumberFormat();
+    const reported = useReported();
     const query = useQuery({
         queryKey: ['fanbase', 'knowledge'],
         queryFn: fanbaseApi.knowledge,
@@ -631,7 +632,7 @@ export function KnowledgeTab() {
                             <StatBlock label={t('answers')} value={numbers.format(data.answers)} />
                             <StatBlock
                                 label={t('accuracy')}
-                                value={data.accuracy === null ? '—' : (percentLabel(data.accuracy) ?? '0 %')}
+                                value={data.accuracy === null ? reported('hidden') : (percentLabel(data.accuracy) ?? '0 %')}
                                 sub={data.accuracy === null ? t('accuracyHidden') : t('accuracySub')}
                             />
                         </StatGrid>

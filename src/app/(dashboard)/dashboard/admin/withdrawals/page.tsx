@@ -37,6 +37,7 @@ export default function WithdrawalsAdminPage() {
 
 function WithdrawalsReview() {
     const t = useTranslations('withdrawalsAdmin');
+    const tCommon = useTranslations('common');
     const queryClient = useQueryClient();
     const { confirm, dialog } = useConfirmDialog();
     const [filter, setFilter] = useState<WithdrawalStatus | 'all'>('in_review');
@@ -138,14 +139,14 @@ function WithdrawalsReview() {
                         <tbody>
                             {data.map((w) => (
                                 <tr key={w.id} className="border-b border-line-white align-top">
-                                    <td className="px-3 py-2.5 font-bold">{w.fanName ?? '—'}</td>
+                                    <td className="px-3 py-2.5 font-bold">{w.fanName ?? tCommon('noName')}</td>
                                     <td className="px-3 py-2.5">{formatCop(w.grossCop)}</td>
                                     <td className="px-3 py-2.5">
                                         {w.feeWaivedReason ? t('feeWaived') : formatCop(w.feeCop)}
                                     </td>
                                     <td className="px-3 py-2.5 font-bold">{formatCop(w.netCop)}</td>
                                     <td className="px-3 py-2.5">
-                                        {w.bankName ?? '—'} ····{w.accountLast4}
+                                        {w.bankName ?? t('accountFallback')} ····{w.accountLast4}
                                     </td>
                                     <td className="px-3 py-2.5">{formatCop(w.recentTopupsCop)}</td>
                                     <td className="px-3 py-2.5">

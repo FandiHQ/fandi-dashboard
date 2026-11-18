@@ -29,6 +29,10 @@ export const DASHBOARD_URL = new URL(
     process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'http://localhost:3000',
 ).toString();
 
+/** "Escríbenos": the ídolo's door when they don't have an account yet. */
+export const IDOL_MAILTO =
+    'mailto:hola@fandi.app?subject=Quiero%20llevar%20Fandi%20a%20mi%20evento';
+
 /**
  * acid    — lime, THE action (getting the app). One per view.
  * primary — white extruded block (secondary actions: "Escríbenos").
@@ -114,7 +118,7 @@ export function Cta({
  *
  * On a phone the link runs as written and the route sends it to its
  * store. Anywhere the route would answer `/#descargar` (a desktop),
- * following it would reload this ~2.700vh page and re-decode its image
+ * following it would reload this long page and re-decode its image
  * sequences just to land lower on it, so the click scrolls to the section
  * instead. The href stays `/descargar`, so a copied, middle-clicked or
  * no-JS link is still the smart one.

@@ -196,7 +196,7 @@ export default function EventsListPage() {
                                         {eventTypeBadge(event.eventType)}
                                     </TableCell>
                                     <TableCell className="hidden text-[13px] text-muted-white lg:table-cell">
-                                        {event.venue || '—'}
+                                        {event.venue || tCommon('noVenue')}
                                     </TableCell>
                                     <TableCell className="font-space-mono text-[11px] uppercase text-muted-white">
                                         {formatDate(event.eventDate)}

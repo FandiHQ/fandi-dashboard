@@ -17,6 +17,9 @@ import {
 } from '@/components/ui/table';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { PendingInvitationBanner } from '@/components/collaborations/PendingInvitationBanner';
+import {
+    StatTilesSkeleton, TableRowsSkeleton, TeamPanelSkeleton,
+} from '@/components/layout/dashboard-skeletons';
 
 // ── Stat block (Azul Bloque §7: white, 5px extrusion, mono label) ──
 
@@ -55,6 +58,7 @@ export default function DashboardHomePage() {
     const t = useTranslations('dashboard');
     const tEvents = useTranslations('events');
     const tTeam = useTranslations('team');
+    const tCommon = useTranslations('common');
 
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState<Event[]>([]);
@@ -158,7 +162,8 @@ export default function DashboardHomePage() {
         }
     }
 
-    const showTeamPanel = !loading && !error && isWriteRole;
+    // Kept while loading (as a skeleton) so the grid does not jump when data lands.
+    const showTeamPanel = !error && isWriteRole;
 
     return (
         <div className="flex flex-col gap-6">
@@ -237,15 +242,7 @@ export default function DashboardHomePage() {
 
             {/* ── Stat Blocks ── */}
             {loading ? (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    {[...Array(3)].map((_, i) => (
-                        <div key={i} className="block-white flex flex-col gap-3 px-5 py-4">
-                            <Skeleton className="h-3 w-24 bg-line-white" />
-                            <Skeleton className="h-10 w-16 bg-line-white" />
-                            <Skeleton className="h-3 w-28 bg-line-white" />
-                        </div>
-                    ))}
-                </div>
+                <StatTilesSkeleton />
             ) : error ? null : (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                     <StatBlock
@@ -307,16 +304,7 @@ export default function DashboardHomePage() {
 
                         {/* Table */}
                         {loading ? (
-                            <div className="flex flex-col">
-                                {[...Array(5)].map((_, i) => (
-                                    <div key={i} className="flex items-center gap-6 border-b border-line-white px-5 py-3 last:border-b-0">
-                                        <Skeleton className="h-5 w-16 bg-line-white" />
-                                        <Skeleton className="h-4 w-40 bg-line-white" />
-                                        <Skeleton className="ml-auto h-4 w-24 bg-line-white" />
-                                        <Skeleton className="h-4 w-20 bg-line-white" />
-                                    </div>
-                                ))}
-                            </div>
+                            <TableRowsSkeleton />
                         ) : events.length === 0 ? (
                             /* Empty state */
                             <div className="flex flex-col items-center gap-4 px-8 py-16">
@@ -351,7 +339,7 @@ export default function DashboardHomePage() {
                                                 {event.name}
                                             </TableCell>
                                             <TableCell className="hidden text-[13px] text-muted-white md:table-cell">
-                                                {event.venue || '—'}
+                                                {event.venue || tCommon('noVenue')}
                                             </TableCell>
                                             <TableCell className="font-space-mono text-[11px] uppercase text-muted-white">
                                                 {formatDate(event.eventDate)}
@@ -367,7 +355,8 @@ export default function DashboardHomePage() {
                     </div>
 
                     {/* ── Team (ink panel) ── */}
-                    {showTeamPanel && (
+                    {showTeamPanel && loading && <TeamPanelSkeleton />}
+                    {showTeamPanel && !loading && (
                         <div className="block-ink flex flex-col gap-3 self-start px-[18px] py-4">
                             <div className="flex items-center justify-between">
                                 <span className="font-display text-[17px]">{tTeam('title')}</span>
@@ -384,7 +373,7 @@ export default function DashboardHomePage() {
                                 </>
                             ) : (
                                 members.slice(0, 5).map((m, i) => {
-                                    const name = m.displayName || m.email || '—';
+                                    const name = m.displayName || m.email || tCommon('noName');
                                     const initials = name.split(/[\s@.]+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase();
                                     return (
                                         <div key={m.userId} className="flex items-center gap-2.5">

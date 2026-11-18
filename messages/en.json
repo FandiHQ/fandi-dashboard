@@ -13,7 +13,12 @@
         "export": "Export",
         "back": "Back",
         "noResults": "No results",
-        "copied": "Copied to clipboard"
+        "copied": "Copied to clipboard",
+        "noData": "No data",
+        "noName": "No name",
+        "noEmail": "No email",
+        "noVenue": "No venue",
+        "noDate": "No date"
     },
     "auth": {
         "login": "Log In",
@@ -126,10 +131,16 @@
         "classification": "Classification",
         "withdrawals": "Withdrawals"
     },
+    "pageTitles": {
+        "newEvent": "New event",
+        "editEvent": "Edit event",
+        "event": "Event"
+    },
     "withdrawalsAdmin": {
         "title": "Fan withdrawals",
         "lead": "Refund of unused balance (Terms §6). Withdrawals using balance from top-ups of the last 30 days wait for your review; the rest go out automatically by ACH. Approving sends the money; rejecting returns it to the fan wallet.",
         "noAccess": "Fandi admins only.",
+        "accountFallback": "Account",
         "filterAll": "All",
         "status": {
             "in_review": "In review",
@@ -307,7 +318,7 @@
             "empty": "Once fans contribute or win auctions in your events, you'll see what each fan is worth here.",
             "distributionTitle": "How much each fan contributes",
             "distributionAside": "Total per fan",
-            "bucketRange": "{min}–{max} F",
+            "bucketRange": "{min} to {max} F",
             "bucketOver": "Over {min} F",
             "byTypeTitle": "Revenue by dynamic",
             "byTypeAside": "Your events",
@@ -382,6 +393,8 @@
         "role": "Role",
         "organization": "Organization",
         "memberSince": "Member since",
+        "noRole": "No role",
+        "noOrganization": "No organization",
         "readOnly": "Read-only",
         "removeAvatarDone": "Photo removed",
         "imageTypeError": "Use a JPG, PNG or WEBP image.",
@@ -581,7 +594,9 @@
             "schedule": "Schedule",
             "ticketTrack": "Ticket entry",
             "fandiTrack": "Fandi dynamics",
-            "createdAt": "Created: {date}"
+            "createdAt": "Created: {date}",
+            "timeRange": "{from} to {to}",
+            "pendingStat": "Pending"
         },
         "eventEndDate": "Event end date",
         "eventEndHint": "Informational end time of the event (for tickets/marketing)"
@@ -853,6 +868,7 @@
         "currentPrice": "Current price",
         "finalPrice": "Final price",
         "winner": "Winner",
+        "noWinner": "No winner",
         "bids": "{count} bids",
         "duration": "{minutes} min",
         "paused": "PAUSED",
@@ -952,6 +968,7 @@
         },
         "rolesGuideTitle": "What each role can do",
         "eventsCount": "{count, plural, one {# event} other {# events}}",
+        "eventUnavailable": "{count, plural, one {Event unavailable} other {# events unavailable}}",
         "errorBody": "We couldn't load your team. Check your connection and try again.",
         "emptyBody": "Invite the people who help you with your events.",
         "invalidEmail": "Enter a valid email, for example name@email.com.",
@@ -1071,7 +1088,9 @@
         "exportFailed": "We couldn't generate the CSV",
         "total": "Total",
         "empty": "No winners yet.",
-        "unavailableOnDraft": "No winners yet — the event is still in draft.",
+        "unavailableOnDraft": "No winners yet. The event is still in draft.",
+        "noCategory": "No category",
+        "notRedeemed": "Not redeemed",
         "dateFormat": "MMM d, h:mm a",
         "escuadraLevel": "Level {level}",
         "status": {
@@ -1128,7 +1147,7 @@
         "close": "Close",
         "manualEntry": "Enter Code",
         "manualPlaceholder": "QR code",
-        "cameraDenied": "Camera unavailable — use manual entry",
+        "cameraDenied": "Camera unavailable. Use manual entry",
         "cameraRequest": "Allow camera access to scan",
         "cameraReady": "Camera ready",
         "networkError": "No connection. Try again.",
@@ -1167,12 +1186,12 @@
         },
         "eventReminder": {
             "title": "Remind About Event",
-            "description": "Push to every saved fan — the event is coming soon.",
+            "description": "Push to every saved fan: the event is coming soon.",
             "confirm": "A push will be sent to every fan who saved this event. This action cannot be undone."
         },
         "nextEvent": {
             "title": "Recommend Next Event",
-            "description": "Push to participating fans — recommend the organizer's next event.",
+            "description": "Push to participating fans to recommend the organizer's next event.",
             "confirm": "A push will be sent recommending the next event to fans who participated in this one. This action cannot be undone."
         }
     },
@@ -1219,7 +1238,7 @@
             "oportunidadesTagline": "EVERY CATEGORY HAS THE SAME NUMBER OF WINNERS.",
             "insigniasTitle": "BADGES",
             "insigniasPill": "COLLECT",
-            "insigniasBody": "Loyalty pays off — collect badges from every event...",
+            "insigniasBody": "Loyalty pays off: collect badges from every event...",
             "insigniasTagline": "...and be surprised by what's coming.",
             "rankingTitle": "RANKING",
             "rankingPill": "Your rank, live",
@@ -1242,7 +1261,7 @@
         "commandCenter": {
             "kicker": "FOR ARTISTS & TEAMS",
             "title": "Your command center",
-            "desc": "Every event, every dynamic and your most devoted fans — one tactical panel, in real time.",
+            "desc": "Every event, every dynamic and your most devoted fans in one tactical panel, in real time.",
             "chip1": "TOP FANS RANKED",
             "chip2": "LIVE ANALYTICS",
             "chip3": "FULL EVENT CONTROL",
@@ -1293,15 +1312,13 @@
             "w2": "Sports",
             "w3": "And more events",
             "b2sub": "Use them at any Fandi event, whenever you want.",
-            "before": "Published",
-            "after": "Live",
-            "live": "Live",
             "b3": "The event you already saw in the app opens its clock. That's when it starts.",
             "b4": "And live, you get in two ways:",
             "oportunidades": "Opportunities",
             "oportunidadesSub": "You contribute and answer",
             "subastas": "Auctions",
-            "subastasSub": "Highest bidder wins"
+            "subastasSub": "Highest bidder wins",
+            "phoneAlt": "Fandi app home: your Fandis balance with the Top up button and a live event"
         },
         "giro": {
             "intro": "Until today.",
@@ -1329,7 +1346,7 @@
             "c1": "Thousands of fans contribute to win the same interaction: an experience or an exclusive item.",
             "c2": "How much you contribute puts you in a category.",
             "c3": "Every category has at least one winner and the same prize. The idol sets how many winners per category.",
-            "c4": "You answer a question about your idol. When it closes, the fastest right answers win in each category.",
+            "c4": "You answer a very easy question about your idol. When it closes, the fastest right answers win in each category.",
             "onePrize": "1 winner",
             "band": {
                 "vip": "VIP",
@@ -1340,7 +1357,14 @@
             "payoffA": "Contributing more never buys the prize.",
             "payoffB": "Every category has the same number of winners.",
             "liveA": "And it all moves live.",
-            "liveB": "Categories recalculate as fans contribute during the event."
+            "liveB": "Categories recalculate as fans contribute during the event.",
+            "proofLabel": "What it looks like in the app",
+            "proof1Title": "See your category live",
+            "proof1Body": "Each category shows how many Fandis get you in and how many winners it has.",
+            "proof2Title": "One very easy question",
+            "proof2Body": "About your idol. When it closes, the fastest right answer wins in each category.",
+            "phone1Alt": "A live opportunity in the Fandi app: fans taking part and the four categories with their entry minimum",
+            "phone2Alt": "Winners per category and the question about the idol answered right in the Fandi app"
         },
         "subastas": {
             "kicker": "#3 · Auctions",
@@ -1384,13 +1408,12 @@
             }
         },
         "idolos": {
-            "overline": "For idols and teams",
             "kicker": "For idols and teams",
             "title": "For idols",
             "v1": "We monetize",
             "v2": "We identify",
-            "v3": "We build loyalty in",
-            "pitchTail": "your fanbase, through the euphoria of your events.",
+            "v3": "We retain",
+            "pitchTail": "Your fanbase, through the euphoria of your events.",
             "dashAlt": "Fandi dashboard showing the real-time fan ranking",
             "p1Title": "Revenue during the show",
             "p1Body": "Euphoria becomes revenue at the exact moment it happens, with no mass prize logistics.",
@@ -1400,6 +1423,9 @@
             "p3Body": "Every Fandi event strengthens how close you are to your fans: ranking and badges record who showed up, and give them a reason to come back.",
             "cta": "Write to us",
             "ctaSub": "We're not currently available to emerging artists.",
+            "ctaTitle": "Bring Fandi to your next event",
+            "ctaBody": "We set up a trial event for you. You define the experiences and we handle payments, QR delivery and the real-time dashboard.",
+            "signIn": "Log in to the dashboard",
             "mock": {
                 "title": "Top fans",
                 "sub": "Your most loyal fans, ranked",
@@ -1412,6 +1438,10 @@
                 "row": "{badges} badges · {events} events",
                 "note": "Illustrative example"
             }
+        },
+        "descargarMid": {
+            "title": "It all starts in the app",
+            "body": "Get it free and be ready for your idol's next event."
         },
         "descargar": {
             "kicker": "Your next event",
@@ -1451,8 +1481,7 @@
             "dataPolicy": "Data Policy",
             "deleteAccount": "Delete my account"
         },
-        "scrollCue": "Keep scrolling",
-        "loader": "Loading"
+        "scrollCue": "Keep scrolling"
     },
     "footer": {
         "terms": "Terms & Conditions",
@@ -1576,6 +1605,7 @@
         "participantsLine": "{total, plural, one {# fan} other {# fans}}",
         "fan": "Fan",
         "instagram": "Instagram",
+        "noInstagram": "No Instagram",
         "results": "Contest results",
         "resultsPending": "Results appear a few seconds after the close.",
         "segments": {

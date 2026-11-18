@@ -168,6 +168,7 @@ function OpportunityCard({
     index?: number;
 }) {
     const t = useTranslations('experiences');
+    const tCommon = useTranslations('common');
     const [expanded, setExpanded] = useState(false);
     // Private organizer peek at the surprise text — local-only, does NOT
     // trigger the public reveal (`onReveal`/`surpriseRevealedAt`).
@@ -410,7 +411,7 @@ function OpportunityCard({
                                             className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-ink">
                                             <span className="w-8 font-space-mono text-[11px] text-blue">#{row.position}</span>
                                             {/* The idol sees private fans too (hidden from other fans only). */}
-                                            <span>{row.firstName ?? '—'}</span>
+                                            <span>{row.firstName ?? tCommon('noName')}</span>
                                             {row.isPrivate && (
                                                 <span className="flex items-center gap-1 font-space-mono text-[10px] font-normal uppercase text-muted-white">
                                                     <Lock size={10} /> {t('privateMark')}

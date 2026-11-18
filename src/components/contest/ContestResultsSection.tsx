@@ -126,6 +126,7 @@ export function ContestResultsSection({
 
 export function CategoryResult({ category, name }: { category: ContestCategoryResult; name: string }) {
     const t = useTranslations('winners.contest');
+    const tCommon = useTranslations('common');
     const level = (category.level === 4 || category.level === 3 || category.level === 2 ? category.level : 1) as
         | 1
         | 2
@@ -165,7 +166,7 @@ export function CategoryResult({ category, name }: { category: ContestCategoryRe
                         <TableRow key={`w-${w.position}`}>
                             <TableCell className="pl-4 font-space-mono text-xs font-bold text-blue">#{w.position}</TableCell>
                             <TableCell className="font-bold">
-                                {w.displayName ?? '—'}
+                                {w.displayName ?? tCommon('noName')}
                             </TableCell>
                             <TableCell className="text-right tabular font-black">{formatSeconds(w.responseMs)}</TableCell>
                             <TableCell className="pr-4 text-right font-space-mono text-xs text-muted-white">

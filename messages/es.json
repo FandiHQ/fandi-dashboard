@@ -13,7 +13,12 @@
         "export": "Exportar",
         "back": "Volver",
         "noResults": "Sin resultados",
-        "copied": "Copiado al portapapeles"
+        "copied": "Copiado al portapapeles",
+        "noData": "Sin datos",
+        "noName": "Sin nombre",
+        "noEmail": "Sin correo",
+        "noVenue": "Sin lugar",
+        "noDate": "Sin fecha"
     },
     "auth": {
         "login": "Iniciar Sesión",
@@ -126,10 +131,16 @@
         "classification": "Clasificación",
         "withdrawals": "Retiros"
     },
+    "pageTitles": {
+        "newEvent": "Nuevo evento",
+        "editEvent": "Editar evento",
+        "event": "Evento"
+    },
     "withdrawalsAdmin": {
         "title": "Retiros de fans",
         "lead": "Devolución del saldo no usado (Términos §6). Los retiros con saldo de recargas de los últimos 30 días esperan tu revisión; el resto sale solo por ACH. Aprobar envía el dinero; rechazar lo devuelve a la billetera del fan.",
         "noAccess": "Solo para administradores de Fandi.",
+        "accountFallback": "Cuenta",
         "filterAll": "Todos",
         "status": {
             "in_review": "En revisión",
@@ -307,7 +318,7 @@
             "empty": "Cuando tus fans aporten o ganen subastas en tus eventos, aquí verás cuánto vale cada fan.",
             "distributionTitle": "Cuánto aporta cada fan",
             "distributionAside": "Total por fan",
-            "bucketRange": "{min}–{max} F",
+            "bucketRange": "{min} a {max} F",
             "bucketOver": "Más de {min} F",
             "byTypeTitle": "Ingresos por dinámica",
             "byTypeAside": "Tus eventos",
@@ -382,6 +393,8 @@
         "role": "Rol",
         "organization": "Organización",
         "memberSince": "Miembro desde",
+        "noRole": "Sin rol",
+        "noOrganization": "Sin organización",
         "readOnly": "Solo lectura",
         "removeAvatarDone": "Foto eliminada",
         "imageTypeError": "Usa una imagen JPG, PNG o WEBP.",
@@ -583,7 +596,9 @@
             "schedule": "Horario",
             "ticketTrack": "Ingreso con boleta",
             "fandiTrack": "Dinámicas Fandi",
-            "createdAt": "Creado: {date}"
+            "createdAt": "Creado: {date}",
+            "timeRange": "{from} a {to}",
+            "pendingStat": "Pendiente"
         }
     },
     "experiences": {
@@ -853,6 +868,7 @@
         "currentPrice": "Precio actual",
         "finalPrice": "Precio final",
         "winner": "Ganador",
+        "noWinner": "Sin ganador",
         "bids": "{count} pujas",
         "duration": "{minutes} min",
         "paused": "PAUSADA",
@@ -952,6 +968,7 @@
         },
         "rolesGuideTitle": "Qué puede hacer cada rol",
         "eventsCount": "{count, plural, one {# evento} other {# eventos}}",
+        "eventUnavailable": "{count, plural, one {Evento no disponible} other {# eventos no disponibles}}",
         "errorBody": "No pudimos cargar tu equipo. Revisa tu conexión e intenta de nuevo.",
         "emptyBody": "Invita a las personas que te ayudan con tus eventos.",
         "invalidEmail": "Escribe un correo válido, por ejemplo nombre@correo.com.",
@@ -1071,7 +1088,9 @@
         "exportFailed": "No pudimos generar el CSV",
         "total": "Total",
         "empty": "No hay ganadores todavía.",
-        "unavailableOnDraft": "Sin ganadores aún — el evento sigue en borrador.",
+        "unavailableOnDraft": "Sin ganadores aún. El evento sigue en borrador.",
+        "noCategory": "Sin categoría",
+        "notRedeemed": "Sin canjear",
         "dateFormat": "d MMM HH:mm",
         "escuadraLevel": "Nivel {level}",
         "status": {
@@ -1128,7 +1147,7 @@
         "close": "Cerrar",
         "manualEntry": "Ingresar Código",
         "manualPlaceholder": "Código del QR",
-        "cameraDenied": "Cámara no disponible — usa el ingreso manual",
+        "cameraDenied": "Cámara no disponible. Usa el ingreso manual",
         "cameraRequest": "Permite el acceso a la cámara para escanear",
         "cameraReady": "Cámara lista",
         "networkError": "Sin conexión. Intenta de nuevo.",
@@ -1167,12 +1186,12 @@
         },
         "eventReminder": {
             "title": "Recordar Evento",
-            "description": "Push a todos los fans guardados — el evento es pronto.",
+            "description": "Push a todos los fans guardados: el evento es pronto.",
             "confirm": "Se enviará un push a todos los fans guardados del evento. Esta acción no se puede deshacer."
         },
         "nextEvent": {
             "title": "Recomendar Próximo Evento",
-            "description": "Push a fans que participaron — recomienda el próximo evento del organizador.",
+            "description": "Push a fans que participaron, para recomendarles el próximo evento del organizador.",
             "confirm": "Se enviará un push recomendando el próximo evento a los fans que participaron en éste. Esta acción no se puede deshacer."
         }
     },
@@ -1242,7 +1261,7 @@
         "commandCenter": {
             "kicker": "PARA ARTISTAS Y EQUIPOS",
             "title": "Tu centro de comando",
-            "desc": "Cada evento, cada dinámica y tus fans más devotos — en un solo panel táctico, en tiempo real.",
+            "desc": "Cada evento, cada dinámica y tus fans más devotos, en un solo panel táctico y en tiempo real.",
             "chip1": "TOP FANS EN RANKING",
             "chip2": "ANALÍTICA EN VIVO",
             "chip3": "CONTROL TOTAL DEL EVENTO",
@@ -1293,15 +1312,13 @@
             "w2": "Deportes",
             "w3": "Y más eventos",
             "b2sub": "Los usas en cualquier evento de Fandi, cuando quieras.",
-            "before": "Publicado",
-            "after": "En vivo",
-            "live": "En vivo",
             "b3": "El evento que ya veías en la app abre su reloj. Ahí empieza todo.",
             "b4": "Y en vivo entras por dos caminos:",
             "oportunidades": "Oportunidades",
             "oportunidadesSub": "Aportas y respondes",
             "subastas": "Subastas",
-            "subastasSub": "El mejor postor gana"
+            "subastasSub": "El mejor postor gana",
+            "phoneAlt": "Inicio de la app Fandi: tu saldo de Fandis con el botón Recargar y un evento en vivo"
         },
         "giro": {
             "intro": "Hasta hoy.",
@@ -1329,7 +1346,7 @@
             "c1": "Miles de fans aportan para ganar la misma interacción: una experiencia o un artículo exclusivo.",
             "c2": "Según cuánto aportas, entras en una categoría.",
             "c3": "Todas las categorías tienen al menos un ganador y el mismo premio. El ídolo define cuántos ganadores por categoría.",
-            "c4": "Respondes una pregunta sobre tu ídolo. Al cerrar, en cada categoría ganan quienes acertaron más rápido.",
+            "c4": "Respondes una pregunta muy fácil sobre tu ídolo. Al cerrar, en cada categoría ganan quienes acertaron más rápido.",
             "onePrize": "1 ganador",
             "band": {
                 "vip": "VIP",
@@ -1340,7 +1357,14 @@
             "payoffA": "Aportar más no compra el premio.",
             "payoffB": "Todas las categorías tienen el mismo número de ganadores.",
             "liveA": "Y todo se mueve en vivo.",
-            "liveB": "Las categorías se recalculan mientras los fans aportan durante el evento."
+            "liveB": "Las categorías se recalculan mientras los fans aportan durante el evento.",
+            "proofLabel": "Así se ve en la app",
+            "proof1Title": "Ves tu categoría en vivo",
+            "proof1Body": "Cada categoría muestra desde cuántos Fandis entras y cuántos ganadores tiene.",
+            "proof2Title": "Una pregunta muy fácil",
+            "proof2Body": "Sobre tu ídolo. Al cerrar, en cada categoría gana quien acertó más rápido.",
+            "phone1Alt": "Una oportunidad en vivo en la app Fandi: los fans participando y las cuatro categorías con su mínimo de entrada",
+            "phone2Alt": "Ganadores por categoría y la pregunta sobre el ídolo respondida bien en la app Fandi"
         },
         "subastas": {
             "kicker": "#3 · Subastas",
@@ -1384,13 +1408,12 @@
             }
         },
         "idolos": {
-            "overline": "Para ídolos y equipos",
             "kicker": "Para ídolos y equipos",
             "title": "Para ídolos",
             "v1": "Monetizamos",
             "v2": "Identificamos",
             "v3": "Fidelizamos",
-            "pitchTail": "tu fanbase a través de la euforia de tus eventos.",
+            "pitchTail": "Tu fanbase, a través de la euforia de tus eventos.",
             "dashAlt": "Dashboard de Fandi mostrando el ranking de fans en tiempo real",
             "p1Title": "Ingresos en vivo",
             "p1Body": "La euforia se vuelve ingreso en el momento exacto en que ocurre, sin logísticas complejas, usas lo que ya existe.",
@@ -1400,6 +1423,9 @@
             "p3Body": "Por cada evento en Fandi refuerzas tu cercanía con tus fans: los rankings y las insignias dejan constancia de quién estuvo, y les dan una razón para volver.",
             "cta": "Escríbenos",
             "ctaSub": "Por ahora no estamos disponibles para artistas emergentes.",
+            "ctaTitle": "Lleva Fandi a tu próximo evento",
+            "ctaBody": "Te montamos un evento de prueba. Tú defines las experiencias y nosotros ponemos el cobro, la entrega por QR y el dashboard en tiempo real.",
+            "signIn": "Ingresar al panel",
             "mock": {
                 "title": "Top fans",
                 "sub": "Tus fans más fieles, en ranking",
@@ -1412,6 +1438,10 @@
                 "row": "{badges} insignias · {events} eventos",
                 "note": "Ejemplo ilustrativo"
             }
+        },
+        "descargarMid": {
+            "title": "Empieza en la app",
+            "body": "Descárgala gratis y llega listo al próximo evento de tu ídolo."
         },
         "descargar": {
             "kicker": "Tu próximo evento",
@@ -1451,8 +1481,7 @@
             "dataPolicy": "Tratamiento de Datos",
             "deleteAccount": "Eliminar mi cuenta"
         },
-        "scrollCue": "Sigue bajando",
-        "loader": "Cargando"
+        "scrollCue": "Sigue bajando"
     },
     "footer": {
         "terms": "Términos y Condiciones",
@@ -1576,6 +1605,7 @@
         "participantsLine": "{total, plural, one {# fan} other {# fans}}",
         "fan": "Fan",
         "instagram": "Instagram",
+        "noInstagram": "Sin Instagram",
         "results": "Resultados del concurso",
         "resultsPending": "Los resultados aparecen unos segundos después del cierre.",
         "segments": {

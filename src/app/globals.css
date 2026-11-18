@@ -176,8 +176,11 @@
   color: var(--foreground);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Smooth in-page jumps, except for people who asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer base {

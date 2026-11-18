@@ -86,6 +86,7 @@ export default function SharedEventPage() {
 
 function SharedDynamic({ collaboration }: { collaboration: Collaboration }) {
     const t = useTranslations('collaborations');
+    const tCommon = useTranslations('common');
     const locale = useLocale();
     const dateLocale = locale === 'en' ? enLocale : esLocale;
     const participants = useQuery({
@@ -130,9 +131,9 @@ function SharedDynamic({ collaboration }: { collaboration: Collaboration }) {
                             <TableBody>
                                 {participants.data.fans.map((f) => (
                                     <TableRow key={f.userId}>
-                                        <TableCell className="font-bold">{f.displayName ?? '—'}</TableCell>
+                                        <TableCell className="font-bold">{f.displayName ?? tCommon('noName')}</TableCell>
                                         <TableCell className="font-space-mono text-xs">
-                                            {f.instagramHandle ? `@${f.instagramHandle}` : '—'}
+                                            {f.instagramHandle ? `@${f.instagramHandle}` : t('noInstagram')}
                                         </TableCell>
                                         <TableCell className="text-right font-space-mono text-xs tabular">
                                             {format(parseISO(f.firstAt), 'd MMM HH:mm', { locale: dateLocale })}

@@ -1,201 +1,118 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Lock } from 'lucide-react';
-import { ScrollCue } from './ScrollAffordance';
+import PhoneFrame from './PhoneFrame';
+import { reveal } from './scroll';
 
 /**
- * §3 — #1 RECARGAS. The step the narrative was missing entirely.
+ * #1 RECARGAS. The premise before any mechanic: Fandis are credits you buy
+ * once, they live in your wallet, and they work the moment an event goes
+ * live, in two ways (handed off to #2 and #3).
  *
- * Before a fan can understand Oportunidades or Subastas they need the
- * premise: Fandis are credits you buy once, they live in your wallet, and
- * they unlock the moment an event goes live. Four scroll beats:
- *
- *   1. you buy Fandis            (what the currency is)
- *   2. they stay in your wallet  (not burned on one night — any event)
- *   3. the event opens           (published → EN VIVO is the unlock)
- *   4. two ways to play          (hands off to §4 and §5)
- *
- * Beat 3 is the one that matters commercially: it explains why an event
- * you already saw in the app was un-playable until its clock opened.
+ * Proof is the real Home screen (wallet block, live card), not a drawing.
+ * Normal flow, not pinned: three short steps read faster than four
+ * scroll-scrubbed beats did across four screens.
  */
-
-const WALLET_CHIPS = ['w1', 'w2', 'w3'] as const;
 
 export default function RechargeScene() {
     const t = useTranslations('landingV2.recargas');
-    const ref = useRef<HTMLDivElement>(null);
-    const reduceMotion = useReducedMotion();
-
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ['start start', 'end end'],
-    });
-
-    // Four evenly spaced beats.
-    const b1 = useTransform(scrollYProgress, [0.02, 0.1, 0.2, 0.26], [0, 1, 1, 0]);
-    const b2 = useTransform(scrollYProgress, [0.26, 0.34, 0.44, 0.5], [0, 1, 1, 0]);
-    const b3 = useTransform(scrollYProgress, [0.5, 0.58, 0.68, 0.74], [0, 1, 1, 0]);
-    const b4 = useTransform(scrollYProgress, [0.74, 0.82, 0.96, 1], [0, 1, 1, 1]);
-
-    // Coin reacts across beats 1–2.
-    const coinScale = useTransform(scrollYProgress, [0.02, 0.14, 0.5], [0.6, 1, 0.82]);
-    const coinRotate = useTransform(scrollYProgress, [0, 1], [0, 320]);
-    // The lock releases in beat 3.
-    const unlock = useTransform(scrollYProgress, [0.56, 0.66], [0, 1]);
-    // Hoisted (hooks must not be called inside JSX).
-    const lockedOpacity = useTransform(unlock, [0, 1], [1, 0.25]);
-    const liveScale = useTransform(unlock, [0, 1], [0.9, 1]);
-
-    const headOpacity = useTransform(scrollYProgress, [0, 0.04], [0, 1]);
 
     return (
         <section
-            ref={ref}
             id="recargas"
             aria-label={t('title')}
-            className="relative h-[420vh] bg-blue"
+            className="relative overflow-hidden bg-blue px-5 py-16 md:px-9 md:py-28"
         >
-            <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
-
-                {/* step heading */}
-                <motion.div
-                    style={{ opacity: headOpacity }}
-                    className="absolute left-0 right-0 top-[96px] z-20 flex flex-col items-center gap-3 px-6 text-center md:top-[108px]"
-                >
-                    <span className="label-mono text-lilac md:text-[12px]">
-                        {t('kicker')}
-                    </span>
-                    <h2 className="font-hero text-[34px] text-white md:text-[72px]">
-                        {t('title')}
-                    </h2>
-                </motion.div>
-
-                {/* ── Beat 1 — the credit ── */}
-                <motion.div
-                    style={{ opacity: b1 }}
-                    className="absolute inset-x-0 z-10 flex flex-col items-center gap-7 px-6 text-center"
-                >
-                    <motion.div
-                        style={
-                            reduceMotion
-                                ? undefined
-                                : { scale: coinScale, rotateY: coinRotate }
-                        }
-                        className="grid h-32 w-32 place-items-center rounded-full border-2 border-ink bg-white shadow-ext-lg md:h-44 md:w-44"
-                        aria-hidden="true"
-                    >
-                        <span className="font-hero text-6xl text-blue md:text-8xl">
-                            F
-                        </span>
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_360px] lg:gap-14 xl:grid-cols-[1fr_400px] xl:gap-20">
+                <div className="flex min-w-0 flex-col gap-8">
+                    <motion.div {...reveal()} className="flex flex-col gap-4">
+                        <span className="label-mono text-[13px] text-lilac">{t('kicker')}</span>
+                        <h2 className="font-hero text-[40px] text-white md:text-[64px] lg:text-[72px]">
+                            {t('title')}
+                        </h2>
                     </motion.div>
-                    <p className="max-w-2xl text-xl font-bold text-white md:text-3xl">
-                        {t('b1')}
-                    </p>
-                    <span className="tabular rounded-full border-2 border-ink bg-ink px-4 py-2 font-space-mono text-sm uppercase tracking-[0.14em] text-white md:text-base">
-                        {t('rate')}
-                    </span>
-                </motion.div>
 
-                {/* ── Beat 2 — it stays in your wallet ── */}
-                <motion.div
-                    style={{ opacity: b2 }}
-                    className="absolute inset-x-0 z-10 flex flex-col items-center gap-7 px-6 text-center"
-                >
-                    <p className="max-w-3xl text-2xl font-bold text-white md:text-4xl">
-                        {t('b2')}
-                    </p>
-                    <div className="flex flex-wrap items-center justify-center gap-3">
-                        {WALLET_CHIPS.map((k) => (
-                            <span
-                                key={k}
-                                className="rounded-full border-2 border-ink bg-white px-5 py-2.5 font-space-mono text-[11px] uppercase tracking-[0.14em] text-ink shadow-ext-sm md:text-sm"
-                            >
-                                {t(k)}
-                            </span>
-                        ))}
-                    </div>
-                    <p className="max-w-xl text-base text-lilac md:text-lg">
-                        {t('b2sub')}
-                    </p>
-                </motion.div>
-
-                {/* ── Beat 3 — the event opens (the unlock) ── */}
-                <motion.div
-                    style={{ opacity: b3 }}
-                    className="absolute inset-x-0 z-10 flex flex-col items-center gap-8 px-6 text-center"
-                >
-                    <div className="relative flex items-center gap-4 md:gap-8">
-                        {/* before — quiet block, not live yet */}
-                        <motion.div
-                            style={{ opacity: lockedOpacity }}
-                            className="block-quiet flex min-w-[130px] flex-col items-center gap-2 px-5 py-6 md:min-w-[190px]"
-                        >
-                            <Lock className="size-6 text-lilac" aria-hidden="true" />
-                            <span className="label-mono text-lilac">
-                                {t('before')}
-                            </span>
-                        </motion.div>
-
-                        <motion.span
-                            style={{ opacity: unlock }}
-                            className="font-display text-3xl text-white"
-                            aria-hidden="true"
-                        >
-                            →
-                        </motion.span>
-
-                        {/* after — the live moment: ink block, lime extrusion */}
-                        <motion.div
-                            style={{ opacity: unlock, scale: liveScale }}
-                            className="block-ink flex min-w-[130px] flex-col items-center gap-2 px-5 py-6 shadow-ext-live md:min-w-[190px]"
-                        >
-                            <span className="flex items-center gap-2 text-lime">
-                                <span className="live-dot" aria-hidden="true" />
-                                <span className="label-mono text-[11px]">
-                                    {t('live')}
+                    <ol className="flex flex-col gap-4">
+                        <motion.li {...reveal(0.05)} className="block-white flex flex-col gap-3 px-5 py-5 min-[360px]:flex-row min-[360px]:gap-4 md:px-6">
+                            <Step n={1} />
+                            <div className="flex min-w-0 flex-col items-start gap-3">
+                                <p className="text-[18px] font-bold leading-snug text-ink md:text-[20px]">{t('b1')}</p>
+                                <span className="tabular rounded-full border-2 border-ink bg-ink px-4 py-1.5 font-space-mono text-[14px] uppercase tracking-[0.12em] text-white">
+                                    {t('rate')}
                                 </span>
-                            </span>
-                            <span className="font-display text-lg text-white">
-                                {t('after')}
-                            </span>
-                        </motion.div>
-                    </div>
-
-                    <p className="max-w-3xl text-xl font-bold text-white md:text-3xl">
-                        {t('b3')}
-                    </p>
-                </motion.div>
-
-                {/* ── Beat 4 — two ways to play ── */}
-                <motion.div
-                    style={{ opacity: b4 }}
-                    className="absolute inset-x-0 z-10 flex flex-col items-center gap-8 px-6 text-center"
-                >
-                    <p className="max-w-2xl text-xl font-bold text-white md:text-3xl">
-                        {t('b4')}
-                    </p>
-                    <div className="flex flex-col items-stretch gap-4 md:flex-row md:gap-6">
-                        {(['oportunidades', 'subastas'] as const).map((k) => (
-                            <div
-                                key={k}
-                                className="surface-white min-w-[240px] rounded-2xl border-2 border-ink bg-white px-8 py-7 text-left shadow-ext-lg"
-                            >
-                                <span className="font-display text-2xl text-ink md:text-3xl">
-                                    {t(k)}
-                                </span>
-                                <p className="label-mono mt-2 text-muted-white">
-                                    {t(`${k}Sub`)}
-                                </p>
                             </div>
-                        ))}
-                    </div>
-                </motion.div>
+                        </motion.li>
 
-                <ScrollCue targetRef={ref} />
+                        <motion.li {...reveal(0.1)} className="block-white flex flex-col gap-3 px-5 py-5 min-[360px]:flex-row min-[360px]:gap-4 md:px-6">
+                            <Step n={2} />
+                            <div className="flex min-w-0 flex-col gap-2">
+                                <p className="text-[18px] font-bold leading-snug text-ink md:text-[20px]">{t('b2')}</p>
+                                <p className="text-[16px] leading-relaxed text-body-white md:text-[18px]">{t('b2sub')}</p>
+                                <div className="mt-1 flex flex-wrap gap-2">
+                                    {(['w1', 'w2', 'w3'] as const).map((k) => (
+                                        <span
+                                            key={k}
+                                            className="rounded-full border-2 border-ink px-3 py-1 font-space-mono text-[13px] uppercase tracking-[0.1em] text-ink"
+                                        >
+                                            {t(k)}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.li>
+
+                        <motion.li {...reveal(0.15)} className="block-white flex flex-col gap-3 px-5 py-5 min-[360px]:flex-row min-[360px]:gap-4 md:px-6">
+                            <Step n={3} />
+                            <div className="flex w-full min-w-0 flex-col gap-4">
+                                <div className="flex flex-col gap-2">
+                                    <p className="text-[18px] font-bold leading-snug text-ink md:text-[20px]">{t('b3')}</p>
+                                    <p className="text-[16px] leading-relaxed text-body-white md:text-[18px]">{t('b4')}</p>
+                                </div>
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                                    {(['oportunidades', 'subastas'] as const).map((k) => (
+                                        <a
+                                            key={k}
+                                            href={k === 'oportunidades' ? '#categorias' : '#subastas'}
+                                            className="press group flex flex-col gap-1 rounded-[12px] border-2 border-ink bg-white px-4 py-3 shadow-ext-sm transition-colors hover:bg-line-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+                                        >
+                                            <span className="font-display text-[20px] text-blue">
+                                                {t(k)} <span aria-hidden="true">↓</span>
+                                            </span>
+                                            <span className="text-[16px] text-body-white">{t(`${k}Sub`)}</span>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.li>
+                    </ol>
+                </div>
+
+                {/* The real Home: wallet block + a live card. */}
+                <motion.div
+                    {...reveal(0, 60, 0.2)}
+                    className="mx-auto w-[min(80vw,320px)] md:w-[340px] lg:w-full"
+                >
+                    <PhoneFrame
+                        src="/images/app/home-wallet.webp"
+                        alt={t('phoneAlt')}
+                        width={621}
+                        height={1200}
+                        sizes="(min-width: 1280px) 300px, (min-width: 768px) 270px, 64vw"
+                    />
+                </motion.div>
             </div>
         </section>
+    );
+}
+
+function Step({ n }: { n: number }) {
+    return (
+        <span
+            className="tabular grid size-9 shrink-0 place-items-center rounded-[10px] bg-blue font-space-mono text-[15px] font-bold text-white"
+            aria-hidden="true"
+        >
+            {n}
+        </span>
     );
 }
